@@ -6,6 +6,10 @@ function echosuccess {
 	echo -e '[1;32m'$1'[0m'
 }
 
+function echoinfo {
+	echo -e '[1;37m'$1'[0m'
+}
+
 function echoerror {
 	echo -e '[1;31m'$1'[0m'
 }
@@ -17,8 +21,12 @@ for i in tests/* ; do
 	stdoutlog=testlog/$(basename $i)-stdout.log
 	stderrlog=testlog/$(basename $i)-stderr.log
 
-	$i 1>$stdoutlog 2>$stderrlog
+    echoinfo "$i"
+    echoinfo "---------"
 
+	$i 2>$stderrlog | tee $stdoutlog
+
+    echoinfo "---------"
 	rc=$?
 	if [[ "$rc" -ne 0 ]] ; then
 		failed=1
