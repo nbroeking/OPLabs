@@ -12,9 +12,9 @@
 #define INTERFACE class
 
 #if __cplusplus <= 199711L
-#define OVERRIDE override
-#else
 #define OVERRIDE
+#else
+#define OVERRIDE override
 #endif
 
 typedef uint8_t byte;
