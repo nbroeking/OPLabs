@@ -23,4 +23,4 @@ suggestion of mitigation strategies.
 Otherwise known as:
 
 Awesome router, mobile and cloud software developed for great good and sponsored by
-CabalLabs
+CableLabs
