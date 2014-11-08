@@ -4,12 +4,14 @@ Team OpLabs, Senior Project
 Who
 ---
 
-| Zach Anders      | Summoner               | Cloud and Database
-| Nicolas Broeking | Code Slinger           | Mobile
-| Sarah Feller     | Keeper of the Scrolls  | *
-| John Jones       | Captain Sargent Dude   | *
-| Josh Rahm        | Sorcerery              | Router/Embedded
-| Michael Williams | Incompetence Detection | *
+|                  |                        |                    |
+|------------------|------------------------|--------------------|
+| Zach Anders      | Summoner               | Cloud and Database |
+| Nicolas Broeking | Code Slinger           | Mobile             |
+| Sarah Feller     | Keeper of the Scrolls  | *                  |
+| John Jones       | Captain Sargent Dude   | *                  |
+| Josh Rahm        | Sorcerery              | Router/Embedded    |
+| Michael Williams | Incompetence Detection | *                  |
 
 What
 ----
