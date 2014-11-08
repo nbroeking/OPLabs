@@ -3,6 +3,8 @@
 #include <io/ServerSocket.hpp>
 #include <io/StringWriter.hpp>
 
+#include <io/binary/StreamGetter.hpp>
+
 #include <cstdio>
 
 using namespace std ;
@@ -25,6 +27,25 @@ int main( int argc, char** argv ) {
 
     writer.setBaseIO( &sock );
     writer.printf("Hello, World from %s\n", "Josh");
+
+	uint32_t i;
+	StreamGetter getter( &sock );
+	rc = getter.getInt32le(i) ;
+
+	if( rc ) {
+		printf("Getter failed! rc=%d\n", rc);
+	} else {
+		printf("Read integer 0x%08x\n", i);
+	}
+
+	std::string name;
+	rc = getObject( getter, name );
+
+	if( rc ) {
+		printf("Failed to get string\n");
+	} else {
+		printf("name: %s\n", name.c_str());
+	}
 
     return 0;
 }

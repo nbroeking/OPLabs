@@ -15,6 +15,8 @@
 #include <string>
 #include <algorithm>
 
+namespace io {
+
 /* General class use very nicely for the decoding and
  * encoding of binary data */
 class Getter {
@@ -35,14 +37,14 @@ public:
 	
 	virtual inline int getInt16le( uint16_t& i ) {
 		byte high, low;
-		int rc = getByte( high ) || getByte( low ) ;
+		int rc = getByte( low ) || getByte( high ) ;
 		i = high << 8 | low ;
 		return rc;
 	}
 
 	virtual inline int getInt16be( uint16_t& i ){
 		byte high, low;
-		int rc = getByte( low ) || getByte( high ) ;
+		int rc = getByte( high ) || getByte( low ) ;
 		i = high << 8 | low ;
 		return rc;
 	}
@@ -82,17 +84,23 @@ public:
 		return 0;
 	}
 
+	virtual inline ~Getter(){}
+
 protected:
+	Getter() : m_blob(NULL), m_blob_len(0), m_cursor(0) {}
+
 	byte* m_blob ;
 	size_t m_blob_len ;
 	size_t m_cursor ;
 };
 
+}
+
 template <class T>
-inline int getObject( Getter& g, T& t );
+inline int getObject( io::Getter& g, T& t );
 
 template <>
-inline int getObject( Getter& g, std::string& str ) {
+inline int getObject( io::Getter& g, std::string& str ) {
 	uint32_t len;
 
 	if( g.getInt32le(len) ) return 1;
@@ -100,13 +108,13 @@ inline int getObject( Getter& g, std::string& str ) {
 	char* data = new char[len+1];
 
 	if( g.getBytes((byte*)data, len) ) {
-		free(data);
+		delete[] data;
 		return 2;
 	}
 
 	data[len] = 0;
 	str = data;
-	free(data);
+	delete[] data;
 
 	return 0;
 }

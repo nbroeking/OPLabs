@@ -44,7 +44,7 @@ public:
         va_start(a, fmt);
         vasprintf( &out, fmt, a );
         print( out );
-        free( out );
+        delete[] out;
     }
 
     inline ~StringWriter() {
