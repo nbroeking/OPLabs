@@ -2,7 +2,7 @@
 
 mkdir -p testlog/
 
-TESTDIR='_x86_obs/tests'
+TESTDIR='_x86_64_obs/tests'
 MAKETEST='make tests'
 
 function echosuccess {
