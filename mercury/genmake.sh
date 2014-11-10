@@ -69,6 +69,8 @@ cat <<- EOF
 #   $ ENV=flyingspaghettimonster make            # builds flyingspaghettimonster x86 (if such a thing exists)
 #
 
+SHELL=/bin/bash
+
 TGT?=x86
 ENV?=devel
 
