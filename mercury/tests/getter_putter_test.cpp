@@ -32,7 +32,12 @@ int test_fd() {
 }
 
 int write_file() {
-	int fd = ::open("/tmp/mytestfile", O_WRONLY | O_CREAT, 0600);
+    char fpath[1024];
+    char cwd[1024];
+    static const char* testfile = "read_file_test";
+    snprintf(fpath, 1024, "%s/%s", getcwd(cwd, 1024), testfile);
+
+	int fd = ::open(fpath, O_WRONLY | O_CREAT, 0600);
 	TEST_BOOL("Open", fd > 0);
 
 	FileDescriptor file( fd );
@@ -54,7 +59,12 @@ int write_file() {
 }
 
 int read_file() {
-	int fd = ::open("/tmp/mytestfile", O_RDONLY, 0600);
+    char fpath[1024];
+    char cwd[1024];
+    static const char* testfile = "read_file_test";
+    snprintf(fpath, 1024, "%s/%s", getcwd(cwd, 1024), testfile);
+
+	int fd = ::open(fpath, O_RDONLY, 0600);
 	TEST_BOOL("Open", fd > 0);
 
 	FileDescriptor file(fd);
@@ -79,6 +89,7 @@ int read_file() {
 	TEST_EQ  ( "getString", rc, 0 );
 	TEST_BOOL( "getString_value", strcmp(str.c_str(), TEST_STRING) == 0 );
 
+    unlink(fpath);
 	return 0;
 }
 
