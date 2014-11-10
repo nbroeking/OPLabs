@@ -7,4 +7,4 @@ clean:
 	cd ..
 
 test:
-	./runtests.sh
+	./testall.sh
