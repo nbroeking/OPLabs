@@ -18,15 +18,11 @@ public:
     inline FileDescriptor( int fd ):
         m_fd( fd ) {}
 
-    inline ssize_t read( byte* out, size_t len ) OVERRIDE {
-        return ::read( m_fd, out, len );
-    }
+    ssize_t read( byte* out, size_t len ) OVERRIDE ;
 
-    inline ssize_t write( const byte* in, size_t len ) OVERRIDE {
-        return ::write( m_fd, in, len );
-    }
+    ssize_t write( const byte* in, size_t len ) OVERRIDE ;
 
-    inline int close() OVERRIDE { return ::close( m_fd ); }
+    int close() OVERRIDE ;
 
 private:
     int m_fd;

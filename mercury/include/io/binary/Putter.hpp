@@ -52,8 +52,6 @@ public:
     virtual int putBytes( const byte* in, size_t len );
 
     virtual inline ~Putter(){}
-
-    virtual byte* serialize( ssize_t& out_size );
 };
 
 }
@@ -61,7 +59,7 @@ public:
 template <class T>
 int putObject( io::Putter& putter, const T& v ) ;
 
-int putObject( io::Putter& putter, const std::string& s ) {
+inline int putObject( io::Putter& putter, const std::string& s ) {
     putter.putInt32le( s.size() );
     putter.putBytes( (const byte*) s.c_str(), s.size() );
     return 0;

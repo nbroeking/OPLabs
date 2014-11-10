@@ -43,14 +43,14 @@ for i in $TESTDIR/* ; do
     echoinfo "$i"
     echo "    + "
 	$i 2>$stderrlog | tee $stdoutlog | while read l ; do echo "    + $l" ; done
+	rc=${PIPESTATUS[0]}
     echo "    + "
-	rc=$?
 	if [[ "$rc" -ne 0 ]] ; then
 		failed=1
-		echo "$i: Failed!" >&2
+		echo "$i: Failed! rc=$rc" >&2
 		echo "---- Error Log ----" >&2
 		cat $stderrlog >&2
-		echoerror "$i: Failed"
+		echoerror "$i: Failed: rc=$rc"
 	else
 		echosuccess "$i: Success"
 	fi

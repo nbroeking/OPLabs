@@ -23,15 +23,13 @@ for i in $test_scripts ; do
     pushd "$dir" &>/dev/null
 
     echoinfo "=== Executing top level test script: $i ==="
-    ./$(basename $i) $@ | while read i ; do
-        echo "    +  $i"
-    done
-    rc=$?
+    ./$(basename $i) $@ | while read i ; do echo "    +  $i"; done
+    rc=${PIPESTATUS[0]}
 
     if [ $rc -ne 0 ] ; then
         fail=1
 	    echoerror "=== One or more tests for $dir failed ==="
-        fail_dirs="$fail_dirs $dir"
+        fail_dirs="$(basename $dir) $fail_dirs"
     else
 	    echoinfo "=== Tests for $dir sucessfully completed ==="
     fi
@@ -42,7 +40,7 @@ done
 if [ $fail -eq 0 ] ; then
     echosuccess "=== All tests succeeded ==="
 else
-    echoerror "=== Tests failed for $[$fail_dirs] ==="
+    echoerror "=== Tests failed for [$fail_dirs] ==="
 fi
 
 exit $fail

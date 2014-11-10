@@ -15,6 +15,7 @@ namespace io {
 class StreamPutter : public Putter {
 public:
     StreamPutter( BaseIO*& base_io, bool take=false, size_t buflen=1024 );
+    StreamPutter( BaseIO*, size_t buflen=1024 );
 
     virtual int putByte( byte b ) OVERRIDE ;
 

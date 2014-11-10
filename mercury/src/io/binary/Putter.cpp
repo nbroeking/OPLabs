@@ -7,7 +7,7 @@ namespace io {
 
 int Putter::putBytes( const byte* in, size_t len ) {
     for( size_t i = 0 ; i < len ; ++ i ) 
-        putByte( i );
+        putByte( in[i] );
     return 0;
 }
 

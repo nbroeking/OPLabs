@@ -2,11 +2,20 @@
 
 namespace io {
 
+StreamPutter::StreamPutter( BaseIO* bio, size_t buflen) {
+    m_buffer = new byte[buflen];
+    m_is_owner = false;
+    m_buffer_ptr = 0;
+    m_buffer_total_size = buflen;
+    m_base_io = bio;
+}
+
 StreamPutter::StreamPutter( BaseIO*& base_io, bool take, size_t buflen ) {
     m_buffer = new byte[buflen];
     m_is_owner = take;
     m_buffer_ptr = 0;
     m_buffer_total_size = buflen;
+    m_base_io = base_io;
 
     if( m_is_owner ) base_io = NULL;
 }
