@@ -1,47 +1,48 @@
 #!/bin/bash
 
-mkdir -p testlog/
+test_scripts=$(find -name test.sh)
+
+function echoinfo {
+	echo -e '[1;34m'$1'[0m'
+}
 
 function echosuccess {
 	echo -e '[1;32m'$1'[0m'
-}
-
-function echoinfo {
-	echo -e '[1;37m'$1'[0m'
 }
 
 function echoerror {
 	echo -e '[1;31m'$1'[0m'
 }
 
-exec 2>runtests.err.log
+fail=0
+fail_dirs=""
 
-failed=0
-for i in tests/* ; do
-	stdoutlog=testlog/$(basename $i)-stdout.log
-	stderrlog=testlog/$(basename $i)-stderr.log
+for i in $test_scripts ; do
+    dir=$(dirname $i)
+    echoinfo "=== descending into directory $dir ==="
+    pushd "$dir" &>/dev/null
 
-    echoinfo "$i"
-    echoinfo "---------"
+    echoinfo "=== Executing top level test script: $i ==="
+    ./$(basename $i) $@ | while read i ; do
+        echo "    +  $i"
+    done
+    rc=$?
 
-	$i 2>$stderrlog | tee $stdoutlog
+    if [ $rc -ne 0 ] ; then
+        fail=1
+	    echoerror "=== One or more tests for $dir failed ==="
+        fail_dirs="$fail_dirs $dir"
+    else
+	    echoinfo "=== Tests for $dir sucessfully completed ==="
+    fi
 
-    echoinfo "---------"
-	rc=$?
-	if [[ "$rc" -ne 0 ]] ; then
-		failed=1
-		echo "$i: Failed!" >&2
-		echo "---- Error Log ----" >&2
-		cat $stderrlog >&2
-		echoerror "$i: Failed"
-	else
-		echosuccess "$i: Success"
-	fi
+    popd &> /dev/null
 done
 
-if [ $failed -ne 0 ] ; then
-	echoerror "\n\n    One or more tests have failed!\n\n"
-	exit 1
+if [ $fail -eq 0 ] ; then
+    echosuccess "=== All tests succeeded ==="
+else
+    echoerror "=== Tests failed for $[$fail_dirs] ==="
 fi
 
-exit 0
+exit $fail

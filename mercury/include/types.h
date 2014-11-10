@@ -10,6 +10,7 @@
 #include <stdint.h>
 
 #define INTERFACE class
+#define ABSTRACT
 
 #if __cplusplus <= 199711L
 #define OVERRIDE

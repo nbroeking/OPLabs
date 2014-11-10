@@ -75,10 +75,11 @@ ENV?=devel
 .INCLUDE_DIRS += targets/\$(TGT)/
 include targets/\$(TGT)/\$(ENV).mk 
 
-default:
+HACK := \$(shell mkdir -p _\$(TGT)_obs/)
+
+
+default: all
 EOF
-echo '	mkdir -p _\$(TGT)_obs/ && make all'
-echo ''
 
 objects=""
 
@@ -95,7 +96,7 @@ done
 
 echo 'clean:'
 echo '	rm -rf _$(TGT)_obs/'
-echo '	rm mercury'
+echo '	rm -f mercury'
 echo ''
 echo '_$(TGT)_obs/libmerc.a: '$objects
 echo '	ar -r $@ $^'
@@ -107,7 +108,20 @@ echo ''
 echo 'genmake: genmake.sh'
 echo '	./genmake.sh > Makefile'
 echo ''
+echo 'tests: _$(TGT)_obs/libmerc.a'
+echo '	mkdir -p _$(TGT)_obs/tests/'
+echo '	for i in $$(ls tests/*.cpp) ; do \'
+echo '		out=_$(TGT)_obs/$${i/%.cpp/} ; \'
+echo '		if [ "$$i" -nt "$$out" ] ; then \'
+echo '			echo g++ $$i -o $$out _$(TGT)_obs/libmerc.a ; \'
+echo '			g++ $$i -o $$out _$(TGT)_obs/libmerc.a ; \'
+echo '		fi ; \'
+echo '	done'
+echo ''
+echo 'test: tests'
+echo '	./test.sh'
+echo ''
 echo 'cleanall:'
 echo '	rm -rf _*_obs'
-echo '	rm mercury'
+echo '	rm -f mercury'
 
