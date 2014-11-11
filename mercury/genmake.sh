@@ -82,6 +82,10 @@ CXXFLAGS := \$(CXXFLAGS) -DTARGET_\$(TGT)
 HACK  := \$(shell mkdir -p _\$(TGT)_obs/)
 HACK2 := \$(shell mkdir -p _\$(TGT)_obs/tests/)
 
+LDFLAGS := \$(LDFLAGS) -lpthread
+
+QEMU?=
+export QEMU
 
 default: all
 EOF
@@ -115,7 +119,7 @@ for test_src in $test_sources ; do
     test_binaries="$test_binaries $binary"
 
     echo "$binary: $obj_file $LIBRARY"
-    echo '	$(CXX) $(LDFLAGS) -o '$binary' $(CXXFLAGS) '$obj_file' '$LIBRARY
+    echo '	$(CXX) -o '$binary' $(CXXFLAGS) '$obj_file' '$LIBRARY '$(LDFLAGS)'
     echo ''
 done
 
@@ -128,7 +132,7 @@ echo ''$OBS_DIR'/libmerc.a: '$objects
 echo '	$(AR) -r $@ $^'
 echo ''
 echo 'all:' $LIBRARY "$(discover_depends main.cpp | awk ' !x[$0]++') tests"
-echo '	$(CXX) $(LDFLAGS) -o '$OBS_DIR'/mercury main.cpp $(CXXFLAGS) -L '$OBS_DIR'/ -lmerc'
+echo '	$(CXX) -o '$OBS_DIR'/mercury main.cpp $(CXXFLAGS) -L '$OBS_DIR'/ -lmerc' '$(LDFLAGS)'
 echo '	ln -sf '$OBS_DIR'/mercury .'
 echo ''
 echo 'genmake: genmake.sh'

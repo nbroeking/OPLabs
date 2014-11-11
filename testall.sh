@@ -23,7 +23,7 @@ for i in $test_scripts ; do
     pushd "$dir" &>/dev/null
 
     echoinfo "=== Executing top level test script: $i ==="
-    ./$(basename $i) $@ | while read i ; do echo "    +  $i"; done
+    stdbuf -oL ./$(basename $i) $@ | while read i ; do echo "    +  $i"; done
     rc=${PIPESTATUS[0]}
 
     if [ $rc -ne 0 ] ; then

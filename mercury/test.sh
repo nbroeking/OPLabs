@@ -2,7 +2,11 @@
 
 mkdir -p testlog/
 
-TESTDIR='_x86_64_obs/tests'
+if [ ! $TGT ] ; then
+    TGT=x86_64
+fi
+
+TESTDIR='_'$TGT'_obs/tests'
 MAKETEST='make tests'
 
 function echosuccess {
@@ -41,16 +45,15 @@ for i in $TESTDIR/* ; do
 	stderrlog=testlog/$(basename $i)-stderr.log
 
     echoinfo "$i"
+    echo "    + stdbuf -oL \"$QEMU $i\" 2>$stderrlog"
     echo "    + "
-	$i 2>$stderrlog | tee $stdoutlog | while read l ; do echo "    + $l" ; done
+	stdbuf -oL $QEMU $i 2>$stderrlog | tee $stdoutlog | while read l ; do echo "    + $l" ; done
 	rc=${PIPESTATUS[0]}
     echo "    + "
 	if [[ "$rc" -ne 0 ]] ; then
 		failed=1
-		echo "$i: Failed! rc=$rc" >&2
-		echo "---- Error Log ----" >&2
-		cat $stderrlog >&2
 		echoerror "$i: Failed: rc=$rc"
+		cat $stderrlog | xargs -I_ echo -e "\e[1;31m    + " _ "\e[0m"
 	else
 		echosuccess "$i: Success"
 	fi
