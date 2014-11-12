@@ -60,7 +60,14 @@
 	}
 
 #define TEST_FN( stmt )  \
-	TEST_EQ( #stmt, stmt, 0 )
+    printf("\n" BLUE "%30s:\n" NORM, #stmt); \
+	if ( (stmt) != 0 ) { \
+		PRINT_FAILED(" => ") \
+		return 1; \
+	} else { \
+		PRINT_SUCCESS(" => ") \
+	} \
+    printf("\n");
 
 #define DECL_TEST( str ) \
 	printf( "%s%s%s", BOLD, str ) 
