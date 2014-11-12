@@ -17,6 +17,7 @@ INTERFACE BaseIO {
 public:
     virtual ssize_t read( byte* out, size_t len ) = 0;
     virtual ssize_t write( const byte* in, size_t len ) = 0;
+    virtual int close() = 0;
     inline virtual ~BaseIO(){}
 };
 

@@ -35,7 +35,7 @@ public:
     virtual ssize_t write( const byte* data, size_t len ) OVERRIDE;
 
     /* Shut down the socket */
-    int close( );
+    int close( ) OVERRIDE ;
 
     virtual ~StreamSocket();
 

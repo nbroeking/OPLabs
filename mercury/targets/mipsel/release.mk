@@ -1,3 +1,3 @@
-include targets/x86/common.mk
+include targets/mipsel/common.mk
 CFLAGS:=$(CFLAGS) -O2
 CXXFLAGS:=$(CXXFLAGS) -O2

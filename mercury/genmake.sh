@@ -69,22 +69,36 @@ cat <<- EOF
 #   $ ENV=flyingspaghettimonster make            # builds flyingspaghettimonster x86 (if such a thing exists)
 #
 
-TGT?=x86
+SHELL=/bin/bash
+
+TGT?=x86_64
 ENV?=devel
 
 .INCLUDE_DIRS += targets/\$(TGT)/
 include targets/\$(TGT)/\$(ENV).mk 
 
-default:
+CXXFLAGS := \$(CXXFLAGS) -DTARGET_\$(TGT)
+
+HACK  := \$(shell mkdir -p _\$(TGT)_obs/)
+HACK2 := \$(shell mkdir -p _\$(TGT)_obs/tests/)
+
+LDFLAGS := \$(LDFLAGS) -lpthread
+
+QEMU?=
+export QEMU
+
+default: all
 EOF
-echo '	mkdir -p _\$(TGT)_obs/ && make all'
-echo ''
+
+OBS_DIR='_$(TGT)_obs'
+LIBRARY="$OBS_DIR/libmerc.a"
+
 
 objects=""
 
 for file in $source_files ; do
     obj_file=${file/cpp/o}
-    obj_file=_'$(TGT)'_obs/${obj_file//\//_}
+    obj_file=$OBS_DIR/${obj_file//\//_}
 
     echo "$obj_file: $file $(discover_depends $file)"
     echo '	$(CXX) -o '$obj_file' $(CXXFLAGS) -c '$file
@@ -93,21 +107,53 @@ for file in $source_files ; do
     objects=$objects' '$obj_file
 done
 
+test_sources=$(find tests/ -name '*.cpp')
+test_binaries=""
+for test_src in $test_sources ; do
+    obj_file=${test_src/cpp/o}
+    obj_file=$OBS_DIR/${obj_file//\//_}
+
+    binary=${test_src/.cpp/}
+    binary=$OBS_DIR/$binary
+
+    test_binaries="$test_binaries $binary"
+
+    echo "$binary: $obj_file $LIBRARY"
+    echo '	$(CXX) -o '$binary' $(CXXFLAGS) '$obj_file' '$LIBRARY '$(LDFLAGS)'
+    echo ''
+done
+
+
 echo 'clean:'
-echo '	rm -rf _$(TGT)_obs/'
-echo '	rm mercury'
+echo '	rm -rf '$OBS_DIR'/'
+echo '	rm -f mercury'
 echo ''
-echo '_$(TGT)_obs/libmerc.a: '$objects
-echo '	ar -r $@ $^'
+echo ''$OBS_DIR'/libmerc.a: '$objects
+echo '	$(AR) -r $@ $^'
 echo ''
-echo 'all: _$(TGT)_obs/libmerc.a ' "$(discover_depends main.cpp | awk ' !x[$0]++')"
-echo '	$(CXX) -o _$(TGT)_obs/mercury main.cpp $(CXXFLAGS) -L _$(TGT)_obs/ -lmerc'
-echo '	ln -sf _$(TGT)_obs/mercury .'
+echo 'all:' $LIBRARY "$(discover_depends main.cpp | awk ' !x[$0]++') tests"
+echo '	$(CXX) -o '$OBS_DIR'/mercury main.cpp $(CXXFLAGS) -L '$OBS_DIR'/ -lmerc' '$(LDFLAGS)'
+echo '	ln -sf '$OBS_DIR'/mercury .'
 echo ''
 echo 'genmake: genmake.sh'
 echo '	./genmake.sh > Makefile'
 echo ''
+echo 'tests: '$test_binaries
+echo ''
+# echo 'tests: _$(TGT)_obs/libmerc.a'
+# echo '	mkdir -p _$(TGT)_obs/tests/'
+# echo '	for i in $$(ls tests/*.cpp) ; do \'
+# echo '		out=_$(TGT)_obs/$${i/%.cpp/} ; \'
+# echo '		if [ "$$i" -nt "$$out" ] ; then \'
+# echo '			echo g++ $$i -o $$out _$(TGT)_obs/libmerc.a ; \'
+# echo '			g++ $(CXXFLAGS) $$i -o $$out _$(TGT)_obs/libmerc.a ; \'
+# echo '		fi ; \'
+# echo '	done'
+echo ''
+echo 'test: tests'
+echo '	./test.sh'
+echo ''
 echo 'cleanall:'
 echo '	rm -rf _*_obs'
-echo '	rm mercury'
+echo '	rm -f mercury'
 

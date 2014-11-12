@@ -1,3 +1,3 @@
-include targets/i386/common.mk
+include targets/arm-rpi/common.mk
 CFLAGS:=$(CFLAGS) -g3 -ggdb
 CXXFLAGS:=$(CXXFLAGS) -g3 -ggdb

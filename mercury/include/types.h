@@ -10,11 +10,18 @@
 #include <stdint.h>
 
 #define INTERFACE class
+#define ABSTRACT
 
 #if __cplusplus <= 199711L
 #define OVERRIDE
 #else
 #define OVERRIDE override
+#endif
+
+#ifdef TARGET_mipsel
+/* Mips does not define ssize_t so we need to
+ * define it ourselves */
+typedef int32_t ssize_t ;
 #endif
 
 typedef uint8_t byte;
