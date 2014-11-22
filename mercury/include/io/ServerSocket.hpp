@@ -37,6 +37,7 @@ public:
     /* close the file descriptor */
     int close();
 
+    ~StreamServerSocket();   
 private:
     int makeFd();
     int m_fd ;
