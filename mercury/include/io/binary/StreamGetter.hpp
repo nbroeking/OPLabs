@@ -13,14 +13,37 @@
 
 namespace io {
 
+/**
+ * @brief An abstraction fo the Getter class to operate on streams
+ *
+ * @see getter
+ */
 class StreamGetter: public Getter {
 public:
+    /**
+     * Construct a StreamGetter from the given BaseIO.
+     * @param base the BaseIO to use
+     * @param take should this take ownership of <code>base</code>
+     *
+     * If take is true, then this object will take control of
+     * <code>base</code> and assume responsibility to delete
+     * the object when it goes out of scope. If this is the
+     * case, by pointer-reference notation, the original pointer
+     * to base will be set to NULL.
+     */
 	inline StreamGetter( BaseIO*& base, bool take=false ) :
 		input( base ) {
             if( take ) base = NULL;
             m_is_owner = take;
 			m_blob = new byte[m_buffer_size = 1024];
 		}
+
+    /**
+     * Contstruct a StreamGetter from the given BaseIO
+     * @param base the BaseIO to use
+     *
+     * Assumes no ownership responsibilities, unlike the above
+     */
     inline StreamGetter( BaseIO* base ) : input(base){
         m_is_owner = false;
 		m_blob = new byte[m_buffer_size = 1024];
