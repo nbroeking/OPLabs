@@ -11,6 +11,8 @@ using namespace std ;
 using namespace io ;
 
 int main( int argc, char** argv ) {
+    (void) argc;
+    (void) argv;
     int rc;
     /* Simple C++ socket program. Connect to 5432 on localhost
      * and print Hello, World */

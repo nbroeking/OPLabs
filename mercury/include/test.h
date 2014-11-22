@@ -24,7 +24,7 @@
 #define BLUE  "\e[1;34m"
 
 #define LOG( fmt, ... ) \
-	    printf(BOLD "%30s" fmt NORM, " +- " __VA_ARGS__)
+	    printf(BOLD "%30s" fmt NORM, " +- ", __VA_ARGS__)
 
 #define PRINT_SUCCESS(name) \
 		printf(BOLD "%30s" NORM " [" GREEN "PASS" NORM "] " PURPLE "@(%s %s:%d)" NORM "\n", name, __FUNCTION__, __FILE__, __LINE__ ); \

@@ -94,6 +94,8 @@ int read_file() {
 }
 
 int main( int argc, char** argv ) {
+    (void) argc;
+    (void) argv;
 	TEST_FN( test_fd() );
 	TEST_FN( write_file() );
 	TEST_FN( read_file() );
