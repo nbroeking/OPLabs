@@ -48,6 +48,7 @@ int main( int argc, char** argv ) {
     (void) argv;
     int rc;
 
+    srand(time(NULL));
     uint16_t port = rand() % 50000 + 5000 ;
 
     if( fork() == 0) {
