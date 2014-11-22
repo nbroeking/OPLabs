@@ -75,6 +75,8 @@ int test_blocking_queue_timeout( BlockingQueue<int>* bq ) {
 }
 
 int main( int argc, char** argv ) {
+    (void) argc;
+    (void) argv;
     BlockingQueue<int> bq;
     FunctionRunner< BlockingQueue<int>* > 
         runner( blocking_queue_writer, &bq );
