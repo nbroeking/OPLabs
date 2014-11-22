@@ -8,5 +8,6 @@ clean:
 	cd mercury && make clean
 	cd ..
 
+# run all of the tests
 test:
 	./testall.sh
