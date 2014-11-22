@@ -16,9 +16,17 @@ namespace os {
  * @author jrahm
  *
  * Example:
- * { ScopedLock __sl(m_mutex)
+ * @code
+ * { ScopedLock __sl(m_mutex);
+ *
  *   // critical section
+ *
  * }
+ * @endcode
+ *
+ * @see Mutex
+ * @see Condition
+ * @see Thread
  */
 class ScopedLock {
 public:

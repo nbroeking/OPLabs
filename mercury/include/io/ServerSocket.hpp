@@ -13,10 +13,22 @@
 
 namespace io {
 
-/* Constructs a server */
+/**
+ * @brief An abstraction of a server socket over C style Berekly sockets.
+ */
 class StreamServerSocket {
 public:
-    /* Do all of the things */
+    /**
+     * @brief Do all of the work for you. Binds and begins listening.
+     * 
+     * @param port The port to listen on
+     * @param bind_ip The bind ip of the server. Defaults to INADDR_ANY
+     * @param backlog The max number of waiting connections
+     * 
+     * @return The server socket created by this function on success, on error,
+     *          NULL is returned
+     *
+     */
     static StreamServerSocket* createAndBindListen(
 						        uint16_t port,
 						        uint32_t bind_ip = INADDR_ANY,
@@ -25,16 +37,35 @@ public:
     inline StreamServerSocket() :
         m_fd(-1) {}
 
-    /* Creats and returns a stream socket */
+    /**
+     * @brief Returns the stream socket accepted by the connection
+     * @return The new client socket
+     */
     StreamSocket* accept() ;
 
-    /* binds to a port */
+    /**
+     * @brief Binds a server socket to a port and an address
+     * 
+     * @param port The port to bind to
+     * @param bind_ip The ip to bind to
+     * 
+     * @return 0 on success, otherwise an error code is set
+     */
     int bind( uint16_t port, uint32_t bind_ip = INADDR_ANY );
 
-    /* initiates the listening */
+    /**
+     * @brief begins listening on the port
+     * 
+     * @param backlog the max number of connections allowed
+     * 
+     * @return 0 on success, otherwise an error code
+     */
     int listen( int backlog = 10 ) ;
 
-    /* close the file descriptor */
+    /**
+     * @brief Close the file descriptor
+     * @return 0 on success, otherwise on error code
+     */
     int close();
 
     ~StreamServerSocket();   

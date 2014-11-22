@@ -12,6 +12,32 @@ namespace os {
  *
  * Then there is the thing about the doc comments
  * And this is just a description
+ *
+ * @code
+ * int bocking_take(Mutex& m, Condition& cond, queue<int>& queue) {
+ *  m.lock();
+ *  // begin critical section
+ *  if ( queue.empty() )
+ *      // wait for the signal
+ *      cond.wait(m);
+ *  value = queue.front();
+ *  m.unlock();
+ *  // end critical section
+ *  return value;
+ * }
+ *
+ * void blocking_push(Mutex& m, Condition& cond, queue<int>& queue) {
+ *  m.lock();
+ *  queue.push(5);
+ *  cond.signal();
+ *  // blocking_take will now continue once the mutex is free
+ *  m.unlock();
+ * }
+ * @endcode
+ *
+ * @see Mutex
+ * @see ScopedLock
+ * @see Thread
  */
 class Condition {
 public:

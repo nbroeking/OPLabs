@@ -617,8 +617,7 @@ table.memberdecls {
 }
 
 .memdoc {
-    z-index: -1;
-    position: relative;
+    background-color: transparent !important;
 }
 
 .memproto {

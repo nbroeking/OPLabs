@@ -89,6 +89,9 @@ public:
         return NULL;
     }
     
+    /**
+     * @brief Run this AsyncInputSoure
+     */
     void run() OVERRIDE {
         T val;
         int rc;

@@ -17,6 +17,10 @@ namespace os {
  * @author jrahm
  *
  * The mutex acts as a simple lock around critical sections.
+ *
+ * @see ScopedLock
+ * @see Condition
+ * @see Thread
  */
 class Mutex {
 public:
