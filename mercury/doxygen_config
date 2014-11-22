@@ -1,0 +1,9 @@
+PROJECT_NAME = Mercury
+INPUT = include src
+OUTPUT_DIRECTORY = doc
+GENERATE_HTML = yes
+HTML_OUTPUT = html
+HTML_FILE_EXTENSION = .html
+RECURSIVE = YES
+HTML_EXTRA_STYLESHEET = doc/doxygen-theme/customdoxygen.css
+LAYOUT_FILE = doc/doxygen-theme/DoxygenLayout.xml
