@@ -23,6 +23,7 @@ int server() {
     writer.printf("Test%d", 0);
 
     delete sock;
+    return 0;
 }
 
 int client() {
