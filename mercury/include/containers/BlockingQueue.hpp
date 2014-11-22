@@ -15,6 +15,17 @@
 
 namespace containers {
 
+/**
+ * @brief A thread-safe blocking queue
+ * @param T the data type to store in this queue
+ * @param delegate_T the underlying data structure
+ *          defaults to a queue, but may be anything
+ *          that implements pop and front
+ *
+ * This is an implementation of a LIFO which is
+ * thread safe and blocking. Very useful for
+ * communication between threads.
+ */
 template <class T, class delegate_T=std::queue<T> >
 class BlockingQueue {
 public:
@@ -26,7 +37,14 @@ public:
         m_condition()
         {}
 
-    /* add a new value to the blocking queue */
+    /**
+     * @brief add a new value to the blocking queue
+     * @param val the value to push onto the blocking queue
+     *
+     * This function will push a new value onto the blocking queue
+     * and will also signal any waiting thread, signaling the arrival
+     * of a new value.
+     */
     void push( T& val ) {
         os::ScopedLock _sl_( this->m_mutex ) ;
         m_queue.push( val ) ;
@@ -36,9 +54,14 @@ public:
         }
     }
 
-    /* return whatever is on the front of the blocking queue
-     * if there is nothing on the head of the queue, then block
-     * until there is something on the queue */
+    /**
+     *  @brief return what is on the front of the queue
+     *  @return whatever is on the front of the blocking queue
+     *
+     *  In the case there is nothing on the front of the queue, this
+     *  function will block until there is data on the queue. This function
+     *  will not pop the element, that must be done by the client.
+     */
     T& front( ) {
         os::ScopedLock _sl_( this->m_mutex ) ;
 
@@ -49,10 +72,20 @@ public:
         return m_queue.front() ;
     }
 
-    /* 
-     * return what is on the front of the blocking queue.
-     * If nothing is on the head of the blocking queue, then
-     * waid for the specified timeout. Returns NULL on timeout
+    /** 
+     * @brief Timed version of front()
+     *
+     * @param into where to store the result
+     * @param timeout number of microseconds to wait
+     *
+     * In the case where there is nothing on the blocking queue,
+     * this function will block for at most `timeout` milliseconds
+     * waiting for a value.
+     *
+     * The value will be placed in the variable referenced by
+     * `into`
+     *
+     * @return If the timeout was reached, then 0 else 1
      */
     int front_timed( T& into, os::timeout_t timeout ) {
         os::ScopedLock _sl_( this->m_mutex ) ;
@@ -67,10 +100,20 @@ public:
         return 0 ;
     }
 
-    /*
-     * Return what is on the front of the queue,
-     * but if there is a timeout, then return
-     * a default value and not a pointer
+    /**
+     * @brief like front_timed but with a default value.
+     *
+     * @param def the default value to return if there is a timeout
+     * @param to the timeout in microseconds
+     *
+     * Return the head of the queue. If the queue is empty, block
+     * for at most `to` microseconds. If a new value appears on the
+     * queue at that time, return it, otherwise return `def`.
+     *
+     * @see front_timed(T&,os::timeout_t)
+     *
+     * @return if there is a timeout, then def otherwise what is on the
+     *          front of the queue
      */
     T& front_default( T& def, os::timeout_t to = -1 ) {
         T* tmp = front_timed( to ) ;
@@ -80,8 +123,12 @@ public:
         return *tmp ;
     }
 
-    /* remove the head element of the queue, if the queue is empty, then
-     * this function will just return */
+    /**
+     *  @brief remove the head of this blocking queue
+     *
+     *  This method is normally called after a flavor of front()
+     *  there is no bounds checking, so be careful.
+     */
     void pop() {
         os::ScopedLock( this->m_mutex ) ;
         m_queue.pop() ;

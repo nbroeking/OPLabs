@@ -2,7 +2,7 @@
 
 body, table, div, p, dl {
 	// font: 400 14px/22px Roboto,sans-serif;
-	font: 13px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+	font: 13px serif, "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
 }
 
 /* @group Heading Levels */
@@ -14,7 +14,7 @@ h1.groupheader {
 
 .title {
 	//font: 400 14px/28px Roboto,sans-serif;
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+	font-family: serif, "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
 	font-size: 24px;
 	font-weight: normal;
 	margin: 10px 2px;
@@ -508,13 +508,10 @@ table.memberdecls {
 }
 
 .mdescLeft, .mdescRight {
-	//padding: 0px 8px 4px 8px;
 	padding: 0px 8px 4px 24px;
-	//color: #555;
 	color: black;
 	
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
-	//font-style: italic;
+    color: rgb(80,80,80);
 	font-style: normal;
 }
 
@@ -588,15 +585,11 @@ table.memberdecls {
 }
 
 .memname {
-	   //font-family: "Courier New", courier, monospace;
-	   //font-family: Courier, Consolas, monospace;
-	   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
-	   font-weight: 400;
-	   //font-size: 15px;
-	   font-size: 19px;
-        //font-weight: bold;
-        //margin-left: 6px;
-	   margin-left: 0px;
+    color: navy;
+    font-family: "Courier New", courier, monospace;
+    font-weight: 400;
+    font-size: 19px;
+    margin-left: 0px;
 }
 
 .memname td {
@@ -651,6 +644,8 @@ table.memberdecls {
 }
 
 .memdoc, dl.reflist dd {
+    font-family: monospace;
+    width: 30%;
 	border: none;
         //border-bottom: 1px solid #A8B8D9;      
         //border-left: 1px solid #A8B8D9;      
@@ -722,12 +717,9 @@ dl.reflist dd {
 }       
 
 .params .paramname, .retval .paramname {
-        //font-weight: bold;
-	   //font-family: "Courier New", courier, monospace;
 	   font-family: Courier, Consolas, monospace;
-	   font-style: italic;
+	   font-style: italic,bold;
 	   font-weight: normal;
-	   text-shadow: rgba(0, 0, 0, 0.3) 0px 1px 1px;
 }
 
 .params .paramtype {
@@ -824,6 +816,8 @@ div.directory {
 	padding-right: 6px;
 	padding-top: 3px;
 	border-left: 1px solid rgba(0,0,0,0.05);
+    font-family: serif;
+    color: rgb(80,80,80);
 }
 
 .directory tr.even {
@@ -991,7 +985,7 @@ table.fieldtable {
 	text-decoration: none;
 	outline: none;
 	color: #283A5D;
-	font-family: 'Lucida Grande',Geneva,Helvetica,Arial,sans-serif;
+	font-family: serif;
 	text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.9);
 	text-decoration: none;        
 }
@@ -1114,7 +1108,7 @@ dl.deprecated
 
 dl.deprecated dt a.el
 {
-	font-family: 'Lucida Grande',Geneva,Helvetica,Arial,sans-serif;
+	font-family: serif,Geneva,Helvetica,Arial,sans-serif;
 }
 
 dl.todo
