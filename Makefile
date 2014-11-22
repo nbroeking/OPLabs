@@ -1,3 +1,4 @@
+# make the whole project
 all:
 	cd mercury && ./genmake.sh > Makefile && make
 	cd ..
