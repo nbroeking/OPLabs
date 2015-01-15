@@ -156,4 +156,8 @@ echo ''
 echo 'cleanall:'
 echo '	rm -rf _*_obs'
 echo '	rm -f mercury'
+echo ''
+echo '.PHONY: doc'
+echo 'doc:'
+echo '	doxygen doxygen_config'
 

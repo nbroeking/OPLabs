@@ -11,6 +11,23 @@
 
 namespace os {
 
+/**
+ * @brief A simple class which locks a mutex for the current scope
+ * @author jrahm
+ *
+ * Example:
+ * @code
+ * { ScopedLock __sl(m_mutex);
+ *
+ *   // critical section
+ *
+ * }
+ * @endcode
+ *
+ * @see Mutex
+ * @see Condition
+ * @see Thread
+ */
 class ScopedLock {
 public:
 	inline ScopedLock( Mutex& mutex ) : m_mutex( mutex ) {

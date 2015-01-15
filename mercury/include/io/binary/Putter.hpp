@@ -15,20 +15,38 @@
 
 namespace io {
 
+/**
+ * @brief Analog to the Getter class, writing binary data instead of
+ * reading data.
+ */
 ABSTRACT class Putter {
 public:
+    /**
+     * Put a byte on this Putter
+     * @param b the byte to put on
+     */
     virtual int putByte( byte b ) = 0;
 
+    /**
+     * Put a 16 bit integer in little endian form
+     * @param u the integer to put on the stream
+     */
     virtual inline int putInt16le( uint16_t u ) {
         return putByte( u & 0xFF ) ||
 		       putByte( (u>>8) & 0xFF );
     }
 
+    /**
+     * Put a 16 bit integer in big endian form
+     * @param u the integer to put on the stream
+     */
     virtual inline int putInt16be( uint16_t u ) {
         return putByte( (u>>8) & 0xFF ) ||
 		       putByte( u & 0xFF );
     }
 
+    /**
+     */
     virtual inline int putInt32be( uint32_t u ) {
         return putInt16be( (u>>16) & 0xFFFF ) ||
 		       putInt16be( u & 0xFFFF );

@@ -14,6 +14,19 @@
 
 namespace io {
 
+StreamServerSocket* StreamServerSocket::createAndBindListen(
+    uint16_t port, uint32_t bind_ip, uint32_t backlog ) {
+
+    StreamServerSocket* ret = new StreamServerSocket();
+    if ( ret->bind( port, bind_ip ) ||
+         ret->listen( backlog ) ) {
+        delete ret;
+        return NULL;
+    }
+
+    return ret;
+}
+
 int StreamServerSocket::makeFd() {
     return socket( AF_INET, SOCK_STREAM, 0 );
 }
@@ -40,6 +53,19 @@ StreamSocket* StreamServerSocket::accept() {
     int connfd = ::accept(m_fd, NULL, NULL);
     if ( connfd <= 0 ) return NULL;
     return new StreamSocket( connfd, true );
+}
+
+int StreamServerSocket::close() {
+    int rc;
+    if ( (rc = ::close(m_fd)) ) {
+        return rc;
+    }
+    m_fd = -1;
+    return 0;
+}
+
+StreamServerSocket::~StreamServerSocket() {
+    if( m_fd != -1 ) close();
 }
 
 }
