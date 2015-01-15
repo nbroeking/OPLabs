@@ -18,7 +18,7 @@
 #define OVERRIDE override
 #endif
 
-#ifdef TARGET_mipsel
+#if defined(TARGET_mipsel) || defined(TARGET_mips)
 /* Mips does not define ssize_t so we need to
  * define it ourselves */
 typedef int32_t ssize_t ;
