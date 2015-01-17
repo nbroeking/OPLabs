@@ -10,6 +10,8 @@
 using namespace io;
 using namespace std;
 
+const char* host;
+
 int runping( ICMPSocket& sock ) {
     sock.setTimeout(500 MILLIS);
 
@@ -26,7 +28,8 @@ int runping( ICMPSocket& sock ) {
     struct sockaddr_in r_addr;
     socklen_t r_len = sizeof(sockaddr_in);
 
-    hname = gethostbyname("8.8.8.8");
+    LOG("Attempting to ping %s\n", host);
+    hname = gethostbyname(host);
     TEST_BOOL( "getHostByName", hname != NULL ) ;
 
     addr.sin_family = hname->h_addrtype;
@@ -62,6 +65,12 @@ int main(int argc, char** argv) {
     if ( geteuid() != 0 ) {
         printf("Need to be run as root\n");
         return 0;
+    }
+
+    if ( argc > 1 ) {
+        host = argv[1];
+    } else {
+        host = "8.8.8.8";
     }
 
     TEST_BOOL( "ICMPSocket::init", sock.init() >= 0 );
