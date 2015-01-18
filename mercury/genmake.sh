@@ -131,9 +131,11 @@ echo ''
 echo ''$OBS_DIR'/libmerc.a: '$objects
 echo '	$(AR) -r $@ $^'
 echo ''
-echo 'all:' $LIBRARY "$(discover_depends main.cpp | awk ' !x[$0]++') tests"
+echo 'notests:' $LIBRARY "$(discover_depends main.cpp | awk ' !x[$0]++')"
 echo '	$(CXX) -o '$OBS_DIR'/mercury main.cpp $(CXXFLAGS) -L '$OBS_DIR'/ -lmerc' '$(LDFLAGS)'
 echo '	ln -sf '$OBS_DIR'/mercury .'
+echo ''
+echo 'all: notests tests'
 echo ''
 echo 'genmake: genmake.sh'
 echo '	./genmake.sh > Makefile'
