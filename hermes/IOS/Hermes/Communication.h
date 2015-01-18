@@ -8,6 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Communication : NSObject
+@interface Communication : NSObject <NSStreamDelegate>
+{
+    bool started;
+    bool inputOpen;
+    bool outputOpen;
+}
+@property(strong, atomic) NSRunLoop *loop;
+@property(strong, atomic) NSThread *thread;
+
+-(instancetype)init;
+-(void) threadMain;
+-(void) start;
+-(void) stop;
 
 @end
