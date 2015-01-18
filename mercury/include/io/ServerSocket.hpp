@@ -7,11 +7,30 @@
  * ServerSocket.hpp: <description>
  */
 
-#include <types.h>
 #include <io/Socket.hpp>
 #include <netinet/in.h>
+#include <prelude.hpp>
 
 namespace io {
+
+class ConnectionException : public CException {
+protected:
+    inline ConnectionException(const char* message, int rc) :
+        CException(message, rc){}
+
+    inline ConnectionException(int rc) :
+        CException(rc){}
+};
+
+class BindException : public ConnectionException {
+public:
+    inline BindException( const char* msg, int rc ) : ConnectionException(msg, rc) {}
+};
+
+class ListenException : public ConnectionException {
+public:
+    inline ListenException( const char* msg, int rc ) : ConnectionException(msg, rc) {}
+};
 
 /**
  * @brief An abstraction of a server socket over C style Berekly sockets.
@@ -30,8 +49,7 @@ public:
      *
      */
     static StreamServerSocket* createAndBindListen(
-						        uint16_t port,
-						        uint32_t bind_ip = INADDR_ANY,
+						        const SocketAddress& sockaddr,
 						        uint32_t backlog = 10) ;
 
     inline StreamServerSocket() :
@@ -44,14 +62,13 @@ public:
     StreamSocket* accept() ;
 
     /**
-     * @brief Binds a server socket to a port and an address
+     * @brief Like the above, but allows for use with non-ipv4 protocols
      * 
-     * @param port The port to bind to
-     * @param bind_ip The ip to bind to
+     * @param sockaddr the socket address to bind to
      * 
-     * @return 0 on success, otherwise an error code is set
+     * @return An error code or 0 if no error
      */
-    int bind( uint16_t port, uint32_t bind_ip = INADDR_ANY );
+    void bind( const SocketAddress& sockaddr );
 
     /**
      * @brief begins listening on the port
@@ -60,17 +77,16 @@ public:
      * 
      * @return 0 on success, otherwise an error code
      */
-    int listen( int backlog = 10 ) ;
+    void listen( int backlog = 10 ) ;
 
     /**
      * @brief Close the file descriptor
      * @return 0 on success, otherwise on error code
      */
-    int close();
+    void close();
 
     ~StreamServerSocket();   
 private:
-    int makeFd();
     int m_fd ;
 };
 

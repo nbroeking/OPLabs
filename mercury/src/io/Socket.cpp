@@ -35,25 +35,11 @@ int StreamSocket::close() {
     }
 }
 
-int StreamSocket::connect( const char* hostname, unsigned short port ) {
-    struct hostent* host;
-    struct sockaddr_in server;
-
-    host = gethostbyname( hostname );
-    if( ! host ) return -1;
-
-    m_fd = socket(AF_INET, SOCK_STREAM, 0);
+int StreamSocket::connect( const SocketAddress& addr ) {
+    m_fd = socket(addr.linkProtocol(), SOCK_STREAM, 0);
     if( m_fd < 0 ) return -2 ;
 
-    copy( (byte*)host->h_addr,
-          (byte*)host->h_addr + sizeof( host->h_length ),
-          /* Into */
-		  (byte*)&server.sin_addr.s_addr );
-
-    server.sin_family = AF_INET;
-    server.sin_port = htons( port );
-
-    if( ::connect( m_fd, (struct sockaddr*)&server, sizeof(struct sockaddr_in) ) ){
+    if( ::connect( m_fd, addr.raw(), addr.rawlen() ) ) {
         return -3;
     }
 

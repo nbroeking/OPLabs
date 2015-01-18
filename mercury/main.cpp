@@ -3,6 +3,8 @@
 #include <io/ServerSocket.hpp>
 #include <io/StringWriter.hpp>
 
+#include <io/Inet4Address.hpp>
+
 #include <io/binary/StreamGetter.hpp>
 
 #include <cstdio>
@@ -18,7 +20,11 @@ int main( int argc, char** argv ) {
      * and print Hello, World */
 
     StreamSocket sock;
-    rc = sock.connect( "localhost", 5432 );
+    try {
+        Inet4Address connect = Inet4Address::fromString("127.0.0.1", 5432);
+        rc = sock.connect( connect );
+    } catch (InetParseException& p) {
+    }
 
     if( rc != 0 ) {
         perror("Failed to connect socket");

@@ -5,6 +5,7 @@
 #include <cstdio>
 
 #include <io/BaseIO.hpp>
+#include <io/SocketAddress.hpp>
 
 namespace io {
 
@@ -47,7 +48,7 @@ public:
      * 
      * @return 0 on success, otherwise an error code on failure
      */
-    int connect( const char* host, unsigned short port ) ;
+    int connect( const SocketAddress& addr ) ;
 
     /* Reads from the socket into the byte array given */
     virtual ssize_t read( byte* out, size_t len ) OVERRIDE;
@@ -75,25 +76,6 @@ private:
     bool m_is_closed;
 };
 
-/* Class defining a socket address */
-class SocketAddress {
-public:
-    uint32_t host;
-    uint16_t port;
-
-    inline SocketAddress( uint32_t host, uint32_t port ) :
-        host( host ), port( port ) {}
-};
-
-/* Class describing a stateless UDP session */
-class DatagramSocket {
-public:
-    ssize_t read( byte* out, size_t len, SocketAddress& sender );
-
-    ssize_t write( const byte* data, size_t len, const SocketAddress& out );
-
-    int close();
-};
 
 }
 

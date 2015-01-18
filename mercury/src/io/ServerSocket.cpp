@@ -15,38 +15,37 @@
 namespace io {
 
 StreamServerSocket* StreamServerSocket::createAndBindListen(
-    uint16_t port, uint32_t bind_ip, uint32_t backlog ) {
+    const SocketAddress& addr, uint32_t backlog ) {
 
     StreamServerSocket* ret = new StreamServerSocket();
-    if ( ret->bind( port, bind_ip ) ||
-         ret->listen( backlog ) ) {
+    try {
+        ret->bind( addr );
+        ret->listen( backlog );
+    } catch (CException& err) {
         delete ret;
-        return NULL;
+        throw err;
     }
 
     return ret;
 }
 
-int StreamServerSocket::makeFd() {
-    return socket( AF_INET, SOCK_STREAM, 0 );
+void StreamServerSocket::bind( const SocketAddress& sockaddr ) {
+    if ( m_fd < 0 ) m_fd = socket( sockaddr.linkProtocol(), SOCK_STREAM, 0 );
+    if ( m_fd < 0 ) {
+        throw CException("Error creating socket", m_fd);
+    }
+    
+    int rc = ::bind( m_fd, sockaddr.raw(), sockaddr.rawlen() );
+    if( rc ) {
+        throw BindException("Error on bind", errno);
+    }
 }
 
-int StreamServerSocket::bind( uint16_t port, uint32_t bind_ip ) {
-    if ( m_fd < 0 ) m_fd = makeFd();
-    if ( m_fd < 0 ) return errno ;
-
-    struct sockaddr_in serv_addr;
-    memset( &serv_addr, 0, sizeof(serv_addr) );
-
-    serv_addr.sin_family = AF_INET ;
-    serv_addr.sin_addr.s_addr = htonl( bind_ip );
-    serv_addr.sin_port = htons( port );
-
-    return ::bind( m_fd, (struct sockaddr*) &serv_addr, sizeof(serv_addr) );
-}
-
-int StreamServerSocket::listen( int backlog ) {
-    return ::listen( m_fd, backlog );
+void StreamServerSocket::listen( int backlog ) {
+    int rc = ::listen( m_fd, backlog );
+    if ( rc ) {
+        throw new ListenException("Error on listen", rc);
+    }
 }
 
 StreamSocket* StreamServerSocket::accept() {
@@ -55,13 +54,12 @@ StreamSocket* StreamServerSocket::accept() {
     return new StreamSocket( connfd, true );
 }
 
-int StreamServerSocket::close() {
+void StreamServerSocket::close() {
     int rc;
     if ( (rc = ::close(m_fd)) ) {
-        return rc;
+        throw CException( rc );
     }
     m_fd = -1;
-    return 0;
 }
 
 StreamServerSocket::~StreamServerSocket() {

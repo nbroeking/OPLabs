@@ -4,33 +4,49 @@
 #include <test.h>
 
 #include <unistd.h>
+#include <cstdlib>
 #include <sys/wait.h>
+#include <io/Inet4Address.hpp>
+#include <io/UnixAddress.hpp>
 
 #include <cstdlib>
 
 using namespace io;
 using namespace std;
 
-int server(uint16_t port) {
-    StreamServerSocket* server_sock = StreamServerSocket::createAndBindListen(port);
+int server(const SocketAddress& bind_addr) {
 
-    TEST_BOOL("createBindAndListen", server_sock != NULL);
-    LOG("%s","Server socket opened\n");
-
-    StreamSocket* sock = server_sock->accept();
+    try {
+        StreamServerSocket* server_sock =
+            StreamServerSocket::createAndBindListen(bind_addr);
     
+        TEST_BOOL("createBindAndListen", server_sock != NULL);
+        LOG("%s","Server socket opened\n");
+    
+        StreamSocket* sock = server_sock->accept();
+        StringWriter writer;
+    
+        writer.stealBaseIO( (BaseIO*&)sock );
+        writer.printf("Test%d", 0);
 
-    StringWriter writer;
-
-    writer.stealBaseIO( (BaseIO*&)sock );
-    writer.printf("Test%d", 0);
-
-    return 0;
+        return 0;
+    } catch (ConnectionException& err) {
+        LOG("Error running server: %s\n", err.getMessage());
+        return 1;
+    }
 }
 
-int client(uint16_t port) {
+int client(const SocketAddress& connect) {
     StreamSocket* sock = new StreamSocket();
-    int rc = sock->connect("localhost", port);
+
+    int rc = 1;
+
+    try {
+        rc = sock->connect( connect );
+    } catch (InetParseException& p) {
+        LOG("Caught exception: %s\n", p.getMessage());
+    }
+
     TEST_EQ_INT( "connect", rc, 0 );
 
     char test[4096];
@@ -43,23 +59,38 @@ int client(uint16_t port) {
     return 0;
 }
 
-int main( int argc, char** argv ) {
-    (void) argc;
-    (void) argv;
+int test_socket( const SocketAddress& addr ) {
     int rc;
 
-    srand(time(NULL));
-    uint16_t port = rand() % 50000 + 5000 ;
-
-    if( fork() == 0) {
-        server(port);
+    if( fork() == 0 ) {
+        exit( server(addr) );
     } else {
         sleep(1);
-        TEST_FN( client(port) );
+        TEST_FN( client(addr) );
     }
 
     wait( & rc );
     TEST_EQ( "ServerExit", rc, 0 );
+
+    return 0;
+}
+
+#define LOCALHOST 0x7f000001
+int main( int argc, char** argv ) {
+    (void) argc;
+    (void) argv;
+    int rc = 0;
+
+    srand(time(NULL));
+    uint16_t port = rand() % 50000 + 5000 ;
+
+    Inet4Address iaddr(LOCALHOST, port);
+    UnixAddress uaddr("/tmp/myunixsocket.sock");
+
+    LOG("Testing IPv4%s", "");
+    TEST_FN( test_socket(iaddr) );
+    LOG("Testing Unix%s", "");
+    TEST_FN( test_socket(uaddr) );
 
     return rc;
 }
