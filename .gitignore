@@ -19,6 +19,7 @@ profile
 DerivedData
 .idea/
 Pods
+project.pbxproj
 *.pbxproj
 # End of Xcode
 #Android

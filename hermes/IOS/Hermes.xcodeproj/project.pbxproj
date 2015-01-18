@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		566ABD471A6B9D6100B114C1 /* Communication.m in Sources */ = {isa = PBXBuildFile; fileRef = 566ABD461A6B9D6100B114C1 /* Communication.m */; };
 		56A717C81A6B6576006E1198 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717C71A6B6576006E1198 /* main.m */; };
 		56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CA1A6B6576006E1198 /* AppDelegate.m */; };
 		56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */; };
@@ -29,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		566ABD451A6B9D6100B114C1 /* Communication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Communication.h; sourceTree = "<group>"; };
+		566ABD461A6B9D6100B114C1 /* Communication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Communication.m; sourceTree = "<group>"; };
 		56A717C21A6B6576006E1198 /* Hermes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hermes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A717C61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56A717C71A6B6576006E1198 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -65,6 +68,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		566ABD431A6B9CE500B114C1 /* Communication */ = {
+			isa = PBXGroup;
+			children = (
+				566ABD451A6B9D6100B114C1 /* Communication.h */,
+				566ABD461A6B9D6100B114C1 /* Communication.m */,
+			);
+			name = Communication;
+			sourceTree = "<group>";
+		};
+		566ABD441A6B9CF100B114C1 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
 		56A717B91A6B6575006E1198 = {
 			isa = PBXGroup;
 			children = (
@@ -86,6 +105,8 @@
 		56A717C41A6B6576006E1198 /* Hermes */ = {
 			isa = PBXGroup;
 			children = (
+				566ABD441A6B9CF100B114C1 /* Tests */,
+				566ABD431A6B9CE500B114C1 /* Communication */,
 				56A717C91A6B6576006E1198 /* AppDelegate.h */,
 				56A717CA1A6B6576006E1198 /* AppDelegate.m */,
 				56A717CF1A6B6576006E1198 /* MasterViewController.h */,
@@ -229,6 +250,7 @@
 			files = (
 				56A717D41A6B6576006E1198 /* DetailViewController.m in Sources */,
 				56A717D11A6B6576006E1198 /* MasterViewController.m in Sources */,
+				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
 				56A717C81A6B6576006E1198 /* main.m in Sources */,
@@ -424,6 +446,7 @@
 				56A717ED1A6B6576006E1198 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		56A717EE1A6B6576006E1198 /* Build configuration list for PBXNativeTarget "HermesTests" */ = {
 			isa = XCConfigurationList;
@@ -432,6 +455,7 @@
 				56A717F01A6B6576006E1198 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
