@@ -7,52 +7,55 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		56E2A7A51A13F41800AFFA53 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56E2A7A41A13F41800AFFA53 /* main.m */; };
-		56E2A7A81A13F41800AFFA53 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56E2A7A71A13F41800AFFA53 /* AppDelegate.m */; };
-		56E2A7AB1A13F41800AFFA53 /* Hermes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 56E2A7A91A13F41800AFFA53 /* Hermes.xcdatamodeld */; };
-		56E2A7AE1A13F41800AFFA53 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56E2A7AD1A13F41800AFFA53 /* ViewController.m */; };
-		56E2A7B11A13F41800AFFA53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56E2A7AF1A13F41800AFFA53 /* Main.storyboard */; };
-		56E2A7B31A13F41800AFFA53 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56E2A7B21A13F41800AFFA53 /* Images.xcassets */; };
-		56E2A7B61A13F41800AFFA53 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56E2A7B41A13F41800AFFA53 /* LaunchScreen.xib */; };
-		56E2A7C21A13F41800AFFA53 /* HermesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56E2A7C11A13F41800AFFA53 /* HermesTests.m */; };
+		56A717C81A6B6576006E1198 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717C71A6B6576006E1198 /* main.m */; };
+		56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CA1A6B6576006E1198 /* AppDelegate.m */; };
+		56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */; };
+		56A717D11A6B6576006E1198 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717D01A6B6576006E1198 /* MasterViewController.m */; };
+		56A717D41A6B6576006E1198 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717D31A6B6576006E1198 /* DetailViewController.m */; };
+		56A717D71A6B6576006E1198 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D51A6B6576006E1198 /* Main.storyboard */; };
+		56A717D91A6B6576006E1198 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D81A6B6576006E1198 /* Images.xcassets */; };
+		56A717DC1A6B6576006E1198 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56A717DA1A6B6576006E1198 /* LaunchScreen.xib */; };
+		56A717E81A6B6576006E1198 /* HermesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717E71A6B6576006E1198 /* HermesTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		56E2A7BC1A13F41800AFFA53 /* PBXContainerItemProxy */ = {
+		56A717E21A6B6576006E1198 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 56E2A7971A13F41800AFFA53 /* Project object */;
+			containerPortal = 56A717BA1A6B6575006E1198 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 56E2A79E1A13F41800AFFA53;
+			remoteGlobalIDString = 56A717C11A6B6576006E1198;
 			remoteInfo = Hermes;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		56E2A79F1A13F41800AFFA53 /* Hermes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hermes.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		56E2A7A31A13F41800AFFA53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		56E2A7A41A13F41800AFFA53 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		56E2A7A61A13F41800AFFA53 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		56E2A7A71A13F41800AFFA53 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		56E2A7AA1A13F41800AFFA53 /* Hermes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Hermes.xcdatamodel; sourceTree = "<group>"; };
-		56E2A7AC1A13F41800AFFA53 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		56E2A7AD1A13F41800AFFA53 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		56E2A7B01A13F41800AFFA53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		56E2A7B21A13F41800AFFA53 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		56E2A7B51A13F41800AFFA53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		56E2A7BB1A13F41800AFFA53 /* HermesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HermesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		56E2A7C01A13F41800AFFA53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		56E2A7C11A13F41800AFFA53 /* HermesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HermesTests.m; sourceTree = "<group>"; };
+		56A717C21A6B6576006E1198 /* Hermes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hermes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		56A717C61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56A717C71A6B6576006E1198 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		56A717C91A6B6576006E1198 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		56A717CA1A6B6576006E1198 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		56A717CD1A6B6576006E1198 /* Hermes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Hermes.xcdatamodel; sourceTree = "<group>"; };
+		56A717CF1A6B6576006E1198 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		56A717D01A6B6576006E1198 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		56A717D21A6B6576006E1198 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		56A717D31A6B6576006E1198 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		56A717D61A6B6576006E1198 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		56A717D81A6B6576006E1198 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		56A717DB1A6B6576006E1198 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		56A717E11A6B6576006E1198 /* HermesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HermesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		56A717E61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56A717E71A6B6576006E1198 /* HermesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HermesTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		56E2A79C1A13F41800AFFA53 /* Frameworks */ = {
+		56A717BF1A6B6576006E1198 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		56E2A7B81A13F41800AFFA53 /* Frameworks */ = {
+		56A717DE1A6B6576006E1198 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -62,62 +65,64 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		56E2A7961A13F41800AFFA53 = {
+		56A717B91A6B6575006E1198 = {
 			isa = PBXGroup;
 			children = (
-				56E2A7A11A13F41800AFFA53 /* Hermes */,
-				56E2A7BE1A13F41800AFFA53 /* HermesTests */,
-				56E2A7A01A13F41800AFFA53 /* Products */,
+				56A717C41A6B6576006E1198 /* Hermes */,
+				56A717E41A6B6576006E1198 /* HermesTests */,
+				56A717C31A6B6576006E1198 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		56E2A7A01A13F41800AFFA53 /* Products */ = {
+		56A717C31A6B6576006E1198 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				56E2A79F1A13F41800AFFA53 /* Hermes.app */,
-				56E2A7BB1A13F41800AFFA53 /* HermesTests.xctest */,
+				56A717C21A6B6576006E1198 /* Hermes.app */,
+				56A717E11A6B6576006E1198 /* HermesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		56E2A7A11A13F41800AFFA53 /* Hermes */ = {
+		56A717C41A6B6576006E1198 /* Hermes */ = {
 			isa = PBXGroup;
 			children = (
-				56E2A7A61A13F41800AFFA53 /* AppDelegate.h */,
-				56E2A7A71A13F41800AFFA53 /* AppDelegate.m */,
-				56E2A7AC1A13F41800AFFA53 /* ViewController.h */,
-				56E2A7AD1A13F41800AFFA53 /* ViewController.m */,
-				56E2A7AF1A13F41800AFFA53 /* Main.storyboard */,
-				56E2A7B21A13F41800AFFA53 /* Images.xcassets */,
-				56E2A7B41A13F41800AFFA53 /* LaunchScreen.xib */,
-				56E2A7A91A13F41800AFFA53 /* Hermes.xcdatamodeld */,
-				56E2A7A21A13F41800AFFA53 /* Supporting Files */,
+				56A717C91A6B6576006E1198 /* AppDelegate.h */,
+				56A717CA1A6B6576006E1198 /* AppDelegate.m */,
+				56A717CF1A6B6576006E1198 /* MasterViewController.h */,
+				56A717D01A6B6576006E1198 /* MasterViewController.m */,
+				56A717D21A6B6576006E1198 /* DetailViewController.h */,
+				56A717D31A6B6576006E1198 /* DetailViewController.m */,
+				56A717D51A6B6576006E1198 /* Main.storyboard */,
+				56A717D81A6B6576006E1198 /* Images.xcassets */,
+				56A717DA1A6B6576006E1198 /* LaunchScreen.xib */,
+				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
+				56A717C51A6B6576006E1198 /* Supporting Files */,
 			);
 			path = Hermes;
 			sourceTree = "<group>";
 		};
-		56E2A7A21A13F41800AFFA53 /* Supporting Files */ = {
+		56A717C51A6B6576006E1198 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				56E2A7A31A13F41800AFFA53 /* Info.plist */,
-				56E2A7A41A13F41800AFFA53 /* main.m */,
+				56A717C61A6B6576006E1198 /* Info.plist */,
+				56A717C71A6B6576006E1198 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		56E2A7BE1A13F41800AFFA53 /* HermesTests */ = {
+		56A717E41A6B6576006E1198 /* HermesTests */ = {
 			isa = PBXGroup;
 			children = (
-				56E2A7C11A13F41800AFFA53 /* HermesTests.m */,
-				56E2A7BF1A13F41800AFFA53 /* Supporting Files */,
+				56A717E71A6B6576006E1198 /* HermesTests.m */,
+				56A717E51A6B6576006E1198 /* Supporting Files */,
 			);
 			path = HermesTests;
 			sourceTree = "<group>";
 		};
-		56E2A7BF1A13F41800AFFA53 /* Supporting Files */ = {
+		56A717E51A6B6576006E1198 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				56E2A7C01A13F41800AFFA53 /* Info.plist */,
+				56A717E61A6B6576006E1198 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -125,13 +130,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		56E2A79E1A13F41800AFFA53 /* Hermes */ = {
+		56A717C11A6B6576006E1198 /* Hermes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 56E2A7C51A13F41800AFFA53 /* Build configuration list for PBXNativeTarget "Hermes" */;
+			buildConfigurationList = 56A717EB1A6B6576006E1198 /* Build configuration list for PBXNativeTarget "Hermes" */;
 			buildPhases = (
-				56E2A79B1A13F41800AFFA53 /* Sources */,
-				56E2A79C1A13F41800AFFA53 /* Frameworks */,
-				56E2A79D1A13F41800AFFA53 /* Resources */,
+				56A717BE1A6B6576006E1198 /* Sources */,
+				56A717BF1A6B6576006E1198 /* Frameworks */,
+				56A717C01A6B6576006E1198 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -139,46 +144,46 @@
 			);
 			name = Hermes;
 			productName = Hermes;
-			productReference = 56E2A79F1A13F41800AFFA53 /* Hermes.app */;
+			productReference = 56A717C21A6B6576006E1198 /* Hermes.app */;
 			productType = "com.apple.product-type.application";
 		};
-		56E2A7BA1A13F41800AFFA53 /* HermesTests */ = {
+		56A717E01A6B6576006E1198 /* HermesTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 56E2A7C81A13F41800AFFA53 /* Build configuration list for PBXNativeTarget "HermesTests" */;
+			buildConfigurationList = 56A717EE1A6B6576006E1198 /* Build configuration list for PBXNativeTarget "HermesTests" */;
 			buildPhases = (
-				56E2A7B71A13F41800AFFA53 /* Sources */,
-				56E2A7B81A13F41800AFFA53 /* Frameworks */,
-				56E2A7B91A13F41800AFFA53 /* Resources */,
+				56A717DD1A6B6576006E1198 /* Sources */,
+				56A717DE1A6B6576006E1198 /* Frameworks */,
+				56A717DF1A6B6576006E1198 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				56E2A7BD1A13F41800AFFA53 /* PBXTargetDependency */,
+				56A717E31A6B6576006E1198 /* PBXTargetDependency */,
 			);
 			name = HermesTests;
 			productName = HermesTests;
-			productReference = 56E2A7BB1A13F41800AFFA53 /* HermesTests.xctest */;
+			productReference = 56A717E11A6B6576006E1198 /* HermesTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		56E2A7971A13F41800AFFA53 /* Project object */ = {
+		56A717BA1A6B6575006E1198 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = NicolasBroeking;
 				TargetAttributes = {
-					56E2A79E1A13F41800AFFA53 = {
-						CreatedOnToolsVersion = 6.1;
+					56A717C11A6B6576006E1198 = {
+						CreatedOnToolsVersion = 6.1.1;
 					};
-					56E2A7BA1A13F41800AFFA53 = {
-						CreatedOnToolsVersion = 6.1;
-						TestTargetID = 56E2A79E1A13F41800AFFA53;
+					56A717E01A6B6576006E1198 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = 56A717C11A6B6576006E1198;
 					};
 				};
 			};
-			buildConfigurationList = 56E2A79A1A13F41800AFFA53 /* Build configuration list for PBXProject "Hermes" */;
+			buildConfigurationList = 56A717BD1A6B6575006E1198 /* Build configuration list for PBXProject "Hermes" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -186,29 +191,29 @@
 				en,
 				Base,
 			);
-			mainGroup = 56E2A7961A13F41800AFFA53;
-			productRefGroup = 56E2A7A01A13F41800AFFA53 /* Products */;
+			mainGroup = 56A717B91A6B6575006E1198;
+			productRefGroup = 56A717C31A6B6576006E1198 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				56E2A79E1A13F41800AFFA53 /* Hermes */,
-				56E2A7BA1A13F41800AFFA53 /* HermesTests */,
+				56A717C11A6B6576006E1198 /* Hermes */,
+				56A717E01A6B6576006E1198 /* HermesTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		56E2A79D1A13F41800AFFA53 /* Resources */ = {
+		56A717C01A6B6576006E1198 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56E2A7B11A13F41800AFFA53 /* Main.storyboard in Resources */,
-				56E2A7B61A13F41800AFFA53 /* LaunchScreen.xib in Resources */,
-				56E2A7B31A13F41800AFFA53 /* Images.xcassets in Resources */,
+				56A717D71A6B6576006E1198 /* Main.storyboard in Resources */,
+				56A717DC1A6B6576006E1198 /* LaunchScreen.xib in Resources */,
+				56A717D91A6B6576006E1198 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		56E2A7B91A13F41800AFFA53 /* Resources */ = {
+		56A717DF1A6B6576006E1198 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -218,48 +223,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		56E2A79B1A13F41800AFFA53 /* Sources */ = {
+		56A717BE1A6B6576006E1198 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56E2A7A81A13F41800AFFA53 /* AppDelegate.m in Sources */,
-				56E2A7AB1A13F41800AFFA53 /* Hermes.xcdatamodeld in Sources */,
-				56E2A7AE1A13F41800AFFA53 /* ViewController.m in Sources */,
-				56E2A7A51A13F41800AFFA53 /* main.m in Sources */,
+				56A717D41A6B6576006E1198 /* DetailViewController.m in Sources */,
+				56A717D11A6B6576006E1198 /* MasterViewController.m in Sources */,
+				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
+				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
+				56A717C81A6B6576006E1198 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		56E2A7B71A13F41800AFFA53 /* Sources */ = {
+		56A717DD1A6B6576006E1198 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56E2A7C21A13F41800AFFA53 /* HermesTests.m in Sources */,
+				56A717E81A6B6576006E1198 /* HermesTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		56E2A7BD1A13F41800AFFA53 /* PBXTargetDependency */ = {
+		56A717E31A6B6576006E1198 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 56E2A79E1A13F41800AFFA53 /* Hermes */;
-			targetProxy = 56E2A7BC1A13F41800AFFA53 /* PBXContainerItemProxy */;
+			target = 56A717C11A6B6576006E1198 /* Hermes */;
+			targetProxy = 56A717E21A6B6576006E1198 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		56E2A7AF1A13F41800AFFA53 /* Main.storyboard */ = {
+		56A717D51A6B6576006E1198 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				56E2A7B01A13F41800AFFA53 /* Base */,
+				56A717D61A6B6576006E1198 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		56E2A7B41A13F41800AFFA53 /* LaunchScreen.xib */ = {
+		56A717DA1A6B6576006E1198 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				56E2A7B51A13F41800AFFA53 /* Base */,
+				56A717DB1A6B6576006E1198 /* Base */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";
@@ -267,7 +273,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		56E2A7C31A13F41800AFFA53 /* Debug */ = {
+		56A717E91A6B6576006E1198 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -309,7 +315,7 @@
 			};
 			name = Debug;
 		};
-		56E2A7C41A13F41800AFFA53 /* Release */ = {
+		56A717EA1A6B6576006E1198 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -345,7 +351,7 @@
 			};
 			name = Release;
 		};
-		56E2A7C61A13F41800AFFA53 /* Debug */ = {
+		56A717EC1A6B6576006E1198 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -355,7 +361,7 @@
 			};
 			name = Debug;
 		};
-		56E2A7C71A13F41800AFFA53 /* Release */ = {
+		56A717ED1A6B6576006E1198 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -365,7 +371,7 @@
 			};
 			name = Release;
 		};
-		56E2A7C91A13F41800AFFA53 /* Debug */ = {
+		56A717EF1A6B6576006E1198 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -384,7 +390,7 @@
 			};
 			name = Debug;
 		};
-		56E2A7CA1A13F41800AFFA53 /* Release */ = {
+		56A717F01A6B6576006E1198 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -402,45 +408,45 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		56E2A79A1A13F41800AFFA53 /* Build configuration list for PBXProject "Hermes" */ = {
+		56A717BD1A6B6575006E1198 /* Build configuration list for PBXProject "Hermes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				56E2A7C31A13F41800AFFA53 /* Debug */,
-				56E2A7C41A13F41800AFFA53 /* Release */,
+				56A717E91A6B6576006E1198 /* Debug */,
+				56A717EA1A6B6576006E1198 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		56E2A7C51A13F41800AFFA53 /* Build configuration list for PBXNativeTarget "Hermes" */ = {
+		56A717EB1A6B6576006E1198 /* Build configuration list for PBXNativeTarget "Hermes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				56E2A7C61A13F41800AFFA53 /* Debug */,
-				56E2A7C71A13F41800AFFA53 /* Release */,
+				56A717EC1A6B6576006E1198 /* Debug */,
+				56A717ED1A6B6576006E1198 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
-		56E2A7C81A13F41800AFFA53 /* Build configuration list for PBXNativeTarget "HermesTests" */ = {
+		56A717EE1A6B6576006E1198 /* Build configuration list for PBXNativeTarget "HermesTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				56E2A7C91A13F41800AFFA53 /* Debug */,
-				56E2A7CA1A13F41800AFFA53 /* Release */,
+				56A717EF1A6B6576006E1198 /* Debug */,
+				56A717F01A6B6576006E1198 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		56E2A7A91A13F41800AFFA53 /* Hermes.xcdatamodeld */ = {
+		56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				56E2A7AA1A13F41800AFFA53 /* Hermes.xcdatamodel */,
+				56A717CD1A6B6576006E1198 /* Hermes.xcdatamodel */,
 			);
-			currentVersion = 56E2A7AA1A13F41800AFFA53 /* Hermes.xcdatamodel */;
+			currentVersion = 56A717CD1A6B6576006E1198 /* Hermes.xcdatamodel */;
 			path = Hermes.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
 	};
-	rootObject = 56E2A7971A13F41800AFFA53 /* Project object */;
+	rootObject = 56A717BA1A6B6575006E1198 /* Project object */;
 }
