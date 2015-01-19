@@ -27,8 +27,9 @@ int server(const SocketAddress& bind_addr) {
         StreamSocket* sock = server_sock->accept();
         StringWriter writer;
     
-        writer.stealBaseIO( (BaseIO*&)sock );
-        writer.printf("Test%d", 0);
+        LOG("%s","Connection accepted\n");
+        byte *b = (byte*)"Test0";
+        sock->write(b, sizeof("Test0"));
 
         return 0;
     } catch (CException& err) {
@@ -51,10 +52,12 @@ int client(const SocketAddress& connect) {
     TEST_EQ_INT( "connect", rc, 0 );
 
     char test[4096];
+    std::fill(test, test+4096, 0);
     int size = sock->read( (byte*)test, 4096 - 1);
-    TEST_BOOL( "read", size > 0 );
+    printf("size = %d\n", size);
+    TEST_BOOL( "read", size >= 0 );
     test[size]=0;
-    TEST_EQ( "strncmp", strncmp(test, "Test0", size), 0 ) ;
+    TEST_EQ( "strncmp", strncmp(test, "Test0", sizeof("Test0")), 0 ) ;
 
     delete sock;
     return 0;
@@ -64,7 +67,11 @@ int test_socket( const SocketAddress& addr ) {
     int rc;
 
     if( fork() == 0 ) {
-        exit( server(addr) );
+        int rc = server(addr);
+        if ( rc ) {
+            LOG("Server Exit with bad code %s", "");
+        }
+        exit(rc);
     } else {
         sleep(1);
         TEST_FN( client(addr) );
