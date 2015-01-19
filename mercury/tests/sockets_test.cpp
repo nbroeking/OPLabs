@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <sys/wait.h>
 #include <io/Inet4Address.hpp>
+#include <io/Inet6Address.hpp>
 #include <io/UnixAddress.hpp>
 
 #include <cstdlib>
@@ -30,7 +31,7 @@ int server(const SocketAddress& bind_addr) {
         writer.printf("Test%d", 0);
 
         return 0;
-    } catch (ConnectionException& err) {
+    } catch (CException& err) {
         LOG("Error running server: %s\n", err.getMessage());
         return 1;
     }
@@ -83,14 +84,22 @@ int main( int argc, char** argv ) {
 
     srand(time(NULL));
     uint16_t port = rand() % 50000 + 5000 ;
+    uint16_t port6 = rand() % 50000 + 5000 ;
 
     Inet4Address iaddr(LOCALHOST, port);
     UnixAddress uaddr("/tmp/myunixsocket.sock");
+    Inet6Address i6addr = Inet6Address::fromString("::1", port6);
+
+    uaddr.unlink();
 
     LOG("Testing IPv4%s", "");
     TEST_FN( test_socket(iaddr) );
+    LOG("Testing IPv6%s", "");
+    TEST_FN( test_socket(i6addr) );
     LOG("Testing Unix%s", "");
     TEST_FN( test_socket(uaddr) );
+
+    uaddr.unlink();
 
     return rc;
 }

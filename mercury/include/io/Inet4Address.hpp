@@ -7,9 +7,8 @@
  * Inet4Address.hpp: <description>
  */
 
-#include <io/SocketAddress.hpp>
+#include <io/SocketAddressTempl.hpp>
 #include <types.h>
-
 #include <prelude.hpp>
 
 namespace io {
@@ -19,22 +18,18 @@ public:
     InetParseException(const std::string& message) : Exception(message) {};
 };
 
-class Inet4Address : public SocketAddress {
+class Inet4Address : public SocketAddressTempl<sockaddr_in, AF_INET> {
 public:
     static Inet4Address fromString(const char *, u16_t port); /* Throws InetParseException */
 
     Inet4Address(u32_t addr, u16_t port);
     Inet4Address(const char* addr, u16_t port);
-    inline Inet4Address(const sockaddr_in& addr): m_addr(addr){}
+    inline Inet4Address(const sockaddr_in& addr) {
+        m_addr = addr;
+    }
 
     virtual void setPort( u16_t port );
     virtual void setAddress( u32_t addr );
-
-    virtual struct sockaddr* raw() const OVERRIDE;
-    virtual socklen_t rawlen() const OVERRIDE;
-    virtual int linkProtocol() const OVERRIDE { return AF_INET; };
-private:
-    struct sockaddr_in m_addr;
 };
 
 }

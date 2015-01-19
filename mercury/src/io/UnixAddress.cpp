@@ -17,12 +17,4 @@ UnixAddress::UnixAddress(const char* address) {
     m_addr.sun_family = AF_UNIX;
 }
 
-struct sockaddr* UnixAddress::raw() const {
-    return (struct sockaddr*)&m_addr;
-}
-
-socklen_t UnixAddress::rawlen() const {
-    return sizeof(m_addr.sun_family) + strlen(m_addr.sun_path);
-}
-
 }

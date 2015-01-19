@@ -7,24 +7,18 @@
  * UnixAddress.hpp: <description>
  */
 
-#include <io/SocketAddress.hpp>
+#include <io/SocketAddressTempl.hpp>
 #include <prelude.hpp>
 
 #include <sys/un.h>
 
 namespace io {
 
-class UnixAddress : public SocketAddress {
+class UnixAddress : public SocketAddressTempl<sockaddr_un, AF_UNIX> {
 public:
     UnixAddress(const char* address);
 
-    virtual sockaddr* raw() const OVERRIDE;
-    virtual socklen_t rawlen() const OVERRIDE ;
-    virtual inline int linkProtocol() const OVERRIDE { return AF_UNIX; }
-
     void unlink();
-private:
-    struct sockaddr_un m_addr;
 };
 
 }

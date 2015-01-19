@@ -165,7 +165,6 @@ public:
 
     /**
      * @brief Set the timeout value of this socket
-     * 
      * @param mics The number of microseconds for the timeout
      */
     void setTimeout( os::micros_t mics );

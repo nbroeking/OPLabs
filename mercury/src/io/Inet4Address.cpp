@@ -53,14 +53,4 @@ void Inet4Address::setAddress( u32_t address ) {
     m_addr.sin_addr.s_addr = address;
 }
 
-struct sockaddr* Inet4Address::raw() const {
-    return (struct sockaddr*)&m_addr;
-}
-
-socklen_t Inet4Address::rawlen() const {
-    return sizeof( m_addr );
-}
-
-
-
 }
