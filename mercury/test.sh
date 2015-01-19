@@ -41,22 +41,24 @@ exec 2>runtests.err.log
 
 failed=0
 for i in $TESTDIR/* ; do
-	stdoutlog=testlog/$(basename $i)-stdout.log
-	stderrlog=testlog/$(basename $i)-stderr.log
-
-    echoinfo "$i"
-    echo "    + stdbuf -oL \"$QEMU $i\" 2>$stderrlog"
-    echo "    + "
-	stdbuf -oL $QEMU $i 2>$stderrlog | tee $stdoutlog | while read l ; do echo "    + $l" ; done
-	rc=${PIPESTATUS[0]}
-    echo "    + "
-	if [[ "$rc" -ne 0 ]] ; then
-		failed=1
-		echoerror "$i: Failed: rc=$rc"
-		cat $stderrlog | xargs -I_ echo -e "\e[1;31m    + " _ "\e[0m"
-	else
-		echosuccess "$i: Success"
-	fi
+    if [[ ! "$(basename $i)" == _* ]] ; then
+    	stdoutlog=testlog/$(basename $i)-stdout.log
+    	stderrlog=testlog/$(basename $i)-stderr.log
+    
+        echoinfo "$i"
+        echo "    + stdbuf -oL \"$QEMU $i\" 2>$stderrlog"
+        echo "    + "
+    	stdbuf -oL $QEMU $i 2>$stderrlog | tee $stdoutlog | while read l ; do echo "    + $l" ; done
+    	rc=${PIPESTATUS[0]}
+        echo "    + "
+    	if [[ "$rc" -ne 0 ]] ; then
+    		failed=1
+    		echoerror "$i: Failed: rc=$rc"
+    		cat $stderrlog | xargs -I_ echo -e "\e[1;31m    + " _ "\e[0m"
+    	else
+    		echosuccess "$i: Success"
+    	fi
+    fi
 done
 
 if [ $failed -ne 0 ] ; then

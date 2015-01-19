@@ -39,7 +39,7 @@ public:
      * destroyed
      */
     inline StreamSocket(int fd, bool is_closed) :
-        m_is_closed( is_closed ) {m_fd = -1;}
+        m_is_closed( is_closed ) {m_fd = fd;}
 
     
     /**
