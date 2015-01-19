@@ -1,8 +1,13 @@
 #ifndef TIME_HPP_
 #define TIME_HPP_
 
-#include <time.h>
 #include <types.h>
+
+#ifdef TARGET_GROUP_mips
+#include <sys/time.h>
+#endif
+
+#include <time.h>
 
 /*
  * Author: jrahm
