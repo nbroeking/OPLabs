@@ -36,4 +36,8 @@ ssize_t DatagramSocket::receive( byte* bytes, size_t len, SocketAddress*& faddr,
     return ret;
 }
 
+DatagramSocket::~DatagramSocket() {
+    close();
+}
+
 }

@@ -8,6 +8,7 @@
  */
 
 #include <io/SocketAddress.hpp>
+#include <io/HasRawFd.hpp>
 
 namespace io {
 
@@ -17,16 +18,19 @@ public:
         CException(msg, rc) {};
 };
 
-class DatagramSocket {
+class DatagramSocket : public HasFdTmpl{
 public:
     void bind( const SocketAddress& addr ) ;
 
-    void sendTo( const byte* bytes, size_t len, const SocketAddress& to, int flags=0 );
-    ssize_t receive( byte* bytes, size_t len, SocketAddress*& addr, int flags=0 );
+    void sendTo( const byte* bytes, size_t len,
+                const SocketAddress& to, int flags=0 );
+
+    ssize_t receive( byte* bytes, size_t len,
+                SocketAddress*& addr, int flags=0 );
 
     void close();
-private:
-    int m_fd ;
+
+    ~DatagramSocket();
 };
 
 }

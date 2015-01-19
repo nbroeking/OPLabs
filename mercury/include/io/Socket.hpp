@@ -7,6 +7,8 @@
 #include <io/BaseIO.hpp>
 #include <io/SocketAddress.hpp>
 
+#include <io/HasRawFd.hpp>
+
 namespace io {
 
 /*
@@ -18,13 +20,13 @@ namespace io {
 /**
  * @brief An abstraction on top of the standard Berekly sockets to represend a client socket.
  */
-class StreamSocket : public BaseIO {
+class StreamSocket : public BaseIO, public HasFdTmpl {
 public:
 
     /**
      * @brief Construct a new socket
      */
-    inline StreamSocket() : m_fd(-1), m_is_closed( true ) {} ;
+    inline StreamSocket() : m_is_closed( true ) { m_fd = -1; } ;
 
     /**
      * @brief Contstruct a new socket from a c style berekly socket
@@ -37,7 +39,7 @@ public:
      * destroyed
      */
     inline StreamSocket(int fd, bool is_closed) :
-        m_fd( fd ), m_is_closed( is_closed ) {}
+        m_is_closed( is_closed ) {m_fd = -1;}
 
     
     /**
@@ -72,7 +74,6 @@ public:
     }
 
 private:
-    int m_fd;
     bool m_is_closed;
 };
 

@@ -12,6 +12,8 @@ SocketAddress* SocketAddress::toSocketAddress( struct sockaddr* addr, socklen_t 
     (void) len ;
 
     switch( addr->sa_family ) {
+    case AF_UNSPEC:
+        return NULL;
     case AF_INET:
         return new Inet4Address( *(struct sockaddr_in*)addr );
     case AF_INET6:
