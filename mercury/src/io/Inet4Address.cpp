@@ -1,5 +1,6 @@
 #include <io/Inet4Address.hpp>
 #include <netinet/in.h>
+#include <cstdio>
 
 namespace io {
 
@@ -51,6 +52,16 @@ void Inet4Address::setPort( u16_t port ) {
 
 void Inet4Address::setAddress( u32_t address ) {
     m_addr.sin_addr.s_addr = address;
+}
+
+std::string Inet4Address::toString() const {
+    char buf[128];
+
+    u32_t a = ntohl(m_addr.sin_addr.s_addr);
+    snprintf(buf, sizeof(buf), "%d.%d.%d.%d:%d",
+        a >> 24, (a >> 16) & 0xFF,
+        (a >> 8) & 0xFF, a & 0xFF, ntohs(m_addr.sin_port) );
+    return buf;
 }
 
 }

@@ -30,6 +30,8 @@ public:
 
     virtual void setPort( u16_t port );
     virtual void setAddress( u32_t addr );
+
+    virtual std::string toString() const OVERRIDE;
 };
 
 }

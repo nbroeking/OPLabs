@@ -9,51 +9,24 @@
 
 #include <cstdio>
 
+#include <log/LogManager.hpp>
+
+using namespace logger ;
 using namespace std ;
 using namespace io ;
 
 int main( int argc, char** argv ) {
-    (void) argc;
-    (void) argv;
-    int rc;
-    /* Simple C++ socket program. Connect to 5432 on localhost
-     * and print Hello, World */
+    (void) argc; (void) argv;
 
-    StreamSocket sock;
-    try {
-        Inet4Address connect = Inet4Address::fromString("127.0.0.1", 5432);
-        rc = sock.connect( connect );
-    } catch (InetParseException& p) {
-    }
+    LogContext& log = LogManager::instance().getLogContext("Main", "Main");
+    log.setEnabled(true);
 
-    if( rc != 0 ) {
-        perror("Failed to connect socket");
-        return 1;
-    }
-
-    StringWriter writer;
-
-    writer.setBaseIO( &sock );
-    writer.printf("Hello, World from %s\n", "Josh");
-
-	uint32_t i;
-	StreamGetter getter( &sock );
-	rc = getter.getInt32le(i) ;
-
-	if( rc ) {
-		printf("Getter failed! rc=%d\n", rc);
-	} else {
-		printf("Read integer 0x%08x\n", i);
-	}
-
-	std::string name;
-	rc = getObject( getter, name );
-
-	if( rc ) {
-		printf("Failed to get string\n");
-	} else {
-		printf("name: %s\n", name.c_str());
-	}
+    log.printfln(TRACE, "simulating debug");
+    log.printfln(DEBUG, "simulating debug");
+    log.printfln(INFO, "logging has started");
+    log.printfln(SUCCESS, "simulating success");
+    log.printfln(WARN, "simulating a warning");
+    log.printfln(ERROR, "This is simulating an error");
 
     return 0;
 }

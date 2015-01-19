@@ -20,6 +20,7 @@ public:
     inline UnixAddress( const sockaddr_un& raw ) { m_addr = raw; };
     virtual socklen_t rawlen() const OVERRIDE ;
 
+    std::string toString() const ;
     void unlink();
 };
 

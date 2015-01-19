@@ -31,6 +31,11 @@ public:
         mine = NULL;
     }
 
+    void operator=( T* oth ) {
+        delete mine ;
+        mine = oth;
+    }
+
     T& operator *() {
         return *mine;
     };
@@ -47,6 +52,13 @@ public:
         delete mine;
         mine = NULL;
         return mine;
+    }
+
+    /* Free the pointer from this structure */
+    T* save() {
+        T* ret = mine;
+        mine = NULL;
+        return ret;
     }
 
     ~uptr() {
@@ -92,5 +104,9 @@ public:
 private:
     int rc;
 };
+
+    
+
+
 
 #endif /* PRELUDE_HPP_ */

@@ -26,6 +26,8 @@ public:
     inline Inet6Address(const sockaddr_in6& sockaddr) {
         m_addr = sockaddr;
     }
+
+    std::string toString() const;
 };
 
 }

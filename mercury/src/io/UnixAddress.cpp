@@ -21,4 +21,8 @@ socklen_t UnixAddress::rawlen() const {
     return sizeof(m_addr.sun_family) + strlen(m_addr.sun_path);
 }
 
+std::string UnixAddress::toString() const {
+    return m_addr.sun_path;
+}
+
 }

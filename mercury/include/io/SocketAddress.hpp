@@ -40,6 +40,8 @@ public:
     virtual int linkProtocol() const = 0;
 
     virtual inline ~SocketAddress() {}
+
+    virtual std::string toString() const = 0 ;
 };
 
 }
