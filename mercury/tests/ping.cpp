@@ -7,6 +7,8 @@
 #include <string>
 #include <cstring>
 
+#include <io/Inet4Address.hpp>
+
 using namespace io;
 using namespace std;
 
@@ -22,19 +24,8 @@ int runping( ICMPSocket& sock ) {
     copy(data.c_str(), data.c_str() + data.size(), mesg);
 
     size_t count = 0;
-    struct hostent *hname;
-    struct sockaddr_in addr;
-
-    struct sockaddr_in r_addr;
-    socklen_t r_len = sizeof(sockaddr_in);
 
     LOG("Attempting to ping %s\n", host);
-    hname = gethostbyname(host);
-    TEST_BOOL( "getHostByName", hname != NULL ) ;
-
-    addr.sin_family = hname->h_addrtype;
-    addr.sin_port = 0 ;
-    addr.sin_addr.s_addr = *(long*)hname->h_addr;
 
     ICMPPacket pckt;
     icmphdr hdr;
@@ -47,14 +38,22 @@ int runping( ICMPSocket& sock ) {
     pckt.setMessage(mesg, sizeof(mesg));
 
     ICMPPacket pkt;
+    Inet4Address to_addr("127.0.0.1", 0);
+    try {
+        to_addr = Inet4Address::fromString(host, 0);
+    } catch ( InetParseException& err ) {
+        LOG("Unable to parese %s. Defaulting to 127.0.0.1", host);
+    }
 
-    TEST_BOOL( "SocketSend", sock.send(pckt, (sockaddr*)&addr, sizeof(sockaddr_in)) > 0 );
-    TEST_BOOL( "SocketReceive", sock.receive(pkt, (struct sockaddr*)&r_addr, r_len) == 0 );
 
+    TEST_BOOL( "SocketSend", sock.send(pckt, to_addr) > 0 );
+
+    uptr<SocketAddress> r_addr;
+
+    TEST_BOOL( "SocketReceive", sock.receive(pkt, r_addr.cleanref()) == 0 );
     TEST_EQ_INT( "PingMessage", strcmp((const char*)pkt.getMessage(), "Hello, World!"), 0 );
-
     sock.setTimeout(1 MICROS);
-    TEST_BOOL( "TestTimeout", sock.receive(pkt, (struct sockaddr*)&r_addr, r_len) != 0 );
+    TEST_BOOL( "TestTimeout", sock.receive(pkt, r_addr.cleanref()) != 0 );
 
     return 0;
 }

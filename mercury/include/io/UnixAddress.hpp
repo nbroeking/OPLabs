@@ -17,6 +17,7 @@ namespace io {
 class UnixAddress : public SocketAddressTempl<sockaddr_un, AF_UNIX> {
 public:
     UnixAddress(const char* address);
+    inline UnixAddress( const sockaddr_un& raw ) { m_addr = raw; };
     virtual socklen_t rawlen() const OVERRIDE ;
 
     void unlink();

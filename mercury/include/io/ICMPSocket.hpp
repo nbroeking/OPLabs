@@ -13,6 +13,7 @@
 #include <os/Time.hpp>
     
 #include <algorithm>
+#include <io/SocketAddress.hpp>
 
 namespace io {
 
@@ -150,7 +151,7 @@ public:
     /**
      * @brief Get a message from icmp
      */
-    int receive(ICMPPacket& pkt, struct sockaddr* ptr, socklen_t& socklen);
+    int receive(ICMPPacket& pkt, SocketAddress*& from_address);
 
     /**
      * @brief Send a packet to the address given
@@ -161,7 +162,7 @@ public:
      * 
      * @return True on success, false otherwise
      */
-    ssize_t send(const ICMPPacket& pkt, struct sockaddr* addr, socklen_t socklen);
+    ssize_t send(const ICMPPacket& pkt, const SocketAddress& to_addr);
 
     /**
      * @brief Set the timeout value of this socket

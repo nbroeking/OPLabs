@@ -27,6 +27,10 @@ public:
         val = NULL;
     }
 
+    uptr() {
+        mine = NULL;
+    }
+
     T& operator *() {
         return *mine;
     };
@@ -35,7 +39,13 @@ public:
         return get();
     }
 
-    T* get() {
+    T*& get() {
+        return mine;
+    }
+
+    T*& cleanref() {
+        delete mine;
+        mine = NULL;
         return mine;
     }
 

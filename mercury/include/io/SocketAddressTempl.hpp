@@ -17,7 +17,8 @@ public:
     /**
      * The raw c-style sockaddr that the base class represents
      */
-    virtual inline struct sockaddr* raw() const {return (sockaddr*) &m_addr;};
+    virtual inline const struct sockaddr* raw() const {return (sockaddr*) &m_addr;};
+    virtual inline struct sockaddr* raw() {return (sockaddr*) &m_addr;};
 
     /**
      * @brief returns the length of the sockaddr returned by `raw()`

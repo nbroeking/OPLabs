@@ -28,6 +28,7 @@ int ICMPSocket::init() {
 
     /* on an error return the error coed */
     if( m_fd < 0 ) return m_fd ;
+    return 0;
 }
 
 int ICMPSocket::setNonBlocking(bool yes) {
@@ -42,24 +43,31 @@ int ICMPSocket::setNonBlocking(bool yes) {
     return fcntl(m_fd, F_SETFL, opts);
 }
 
-int ICMPSocket::receive( ICMPPacket& pck, struct sockaddr* addr, socklen_t& len ) {
+int ICMPSocket::receive( ICMPPacket& pck, SocketAddress*& into ) {
     byte buffer[1024]; // TODO make this better
+
+    struct sockaddr_in addr;
+    socklen_t len = sizeof(addr);
+
     ssize_t bytes_read;
     size_t iph_size = sizeof( struct iphdr );
-    if( (bytes_read = recvfrom(m_fd, buffer, sizeof(buffer), 0, addr, &len)) > 0 ) {
+
+    if( (bytes_read = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr*)&addr, &len)) > 0 ) {
         pck.deserialize(buffer + iph_size, bytes_read - iph_size);
         return 0 ;
     }
+    
+    into = SocketAddress::toSocketAddress((sockaddr*)&addr, len);
     return errno;
 }
 
-ssize_t ICMPSocket::send(const ICMPPacket& pkt, struct sockaddr* addr, socklen_t socklen) {
+ssize_t ICMPSocket::send(const ICMPPacket& pkt, const SocketAddress& to_addr) {
     byte* dst ;
     size_t len  = pkt.serializeSize();
     dst = new byte[len];
     pkt.serialize(dst, len);
     
-    return sendto( m_fd, dst, len, 0, addr, socklen );
+    return sendto( m_fd, dst, len, 0, to_addr.raw(), to_addr.rawlen() );
 }
 
 void ICMPSocket::setTimeout( os::micros_t mics ) {

@@ -38,7 +38,7 @@ Inet4Address::Inet4Address(u32_t addr, u16_t port) {
 }
 
 Inet4Address::Inet4Address(const char* addr, u16_t port) {
-    if( inet_aton(addr, &m_addr.sin_addr) ) {
+    if( inet_aton(addr, &m_addr.sin_addr) != 1 ) {
         throw "Error";
     }
     m_addr.sin_family = AF_INET;
