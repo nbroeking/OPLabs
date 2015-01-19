@@ -12,6 +12,12 @@
 #include <cstdio>
 #include <prelude.hpp>
 
+#if defined(ENVIRONMENT_release)
+#define DEFUALT_MIN_LOG 3
+#else
+#define DEFUALT_MIN_LOG 1
+#endif
+
 namespace logger {
 
 class LogLevel {
@@ -35,96 +41,40 @@ public:
     std::string text;
     int level;
 
-    inline void printlevel( FILE* out ) const {
-        fprintf(out, "%s%s\e[0m", esc.c_str(), text.c_str());
+    inline void printlevel( FILE* out, bool color ) const {
+        if( color ) {
+            fprintf(out, "%s%s\e[0m", esc.c_str(), text.c_str());
+        } else {
+            fprintf(out, "%s",  text.c_str());
+        }
     }
 };
 
 class LogContext {
 public:
-    LogContext(const std::string& maj, const std::string& minor) :
-        min_lev( 0 ),
-        major_context( maj ),
-        minor_context( minor ),
-        enabled( false ) {
-            out = stdout;
-        }
+    LogContext(const std::string& maj, const std::string& minor) ;
 
-    inline void vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
-        fprintf( out, "[%s|%s][", major_context.c_str(), minor_context.c_str() );
-        lev.printlevel( out );
-        fprintf( out, "] - %s", lev.esc.c_str());
+    void setMinimumLevel( const LogLevel& lev ) ;
 
-        vfprintf( out, fmt, ls );
+    void vprintf(const LogLevel& lev, const char* fmt, va_list ls) ;
 
-        fprintf(out, "\e[00m");
-    }
+    void printf(const LogLevel& lev, const char* fmt, ...) ;
 
-    inline void printf(const LogLevel& lev, const char* fmt, ...) {
-        if( ! enabled ) return ;
-        if( lev.level < min_lev ) return ;       
+    void printfln(const LogLevel& lev, const char* fmt, ... ) ;
 
-        va_list ls;    
-        va_start( ls, fmt );
-        vprintf(lev, fmt, ls);
-        va_end( ls );
-    }
+    void printHex(const LogLevel& lev, const byte* bytes, size_t len) ;
 
-    inline void printfln(const LogLevel& lev, const char* fmt, ... ) {
-        va_list ls;    
-        va_start( ls, fmt );
-        vprintf(lev, fmt, ls);
-        va_end(ls);
-        fprintf(out, "\n");
-    }
-
-    inline void printHex(const LogLevel& lev, const byte* bytes, size_t len) {
-        while( len > 16 ) {
-            log16hex( lev, bytes, 16 );
-            len -= 16;
-            bytes += 16;
-        }
-
-        log16hex( lev, bytes, len );
-    }
-
-    void setEnabled( bool enabled ) {
+    inline void setEnabled( bool enabled ) {
         this->enabled = enabled ;
     }
 
-    void redirect(FILE* next) {
+    inline void redirect(FILE* next, bool color) {
         out = next;
+        color = color;
     }
 
 private:
-    char nybtochr( byte b ) {
-        if ( b < 10 ) return b + 0x30;
-        return (b-10) + 0x61;
-    }
-
-    void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) {
-        char buf1[16 * 3 + 1] = {0};
-        char buf2[16 + 1] = {0};
-        buf1[16*3] = 0;
-        buf2[16] = 0;
-
-
-        for ( size_t i = 0 ; i < len; ++ i ) {
-            buf1[i*3 + 0] = ' ';
-            buf1[i*3 + 1] = nybtochr((bytes[i]&0xF0) >> 4);
-            buf1[i*3 + 2] = nybtochr(bytes[i]&0x0F);
-            
-            if( (isprint((char)bytes[i]) && ! isspace((char)bytes[i])) ||
-                bytes[i] == ' ' ) {
-                buf2[i] = bytes[i];
-            } else {
-                buf2[i] = '.';
-            }
-                
-        }
-
-        printfln(lev, "%-52s|    %-22s", buf1, buf2);
-    }
+    void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) ;
 
 private:
     int min_lev;
@@ -134,17 +84,18 @@ private:
     std::string minor_context;
 
     bool enabled;
+    bool color;
 };
 
 }
 
-extern logger::LogLevel TRACE;
-extern logger::LogLevel DEBUG;
-extern logger::LogLevel INFO;
-extern logger::LogLevel SUCCESS;
+extern const logger::LogLevel TRACE;
+extern const logger::LogLevel DEBUG;
+extern const logger::LogLevel INFO;
+extern const logger::LogLevel SUCCESS;
 
-extern logger::LogLevel WARN;
-extern logger::LogLevel ERROR;
-extern logger::LogLevel FATAL;
+extern const logger::LogLevel WARN;
+extern const logger::LogLevel ERROR;
+extern const logger::LogLevel FATAL;
 
 #endif /* LOGCONTEXT_HPP_ */
