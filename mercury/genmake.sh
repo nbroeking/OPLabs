@@ -77,7 +77,7 @@ ENV?=devel
 .INCLUDE_DIRS += targets/\$(TGT)/
 include targets/\$(TGT)/\$(ENV).mk 
 
-CXXFLAGS := \$(CXXFLAGS) -DTARGET_\$(TGT)
+CXXFLAGS := \$(CXXFLAGS) -DTARGET_\$(TGT) -DENVIRONMENT_\$(ENV)
 
 HACK  := \$(shell mkdir -p _\$(TGT)_obs/)
 HACK2 := \$(shell mkdir -p _\$(TGT)_obs/tests/)
