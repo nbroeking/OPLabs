@@ -197,7 +197,7 @@ echo '	@echo -e "   Tips:\n"'
 echo '	@echo -e "       - The makefile targets/\$$TGT/\$$ENV.mk is included. This is how the different environments are achieved.\n"'
 echo '	@echo -e "       - Tests for the codebase are stored in the tests/ directory. Tests with an underscore \`_\` in front are disabled by default.\n"'
 echo '	@echo -e "       - Everytime you add a new source file, you must regenerate the makefile with make genmake (or ./genmake.sh > Makefile).\n"'
-echo '	@echo -e "       - Source is stored in the src directory and header files are stored in the include directory.\n"'
+echo '	@echo -e "       - Object files and binaries are stored in _\$$TGT_obs\n"'
 echo '	@echo -e "       - Source is stored in the src directory and header files are stored in the include directory.\n\n"'
 echo '	@echo -e "       For _even_ more information, read the comment at the top of Makefile"'
 
