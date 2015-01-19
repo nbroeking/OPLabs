@@ -1,3 +1,6 @@
+#ifndef RUNNABLE_HPP_
+#define RUNNABLE_HPP_
+
 #include <types.h>
 
 namespace os {
@@ -41,3 +44,5 @@ private:
 };
 
 }
+
+#endif
