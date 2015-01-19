@@ -15,11 +15,15 @@ using namespace std;
 namespace io {
 
 ssize_t StreamSocket::read( byte* out, size_t len ) {
-    return ::read( m_fd, out, len );
+    ssize_t ret = ::read( m_fd, out, len );
+    return ret;
 }
 
 ssize_t StreamSocket::write( const byte* in, size_t len ) {
-    return ::write( m_fd, in, len );
+    ssize_t ret = ::write( m_fd, in, len );
+    if ( ret < 0 ) {
+        throw CException("Unable to write", ret);
+    }
 }
 
 int StreamSocket::close() {
