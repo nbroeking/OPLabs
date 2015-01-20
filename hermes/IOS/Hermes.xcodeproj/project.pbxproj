@@ -11,12 +11,13 @@
 		56A717C81A6B6576006E1198 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717C71A6B6576006E1198 /* main.m */; };
 		56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CA1A6B6576006E1198 /* AppDelegate.m */; };
 		56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */; };
-		56A717D11A6B6576006E1198 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717D01A6B6576006E1198 /* MasterViewController.m */; };
-		56A717D41A6B6576006E1198 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717D31A6B6576006E1198 /* DetailViewController.m */; };
 		56A717D71A6B6576006E1198 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D51A6B6576006E1198 /* Main.storyboard */; };
 		56A717D91A6B6576006E1198 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D81A6B6576006E1198 /* Images.xcassets */; };
-		56A717DC1A6B6576006E1198 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56A717DA1A6B6576006E1198 /* LaunchScreen.xib */; };
 		56A717E81A6B6576006E1198 /* HermesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717E71A6B6576006E1198 /* HermesTests.m */; };
+		56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */; };
+		56C7AFB51A6F1A3500AAA0EB /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */; };
+		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
+		56C7AFEF1A6F1E9600AAA0EB /* ViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,16 +39,18 @@
 		56A717C91A6B6576006E1198 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		56A717CA1A6B6576006E1198 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		56A717CD1A6B6576006E1198 /* Hermes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Hermes.xcdatamodel; sourceTree = "<group>"; };
-		56A717CF1A6B6576006E1198 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
-		56A717D01A6B6576006E1198 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		56A717D21A6B6576006E1198 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		56A717D31A6B6576006E1198 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		56A717D61A6B6576006E1198 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		56A717D81A6B6576006E1198 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		56A717DB1A6B6576006E1198 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		56A717E11A6B6576006E1198 /* HermesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HermesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A717E61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56A717E71A6B6576006E1198 /* HermesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HermesTests.m; sourceTree = "<group>"; };
+		56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
+		56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
+		56C7AFB31A6F1A3500AAA0EB /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController2.h; sourceTree = "<group>"; };
+		56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController2.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,18 +108,9 @@
 		56A717C41A6B6576006E1198 /* Hermes */ = {
 			isa = PBXGroup;
 			children = (
+				56C7AFA41A6F152700AAA0EB /* Main */,
 				566ABD441A6B9CF100B114C1 /* Tests */,
 				566ABD431A6B9CE500B114C1 /* Communication */,
-				56A717C91A6B6576006E1198 /* AppDelegate.h */,
-				56A717CA1A6B6576006E1198 /* AppDelegate.m */,
-				56A717CF1A6B6576006E1198 /* MasterViewController.h */,
-				56A717D01A6B6576006E1198 /* MasterViewController.m */,
-				56A717D21A6B6576006E1198 /* DetailViewController.h */,
-				56A717D31A6B6576006E1198 /* DetailViewController.m */,
-				56A717D51A6B6576006E1198 /* Main.storyboard */,
-				56A717D81A6B6576006E1198 /* Images.xcassets */,
-				56A717DA1A6B6576006E1198 /* LaunchScreen.xib */,
-				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
 				56A717C51A6B6576006E1198 /* Supporting Files */,
 			);
 			path = Hermes;
@@ -146,6 +140,25 @@
 				56A717E61A6B6576006E1198 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		56C7AFA41A6F152700AAA0EB /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				56A717C91A6B6576006E1198 /* AppDelegate.h */,
+				56A717CA1A6B6576006E1198 /* AppDelegate.m */,
+				56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */,
+				56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */,
+				56C7AFB31A6F1A3500AAA0EB /* MainViewController.h */,
+				56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */,
+				56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */,
+				56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */,
+				56A717D51A6B6576006E1198 /* Main.storyboard */,
+				56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */,
+				56A717D81A6B6576006E1198 /* Images.xcassets */,
+				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
+			);
+			name = Main;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,7 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56A717D71A6B6576006E1198 /* Main.storyboard in Resources */,
-				56A717DC1A6B6576006E1198 /* LaunchScreen.xib in Resources */,
+				56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */,
 				56A717D91A6B6576006E1198 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,12 +261,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56A717D41A6B6576006E1198 /* DetailViewController.m in Sources */,
-				56A717D11A6B6576006E1198 /* MasterViewController.m in Sources */,
+				56C7AFEF1A6F1E9600AAA0EB /* ViewController2.m in Sources */,
 				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
+				56C7AFB51A6F1A3500AAA0EB /* MainViewController.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
 				56A717C81A6B6576006E1198 /* main.m in Sources */,
+				56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,14 +296,6 @@
 				56A717D61A6B6576006E1198 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		56A717DA1A6B6576006E1198 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				56A717DB1A6B6576006E1198 /* Base */,
-			);
-			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

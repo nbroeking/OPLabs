@@ -31,6 +31,8 @@
 
 -(void)threadMain
 {
+   // NSRunLoop * loop = [NSRunLoop currentRunLoop];
+    
     
 }
 -(void)start{
