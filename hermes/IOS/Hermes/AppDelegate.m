@@ -13,10 +13,13 @@
 @end
 
 @implementation AppDelegate
-
+@synthesize comm;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    comm = [[Communication alloc] init];
+    [comm start];
     return YES;
 }
 
