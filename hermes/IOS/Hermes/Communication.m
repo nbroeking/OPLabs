@@ -45,7 +45,7 @@
     [outputStream setDelegate:self];
     
     //Schedule in run loop
-    //[inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: [[NSRunLoop currentRunLoop] currentMode]];
+    [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
     
     [inputStream open];
     [outputStream open];
