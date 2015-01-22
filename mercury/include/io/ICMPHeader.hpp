@@ -71,6 +71,7 @@ public:
 	inline u16_t getEchoSequence() { return echo_seq; }
 	inline u32_t getGateway() { return gw; }
 	inline u16_t getMTU() { return mtu; }
+	inline u16_t getChecksum() { return checksum; }
 
 	size_t getChecksumSum() ;
 	inline ICMPHeader() {}
@@ -99,17 +100,19 @@ private:
 inline int putObject( io::Putter& putter, io::ICMPHeader& hdr ) {
 	putter.putByte( hdr.getType() );
 	putter.putByte( hdr.getCode() );
+	putter.putInt16be( hdr.getChecksum() );
 	putter.putInt32be( hdr.getGateway() );
 	return 0;
 }
 
 inline int getObject( io::Getter& getter, io::ICMPHeader& hdr ) {
-	byte b; u32_t gw;
+	byte b; u32_t gw; u16_t throwaway;
 
 	getter.getByte(b);
 	hdr.setType((io::icmp::Type)b);
 	getter.getByte(b);
 	hdr.setCode((io::icmp::Code)b);
+	getter.getInt16be(throwaway);
 	getter.getInt32be(gw);
 	hdr.setGateway(gw);
 
