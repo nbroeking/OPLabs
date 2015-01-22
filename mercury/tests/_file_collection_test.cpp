@@ -62,6 +62,9 @@ int client() {
 
 int main( int argc, char** argv ) {
     LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
+    log.setEnabled(true);
+    LogManager::instance().enableAllForMajor("IO");
+
     log.printfln(INFO, "Start file collection test");
 
     if( fork() == 0 ) {
@@ -78,6 +81,6 @@ int main( int argc, char** argv ) {
     sock.bind(addr);
     observer->sock = &sock;
 
-    collection.attach(observer);
+    collection.subscribeForRead(observer);
     collection.run();
 }
