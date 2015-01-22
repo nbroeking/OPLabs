@@ -39,6 +39,7 @@ int server( int port ) {
 }
 
 int main( int argc, char** argv ) {
+    (void) argc; (void) argv;
     LogContext& log = LogManager::instance().getLogContext("Tests", "DatagramSocket");  
     log.setEnabled( true );
     log.printfln(INFO, "Datagram Test Socket");

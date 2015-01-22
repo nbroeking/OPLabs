@@ -24,6 +24,7 @@ ssize_t StreamSocket::write( const byte* in, size_t len ) {
     if ( ret < 0 ) {
         throw CException("Unable to write", ret);
     }
+    return ret;
 }
 
 int StreamSocket::close() {

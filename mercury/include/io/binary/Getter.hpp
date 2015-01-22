@@ -178,6 +178,11 @@ protected:
 template <class T>
 inline int getObject( io::Getter& g, T& t );
 
+inline int getObject( io::Getter& g, byte& b ) {
+    g.getByte(b);
+    return 0;
+}
+
 template <>
 inline int getObject( io::Getter& g, std::string& str ) {
 	uint32_t len;

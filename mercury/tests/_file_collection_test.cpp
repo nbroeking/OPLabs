@@ -61,6 +61,7 @@ int client() {
 }
 
 int main( int argc, char** argv ) {
+    (void) argc ; (void) argv ;
     LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
     log.setEnabled(true);
     LogManager::instance().enableAllForMajor("IO");

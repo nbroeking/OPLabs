@@ -46,6 +46,8 @@ void ProcessManager::registerProcess(Process* p) {
 }
 
 void ProcessManager::observe( int fd, int events ) {
+    (void)fd;
+    (void)events;
     m_log.printfln( DEBUG, "Observing data from the world" );
     byte buf[1024];
     uptr<SocketAddress> addr;

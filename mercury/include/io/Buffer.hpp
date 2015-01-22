@@ -83,9 +83,10 @@ inline int getObject( io::Getter& getter, io::Buffer<byte>& buf ) {
     getter.getInt32be( size );
 
     io::Buffer<byte> n(size);
-    for ( int i = 0 ; i < size ; ++ i ) {
+    for ( size_t i = 0 ; i < size ; ++ i ) {
         getObject(getter, n[i]);
     }
+    buf = n;
 
     return 0;
 }
