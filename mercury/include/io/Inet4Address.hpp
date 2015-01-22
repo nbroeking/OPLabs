@@ -11,6 +11,9 @@
 #include <types.h>
 #include <prelude.hpp>
 
+#include <netinet/in.h>
+#include <sys/socket.h>
+
 namespace io {
 
 class InetParseException : public Exception {

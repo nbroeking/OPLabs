@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-#ifdef TARGET_GROUP_mips
+#if defined(TARGET_GROUP_mips) || defined(__OpenBSD__)
 #include <sys/time.h>
 #endif
 

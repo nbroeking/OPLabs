@@ -19,7 +19,6 @@ namespace io {
 ICMPSocket::ICMPSocket() {
     m_fd = -1 ;
     m_seq = 0 ;
-    fill( (byte*)&m_packet_header, (byte*)&m_packet_header + sizeof( m_packet_header ), 0 ) ;
 }
 
 int ICMPSocket::init() {
@@ -50,10 +49,9 @@ int ICMPSocket::receive( ICMPPacket& pck, SocketAddress*& into ) {
     socklen_t len = sizeof(addr);
 
     ssize_t bytes_read;
-    size_t iph_size = sizeof( struct iphdr );
 
     if( (bytes_read = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr*)&addr, &len)) > 0 ) {
-        pck.deserialize(buffer + iph_size, bytes_read - iph_size);
+        pck.deserialize(buffer + ICMPHEADER_SIZE, bytes_read - ICMPHEADER_SIZE);
         return 0 ;
     }
     

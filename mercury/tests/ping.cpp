@@ -18,8 +18,7 @@ int runping( ICMPSocket& sock ) {
     sock.setTimeout(500 MILLIS);
 
     string data( "Hello, World!" );
-    byte mesg[128 - sizeof(icmphdr)];
-
+    byte mesg[128 - ICMPHEADER_SIZE];
     fill(mesg, mesg + sizeof(mesg), 0);
     copy(data.c_str(), data.c_str() + data.size(), mesg);
 
@@ -28,11 +27,7 @@ int runping( ICMPSocket& sock ) {
     LOG("Attempting to ping %s\n", host);
 
     ICMPPacket pckt;
-    icmphdr hdr;
-
-    hdr.type = ICMP_ECHO;
-    hdr.un.echo.id = getpid();
-    hdr.un.echo.sequence = count ++;
+	ICMPHeader hdr = ICMPHeader::Echo(getpid(), count++);
 
     pckt.setHeader(hdr);
     pckt.setMessage(mesg, sizeof(mesg));

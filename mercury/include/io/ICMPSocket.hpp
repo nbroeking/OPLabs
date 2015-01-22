@@ -7,13 +7,19 @@
  * ICMPSocket.hpp: <description>
  */
 
-#include <netinet/ip_icmp.h>
+#include <io/binary/BufferPutter.hpp>
+#include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/ip.h>
+#include <netinet/in.h>
+#include <netinet/ip_icmp.h>
+
 #include <types.h>
 #include <os/Time.hpp>
     
 #include <algorithm>
 #include <io/SocketAddress.hpp>
+#include <io/ICMPHeader.hpp>
 
 namespace io {
 
@@ -28,7 +34,7 @@ public:
      * 
      * @param header The new header to set
      */
-    inline void setHeader( const icmphdr& header ){
+    inline void setHeader( const ICMPHeader& header ){
         this->hdr = header;
     }
 
@@ -58,7 +64,7 @@ public:
      * @return The size of the serialized packet
      */
     inline size_t serializeSize() const {
-        return len + sizeof(struct icmphdr);
+        return len + ICMPHEADER_SIZE;
     }
 
     /**
@@ -73,29 +79,27 @@ public:
         if( len < this->serializeSize() ) {
             return -1;
         }
-        icmphdr lhdr = hdr;
+        ICMPHeader lhdr = hdr;
         checksum(lhdr);
+		BufferPutter putter(out, len);
 
-        std::copy((byte*)&lhdr, (byte*)&lhdr + sizeof(struct icmphdr), out);
-        std::copy(msg, msg + len, out + sizeof(struct icmphdr));
+		putObject( putter, lhdr );
+		putter.putBytes(msg, this->len);
 
         return 0;
     }
 
-    inline void checksum(icmphdr& hdr) const {
-        hdr.checksum = 0;
-        uint16_t* summer = (uint16_t*)&hdr;
+    inline void checksum(ICMPHeader& hdr) const {
+        uint16_t* summer;
 
-        size_t sum = 0;
+        size_t sum = hdr.getChecksumSum(); /* Start the checksum */
         size_t res; 
-        
-        for( ; (byte*)summer < (byte*)&hdr + sizeof(hdr) ; summer ++ ) {
-            sum += * summer;
-        }
+
         for ( summer = (uint16_t*)msg; (byte*)summer < msg + len ; ++ summer ){
             sum += * summer;
         }
         if( len & 1 ) {
+
             sum += msg[len-1];
         }
 
@@ -103,7 +107,7 @@ public:
         sum += (sum >> 16);
 
         res = ~sum;
-        hdr.checksum = res;
+        hdr.setChecksum(res);
     }
         
     /**
@@ -121,7 +125,7 @@ public:
         return len;
     }
 private:
-    struct icmphdr hdr;
+    ICMPHeader hdr;
     size_t len;
     byte* msg;
 };
@@ -173,7 +177,6 @@ public:
 private:
     int m_fd ;
     int m_seq ;
-    struct icmphdr m_packet_header;
 };
 
 }
