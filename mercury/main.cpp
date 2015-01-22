@@ -96,5 +96,6 @@ int main( int argc, char** argv ) {
     MyProcess2 process2;
     process2.run();
 
+    delete m_thread;
     return 0;
 }
