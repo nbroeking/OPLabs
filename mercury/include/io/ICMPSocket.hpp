@@ -56,8 +56,10 @@ public:
      * @param len The length of the message
      */
     inline void setMessage( const byte* mesg, size_t len ) {
+        printf("BadAlloc0?\n");
         if( this->msg ) delete[] this->msg;
 
+        printf("BadAlloc1? %d\n", len);
         this->msg = new byte[len];
         std::copy(mesg, mesg + len, this->msg);
         this->len = len;

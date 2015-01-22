@@ -121,25 +121,11 @@ public:
      * @return 0 on success, 1 on error
      */
 	virtual inline void getBytes( byte* into, size_t len ) {
-		if( m_blob_len - m_cursor <= len ) 
-			throw GetterUnderflowException("Underflow in getBytes");
-
-		std::copy( m_blob + m_cursor, m_blob + m_cursor + len, into );
-		m_cursor += len;
-	}
-
-	inline const byte* rest(size_t& len) {
-		len = m_blob_len - m_cursor;
-		return m_blob + m_cursor;
+        for( size_t i = 0 ; i < len ; ++ i )
+            into[i] = getByte();
 	}
 
 	virtual inline ~Getter(){}
-
-protected:
-
-	const byte* m_blob ;
-	size_t m_blob_len ;
-	size_t m_cursor ;
 };
 
 }

@@ -26,6 +26,11 @@ public:
 		return m_blob[m_cursor ++];
 	}
 
+	inline const byte* rest(size_t& len) {
+		len = m_blob_len - m_cursor;
+		return m_blob + m_cursor;
+	}
+
 private:
 	const byte* m_blob;
 	size_t m_blob_len;

@@ -82,6 +82,8 @@ public:
 
 private:
 	byte* m_blob;
+    size_t m_blob_len;
+    size_t m_cursor;
 	uint m_buffer_size;
     bool m_is_owner;
 	BaseIO* input;
