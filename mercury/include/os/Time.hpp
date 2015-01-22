@@ -1,7 +1,7 @@
 #ifndef TIME_HPP_
 #define TIME_HPP_
 
-#include <types.h>
+#include <Prelude>
 
 #if defined(TARGET_GROUP_mips) || defined(__OpenBSD__)
 #include <sys/time.h>
@@ -25,6 +25,12 @@ typedef timeout_t micros_t ;
 #define SECS    * (1000 MILLIS)
 #define MILLIS  * (1000 MICROS)
 #define MICROS  * 1
+
+class TimeoutException: public Exception {
+public:
+	TimeoutException() : Exception("Timeout") {}
+	TimeoutException(const char* n) : Exception(n) {}
+};
 
 /**
  * @brief Class for easier time handling

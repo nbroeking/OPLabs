@@ -11,7 +11,7 @@
 #include <io/binary/Putter.hpp>
 #include <io/binary/Getter.hpp>
 
-#define ICMPHEADER_SIZE 0
+#define ICMPHEADER_SIZE 8
 
 namespace io {
 

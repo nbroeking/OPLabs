@@ -28,7 +28,11 @@ public:
 
 	virtual inline int putByte(byte b) OVERRIDE {
 		if( cur == len ) {
-			throw OutOfBufferSpaceException("Overflow on BufferPutter");
+			char buf[1024];
+			snprintf(buf, sizeof(buf), "Overflow at index %lu. %lu byte exceeded\n",
+				(unsigned long)this->cur,
+				(unsigned long)this->len);
+			throw OutOfBufferSpaceException(buf);
 		}
 		bytes[cur ++] = b;
 	}
