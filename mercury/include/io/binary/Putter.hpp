@@ -77,10 +77,22 @@ public:
 template <class T>
 int putObject( io::Putter& putter, const T& v ) ;
 
+inline int putObject( io::Putter& putter, const byte& b ) {
+    return putter.putByte(b);
+}
+
 inline int putObject( io::Putter& putter, const std::string& s ) {
     putter.putInt32le( s.size() );
     putter.putBytes( (const byte*) s.c_str(), s.size() );
     return 0;
+}
+
+template <class _Iter>
+inline int putIterator( io::Putter& putter, _Iter start, _Iter end ) {
+    int rc = 0;
+    for ( ; start != end ; ++ start )
+        rc |= putObject(putter, * start );
+    return rc;
 }
 
 #endif /* PUTTER_HPP_ */

@@ -7,15 +7,21 @@
  * Getter.hpp: <description>
  */
 
-#include <types.h>
+#include <prelude.hpp>
 
 #include <vector>
 #include <cstdlib>
 
 #include <string>
 #include <algorithm>
+#include <cstdio>
 
 namespace io {
+
+class GetterUnderflowException: public Exception {
+public:
+    GetterUnderflowException( const char* exc ) : Exception(exc) {}
+};
 
 /**
  * @brief Abstracted class for decoding of binary data
@@ -52,7 +58,9 @@ public:
      */
 	virtual inline int getByte( byte& b ) {
 		if ( m_cursor >= m_blob_len ) {
-			return 1;
+            char buf[1024];
+            snprintf(buf, sizeof(buf), "Gettor underflow at position %lu", m_cursor);
+            throw GetterUnderflowException(buf);
 		}
 		b = m_blob[m_cursor ++];
 		return 0;
