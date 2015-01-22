@@ -35,20 +35,19 @@ public:
             return ;
         }
 
-        const char* str = "Hello, World";
-        Message msg;
-        msg.message = Buffer<byte>((byte*)str, strlen(str));
-        proxy->sendMessage(msg);
+        const char* str = "ping";
+        proxy->sendMessage(getAddress(), (byte*)str, strlen(str));
 
         sleep(50000000);
     }
 
 protected:
-    virtual void messageReceivedCallback( const Message& msg ) {
+    virtual void messageReceivedCallback( ProcessProxy& from, const byte* bytes, size_t len ) {
         LogContext& log =
             LogManager::instance().getLogContext("MyProcess2", "MyProcess2");
         log.printfln(INFO, "Message received");
-        log.printHex(INFO, msg.message.rawPointer(), msg.message.length());
+        log.printHex(INFO, bytes, len);
+        from.sendMessage( getAddress(), (byte*)"ping", strlen("ping") );
     }
 };
 
@@ -65,11 +64,12 @@ public:
     }
 
 protected:
-    virtual void messageReceivedCallback( const Message& msg ) {
+    virtual void messageReceivedCallback( ProcessProxy& from, const byte* bytes, size_t len ) {
         LogContext& log =
             LogManager::instance().getLogContext("MyProcess", "MyProcess");
         log.printfln(INFO, "Message received");
-        log.printHex(INFO, msg.message.rawPointer(), msg.message.length());
+        log.printHex(INFO, bytes, len);
+        from.sendMessage( getAddress(), (byte*)"pong", strlen("pong") );
     }
 };
 
