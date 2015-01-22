@@ -11,6 +11,8 @@
 #include <string>
 
 #include <cstdarg>
+#include <cstring>
+#include <cstdlib>
 
 namespace io {
 
@@ -62,17 +64,30 @@ public:
         m_base_io->write( (const byte*)str.c_str(), str.size() );
     }
 
+    inline void print( const char* chrs ) {
+        m_base_io->write( (const byte*)chrs, strlen(chrs) );
+    }
+
     /**
      * @brief Acts like printf, but writes the contents to the BaseIO
      */
     inline void printf( const char* fmt, ... ) {
-        char* out ;
 
         va_list a;
         va_start(a, fmt);
+        vprintf(fmt, a);
+        va_end(a);
+    }
+
+    inline void vprintf( const char* fmt, va_list a ) {
+        char* out ;
         vasprintf( &out, fmt, a );
         print( out );
-        delete[] out;
+        free( out );
+    }
+
+    inline BaseIO* getBaseIO() {
+        return m_base_io;
     }
 
     inline ~StringWriter() {
