@@ -11,16 +11,24 @@ namespace io {
 FileCollection::FileCollection() {
     pipe( m_pipe );
     m_map[m_pipe[1]].push_back(NULL);
-    m_log = &LogManager::instance().getLogContext("FileCollection", "Static");
+    m_log = &LogManager::instance().getLogContext("IO", "FileCollection::Static");
 }
 
 void FileCollection::interrupt() {
+    m_log->printfln(TRACE, "Interrupt called");
     byte bytes[1];
+	bytes[0] = 0;
     write(m_pipe[0], bytes, 1);
 }
 
-void FileCollection::attach( int fd, FileCollectionObserver* observer ) {
-    m_log->printfln(DEBUG, "Subscribing new file descriptor %d with observer %p", fd, observer);
+void FileCollection::subscribeForRead( int fd, FileCollectionObserver* observer ) {
+    m_log->printfln(DEBUG, "Subscribing new file descriptor %d with observer %p for read", fd, observer);
+    m_map[fd].push_back(observer);
+    interrupt();
+}
+
+void FileCollection::subscribeForWrite( int fd, FileCollectionObserver* observer ) {
+    m_log->printfln(DEBUG, "Subscribing new file descriptor %d with observer %p for write", fd, observer);
     m_map[fd].push_back(observer);
     interrupt();
 }
@@ -48,18 +56,28 @@ void FileCollection::fireEvent( int fd, int events ) {
 
 void FileCollection::run() {
     vector<struct pollfd> poll_data;
-    LogContext& log = LogManager::instance().getLogContext("FileCollection", "Run");
+    LogContext& log = LogManager::instance().getLogContext("IO", "FileCollection::Run");
     log.printfln(DEBUG, "Start FileCollection::run");
 
     for( ; ; ) {
         map<int, vector<FileCollectionObserver*> >::iterator itr;
         itr = m_map.begin();
 
+        /* Add the poll data from the reading map */
         for( ; itr != m_map.end() ; ++ itr ) {
             struct pollfd pfd;
             pfd.revents = 0;
             pfd.fd = itr->first;
             pfd.events = POLLIN | POLLPRI;
+            poll_data.push_back(pfd);
+        }
+
+        /* Add all the data from the writing map */
+        for( itr = m_write_map.begin(); itr != m_write_map.end() ; ++ itr ) {
+            struct pollfd pfd;
+            pfd.revents = 0;
+            pfd.fd = itr->first;
+            pfd.events = POLLOUT;
             poll_data.push_back(pfd);
         }
 
