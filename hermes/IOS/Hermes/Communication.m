@@ -13,6 +13,10 @@
 @property(strong, atomic) NSInputStream* inputStream;
 @property(strong, atomic) NSOutputStream* outputStream;
 
+-(void) setUpSockets;
+-(void) tearDownSockets;
+-(void) tearDownRunLoop;
+
 @end
 
 @implementation Communication
@@ -25,14 +29,129 @@
     if( self = [super init])
     {
         started = false;
+        shouldRun = false;
+        inputStream = nil;
+        outputStream = nil;
         NSLog(@"Created Communication Object");
     }
     return self;
 }
 
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
+    NSLog(@"Stream Event triggered.");
+    
+    switch(event) {
+        case NSStreamEventHasSpaceAvailable: {
+            if(stream == outputStream) {
+                NSLog(@"outputStream is ready to write.");
+            }
+            break;
+        }
+        case NSStreamEventHasBytesAvailable: {
+            if(stream == inputStream) {
+                NSLog(@"inputStream is ready.");
+                
+                uint8_t buf[1024];
+                unsigned int len = 0;
+                
+                //We need to account for tcp messages not all being sent at once
+                //Protocol should have first 4 bytes send the number of bytes expected
+                len = [inputStream read:buf maxLength:1024];
+                
+                if(len > 0) {
+                    NSMutableData* data=[[NSMutableData alloc] initWithLength:0];
+                    
+                    [data appendBytes: (const void *)buf length:len];
+                    
+                    NSString *s = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+                    
+                    NSLog(@"Bytes Received: %@", s);
+                }
+            } 
+            break;
+        }
+        case NSStreamEventOpenCompleted: {
+            NSLog(@"NSStreamEventOpenCompleted");
+            break;
+        }
+        case NSStreamEventEndEncountered: {
+            NSLog(@"NSStreamEventEndEncouterd");
+            break;
+        }
+        case NSStreamEventErrorOccurred: {
+            NSLog(@"Stream Error Occured");
+            break;
+        }
+        case NSStreamEventNone: {
+            NSLog(@"No Sream Event");
+            break;
+        }
+        default: {
+            NSLog(@"Stream is sending an Event: %i", event);
+            
+            break;
+        }
+    }
+}
+//Main Thread Run Loop
 -(void)threadMain
 {
-    //Init Everything
+    NSLog(@"Communication Start");
+    //Set up json parser
+    
+    [self setUpSockets];
+    
+    while(shouldRun)
+    {
+        [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        NSLog(@"Run Loop Reset");
+    }
+    @synchronized(self){
+        NSLog(@"StartingComm Tear down");
+        [self tearDownSockets];
+    
+        //Reseting member variables
+        thread = nil;
+        started = false;
+        shouldRun = false;
+    }
+    NSLog(@"Communication Thread Closed");
+}
+//Start the Communication thread
+-(void)start{
+    
+    @synchronized(self){
+        
+        if( started)
+        {
+            NSLog(@"Communication already started: try again");
+            return;
+        }
+        shouldRun = true;
+        started = true;
+        NSLog(@"Starting Threads");
+        //Start the run loop
+        thread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
+        [thread setName:@"Communication"];
+        [thread start];
+    }
+}
+//Kill the communication thread cleanly
+-(void)stop{
+    @synchronized(self){
+        if(!started)
+        {
+            NSLog(@"Thread is already stopped");
+            return;
+        }
+        shouldRun = false;
+        [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
+        NSLog(@"Communication Stop Requested");
+    }
+}
+//Set up the TCP Connections
+-(void)setUpSockets
+{
     NSLog(@"Comm main");
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
@@ -49,39 +168,32 @@
     
     [inputStream open];
     [outputStream open];
-    
-    started = true;
-    NSLog(@"Communication Start Completed");
-    
-    NSLog(@"Starting Run Loop");
-    
-    [[NSRunLoop currentRunLoop] run];
-    
-    NSLog(@"Run Loop Stopped");
-    
+}
+//Tear down the TCP connections
+-(void)tearDownSockets
+{
     [inputStream setDelegate:nil];
     [outputStream setDelegate:nil];
-
+    
     [inputStream close];
     [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [outputStream close];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    NSLog(@"Communication Thread Closed");
+    //Point to nil for ARC
+    inputStream = nil;
+    outputStream = nil;
 }
--(void)start{
-    
-    NSLog(@"Starting Threads");
-    //Start the run loop
-    thread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
-   
-    [thread start];
+//Tear down the run loop
+-(void)tearDownRunLoop
+{
+    NSLog(@"Trying to kill run loop");
+    //When this method exits the run loop will close
 }
--(void)stop{
-    
-    //Kill the sockets
-    
-    //Kill the run loop
-    NSLog(@"Communication Stop Completed");
+-(BOOL)isRunning
+{
+    @synchronized(self)
+    {
+        return started;
+    }
 }
 @end
