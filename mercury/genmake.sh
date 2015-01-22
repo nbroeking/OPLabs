@@ -82,6 +82,7 @@ TGT?=x86_64
 ENV?=devel
 
 .INCLUDE_DIRS += targets/\$(TGT)/
+export ROOT_DIR=.
 include targets/\$(TGT)/\$(ENV).mk 
 
 CXXFLAGS := \$(CXXFLAGS) -DTARGET_\$(TGT) -DENVIRONMENT_\$(ENV)
@@ -147,6 +148,10 @@ echo '	$(CXX) -o '$OBS_DIR'/mercury main.cpp $(CXXFLAGS) -L '$OBS_DIR'/ -lmerc' 
 echo '	ln -sf '$OBS_DIR'/mercury .'
 echo ''
 echo 'all: notests tests'
+echo ''
+echo '.PHONY: tools'
+echo 'tools: notests'
+echo '	for i in $$(find tools/ -iname "makefile"); do pushd $$(dirname $$i) && make && popd ; done'
 echo ''
 echo 'genmake: genmake.sh'
 echo '	./genmake.sh > Makefile'
