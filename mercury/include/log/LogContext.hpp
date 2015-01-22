@@ -12,6 +12,9 @@
 #include <cstdio>
 #include <prelude.hpp>
 
+#include <io/BaseIO.hpp>
+#include <io/StringWriter.hpp>
+
 #if defined(ENVIRONMENT_release)
 #define DEFUALT_MIN_LOG 3
 #else
@@ -41,11 +44,11 @@ public:
     std::string text;
     int level;
 
-    inline void printlevel( FILE* out, bool color ) const {
+    inline void printlevel( io::StringWriter& out, bool color ) const {
         if( color ) {
-            fprintf(out, "%s%s\e[0m", esc.c_str(), text.c_str());
+            out.printf("%s%s\e[0m", esc.c_str(), text.c_str());
         } else {
-            fprintf(out, "%s",  text.c_str());
+            out.printf("%s",  text.c_str());
         }
     }
 };
@@ -64,12 +67,20 @@ public:
 
     void printHex(const LogLevel& lev, const byte* bytes, size_t len) ;
 
+    inline io::BaseIO* getBaseIO() {
+        return out.getBaseIO();
+    }
+
     inline void setEnabled( bool enabled ) {
         this->enabled = enabled ;
     }
 
-    inline void redirect(FILE* next, bool color) {
-        out = next;
+    inline bool isEnabled() {
+        return this->enabled;
+    }
+
+    inline void redirect(io::BaseIO* next, bool color) {
+        out.setBaseIO(next);
         color = color;
     }
 
@@ -78,7 +89,7 @@ private:
 
 private:
     int min_lev;
-    FILE* out;
+    io::StringWriter out;
 
     std::string major_context;
     std::string minor_context;
