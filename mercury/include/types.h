@@ -24,11 +24,20 @@
 #define TARGET_LITTLE_ENDIAN
 #endif
 
+
 #if defined(TARGET_mipsel) || defined(TARGET_mips)
 #define TARGET_GROUP_mips
 /* Mips does not define ssize_t so we need to
  * define it ourselves */
 typedef int32_t ssize_t ;
+#endif
+
+#if defined(TARGET_arm_rpi)
+#define TARGET_GROUP_arm
+#endif
+
+#if defined(TARGET_x86_64) || defined(TARGET_i386)
+#define TARGET_GROUP_intel
 #endif
 
 typedef uint8_t byte;

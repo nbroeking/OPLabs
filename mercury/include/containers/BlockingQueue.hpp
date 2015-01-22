@@ -45,7 +45,7 @@ public:
      * and will also signal any waiting thread, signaling the arrival
      * of a new value.
      */
-    void push( T& val ) {
+    void push( const T& val ) {
         os::ScopedLock _sl_( this->m_mutex ) ;
         m_queue.push( val ) ;
 

@@ -31,6 +31,9 @@ public:
         mine = NULL;
     }
 
+    bool operator==(T* oth) {
+        return mine == oth;
+    }
     void operator=( T* oth ) {
         delete mine ;
         mine = oth;

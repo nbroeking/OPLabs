@@ -1,3 +1,6 @@
+#ifndef THREAD_HPP_
+#define THREAD_HPP_
+
 #include <pthread.h>
 #include <os/Runnable.hpp>
 
@@ -17,6 +20,8 @@ namespace os {
  */
 class Thread {
 public:
+    static Thread* getCurrentThread();
+
     /**
      * @brief Construct a Thread from the given Runnable
      * @param runner The runnable to delegate to
@@ -29,15 +34,21 @@ public:
 	/** Join the thread */
 	int join();
 
+
     /**
      * @brief Return the delegate
      * @return Return the runnable used
      */
 	inline Runnable& getRunnable() { return m_runner; }
+
 	inline const Runnable& getRunnable() const { return m_runner; }
+
+    virtual ~Thread();
 private:
 	Runnable& m_runner;
 	pthread_t m_thread;
 };
 
 }
+
+#endif
