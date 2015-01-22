@@ -42,20 +42,25 @@ int ICMPSocket::setNonBlocking(bool yes) {
     return fcntl(m_fd, F_SETFL, opts);
 }
 
+#define IP_HDR_SIZE 20
 int ICMPSocket::receive( ICMPPacket& pck, SocketAddress*& into ) {
     byte buffer[1024]; // TODO make this better
 
     struct sockaddr_in addr;
+	std::fill((byte*)&addr, (byte*)(&addr) + sizeof(struct sockaddr_in), 0);
     socklen_t len = sizeof(addr);
 
     ssize_t bytes_read;
 
     if( (bytes_read = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr*)&addr, &len)) > 0 ) {
-        pck.deserialize(buffer + ICMPHEADER_SIZE, bytes_read - ICMPHEADER_SIZE);
+        pck.deserialize(buffer + IP_HDR_SIZE, bytes_read - IP_HDR_SIZE);
         return 0 ;
     }
     
     into = SocketAddress::toSocketAddress((sockaddr*)&addr, len);
+	if( errno == 35 ) {
+		throw os::TimeoutException();
+	}
     return errno;
 }
 
