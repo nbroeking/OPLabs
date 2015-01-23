@@ -19,4 +19,5 @@
 -(void) threadMain;
 -(void) start;
 -(void) stop;
+-(BOOL) isRunning;
 @end
