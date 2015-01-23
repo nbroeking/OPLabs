@@ -42,7 +42,7 @@ public:
     }
 
 protected:
-    virtual void messageReceivedCallback( ProcessProxy& from, const byte* bytes, size_t len ) {
+    virtual void messageReceivedCallback( ProcessAddressProxy& from, const byte* bytes, size_t len ) {
         LogContext& log =
             LogManager::instance().getLogContext("MyProcess2", "MyProcess2");
         log.printfln(INFO, "Message received");
@@ -64,7 +64,7 @@ public:
     }
 
 protected:
-    virtual void messageReceivedCallback( ProcessProxy& from, const byte* bytes, size_t len ) {
+    virtual void messageReceivedCallback( ProcessAddressProxy& from, const byte* bytes, size_t len ) {
         LogContext& log =
             LogManager::instance().getLogContext("MyProcess", "MyProcess");
         log.printfln(INFO, "Message received");
@@ -94,8 +94,8 @@ int main( int argc, char** argv ) {
 
     sleep(1);
     MyProcess2 process2;
-    process2.run();
+    Thread* m_thread2 = process2.start();
 
-    delete m_thread;
+    m_thread->join();
     return 0;
 }

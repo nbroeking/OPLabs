@@ -38,11 +38,15 @@ ProcessProxy* ProcessManager::getProcessByName(const char* name) {
     return m_proc_table[m_proc_db[name]];
 }
 
-void ProcessManager::registerProcess(Process* p) {
+ProcessAddress ProcessManager::registerProcess(Process* p) {
     ScopedLock __sl(m_mutex);
 
+    ProcessAddress addr;
     m_proc_db[p->getName()] = m_proc_table.size();
+    addr.thread = m_proc_table.size();
     m_proc_table.push_back(p);
+
+    return addr;
 }
 
 void ProcessManager::observe( int fd, int events ) {
@@ -86,6 +90,11 @@ void ProcessManager::discover() {
     pkt.origin_pid = getpid();
     pkt.type = DISCOVER;
     io::GlobPutter p;
+}
+
+ProcessProxy* ProcessManager::getProcessByAddress(const ProcessAddress& addr) {
+    if( addr.thread > m_proc_table.size() ) return NULL;
+    return m_proc_table[addr.thread];
 }
 
 }

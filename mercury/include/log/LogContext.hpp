@@ -23,8 +23,21 @@
 
 namespace logger {
 
+class LogManager;
+
+/**
+ * @brief Level to log by. Is given a color, name and level.
+ */
 class LogLevel {
 public:
+    /**
+     * @brief Create a new LogLevel with the given color, name and level
+     * 
+     * @param color The color.
+     * @param name The name
+     * @param lev The level
+     * @param bold True if should be bold
+     */
     inline LogLevel(int color, const char* name, int lev, bool bold=1) {
         char txt[2048];
         level = lev;
@@ -34,6 +47,13 @@ public:
         this->text = name;
     }
 
+    /**
+     * @brief More raw than the above, but more powerful.
+     * 
+     * @param esc The escape code to print the format
+     * @param name The name
+     * @param lev The level
+     */
     inline LogLevel(const char* esc, const char* name, int lev) {
         this->esc = std::string(esc);
         text = name;
@@ -44,6 +64,12 @@ public:
     std::string text;
     int level;
 
+    /**
+     * @brief Prints the level
+     * 
+     * @param out <stuff>
+     * @param color <stuff>
+     */
     inline void printlevel( io::StringWriter& out, bool color ) const {
         if( color ) {
             out.printf("%s%s\e[0m", esc.c_str(), text.c_str());
@@ -53,32 +79,71 @@ public:
     }
 };
 
+/**
+ * @brief A context to a log. Use this class for all Logging.
+ * @see LogManager
+ */
 class LogContext {
 public:
-    LogContext(const std::string& maj, const std::string& minor) ;
 
+    /**
+     * @brief Set the minimum allowable log level. Default for
+     * devel environment is DEBUG, for release it is INFO
+     *
+     * @param lev the minimum level
+     */
     void setMinimumLevel( const LogLevel& lev ) ;
 
+    /**
+     * @brief Print a string to the log using a va_list
+     */
     void vprintf(const LogLevel& lev, const char* fmt, va_list ls) ;
 
+    /**
+     * @brief Like to above, but using vargs instead of a va_list
+     */
     void printf(const LogLevel& lev, const char* fmt, ...) ;
 
+    /**
+     * @brief like the above, but append a newline to the end by default.
+     */
     void printfln(const LogLevel& lev, const char* fmt, ... ) ;
 
+    /**
+     * @brief Print the hex representation of a byte array
+     * @param lev LogLevel to print out to
+     * @param bytes The byte array
+     * @param len The length of the byte array
+     */
     void printHex(const LogLevel& lev, const byte* bytes, size_t len) ;
 
+    /**
+     * @return The BaseIO this LogContext is printing to
+     */
     inline io::BaseIO* getBaseIO() {
         return out.getBaseIO();
     }
 
+    /**
+     * @brief Enable or disable this LogContext
+     * @param enabled True to enable log, false to disable
+     */
     inline void setEnabled( bool enabled ) {
         this->enabled = enabled ;
     }
 
+    /**
+     * @return True if this log is enabled, false otherwise
+     */
     inline bool isEnabled() {
         return this->enabled;
     }
 
+    /**
+     * @brief Redirect this log to another output stream
+     * @param next The new output stream
+     * @param color True to include color, false otherwise
+     */
     inline void redirect(io::BaseIO* next, bool color) {
         out.setBaseIO(next);
         color = color;
@@ -86,8 +151,9 @@ public:
 
 private:
     void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) ;
+    friend class LogManager;
+    LogContext(const std::string& maj, const std::string& minor) ;
 
-private:
     int min_lev;
     io::StringWriter out;
 

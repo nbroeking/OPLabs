@@ -18,11 +18,27 @@ public:
     InetParseException(const std::string& message) : Exception(message) {};
 };
 
+/**
+ * @brief SocketAddress for IPv4
+ */
 class Inet4Address : public SocketAddressTempl<sockaddr_in, AF_INET> {
 public:
-    static Inet4Address fromString(const char *, u16_t port); /* Throws InetParseException */
+    /**
+     * @brief Parse the IP address from a sttring
+     * @param str The string to parse
+     * @param port The port to use
+     * @return A new address representing the string
+     */
+    static Inet4Address fromString(const char * str, u16_t port); /* Throws InetParseException */
 
+    /**
+     * @brief Create an Inet4Address from a 4-byte address and port
+     * 
+     * @param addr The ip address
+     * @param port The port number
+     */
     Inet4Address(u32_t addr, u16_t port);
+
     Inet4Address(const char* addr, u16_t port);
     inline Inet4Address(const sockaddr_in& addr) {
         m_addr = addr;

@@ -40,9 +40,26 @@ public:
      */
     static ProcessManager& instance();
 
+    /**
+     * @brief Return the a process by its given name
+     * @param name The name of the process
+     * @return The Process given that name, or NULL if no process by that name is found
+     */
     ProcessProxy* getProcessByName(const char* name);
 
-    void registerProcess(Process* p);
+    /**
+     * @brief return a new Process by the address of that process
+     * @param addr The address of the process
+     * @return a new ProcessProxy representing that process
+     */
+    ProcessProxy* getProcessByAddress(const ProcessAddress& addr);
+
+    /**
+     * @brief Register a process with this manager.
+     * @param p The process to assign.
+     * @return The new address of the process.
+     */
+    ProcessAddress registerProcess(Process* p);
 
     ~ProcessManager();
 private:
@@ -54,8 +71,6 @@ private:
 
     std::map<std::string, size_t> m_proc_db; 
     std::vector<Process*> m_proc_table;
-
-    std::map<std::string, ProcessAddress> m_extern_proc_db;
 
     io::DatagramSocket m_outside;
     io::FileCollection m_filecollection;

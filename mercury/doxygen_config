@@ -7,3 +7,6 @@ HTML_FILE_EXTENSION = .html
 RECURSIVE = YES
 HTML_EXTRA_STYLESHEET = doc/doxygen-theme/customdoxygen.css
 LAYOUT_FILE = doc/doxygen-theme/DoxygenLayout.xml
+EXTRACT_ALL            = YES
+HAVE_DOT               = YES
+UML_LOOK               = YES

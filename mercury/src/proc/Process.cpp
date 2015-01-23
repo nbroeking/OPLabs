@@ -47,7 +47,7 @@ public:
 };
 
 Process::Process(const char* name) : name(name) {
-    ProcessManager::instance().registerProcess(this);
+    m_id = ProcessManager::instance().registerProcess(this);
 }
 
 FileCollection& Process::getFileCollection() {
@@ -77,9 +77,49 @@ Thread* Process::start() {
 }
 
 void Process::MessageDigester::run() {
-    Message msg = super->inbound_messages.front();
-    super->inbound_messages.pop();
-    super->messageReceivedCallback(msg);
+    while ( true ) {
+        Message msg = super->inbound_messages.front();
+        super->inbound_messages.pop();
+    
+        ProcessAddressProxy proxy(msg.from_address);
+    
+        if ( ! proxy.isValid() ) {
+            logger::LogManager::instance()
+                .getLogContext("Process", "MessageDigester")
+                    .printfln(ERROR, "Message from unknown sender @%u\n",
+                        msg.from_address.thread);
+            return ;
+        }
+        
+        super->messageReceivedCallback(proxy,
+                msg.message.rawPointer(), msg.message.length());
+    }
+}
+
+bool ProcessAddressProxy::isValid() {
+   ProcessProxy* proxy =
+       ProcessManager::instance().
+            getProcessByAddress(m_addr);
+    return proxy != NULL;
+}
+
+void ProcessAddressProxy::sendMessage( const ProcessAddress& from, const byte* bytes, size_t len ) {
+   ProcessProxy* proxy =
+       ProcessManager::instance().
+            getProcessByAddress(m_addr);
+
+    if( ! proxy ) {
+        logger::LogManager::instance()
+            .getLogContext("Process", "ProcessAddressProxy")
+                .printfln(ERROR, "Invalid message address @%u\n", m_addr);
+    } else {
+        proxy->sendMessage(from, bytes, len);
+    }
+
+}
+
+ProcessAddressProxy::ProcessAddressProxy(const ProcessAddress& addr) {
+    m_addr = addr;
 }
 
 }

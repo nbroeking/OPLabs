@@ -35,6 +35,9 @@ private:
 };
 
 
+/**
+ * @brief Address to a process
+ */
 class ProcessAddress {
 public:
     uint32_t ip; /* From the ip address. Not Used */
@@ -42,22 +45,62 @@ public:
     uint32_t thread; /* From the thread */
 };
 
+/**
+ * A message can be sent to a process from another
+ * process.
+ */
 class Message {
 public:
     inline Message() {}
     inline Message(const Message& oth) :
         from_address( oth.from_address ),
-        to_address( oth.to_address ),
         message( oth.message ) {}
 
+    /* The address of the originating
+     * process */
     ProcessAddress from_address;
-    ProcessAddress to_address;
+
+    /* the array of bytes
+     * being sent to the message */
     io::Buffer<byte> message;
 };
 
+/**
+ * A ProcessProxy is a frontend to the communication with
+ * a process.
+ */
 class ProcessProxy {
 public:
-    virtual void sendMessage(const Message& mesg) = 0;
+    /**
+     * @brief Sends a message to the process this proxy represents
+     * @param mesg the message to send to the process
+     */
+    virtual void sendMessage(const ProcessAddress& from,
+                              const byte* bytes, size_t len) = 0;
+};
+
+/**
+ * A class that creates a ProcessProxy from the
+ * address of that process.
+ */
+class ProcessAddressProxy: public ProcessProxy {
+public:
+    /**
+     * @brief Create a new address proxy from the
+     * @param addr The address of the process
+     */
+    ProcessAddressProxy(const ProcessAddress& addr);
+
+    /**
+     * @brief Return true if the address in this proxy is valid
+     * @return True if this proxy is valid, false otherwise
+     */
+    virtual bool isValid();
+    virtual void sendMessage( const ProcessAddress& from,
+                                const byte* bytes, size_t len) OVERRIDE;
+
+private:
+    ProcessAddress m_addr;
 };
 
 
@@ -74,6 +117,8 @@ public:
 
     /**
      * return the name of this process
+     *
+     * @return the name of this process
      */
     inline const char* getName() {
         return name.c_str();
@@ -113,26 +158,53 @@ public:
      */
     os::Thread* start();
 
-    inline void sendMessage(const Message& mesg) OVERRIDE {
-        inbound_messages.push(mesg);
+    inline void sendMessage(const ProcessAddress& from, const byte* bytes, size_t len) OVERRIDE {
+        Message msg;
+        msg.from_address = from;
+        msg.message = io::Buffer<byte>(bytes, len);
+
+        inbound_messages.push(msg);
     }
+
+    inline const ProcessAddress& getAddress() {
+        return m_id;
+    }
+
+    /**
+     * @brief Send a message to another process.
+     * @param toProcess The process to send to
+     * @param bytes The bytes to send
+     * @param len The length of the bytes
+     */
+    void sendTo( ProcessProxy& toProcess, const byte* bytes, size_t len ) ;
 protected:
     friend class MessageDigester;
-    /** Called when a message is received on the
-     * in bound queue */
-    virtual void messageReceivedCallback( const Message& msg ) = 0;
+    
+    /**
+     * @brief Callback called when a message is received from another Process
+     * @param from_addr The proxy to the sending process
+     * @param bytes The bytes sent
+     * @param len The length of the bytes
+     */
+    virtual void messageReceivedCallback(ProcessAddressProxy& from_addr, const byte* bytes, size_t len) = 0;
 
 private:
+    /* Class that digests messages for the
+     * process */
     class MessageDigester: public Runnable {
     public:
         Process* super;
         void run() OVERRIDE;
     };
+
+    /* queue of incoming messages to the processes */
     containers::BlockingQueue<Message> inbound_messages;
 
     io::FileCollection m_file_collection;
     std::string name;
     MessageDigester m_mesg_digest;
+
+    ProcessAddress m_id;
 };
 
 }
@@ -141,9 +213,6 @@ inline int putObject( io::Putter& putter, const proc::Message& msg ) {
     return putter.putInt32be(msg.from_address.ip)     ||
            putter.putInt32be(msg.from_address.pid)    ||
            putter.putInt32be(msg.from_address.thread) ||
-           putter.putInt32be(msg.to_address.ip)       ||
-           putter.putInt32be(msg.to_address.pid)      ||
-           putter.putInt32be(msg.to_address.thread)   ||
            putObject( putter, msg.message );
 }
 

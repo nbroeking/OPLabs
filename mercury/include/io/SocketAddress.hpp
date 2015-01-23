@@ -12,6 +12,9 @@
 
 namespace io {
 
+/**
+ * @brief thrown when an address cannot be deciphered
+ */
 class UnknownSocketFamilyException : public Exception {
 public:
     UnknownSocketFamilyException(const char* msg): Exception(msg) {};
@@ -19,6 +22,15 @@ public:
 
 class SocketAddress {
 public:
+    /**
+     * @brief Create a socket address from a plain old C socket address
+     * 
+     * @param addr The C socketaddress
+     * @param len The length of the struct
+     * 
+     * @throw UnknownSocketFamilyException if the socket address family cannot be decoded
+     * @return A new socket address allocated on the heap
+     */
     static SocketAddress* toSocketAddress( struct sockaddr* addr, socklen_t len );
 
     /**
