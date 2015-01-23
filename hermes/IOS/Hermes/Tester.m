@@ -14,6 +14,7 @@
 
 @implementation Tester
 @synthesize thread;
+@synthesize timer;
 
 -(instancetype)init
 {
@@ -22,6 +23,7 @@
         started = false;
         shouldRun = false;
         thread = nil;
+        timer = nil;
     }
     return self;
 }
@@ -31,13 +33,19 @@
     NSLog(@"Tester Start");
     //Every time an event loop is kicked we exit our run loop. So we want to make sure we reenter it every time.
     //RunMode is a blocking call until a system event happens
+    
+    
+    //Add a mach port to prevent the run loop from closing if there is no event
+    //I know this is ugly but the documentation says there is no other way
+    NSPort *port = [NSMachPort port];
+    [[NSRunLoop currentRunLoop] addPort:port forMode:NSDefaultRunLoopMode];
+    
     while(shouldRun)
     {
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        NSLog(@"Run Loop Reset");
+        NSLog(@"Tester Run Loop Reset");
     }
     @synchronized(self){
-        NSLog(@"Starting Tester Tear down");
         
         //Reseting member variables
         thread = nil;
@@ -76,7 +84,6 @@
         }
         shouldRun = false;
         [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
-        NSLog(@"Tester Stop Requested");
     }
 }
 
@@ -85,7 +92,7 @@
 //To give it a chance to exit
 -(void)tearDownRunLoop
 {
-    NSLog(@"Trying to kill run loop");
+    NSLog(@"Trying to kill tester");
     //When this method exits the run loop will close
 }
 

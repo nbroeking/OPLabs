@@ -44,7 +44,7 @@
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     NSLog(@"Application Will Enter Foreground");
     [comm start];
-    [tester stop];
+    [tester start];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -55,6 +55,8 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
+    [comm stop];
+    [tester stop];
     comm = nil;
     tester = nil;
 }

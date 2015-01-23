@@ -105,10 +105,9 @@
     while(shouldRun)
     {
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        NSLog(@"Run Loop Reset");
+        NSLog(@"Communication Run Loop Reset");
     }
     @synchronized(self){
-        NSLog(@"StartingComm Tear down");
         [self tearDownSockets];
     
         //Reseting member variables
@@ -130,7 +129,6 @@
         }
         shouldRun = true;
         started = true;
-        NSLog(@"Starting Threads");
         //Start the run loop
         thread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
         [thread setName:@"Communication"];
@@ -147,13 +145,11 @@
         }
         shouldRun = false;
         [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
-        NSLog(@"Communication Stop Requested");
     }
 }
 //Set up the TCP Connections
 -(void)setUpSockets
 {
-    NSLog(@"Comm main");
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
     CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)@"10.0.1.10", 54321, &readStream, &writeStream);
@@ -187,7 +183,7 @@
 //Tear down the run loop
 -(void)tearDownRunLoop
 {
-    NSLog(@"Trying to kill run loop");
+    NSLog(@"Trying to kill communication loop");
     //When this method exits the run loop will close
 }
 //Returns if the sub system is running

@@ -14,7 +14,7 @@
     bool shouldRun;
 }
 @property(strong, atomic) NSThread *thread;
-
+@property(strong, atomic) NSTimer *timer;
 //Initilizer for the tester object
 -(instancetype)init;
 
