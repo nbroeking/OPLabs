@@ -14,16 +14,23 @@
 
 @implementation Tester
 @synthesize thread;
-//TODO
+
 -(instancetype)init
 {
+    if( self = [super init])
+    {
+        started = false;
+        shouldRun = false;
+        thread = nil;
+    }
     return self;
 }
 //Main Thread Run Loop
 -(void)threadMain
 {
     NSLog(@"Tester Start");
-
+    //Every time an event loop is kicked we exit our run loop. So we want to make sure we reenter it every time.
+    //RunMode is a blocking call until a system event happens
     while(shouldRun)
     {
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
@@ -72,11 +79,17 @@
         NSLog(@"Tester Stop Requested");
     }
 }
+
+//This method is used to add something to the run loops queue.
+//This method purposly does nothing except wake up the run loop
+//To give it a chance to exit
 -(void)tearDownRunLoop
 {
     NSLog(@"Trying to kill run loop");
     //When this method exits the run loop will close
 }
+
+//Returns is running under a NSMutex
 -(BOOL)isRunning
 {
     @synchronized(self)

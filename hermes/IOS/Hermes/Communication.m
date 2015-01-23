@@ -24,6 +24,7 @@
 @synthesize outputStream;
 @synthesize thread;
 
+//Initlizes the Communication subsystem to 0
 -(instancetype)init{
     
     if( self = [super init])
@@ -36,7 +37,7 @@
     }
     return self;
 }
-
+//Call back delegate that gets called when any stream has an event occure
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
     NSLog(@"Stream Event triggered.");
     
@@ -189,8 +190,10 @@
     NSLog(@"Trying to kill run loop");
     //When this method exits the run loop will close
 }
+//Returns if the sub system is running
 -(BOOL)isRunning
 {
+    //Blocked with NSMutex
     @synchronized(self)
     {
         return started;

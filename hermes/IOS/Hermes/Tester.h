@@ -15,9 +15,18 @@
 }
 @property(strong, atomic) NSThread *thread;
 
+//Initilizer for the tester object
 -(instancetype)init;
+
+//The main thread for the tester sub system
 -(void) threadMain;
+
+//Start the sub system
 -(void) start;
+
+//Stop the subsystem
 -(void) stop;
+
+//Checks if the subsystem is running
 -(BOOL) isRunning;
 @end

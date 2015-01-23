@@ -16,12 +16,20 @@
     bool shouldRun;
 }
 @property(strong, atomic) NSThread *thread;
+
+//Initilizer for the communication thread
 -(instancetype)init;
 
+//Main loop for the communication sub system
 -(void) threadMain;
+
+//Start the subsystem
 -(void) start;
+
+//stop the subsystem
 -(void) stop;
 
+//Checks to see if the sub system is running
 -(BOOL) isRunning;
 
 

@@ -14,12 +14,15 @@
 
 @implementation AppDelegate
 @synthesize comm;
+@synthesize tester;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
     NSLog(@"Application did Launch");
     comm = [[Communication alloc] init];
+    tester = [[Tester alloc] init];
+    [tester start];
     [comm start];
     return YES;
 }
@@ -34,12 +37,14 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     NSLog(@"Application did enter background");
     [comm stop];
+    [tester stop];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     NSLog(@"Application Will Enter Foreground");
     [comm start];
+    [tester stop];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -51,6 +56,7 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
     comm = nil;
+    tester = nil;
 }
 
 #pragma mark - Core Data stack
