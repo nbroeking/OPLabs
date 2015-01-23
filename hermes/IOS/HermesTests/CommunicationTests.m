@@ -31,11 +31,18 @@
     Communication* testComm = [[Communication alloc] init];
     XCTAssert([testComm isRunning] == false, @"Pass");
 }
+
 -(void) testCommunicationRunning{
     Communication* testComm = [[Communication alloc] init];
     [testComm start];
     XCTAssert([testComm isRunning] == true, @"Pass");
     
+}
+-(void) testCommunicationDoubleRunning{
+    Communication* testComm = [[Communication alloc] init];
+    [testComm start];
+    [testComm start];
+    XCTAssert([testComm isRunning], @"Pass");
 }
 -(void) testCommunicationStoped {
     Communication* testComm = [[Communication alloc] init];
@@ -46,4 +53,20 @@
     XCTAssert([testComm isRunning] == false, @"Pass");
 }
 
+-(void) testCommunicationDoubleStoped {
+    Communication* testComm = [[Communication alloc] init];
+    [testComm start];
+    [testComm stop];
+    [testComm stop];
+    sleep(1); //Takes a second for the thread to finish its closing procedure It wont report finished untill this is complete
+    
+    XCTAssert([testComm isRunning] == false, @"Pass");
+}
+-(void) testCommunicationStopedAfterInit{
+    Communication* testComm = [[Communication alloc] init];
+    [testComm stop];
+    sleep(1); //Takes a second for the thread to finish its closing procedure It wont report finished untill this is complete
+    
+    XCTAssert([testComm isRunning] == false, @"Pass");
+}
 @end
