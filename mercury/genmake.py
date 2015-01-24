@@ -83,7 +83,7 @@ LDFLAGS := $(LDFLAGS) -lpthread
 QEMU?=
 export QEMU
 
-default: all
+default: tests notests
 '''
 
 MAKEFILE_FOOTER = '''
@@ -186,7 +186,7 @@ def main(argv):
 
     for ((source_file, dependencies), object_file) in zipped:
         if source_file.startswith('./tests/'):
-            binary = object_file[:-2]
+            binary = object_file[:12] + 'tests/' + object_file[12:-2];
             test_binaries.append(binary)
             sys.stdout.write(binary + ': ' + OBJS_DIR + 'libmercury.a ' + object_file + '\n')
             sys.stdout.write('\t$(CXX) -o ' + binary + ' ' + object_file + ' ' + OBJS_DIR + 'libmercury.a $(LDFLAGS)\n\n')

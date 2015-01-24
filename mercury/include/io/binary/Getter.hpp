@@ -59,7 +59,7 @@ public:
 	virtual inline int getByte( byte& b ) {
 		if ( m_cursor >= m_blob_len ) {
             char buf[1024];
-            snprintf(buf, sizeof(buf), "Gettor underflow at position %lu", m_cursor);
+            snprintf(buf, sizeof(buf), "Gettor underflow at position %u", (unsigned int)m_cursor);
             throw GetterUnderflowException(buf);
 		}
 		b = m_blob[m_cursor ++];

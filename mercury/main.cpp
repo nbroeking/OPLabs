@@ -95,6 +95,7 @@ int main( int argc, char** argv ) {
     sleep(1);
     MyProcess2 process2;
     Thread* m_thread2 = process2.start();
+    (void)m_thread2;
 
     m_thread->join();
     return 0;
