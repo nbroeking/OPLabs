@@ -1,0 +1,4 @@
+Mercury: Library for router development for OpLabs.
+
+To generate the makefile for this project, run `./genmake.py > Makefile`
+After generating the makefile, run `make help` to obtain more information.
