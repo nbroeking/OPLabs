@@ -41,7 +41,7 @@ exec 2>runtests.err.log
 
 failed=0
 for i in $TESTDIR/* ; do
-    if [[ ! "$(basename $i)" == _* ]] ; then
+    if [[ ! "$(basename $i)" == tests__* ]] ; then
     	stdoutlog=testlog/$(basename $i)-stdout.log
     	stderrlog=testlog/$(basename $i)-stderr.log
     
