@@ -208,6 +208,7 @@ def main(argv):
     sys.stdout.write('\n\n')
 
     sys.stdout.write(MAKEFILE_FOOTER)
+    sys.stderr.write("Makefile generated; run `make help` to get more information.\n")
 
 if __name__ == "__main__":
     main(sys.argv)
