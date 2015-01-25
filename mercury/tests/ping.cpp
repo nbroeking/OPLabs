@@ -8,18 +8,22 @@
 #include <cstring>
 
 #include <io/Inet4Address.hpp>
+#include <log/LogManager.hpp>
 
 using namespace io;
 using namespace std;
+using namespace logger;
 
 const char* host;
 
 int runping( ICMPSocket& sock ) {
     sock.setTimeout(500 MILLIS);
 
-    string data( "Hello, World!" );
-    byte mesg[128 - sizeof(icmphdr)];
+	LogManager::instance().setEnableByDefault(true);
+	LogContext& log = LogManager::instance().getLogContext("Ping","RunPing");
 
+    string data( "Hello, World!" );
+    byte mesg[128 - ICMPHEADER_SIZE];
     fill(mesg, mesg + sizeof(mesg), 0);
     copy(data.c_str(), data.c_str() + data.size(), mesg);
 
@@ -28,11 +32,7 @@ int runping( ICMPSocket& sock ) {
     LOG("Attempting to ping %s\n", host);
 
     ICMPPacket pckt;
-    icmphdr hdr;
-
-    hdr.type = ICMP_ECHO;
-    hdr.un.echo.id = getpid();
-    hdr.un.echo.sequence = count ++;
+	ICMPHeader hdr = ICMPHeader::Echo(getpid(), count++);
 
     pckt.setHeader(hdr);
     pckt.setMessage(mesg, sizeof(mesg));
@@ -46,14 +46,17 @@ int runping( ICMPSocket& sock ) {
     }
 
 
-    TEST_BOOL( "SocketSend", sock.send(pckt, to_addr) > 0 );
-
-    uptr<SocketAddress> r_addr;
-
-    TEST_BOOL( "SocketReceive", sock.receive(pkt, r_addr.cleanref()) == 0 );
-    TEST_EQ_INT( "PingMessage", strcmp((const char*)pkt.getMessage(), "Hello, World!"), 0 );
-    sock.setTimeout(1 MICROS);
-    TEST_BOOL( "TestTimeout", sock.receive(pkt, r_addr.cleanref()) != 0 );
+	try {
+        TEST_BOOL( "SocketSend", sock.send(pckt, to_addr) > 0 );
+        uptr<SocketAddress> r_addr;
+        TEST_EQ_INT( "SocketReceive", sock.receive(pkt, r_addr.cleanref()), 0 );
+        TEST_EQ_INT( "PingMessage", strcmp((const char*)pkt.getMessage(), "Hello, World!"), 0 );
+        sock.setTimeout(1 MICROS);
+        TEST_BOOL( "TestTimeout", sock.receive(pkt, r_addr.cleanref()) != 0 );
+	} catch ( Exception& e ) {
+		log.printfln(ERROR, "Exception caught: %s", e.getMessage());
+		return 1;
+	}
 
     return 0;
 }

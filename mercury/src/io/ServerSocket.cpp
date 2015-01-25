@@ -1,7 +1,8 @@
 #include <io/ServerSocket.hpp>
 
 #include <sys/socket.h>
-#include <arpa/inet.h>
+#include <sys/types.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -35,7 +36,9 @@ void StreamServerSocket::bind( const SocketAddress& sockaddr ) {
         throw CException("Error creating socket", m_fd);
     }
     
-    int rc = ::bind( m_fd, sockaddr.raw(), sockaddr.rawlen() );
+	const struct sockaddr* raw = sockaddr.raw();
+	socklen_t socklen = sockaddr.rawlen();
+    int rc = ::bind( m_fd, raw, socklen );
     if( rc ) {
         throw BindException("Error on bind", errno);
     }

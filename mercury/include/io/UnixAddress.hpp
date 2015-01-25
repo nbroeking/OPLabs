@@ -11,6 +11,7 @@
 #include <prelude.hpp>
 
 #include <sys/un.h>
+#include <sys/socket.h>
 
 namespace io {
 

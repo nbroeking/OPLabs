@@ -1,5 +1,6 @@
 #include <io/Inet6Address.hpp>
 
+#include <arpa/inet.h>
 #include <algorithm>
 #include <cstdio>
 
@@ -24,17 +25,21 @@ Inet6Address::Inet6Address(u8_t addr[16], u16_t port) {
     copy( addr, addr + 16, m_addr.sin6_addr.s6_addr );
 }
 
+#if defined(__OpenBSD__)
+#define s6_addr16 ((u16_t*)s6_addr)
+#endif
 std::string Inet6Address::toString() const {
     char buf[64];
+	u16_t* m_addr16 = (u16_t*) m_addr.sin6_addr.s6_addr;
     snprintf(buf, sizeof(buf), "[%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x]:%d",
-        m_addr.sin6_addr.s6_addr16[0],
-        m_addr.sin6_addr.s6_addr16[1],
-        m_addr.sin6_addr.s6_addr16[2],
-        m_addr.sin6_addr.s6_addr16[3],
-        m_addr.sin6_addr.s6_addr16[4],
-        m_addr.sin6_addr.s6_addr16[5],
-        m_addr.sin6_addr.s6_addr16[6],
-        m_addr.sin6_addr.s6_addr16[7],
+        m_addr16[0],
+        m_addr16[1],
+        m_addr16[2],
+        m_addr16[3],
+        m_addr16[4],
+        m_addr16[5],
+        m_addr16[6],
+        m_addr16[7],
         ntohs(m_addr.sin6_port));
     return buf;
 }
