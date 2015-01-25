@@ -36,6 +36,8 @@ public:
             if( take ) base = NULL;
             m_is_owner = take;
 			m_blob = new byte[m_buffer_size = 1024];
+			m_cursor = 0;
+			m_blob_len = 0;
 		}
 
     /**
@@ -47,31 +49,30 @@ public:
     inline StreamGetter( BaseIO* base ) : input(base){
         m_is_owner = false;
 		m_blob = new byte[m_buffer_size = 1024];
+		m_cursor = 0;
+		m_blob_len = 0;
     }
 
-	virtual int getByte( byte& out ) OVERRIDE {
+	virtual byte getByte() OVERRIDE {
 		if ( m_cursor >= m_blob_len ) {
 			do {
 				ssize_t ret;
 				ret = input->read( m_blob, m_buffer_size );
-				if( ret <= -1 ) return 1; 
+
+				if( ret < 0 ) throw GetterUnderflowException("Underflow in StreamGetter"); 
 	
 				m_cursor = 0;
 				m_blob_len = ret;
 			} while ( m_blob_len == 0 ) ;
 		}
 		
-		out = m_blob[m_cursor++];
-		return 0;
+		return m_blob[m_cursor++];
 	}
 
-    virtual inline int getBytes( byte* into, size_t len ) {
-        int rc;
+    virtual inline void getBytes( byte* into, size_t len ) {
         for( size_t i = 0; i < len; ++ i ) {
-            rc = getByte(into[i]);
-            if( rc ) { return rc; }
+            into[i] = getByte();
         }
-        return 0;
     }
 
 	virtual inline ~StreamGetter() {
@@ -80,6 +81,9 @@ public:
 	}
 
 private:
+	byte* m_blob;
+    size_t m_blob_len;
+    size_t m_cursor;
 	uint m_buffer_size;
     bool m_is_owner;
 	BaseIO* input;

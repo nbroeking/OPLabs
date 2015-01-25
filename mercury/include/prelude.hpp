@@ -8,7 +8,7 @@
  */
 
 #include <types.h>
-
+#include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <cstring>
@@ -25,18 +25,40 @@ public:
     uptr(T*& val) {
         mine = val;
         val = NULL;
+        nref = new int(1);
     }
 
     uptr() {
         mine = NULL;
+        nref = new int(0);
+    }
+
+    uptr(const uptr<T>& oth) {
+        mine = oth.mine;
+        nref = oth.nref;
+        (*nref) ++;
+    }
+
+    void operator=( const uptr<T>& oth ) {
+        mine = oth.mine;
+        (*nref) ++;
     }
 
     bool operator==(T* oth) {
         return mine == oth;
     }
+
+    void unref() {
+        (*nref) --;
+        if( *nref == 0 ) {
+            delete mine;
+            delete nref;
+        }
+    }
+
     void operator=( T* oth ) {
-        delete mine ;
-        mine = oth;
+        unref();
+        nref = new int(1);
     }
 
     T& operator *() {
@@ -65,10 +87,11 @@ public:
     }
 
     ~uptr() {
-        delete mine;
+        unref();
     }
 private:
     T* mine;
+    int* nref;
 };
 
 class Exception {

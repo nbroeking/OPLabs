@@ -5,10 +5,9 @@ using namespace std;
 
 namespace io {
 
-int Putter::putBytes( const byte* in, size_t len ) {
+void Putter::putBytes( const byte* in, size_t len ) {
     for( size_t i = 0 ; i < len ; ++ i ) 
         putByte( in[i] );
-    return 0;
 }
 
 byte* GlobPutter::serialize( ssize_t& size ) {

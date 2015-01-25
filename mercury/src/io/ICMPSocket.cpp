@@ -19,7 +19,6 @@ namespace io {
 ICMPSocket::ICMPSocket() {
     m_fd = -1 ;
     m_seq = 0 ;
-    fill( (byte*)&m_packet_header, (byte*)&m_packet_header + sizeof( m_packet_header ), 0 ) ;
 }
 
 int ICMPSocket::init() {
@@ -43,22 +42,27 @@ int ICMPSocket::setNonBlocking(bool yes) {
     return fcntl(m_fd, F_SETFL, opts);
 }
 
+#define IP_HDR_SIZE 20
 int ICMPSocket::receive( ICMPPacket& pck, SocketAddress*& into ) {
     byte buffer[1024]; // TODO make this better
 
     struct sockaddr_in addr;
+	std::fill((byte*)&addr, (byte*)(&addr) + sizeof(struct sockaddr_in), 0);
     socklen_t len = sizeof(addr);
 
     ssize_t bytes_read;
-    size_t iph_size = sizeof( struct iphdr );
 
     if( (bytes_read = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr*)&addr, &len)) > 0 ) {
-        pck.deserialize(buffer + iph_size, bytes_read - iph_size);
+        pck.deserialize(buffer + IP_HDR_SIZE, bytes_read - IP_HDR_SIZE);
+        into = SocketAddress::toSocketAddress((sockaddr*)&addr, len);
         return 0 ;
     }
     
-    into = SocketAddress::toSocketAddress((sockaddr*)&addr, len);
-    return errno;
+	if( errno == 35 ) {
+		throw os::TimeoutException();
+	}
+
+    throw CException(errno);
 }
 
 ssize_t ICMPSocket::send(const ICMPPacket& pkt, const SocketAddress& to_addr) {

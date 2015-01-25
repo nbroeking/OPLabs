@@ -7,8 +7,9 @@
  * SocketAddress.hpp: <description>
  */
 
-#include <arpa/inet.h>
+// #include <arpa/inet.h>
 #include <prelude.hpp>
+#include <sys/socket.h>
 
 namespace io {
 

@@ -17,7 +17,7 @@ static void* run_thread( void* _thread ) {
 }
 
 Thread::Thread(Runnable& runner) : m_runner(runner) {
-	m_thread = -1;
+	m_thread = (pthread_t)0;
 }
 
 int Thread::start() {
