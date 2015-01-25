@@ -36,11 +36,21 @@ void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
     if( ! enabled ) return ;
     if( lev.level < min_lev ) return ;       
 
-    out.printf( "[%s|%s][", major_context.c_str(), minor_context.c_str() );
-    lev.printlevel( out, color );
     if( color ) {
+        out.printf( "[%s%s\e[00m|%s%s\e[00m][",
+            lev.esc.c_str(),
+            major_context.c_str(),
+            lev.esc.c_str(),
+            minor_context.c_str() );
+
+        lev.printlevel( out, color );
         out.printf( "] - %s", lev.esc.c_str());
     } else {
+        out.printf( "[%s|%s][",
+            major_context.c_str(),
+            minor_context.c_str() );
+
+        lev.printlevel( out, color );
         out.printf( "] - " );
     }
 

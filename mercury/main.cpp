@@ -4,6 +4,7 @@
 #include <io/StringWriter.hpp>
 
 #include <io/Inet4Address.hpp>
+#include <io/Resolv.hpp>
 
 #include <io/binary/StreamGetter.hpp>
 
@@ -85,6 +86,15 @@ int main( int argc, char** argv ) {
     log.printfln(SUCCESS, "simulating success");
     log.printfln(WARN, "simulating a warning");
     log.printfln(ERROR, "This is simulating an error");
+
+    {
+        vector< uptr<SocketAddress> > addrs = 
+            Resolv::getHostByName("google.com");
+        vector< uptr<SocketAddress> >::iterator itr;
+        for( itr = addrs.begin() ; itr != addrs.end() ; ++ itr ) {
+            log.printfln(INFO, "Found address: %s", (*itr)->toString().c_str());
+        }
+    }
 
     ProcessManager& man = ProcessManager::instance();
     log.printfln(INFO, "man: %p", &man);

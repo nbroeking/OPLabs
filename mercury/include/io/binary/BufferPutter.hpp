@@ -26,7 +26,7 @@ public:
 	inline BufferPutter(byte* bytes, size_t len):
 		bytes(bytes), len(len), cur(0) {}
 
-	virtual inline int putByte(byte b) OVERRIDE {
+	virtual inline void putByte(byte b) OVERRIDE {
 		if( cur == len ) {
 			char buf[1024];
 			snprintf(buf, sizeof(buf), "Overflow at index %lu. %lu byte exceeded\n",

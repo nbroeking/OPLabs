@@ -18,10 +18,9 @@ class GlobPutter : public Putter {
 public:
     inline GlobPutter(){}
 
-    virtual inline int putByte( byte b ) OVERRIDE {
+    virtual inline void putByte( byte b ) OVERRIDE {
         /* Push to the back */
         vec.push_back( b );
-        return 0;
     }
 
     /**

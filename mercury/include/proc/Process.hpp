@@ -209,11 +209,11 @@ private:
 
 }
 
-inline int putObject( io::Putter& putter, const proc::Message& msg ) {
-    return putter.putInt32be(msg.from_address.ip)     ||
-           putter.putInt32be(msg.from_address.pid)    ||
-           putter.putInt32be(msg.from_address.thread) ||
-           putObject( putter, msg.message );
+inline void putObject( io::Putter& putter, const proc::Message& msg ) {
+    putter.putInt32be(msg.from_address.ip)     ;
+    putter.putInt32be(msg.from_address.pid)    ;
+    putter.putInt32be(msg.from_address.thread) ;
+    putObject( putter, msg.message );
 }
 
 #endif /* PROCESS_HPP_ */

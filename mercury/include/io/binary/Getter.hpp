@@ -38,44 +38,22 @@ public:
 class Getter {
 public:
     /**
-     * @brief construct a new getter with the binary blob <code>blob</code>
-     *
-     * @param blob the blob to decode
-     * @param blob_len the length of blob
-     *
-     * This will create a new getter which will pull data from the binary blob
-     * provided
-     */
-	Getter( byte*& blob, size_t blob_len ) :
-		m_blob(blob), m_blob_len( blob_len ), m_cursor(0) {
-			blob = NULL;
-		}
-
-    /**
      * @brief Read just a singleton byte from this Getter and put it it <code>b</code>
      * @param b the reference to store the value
      * @return 0 on success, 1 if the Getter is out of bytes
      */
-	virtual inline int getByte( byte& b ) {
-		if ( m_cursor >= m_blob_len ) {
-            char buf[1024];
-            snprintf(buf, sizeof(buf), "Gettor underflow at position %u", (unsigned int)m_cursor);
-            throw GetterUnderflowException(buf);
-		}
-		b = m_blob[m_cursor ++];
-		return 0;
-	}
+	virtual byte getByte( ) = 0; 
 	
     /**
      * @brief get a 16 bit integer in little endian form
      * @param i where to store the value
      * @return 0 on success, 1 on error
      */
-	virtual inline int getInt16le( uint16_t& i ) {
+	virtual inline u16_t getInt16le() {
 		byte high, low;
-		int rc = getByte( low ) || getByte( high ) ;
-		i = high << 8 | low ;
-		return rc;
+		low = getByte();
+		high = getByte() ;
+		return high << 8 | low ;
 	}
 
     /**
@@ -83,11 +61,11 @@ public:
      * @param i where to store the value
      * @return 0 on success, 1 on error
      */
-	virtual inline int getInt16be( uint16_t& i ){
+	virtual inline u16_t getInt16be(){
 		byte high, low;
-		int rc = getByte( high ) || getByte( low ) ;
-		i = high << 8 | low ;
-		return rc;
+		high = getByte() ;
+		low = getByte();
+		return high << 8 | low ;
 	}
 
     /**
@@ -95,11 +73,10 @@ public:
      * @param i where to store the value
      * @return 0 on success, 1 on error
      */
-	virtual inline int getInt32le( uint32_t& i ) {
-		uint16_t high, low;
-		int rc = getInt16le( low ) || getInt16le( high ) ;
-		i = high << 16 | low ;
-		return rc;
+	virtual inline u32_t getInt32le() {
+		u16_t high, low;
+		low = getInt16le() ; high = getInt16le() ;
+		return high << 16 | low ;
 	}
 
     /**
@@ -107,11 +84,10 @@ public:
      * @param i where to store the value
      * @return 0 on success, 1 on error
      */
-	virtual inline int getInt32be( uint32_t& i ) {
+	virtual inline u32_t getInt32be() {
 		uint16_t high, low;
-		int rc = getInt16be( high ) || getInt16be( low ) ;
-		i = high << 16 | low ;
-		return rc;
+		high = getInt16be() ; low = getInt16be() ;
+		return high << 16 | low ;
 	}
 
     /**
@@ -119,11 +95,10 @@ public:
      * @param i where to store the value
      * @return 0 on success, 1 on error
      */
-	virtual inline int getInt64le( uint64_t& i ) {
-		uint32_t high, low;
-		int rc = getInt32le( low ) || getInt32le( high ) ;
-		i = ((uint64_t)high) << 32 | low ;
-		return rc;
+	virtual inline u64_t getInt64le() {
+		u32_t high, low;
+		low = getInt32le() ; high = getInt32le() ;
+		return ((u64_t)high) << 32 | low ;
 	}
 
     /**
@@ -131,11 +106,8 @@ public:
      * @param i where to store the value
      * @return 0 on success, 1 on error
      */
-	virtual inline int getInt64be( uint64_t& i ) {
-		uint32_t high, low;
-		int rc = getInt32be( high ) || getInt32be( low ) ;
-		i = ((uint64_t)high) << 32 | low ;
-		return rc;
+	virtual inline u64_t getInt64be() {
+		return ((u64_t)getInt32be()) << 32 | getInt32be() ;
 	}
 
     /**
@@ -148,19 +120,24 @@ public:
      *
      * @return 0 on success, 1 on error
      */
-	virtual inline int getBytes( byte* into, size_t len ) {
-		if( m_blob_len - m_cursor <= len ) return 1;
+	virtual inline void getBytes( byte* into, size_t len ) {
+		if( m_blob_len - m_cursor <= len ) 
+			throw GetterUnderflowException("Underflow in getBytes");
+
 		std::copy( m_blob + m_cursor, m_blob + m_cursor + len, into );
 		m_cursor += len;
-		return 0;
+	}
+
+	inline const byte* rest(size_t& len) {
+		len = m_blob_len - m_cursor;
+		return m_blob + m_cursor;
 	}
 
 	virtual inline ~Getter(){}
 
 protected:
-	Getter() : m_blob(NULL), m_blob_len(0), m_cursor(0) {}
 
-	byte* m_blob ;
+	const byte* m_blob ;
 	size_t m_blob_len ;
 	size_t m_cursor ;
 };
@@ -176,24 +153,25 @@ protected:
  * a gettable object.
  */
 template <class T>
-inline int getObject( io::Getter& g, T& t );
+int getObject( io::Getter& g, T& t );
 
-inline int getObject( io::Getter& g, byte& b ) {
-    g.getByte(b);
-    return 0;
+inline void getObject( io::Getter& g, byte& b ) {
+    b = g.getByte();
 }
 
 template <>
 inline int getObject( io::Getter& g, std::string& str ) {
 	uint32_t len;
 
-	if( g.getInt32le(len) ) return 1;
+	len = g.getInt32le();
 
 	char* data = new char[len+1];
 
-	if( g.getBytes((byte*)data, len) ) {
+	try {
+    	g.getBytes((byte*)data, len);
+	} catch ( Exception& e ) {
 		delete[] data;
-		return 2;
+		throw e;
 	}
 
 	data[len] = 0;

@@ -73,14 +73,14 @@ private:
 
 }
 
-inline int putObject( io::Putter& putter, const io::Buffer<byte>& buf ) {
-    return putter.putInt32be(buf.length()) ||
-           putIterator(putter, buf.rawPointer(), buf.rawPointer() + buf.length());
+inline void putObject( io::Putter& putter, const io::Buffer<byte>& buf ) {
+   putter.putInt32be(buf.length());
+   putIterator(putter, buf.rawPointer(), buf.rawPointer() + buf.length());
 }
 
 inline int getObject( io::Getter& getter, io::Buffer<byte>& buf ) {
     uint32_t size ;
-    getter.getInt32be( size );
+    size = getter.getInt32be();
 
     io::Buffer<byte> n(size);
     for ( size_t i = 0 ; i < size ; ++ i ) {

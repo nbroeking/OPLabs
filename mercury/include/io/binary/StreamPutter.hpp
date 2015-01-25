@@ -31,7 +31,7 @@ public:
     StreamPutter( BaseIO*& base_io, bool take=false, size_t buflen=1024 );
     StreamPutter( BaseIO*, size_t buflen=1024 );
 
-    virtual int putByte( byte b ) OVERRIDE ;
+    virtual void putByte( byte b ) OVERRIDE ;
 
     /**
      * @brief Flush the underlying output stream

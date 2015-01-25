@@ -8,6 +8,7 @@
  */
 
 #include <io/binary/BufferPutter.hpp>
+#include <io/binary/BufferGetter.hpp>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/ip.h>
@@ -20,6 +21,8 @@
 #include <algorithm>
 #include <io/SocketAddress.hpp>
 #include <io/ICMPHeader.hpp>
+
+#include <log/LogManager.hpp>
 
 namespace io {
 
@@ -40,8 +43,10 @@ public:
 
     /** Take a message and deserialize it */
     void deserialize( const byte* message, size_t len ) {
-        std::copy( message, message + sizeof(hdr), (byte*)&hdr );
-        setMessage(message + sizeof(hdr), len - sizeof(hdr));
+        BufferGetter getter(message, len);
+        getObject( getter, this->hdr );
+        const byte* next = getter.rest(len);
+        setMessage(next, len);
     }
 
     /**
@@ -80,34 +85,33 @@ public:
             return -1;
         }
         ICMPHeader lhdr = hdr;
-        checksum(lhdr);
+        lhdr.setChecksum(0);
 		BufferPutter putter(out, len);
 
 		putObject( putter, lhdr );
 		putter.putBytes(msg, this->len);
 
+        checksum(out, len);
+        logger::LogManager::instance().getLogContext("IO","ICMP").
+            printHex(TRACE, out, len);
         return 0;
     }
 
-    inline void checksum(ICMPHeader& hdr) const {
+    inline void checksum(byte* out, size_t len) const {
         uint16_t* summer;
+        size_t sum = 0;
 
-        size_t sum = hdr.getChecksumSum(); /* Start the checksum */
-        size_t res; 
-
-        for ( summer = (uint16_t*)msg; (byte*)summer < msg + len ; ++ summer ){
+        for ( summer = (uint16_t*)out; (byte*)summer < out + len ; ++ summer ){
             sum += * summer;
         }
         if( len & 1 ) {
-
             sum += msg[len-1];
         }
 
         sum = (sum >> 16) + (sum & 0xFFFF);
         sum += (sum >> 16);
 
-        res = ~sum;
-        hdr.setChecksum(res);
+        ((u16_t*)out)[1] = ~sum;
     }
         
     /**

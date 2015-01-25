@@ -11,7 +11,8 @@ ICMPHeader ICMPHeader::Echo(u16_t echoid, u16_t echo_seq) {
 }
 
 size_t ICMPHeader::getChecksumSum() {
-    return ((type << 8) + code) + 0 + echo_id + echo_seq;
+    u16_t u = (((u16_t)type) << 8) + (u16_t)code;
+    return u + 0 + echo_id + echo_seq;
 }
 
 }
