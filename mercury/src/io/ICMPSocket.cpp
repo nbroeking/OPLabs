@@ -53,15 +53,16 @@ int ICMPSocket::receive( ICMPPacket& pck, SocketAddress*& into ) {
     ssize_t bytes_read;
 
     if( (bytes_read = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr*)&addr, &len)) > 0 ) {
-        pck.deserialize(buffer + IP_HDR_SIZE, bytes_read - IP_HDR_SIZE);
+        pck.deserialize(buffer, bytes_read);
+        into = SocketAddress::toSocketAddress((sockaddr*)&addr, len);
         return 0 ;
     }
     
-    into = SocketAddress::toSocketAddress((sockaddr*)&addr, len);
 	if( errno == 35 ) {
 		throw os::TimeoutException();
 	}
-    return errno;
+
+    throw CException(errno);
 }
 
 ssize_t ICMPSocket::send(const ICMPPacket& pkt, const SocketAddress& to_addr) {

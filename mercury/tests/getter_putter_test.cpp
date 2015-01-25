@@ -14,7 +14,7 @@ using namespace io;
 using namespace std;
 
 #define TEST_SHORT 0xdead
-#define TEST_INT   32
+#define TEST_INT   0xdeadbeef
 #define TEST_LONG  0xdeadbeefdeadbeefll
 #define TEST_STRING "Hello, World!\n"
 
@@ -43,17 +43,12 @@ int write_file() {
 	FileDescriptor file( fd );
 	StreamPutter p( &file );
 
-	int rc;
-
-	rc = p.putInt16be( TEST_SHORT ) ||
-	     p.putInt32be( TEST_INT   ) ||
-	     p.putInt64be( TEST_LONG  )  ;
-
-	TEST_EQ_INT("putIntegers", rc, 0);
+	p.putInt16be( TEST_SHORT ) ;
+	p.putInt32be( TEST_INT   ) ;
+	p.putInt64be( TEST_LONG  ) ;
 
 	std::string str(TEST_STRING);
-	rc = putObject(p, str);
-	TEST_EQ_INT("putString", rc, 0);
+	putObject(p, str);
 
 	return 0;
 }
@@ -74,19 +69,17 @@ int read_file() {
 	uint32_t test32;
 	uint64_t test64;
 
-	int rc = g.getInt16be( test16 ) ||
-			 g.getInt32be( test32 ) ||
-			 g.getInt64be( test64 ) ;
+	test16 = g.getInt16be() ;
+	test32 = g.getInt32be() ;
+	test64 = g.getInt64be() ;
 
-	TEST_EQ( "getIntegers", rc, 0 );
-	TEST_EQ( "getInt32be_value", test16, TEST_SHORT );
-	TEST_EQ( "getInt32be_value", test32, TEST_INT );
+	TEST_EQ_INT( "getInt16be_value", test16, TEST_SHORT );
+	TEST_EQ_INT( "getInt32be_value", test32, TEST_INT );
 	TEST_EQ( "getInt64be_value", test64, TEST_LONG );
 
 	std::string str;
-	rc = getObject(g, str);
+	getObject(g, str);
 
-	TEST_EQ  ( "getString", rc, 0 );
 	TEST_BOOL( "getString_value", strcmp(str.c_str(), TEST_STRING) == 0 );
 
     unlink(fpath);

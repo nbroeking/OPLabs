@@ -32,7 +32,7 @@ int runping( ICMPSocket& sock ) {
     LOG("Attempting to ping %s\n", host);
 
     ICMPPacket pckt;
-	ICMPHeader hdr = ICMPHeader::Echo(getpid(), count++);
+	ICMPHeader hdr = ICMPHeader::Echo(5, count++);
 
     pckt.setHeader(hdr);
     pckt.setMessage(mesg, sizeof(mesg));
@@ -42,15 +42,20 @@ int runping( ICMPSocket& sock ) {
     try {
         to_addr = Inet4Address::fromString(host, 0);
     } catch ( InetParseException& err ) {
-        LOG("Unable to parese %s. Defaulting to 127.0.0.1", host);
+        LOG("Unable to parse %s. Defaulting to 127.0.0.1", host);
     }
 
 
 	try {
         TEST_BOOL( "SocketSend", sock.send(pckt, to_addr) > 0 );
         uptr<SocketAddress> r_addr;
+
         TEST_EQ_INT( "SocketReceive", sock.receive(pkt, r_addr.cleanref()), 0 );
+
+        log.printfln(DEBUG, "Message");
+        log.printHex(DEBUG, pkt.getMessage(), pkt.getMessgaeLength());
         TEST_EQ_INT( "PingMessage", strcmp((const char*)pkt.getMessage(), "Hello, World!"), 0 );
+
         sock.setTimeout(1 MICROS);
         TEST_BOOL( "TestTimeout", sock.receive(pkt, r_addr.cleanref()) != 0 );
 	} catch ( Exception& e ) {
