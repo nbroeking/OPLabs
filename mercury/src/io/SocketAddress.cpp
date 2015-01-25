@@ -3,6 +3,7 @@
 #include <io/Inet4Address.hpp>
 #include <io/Inet6Address.hpp>
 #include <io/UnixAddress.hpp>
+#include <io/UnspecifiedAddress.hpp>
 
 #include <cstdio>
 
@@ -13,7 +14,7 @@ SocketAddress* SocketAddress::toSocketAddress( struct sockaddr* addr, socklen_t 
 
     switch( addr->sa_family ) {
     case AF_UNSPEC:
-        return NULL;
+		return new UnspecifiedAddress();
     case AF_INET:
         return new Inet4Address( *(struct sockaddr_in*)addr );
     case AF_INET6:

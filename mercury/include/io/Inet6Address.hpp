@@ -7,8 +7,9 @@
  * Inet6Address.hpp: <description>
  */
 
-#include <prelude.hpp>
+#include <Prelude>
 #include <io/SocketAddressTempl.hpp>
+#include <netinet/in.h>
 
 namespace io {
 

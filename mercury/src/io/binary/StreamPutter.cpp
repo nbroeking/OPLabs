@@ -28,14 +28,12 @@ void StreamPutter::flush( ) {
     m_buffer_ptr = 0;
 }
 
-int StreamPutter::putByte( byte b ) {
+void StreamPutter::putByte( byte b ) {
     m_buffer[m_buffer_ptr++] = b;
 
     if( m_buffer_ptr == m_buffer_total_size ) {
         flush();
     }
-
-    return 0;
 }
 
 int StreamPutter::close() {

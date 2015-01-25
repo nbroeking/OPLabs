@@ -1,5 +1,6 @@
 #include <io/Inet4Address.hpp>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <cstdio>
 
 namespace io {

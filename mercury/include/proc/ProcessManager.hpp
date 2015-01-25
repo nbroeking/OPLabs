@@ -93,8 +93,8 @@ inline int putObject( io::Putter& p, const proc::ManagerPacket& pkt ) {
 
 template <>
 inline int getObject( io::Getter& g, proc::ManagerPacket& pkt ) {
-    g.getInt32be(pkt.origin_pid);
-    g.getByte((byte&)pkt.type);
+    pkt.origin_pid = g.getInt32be();
+    pkt.type = (proc::PacketType)g.getByte();
     getObject( g, pkt.data );
     return 0;
 }
