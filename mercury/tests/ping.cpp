@@ -56,8 +56,13 @@ int runping( ICMPSocket& sock ) {
         log.printHex(DEBUG, pkt.getMessage(), pkt.getMessgaeLength());
         TEST_EQ_INT( "PingMessage", strcmp((const char*)pkt.getMessage(), "Hello, World!"), 0 );
 
-        sock.setTimeout(1 MICROS);
-        TEST_BOOL( "TestTimeout", sock.receive(pkt, r_addr.cleanref()) != 0 );
+        try {
+            sock.setTimeout(1 MICROS);
+            sock.receive(pkt, r_addr.cleanref());
+            TEST_BOOL( "TestTimeout",  false );
+        } catch (Exception& e) {
+            TEST_BOOL( "TestTimeout", true );
+        }
 	} catch ( Exception& e ) {
 		log.printfln(ERROR, "Exception caught: %s", e.getMessage());
 		return 1;
