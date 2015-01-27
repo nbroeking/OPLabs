@@ -20,6 +20,11 @@
 		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
 		56C7AFEF1A6F1E9600AAA0EB /* ViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */; };
 		56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7E0FD1A721A9300965DE3 /* TesterTests.m */; };
+		DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7B71A78306800E169AA /* LoginViewController.m */; };
+		DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7BA1A78309500E169AA /* SignupViewController.m */; };
+		DB34B7C11A7836CA00E169AA /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C01A7836C900E169AA /* HomeViewController.m */; };
+		DB34B7C71A783B2B00E169AA /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C61A783B2B00E169AA /* SettingsViewController.m */; };
+		DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C91A783C5600E169AA /* MenuTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +61,16 @@
 		56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController2.h; sourceTree = "<group>"; };
 		56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController2.m; sourceTree = "<group>"; };
 		56C7E0FD1A721A9300965DE3 /* TesterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TesterTests.m; sourceTree = "<group>"; };
+		DB34B7B61A78306800E169AA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		DB34B7B71A78306800E169AA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		DB34B7B91A78309500E169AA /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
+		DB34B7BA1A78309500E169AA /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
+		DB34B7BF1A7836C900E169AA /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomeViewController.h; path = ../HomeViewController.h; sourceTree = "<group>"; };
+		DB34B7C01A7836C900E169AA /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HomeViewController.m; path = ../HomeViewController.m; sourceTree = "<group>"; };
+		DB34B7C51A783B2B00E169AA /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		DB34B7C61A783B2B00E169AA /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		DB34B7C81A783C5600E169AA /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewController.h; sourceTree = "<group>"; };
+		DB34B7C91A783C5600E169AA /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +112,8 @@
 		56A717B91A6B6575006E1198 = {
 			isa = PBXGroup;
 			children = (
+				DB34B7C51A783B2B00E169AA /* SettingsViewController.h */,
+				DB34B7C61A783B2B00E169AA /* SettingsViewController.m */,
 				56A717C41A6B6576006E1198 /* Hermes */,
 				56A717E41A6B6576006E1198 /* HermesTests */,
 				56A717C31A6B6576006E1198 /* Products */,
@@ -162,6 +179,14 @@
 				56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */,
 				56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */,
 				56A717D51A6B6576006E1198 /* Main.storyboard */,
+				DB34B7C81A783C5600E169AA /* MenuTableViewController.h */,
+				DB34B7C91A783C5600E169AA /* MenuTableViewController.m */,
+				DB34B7BF1A7836C900E169AA /* HomeViewController.h */,
+				DB34B7C01A7836C900E169AA /* HomeViewController.m */,
+				DB34B7B61A78306800E169AA /* LoginViewController.h */,
+				DB34B7B71A78306800E169AA /* LoginViewController.m */,
+				DB34B7B91A78309500E169AA /* SignupViewController.h */,
+				DB34B7BA1A78309500E169AA /* SignupViewController.m */,
 				56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */,
 				56A717D81A6B6576006E1198 /* Images.xcassets */,
 				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
@@ -272,8 +297,13 @@
 				56C7AFEF1A6F1E9600AAA0EB /* ViewController2.m in Sources */,
 				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
 				562737031A71BB0D00F05935 /* Tester.m in Sources */,
+				DB34B7C71A783B2B00E169AA /* SettingsViewController.m in Sources */,
 				56C7AFB51A6F1A3500AAA0EB /* MainViewController.m in Sources */,
+				DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
+				DB34B7C11A7836CA00E169AA /* HomeViewController.m in Sources */,
+				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
+				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
 				56A717C81A6B6576006E1198 /* main.m in Sources */,
 				56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */,
