@@ -1,6 +1,7 @@
 package main;
 
 import android.util.*;
+import communication.*;
 import tester.*;
 import android.app.Application;
 import android.content.res.Configuration;
@@ -8,11 +9,15 @@ import android.content.res.Configuration;
 public class HermesApplication extends Application 
 {
 	private final String TAG = "HermesApp";
+	private Communicator communicator;
+	
 	private Tester tester;
 	
 	public HermesApplication(){
 		super();
 		Log.i(TAG, "Application object was constructed");
+		tester = null;
+		communicator = null;
 	}
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -27,6 +32,9 @@ public class HermesApplication extends Application
 		//Create some threads	
 		tester = new Tester("Tester");
 		tester.start();
+		
+		communicator = new Communicator("Comm");
+		communicator.start();
 		
 	}
 	
@@ -43,6 +51,7 @@ public class HermesApplication extends Application
 		
 		try {
 			tester.join();
+			communicator.join();
 		} catch (InterruptedException e) {
 			Log.i(TAG, "Application could not join with tester");
 			e.printStackTrace();

@@ -14,7 +14,7 @@ import android.util.Log;
 public class Tester extends HandlerThread {
 	
 	private static final String TAG = "HermesTester";
-	private Boolean started;
+
 	private String mName;
 	
 	public TestMessageHandler mHandler;
@@ -25,7 +25,6 @@ public class Tester extends HandlerThread {
 	public Tester(String name) {
 		super(name);
 		mName = name;
-		started = false;
 
 		mHandler = null;
 		Log.i(TAG, "Tester constructed");
@@ -39,10 +38,6 @@ public class Tester extends HandlerThread {
 		mHandler = new TestMessageHandler();		
 		Looper.loop();
 
-	}
-	
-	synchronized public Boolean isRunning(){
-		return started;
 	}
 	synchronized public String name(){
 		return mName;

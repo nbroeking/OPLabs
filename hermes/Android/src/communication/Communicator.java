@@ -13,8 +13,7 @@ import android.util.Log;
  */
 public class Communicator extends HandlerThread {
 	
-	private static final String TAG = "HermesTester";
-	private Boolean started;
+	private static final String TAG = "HermesComm";
 	private String mName;
 	
 	public CommMessageHandler mHandler;
@@ -25,10 +24,9 @@ public class Communicator extends HandlerThread {
 	public Communicator(String name) {
 		super(name);
 		mName = name;
-		started = false;
 
 		mHandler = null;
-		Log.i(TAG, "Tester constructed");
+		Log.i(TAG, "Communicator constructed");
 	}
 	
 	@Override
@@ -38,12 +36,8 @@ public class Communicator extends HandlerThread {
 		
 		mHandler = new CommMessageHandler();		
 		Looper.loop();
-
 	}
 	
-	synchronized public Boolean isRunning(){
-		return started;
-	}
 	synchronized public String name(){
 		return mName;
 	}
