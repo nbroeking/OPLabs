@@ -21,6 +21,8 @@ public class HermesApplication extends Application
 	public void onCreate() {
 		super.onCreate();
 		Log.i(TAG, "Application onCreate");
+		
+		//Create some threads	
 	}
 	
 	@Override
