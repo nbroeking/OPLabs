@@ -1,4 +1,6 @@
-package com.oplabs.hermes;
+package main;
+
+import com.oplabs.hermes.R;
 
 import android.app.Activity;
 import android.os.Bundle;
