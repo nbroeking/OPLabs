@@ -53,11 +53,10 @@
                 NSLog(@"inputStream is ready.");
                 
                 uint8_t buf[1024];
-                unsigned int len = 0;
                 
                 //We need to account for tcp messages not all being sent at once
                 //Protocol should have first 4 bytes send the number of bytes expected
-                len = [inputStream read:buf maxLength:1024];
+                NSInteger len = [inputStream read:buf maxLength: 1024];
                 
                 if(len > 0) {
                     NSMutableData* data=[[NSMutableData alloc] initWithLength:0];
@@ -88,7 +87,7 @@
             break;
         }
         default: {
-            NSLog(@"Stream is sending an Event: %i", event);
+            NSLog(@"Stream is sending an Event: %lu", event);
             
             break;
         }
