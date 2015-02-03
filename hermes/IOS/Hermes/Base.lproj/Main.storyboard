@@ -57,7 +57,7 @@
                                     <navigationItem id="8w3-op-hEK">
                                         <barButtonItem key="leftBarButtonItem" title="Login" id="y0H-B4-8RS">
                                             <connections>
-                                                <segue destination="bey-In-emy" kind="custom" identifier="Login" id="Ifu-Ji-21j"/>
+                                                <segue destination="bey-In-emy" kind="show" identifier="Login" id="Ifu-Ji-21j"/>
                                             </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" title="Menu" id="F3X-Ud-4mz">
