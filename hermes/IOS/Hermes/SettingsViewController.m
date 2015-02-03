@@ -1,18 +1,18 @@
 //
-//  HomeViewController.m
+//  SettingsViewController.m
 //  Hermes
 //
 //  Created by Sarah Feller on 2/3/15.
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
-#import "HomeViewController.h"
+#import "SettingsViewController.h"
 
-@interface HomeViewController ()
+@interface SettingsViewController ()
 
 @end
 
-@implementation HomeViewController
+@implementation SettingsViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
