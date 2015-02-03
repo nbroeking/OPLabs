@@ -6,4 +6,5 @@ MySQL-python==1.2.5
 SQLAlchemy==0.9.8
 Werkzeug==0.9.6
 itsdangerous==0.24
+requests==2.5.1
 wsgiref==0.1.2
