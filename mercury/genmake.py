@@ -45,7 +45,7 @@ MAKEFILE_HEADER='''
 # The target tells the make file for which architecture we are building
 # Currently configured are:
 #
-''' + get_targets() + '''
+:''' + get_targets() + '''
 #
 # The environment specifies what environment we are using (e.g. devel, test, release)
 #
