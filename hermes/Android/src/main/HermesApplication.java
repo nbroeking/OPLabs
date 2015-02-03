@@ -1,12 +1,14 @@
 package main;
 
 import android.util.*;
+import tester.*;
 import android.app.Application;
 import android.content.res.Configuration;
 
 public class HermesApplication extends Application 
 {
-	private static final String TAG = "HermesApp";
+	private final String TAG = "HermesApp";
+	private Tester tester;
 	
 	public HermesApplication(){
 		super();
@@ -23,6 +25,9 @@ public class HermesApplication extends Application
 		Log.i(TAG, "Application onCreate");
 		
 		//Create some threads	
+		tester = new Tester("Tester");
+		tester.start();
+		
 	}
 	
 	@Override
@@ -33,8 +38,15 @@ public class HermesApplication extends Application
  
 	@Override
 	public void onTerminate() {
-		Log.i(TAG, "Application will Terminate");
 		super.onTerminate();
+		Log.i(TAG, "Application will Terminate");
+		
+		try {
+			tester.join();
+		} catch (InterruptedException e) {
+			Log.i(TAG, "Application could not join with tester");
+			e.printStackTrace();
+		}
 	
 	}
 }
