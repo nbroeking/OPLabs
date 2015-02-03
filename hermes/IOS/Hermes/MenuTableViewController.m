@@ -41,6 +41,14 @@
     return 5;
 }
 
+-(void) test
+{
+    //if( )
+    {
+        //do one segue
+    }
+    //[self performSegueWithIdentifier:<#(NSString *)#> sender:<#(id)#>]
+}
 
 /*- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
