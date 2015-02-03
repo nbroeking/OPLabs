@@ -1,13 +1,13 @@
 //
-//  SetupViewController.h
+//  SettingsViewController.h
 //  Hermes
 //
-//  Created by Sarah Feller on 1/27/15.
+//  Created by Sarah Feller on 2/3/15.
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface SetupViewController : UIViewController
+@interface SettingsViewController : UIViewController
 
 @end
