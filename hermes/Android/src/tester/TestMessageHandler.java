@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-public class MessageHandler extends Handler {
+public class TestMessageHandler extends Handler {
 
 	final private int QUIT = 0;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tester;
+package communication;
 
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -11,18 +11,18 @@ import android.util.Log;
  * @author NBroeking
  *
  */
-public class Tester extends HandlerThread {
+public class Communicator extends HandlerThread {
 	
 	private static final String TAG = "HermesTester";
 	private Boolean started;
 	private String mName;
 	
-	public TestMessageHandler mHandler;
+	public CommMessageHandler mHandler;
 	
 	/**
 	 * 
 	 */
-	public Tester(String name) {
+	public Communicator(String name) {
 		super(name);
 		mName = name;
 		started = false;
@@ -36,7 +36,7 @@ public class Tester extends HandlerThread {
 		//Set up looper
 		Looper.prepare();
 		
-		mHandler = new TestMessageHandler();		
+		mHandler = new CommMessageHandler();		
 		Looper.loop();
 
 	}
