@@ -22,9 +22,13 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import os
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 db = SQLAlchemy(app)
+
+from rest_api.controller import rest_blueprint
+app.register_blueprint(rest_blueprint)
 
 if __name__ == "__main__":
     app.debug = config.DEBUG
