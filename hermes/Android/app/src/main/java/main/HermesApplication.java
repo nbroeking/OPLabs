@@ -1,5 +1,6 @@
 package main;
 
+import android.os.Message;
 import android.util.*;
 import communication.*;
 import tester.*;
@@ -28,14 +29,19 @@ public class HermesApplication extends Application
 	public void onCreate() {
 		super.onCreate();
 		Log.i(TAG, "Application onCreate");
-		
+
+        //There is a bug here where if we try and send a message to the threads too soon it
+        //will never get there, however I am betting on the fact that noone fingers are fast enough
+        //to make this a problem
+
 		//Create some threads	
 		tester = new Tester("Tester");
 		tester.start();
 		
 		communicator = new Communicator("Comm");
 		communicator.start();
-		
+
+
 	}
 	
 	@Override
@@ -46,9 +52,18 @@ public class HermesApplication extends Application
  
 	@Override
 	public void onTerminate() {
+        Log.i(TAG, "Application will Terminate");
 		super.onTerminate();
-		Log.i(TAG, "Application will Terminate");
-		
+        Log.i(TAG, "Killing the worker threads");
+
+        Message msg = Message.obtain();
+        msg.what = MainMsg.QUIT;
+        msg.obj = null;
+
+        tester.mHandler.sendMessage(msg);
+        communicator.mHandler.sendMessage(msg);
+
+        Log.i(TAG, "Waiting for the workers to DIE");
 		try {
 			tester.join();
 			communicator.join();
