@@ -61,7 +61,7 @@
         
         if( started)
         {
-            NSLog(@"Communication already started: try again");
+            NSLog(@"Tester already started: try again");
             return;
         }
         shouldRun = true;
@@ -70,7 +70,7 @@
         NSLog(@"Starting Threads");
         //Start the run loop
         thread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
-        [thread setName:@"Communication"];
+        [thread setName:@"Tester"];
         [thread start];
     }
 }
