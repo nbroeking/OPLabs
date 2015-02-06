@@ -91,6 +91,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		565B11A71A8424C20033E442 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				56C7AFB31A6F1A3500AAA0EB /* MainViewController.h */,
+				56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */,
+				56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */,
+				56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */,
+				DB34B7C81A783C5600E169AA /* MenuTableViewController.h */,
+				DB34B7C91A783C5600E169AA /* MenuTableViewController.m */,
+				DB34B7B61A78306800E169AA /* LoginViewController.h */,
+				DB34B7B71A78306800E169AA /* LoginViewController.m */,
+				DB34B7B91A78309500E169AA /* SignupViewController.h */,
+				DB34B7BA1A78309500E169AA /* SignupViewController.m */,
+				DBE3C4EE1A81609C00CB504A /* HomeViewController.h */,
+				DBE3C4EF1A81609C00CB504A /* HomeViewController.m */,
+				DBE3C4F11A8160B400CB504A /* SettingsViewController.m */,
+				DBE3C4F31A8160F200CB504A /* SettingsViewController.h */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
 		566ABD431A6B9CE500B114C1 /* Communication */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,28 +189,15 @@
 		56C7AFA41A6F152700AAA0EB /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				565B11A71A8424C20033E442 /* ViewControllers */,
 				56A717C91A6B6576006E1198 /* AppDelegate.h */,
 				56A717CA1A6B6576006E1198 /* AppDelegate.m */,
 				56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */,
 				56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */,
-				56C7AFB31A6F1A3500AAA0EB /* MainViewController.h */,
-				56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */,
-				56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */,
-				56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */,
 				56A717D51A6B6576006E1198 /* Main.storyboard */,
-				DB34B7C81A783C5600E169AA /* MenuTableViewController.h */,
-				DB34B7C91A783C5600E169AA /* MenuTableViewController.m */,
-				DB34B7B61A78306800E169AA /* LoginViewController.h */,
-				DB34B7B71A78306800E169AA /* LoginViewController.m */,
-				DB34B7B91A78309500E169AA /* SignupViewController.h */,
-				DB34B7BA1A78309500E169AA /* SignupViewController.m */,
 				56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */,
 				56A717D81A6B6576006E1198 /* Images.xcassets */,
 				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
-				DBE3C4EE1A81609C00CB504A /* HomeViewController.h */,
-				DBE3C4EF1A81609C00CB504A /* HomeViewController.m */,
-				DBE3C4F11A8160B400CB504A /* SettingsViewController.m */,
-				DBE3C4F31A8160F200CB504A /* SettingsViewController.h */,
 			);
 			name = Main;
 			sourceTree = "<group>";
