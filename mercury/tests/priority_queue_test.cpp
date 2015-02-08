@@ -1,6 +1,7 @@
 #include <containers/PriorityQueue.hpp>
 #include <test/Tester.hpp>
 #include <algorithm>
+#include <valarray>
 
 using namespace std;
 using namespace test;
@@ -15,17 +16,40 @@ bool issorted( std::vector<int>& vec ) {
     return true;
 }
 
+int sum( const std::vector<int>& vec ) {
+    int sum = 0;
+    for ( size_t i = 0 ; i < vec.size() ; ++ i ) {
+        sum += vec[i];
+    }
+    return sum;
+}
+
 int main( int argc, char** argv ) {
     Tester::init("PriorityQueue", argc, argv);
     PriorityQueue<int> pq;
 
     Tester::getLog().printfln(INFO, "Priority queue test");
 
+    std::vector<int> to_rm;
+
     int i;
     for( size_t j = 0 ; j < 20 ; ++ j ) {
         i = rand() % 10000;
+
+        if( rand() & 1 ) to_rm.push_back(i);
+
         pq.push(i);
     }
+    size_t check = sum( pq.internal() );
+    
+    for( size_t j = 0 ; j < to_rm.size() ; ++ j ) {
+        Tester::getLog().printfln(INFO, "Remove %d", to_rm[j]);
+        pq.remove(to_rm[j]);
+        TEST_BOOL("HeapVerify:remove", pq.verify());
+    }
+    size_t check2 = sum( pq.internal() ) + sum( to_rm );
+    
+    TEST_BOOL("HeapChecksum", check == check2);
 
     TEST_BOOL("HeapVerify", pq.verify());
 
@@ -35,7 +59,6 @@ int main( int argc, char** argv ) {
         i = pq.front();
         pq.pop();
         vec.push_back(i);
-
         TEST_BOOL("HeapVerify", pq.verify());
     }
 

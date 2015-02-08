@@ -60,9 +60,10 @@ public:
         itr = std::find(heap.begin(), heap.end(), ele);
 
         if( itr != heap.end() ) {
-            * itr = heap.back();
+            size_t index = itr - heap.begin();
+            heap[index] = heap.back();
             heap.pop_back();
-            sift_down(itr - heap.begin());
+            reheap(index);
             return true;
         }
 
@@ -83,6 +84,20 @@ public:
         return loose_verify(0);
     }
 
+    void print_heap(std::ostream& out) {
+        _print_heap(out, 0, 0);
+    }
+
+    void _print_heap(std::ostream& out, size_t ele, size_t tab) {
+        if( nil(ele) ) return ;
+
+        _print_heap( out, child1(ele), tab + 1 );
+        for( size_t i = 0 ; i < tab ; ++ i ) out << "\t";
+        out << heap[ele] << std::endl;
+        _print_heap( out, child2(ele), tab + 1 );
+    }
+
+    const std::vector<Elem_T>& internal() { return heap; }
 private:
     bool loose_verify(size_t elem) {
         /* make sure the first child is greater than 
@@ -113,6 +128,11 @@ private:
     inline size_t child1(size_t elem) { return elem * 2 + 1; }
     inline size_t child2(size_t elem) { return elem * 2 + 2; }
     inline size_t parent(size_t elem) { return (elem-1) / 2; }
+
+    void reheap( size_t elem ) {
+        if ( comp(heap[elem], heap[parent(elem)]) ) sift_up( elem ); 
+        else sift_down( elem );
+    }
 
     /*
      * Move a heavy element down
