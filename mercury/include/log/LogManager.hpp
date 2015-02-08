@@ -14,6 +14,12 @@
 #include <map>
 #include <set>
 
+#ifdef environment_RELEASE
+#define DEFAULT_LEVEL INFO
+#else
+#define DEFAULT_LEVEL DEBUG
+#endif
+
 namespace logger {
 
 /**
@@ -68,6 +74,20 @@ public:
      * @return The global instace if this class
      */
     static LogManager& instance() ;
+
+    /**
+     * Sweeping declaration, enable all logs at every level at all times
+     */
+    void logEverything() {
+        os::ScopedLock __sl(m_mutex);
+        setEnableByDefault( true );
+        setDefaultLevel(DEFAULT_LEVEL);
+        _logEverything();
+    }
+
+    void setDefaultLevel( const LogLevel& lev ) {
+        this->defaultLevel = lev;
+    }
 private:
 
     LogContext& _getLogContext(const std::string& maj, const std::string& min) ;
@@ -76,12 +96,15 @@ private:
 
     void _enableAllForMajor(const std::string& maj) ;
 
-    inline LogManager(): enable_default(false) {}
+    void _logEverything();
+
+    inline LogManager(): enable_default(false), defaultLevel(DEBUG) {}
 
     typedef std::map< std::string, std::map< std::string, LogContext* > > map_type ;
 
     bool enable_default;
     std::set< std::string > enabled_majors;
+    LogLevel defaultLevel;
     map_type m_db;
     os::Mutex m_mutex;
 };

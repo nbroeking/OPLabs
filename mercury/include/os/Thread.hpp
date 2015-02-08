@@ -22,6 +22,12 @@ class Thread {
 public:
     static Thread* getCurrentThread();
 
+    static inline Thread* begin(Runnable& runner) {
+        Thread* ret = new Thread(runner);
+        ret->start();
+        return ret;
+    }
+
     /**
      * @brief Construct a Thread from the given Runnable
      * @param runner The runnable to delegate to

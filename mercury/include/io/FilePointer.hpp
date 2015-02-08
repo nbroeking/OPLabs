@@ -21,7 +21,10 @@ public:
     FILE* raw() { return m_fp; }
 
     virtual ssize_t write( const byte* in, size_t len ) OVERRIDE {
-        return fwrite( in, 1, len, m_fp );
+        ssize_t ret;
+        ret = fwrite( in, 1, len, m_fp );
+        fflush(m_fp);
+        return ret;
     }
 
     virtual ssize_t read( byte* out, size_t len ) OVERRIDE {
