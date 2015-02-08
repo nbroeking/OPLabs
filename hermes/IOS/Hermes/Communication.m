@@ -12,10 +12,13 @@
 
 @property(strong, atomic) NSInputStream* inputStream;
 @property(strong, atomic) NSOutputStream* outputStream;
+@property(strong, atomic) NSThread *thread;
+@property(strong, nonatomic) NSURL *loginURL;
 
 -(void) setUpSockets;
 -(void) tearDownSockets;
 -(void) tearDownRunLoop;
+-(void) loginToServer: (id) sender;
 
 @end
 
@@ -23,6 +26,7 @@
 @synthesize inputStream;
 @synthesize outputStream;
 @synthesize thread;
+@synthesize loginURL;
 
 //Initlizes the Communication subsystem to 0
 -(instancetype)init{
@@ -33,6 +37,9 @@
         shouldRun = false;
         inputStream = nil;
         outputStream = nil;
+        
+        //Constants
+        loginURL = [NSURL URLWithString:@"http://www.facebook.com"];
         NSLog(@"Created Communication Object");
     }
     return self;
@@ -193,5 +200,19 @@
     {
         return started;
     }
+}
+
+-(void)login:(id)sender
+{
+    [self performSelector:@selector(loginToServer:) onThread:thread withObject:sender waitUntilDone:NO];
+}
+-(void)loginToServer:(id)sender
+{
+    NSData* data = [NSData dataWithContentsOfURL: loginURL];
+    
+    NSLog(@"Response: %@", data);
+    
+    // [self performSelectorOnMainThread:@selector(fetchedData:)
+    //                      withObject:data waitUntilDone:YES];
 }
 @end
