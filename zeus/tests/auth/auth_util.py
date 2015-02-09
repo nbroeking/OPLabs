@@ -2,7 +2,7 @@ import requests
 from util import Context
 
 def do_post(url, params):
-    return requests.post(Context.make_url(url), data=params)
+    return requests.post(Context.make_url(url), data=params, verify=False)
 
 def login(email=None, pw=None):
     """ Attempt to login. Defaults to the special testing username and password specified

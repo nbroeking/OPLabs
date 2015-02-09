@@ -1,5 +1,7 @@
 from auth import auth_tests
 from util import Context, FAILURE
+import requests
+requests.packages.urllib3.disable_warnings()
 
 def run_tests():
     # Run all of the basic API authentication tests
