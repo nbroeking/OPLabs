@@ -21,7 +21,7 @@ from app import app
 import config
 
 from rest_api.controller import rest_blueprint
-app.register_blueprint(rest_blueprint)
+app.register_blueprint(rest_blueprint, url_prefix="/api")
 
 if __name__ == "__main__":
     app.run()
