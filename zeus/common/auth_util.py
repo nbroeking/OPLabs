@@ -1,8 +1,9 @@
 from flask import jsonify, request
 from common.auth_model import User
 from functools import wraps
+from json_util import JSON_FAILURE
 
-INVALID_AUTH = ('{"status":"invalid"}', 401)
+INVALID_AUTH = (JSON_FAILURE(), 401)
 
 class requires_token():
     """ This is a convenience decorator that will ensure the rapped function will
