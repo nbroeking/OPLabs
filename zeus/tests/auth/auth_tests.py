@@ -24,17 +24,17 @@ def test_authenticated(token):
     assert json['your_email'] == Context.email, \
         FAILURE("testfunc returned wrong email!", token=token)
 
-    print SUCCESS("Authenticated method", token=token)
+    print (SUCCESS("Authenticated method", token=token))
 
 def test_unauthenticated(token="asdfdsasdf"):
     """ An invalid token should not be able to call authenticated methods. """
     resp = testfunc(token)
     check_status(resp, code=401, fields=['status'])
 
-    print SUCCESS("Unauthenticated method", token=token)
+    print (SUCCESS("Unauthenticated method", token=token))
 
 def all_tests():
-    print UNDERLINE(INFO("Running Basic Authentication tests"))
+    print (UNDERLINE(INFO("Running Basic Authentication tests")))
     # Log user in
     user_token = test_valid_login()
 
@@ -57,7 +57,7 @@ def all_tests():
     test_invalid_login(email=Context.email, pw='wrongpassword')
     test_invalid_login(email="wrongemail", pw=Context.passwd)
 
-    print UNDERLINE(INFO("Basic Authentication tests passed."))
+    print (UNDERLINE(INFO("Basic Authentication tests passed.")))
 
 if __name__ == '__main__':
     all_tests()

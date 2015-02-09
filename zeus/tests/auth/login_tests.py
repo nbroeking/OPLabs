@@ -19,9 +19,9 @@ def test_valid_login():
 
     assert len(token) > 64, FAILURE("Auth_token too small?")
 
-    print SUCCESS("Valid login test",
+    print (SUCCESS("Valid login test",
                   user=Context.email,
-                  passwd=Context.passwd)
+                  passwd=Context.passwd))
 
     return token
 
@@ -34,14 +34,14 @@ def test_logout(token):
     assert resp.json()['status'] == 'success', \
         FAILURE("Logout did not return success!")
 
-    print SUCCESS("Logout test", token=token)
+    print (SUCCESS("Logout test", token=token))
 
 def test_invalid_login(email="fakeemail", pw="INVALIDPASSWORD"):
     """ Invalid credentials should not allow a user to log in. """
     resp = login(email=email, pw=pw)
     check_status(resp, code=401, fields=['status'])
 
-    print SUCCESS("Invalid login test",
+    print (SUCCESS("Invalid login test",
                   user=email,
-                  passwd=pw)
+                  passwd=pw))
 
