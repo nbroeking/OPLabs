@@ -19,7 +19,7 @@ namespace logger {
 io::FilePointer p_stdout(stdout);
 
 LogContext::LogContext(const string& maj, const string& minor) :
-    min_lev( DEFUALT_MIN_LOG ),
+    min_lev( 0 ),
     major_context( maj ),
     minor_context( minor ),
     enabled( false ),

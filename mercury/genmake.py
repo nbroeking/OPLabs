@@ -45,7 +45,7 @@ MAKEFILE_HEADER='''
 # The target tells the make file for which architecture we are building
 # Currently configured are:
 #
-''' + get_targets() + '''
+:''' + get_targets() + '''
 #
 # The environment specifies what environment we are using (e.g. devel, test, release)
 #
@@ -73,6 +73,9 @@ ENV?=devel
 export ROOT_DIR=.
 include targets/$(TGT)/$(ENV).mk 
 
+export CXX
+export AR
+
 CXXFLAGS := $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
 
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
@@ -83,15 +86,17 @@ LDFLAGS := $(LDFLAGS) -lpthread
 QEMU?=
 export QEMU
 
-default: tests notests
+default: all
 '''
 
 MAKEFILE_FOOTER = '''
 clean:
-	rm -rf '''+OBJS_DIR+'''
-	rm -f mercury
+	for i in $$(find -name '_$(TGT)_obs') ; do rm -rfv $$i ; done
 
-.PHONY: tools tests
+.PHONY: tools tests 3rdparty
+3rdparty:
+	for i in $$(find 3rdparty/ -iname "makefile"); do $(MAKE) -C $$(dirname $$i) $(MAKECMDGOALS) ; done
+
 tools: notests
 	for i in $$(find tools/ -iname "makefile"); do pushd $$(dirname $$i) && make && popd ; done
 
@@ -103,8 +108,7 @@ test: tests
 	./test.sh
 
 cleanall:
-	rm -rf _*_obs
-	rm -f mercury
+	for i in $$(find -name '_*_obs') ; do rm -rfv $$i ; done
 
 .PHONY: doc
 doc:
@@ -204,7 +208,7 @@ def main(argv):
     sys.stdout.write('tests: ' + '\\\n    '.join(test_binaries))
     sys.stdout.write('\n\n')
 
-    sys.stdout.write('all: tests notests tools')
+    sys.stdout.write('all: 3rdparty tests notests tools')
     sys.stdout.write('\n\n')
 
     sys.stdout.write(MAKEFILE_FOOTER)

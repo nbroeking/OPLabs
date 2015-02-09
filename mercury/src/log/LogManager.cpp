@@ -15,6 +15,7 @@ LogContext& LogManager::_getLogContext(const std::string& maj, const std::string
         m_db[maj][min] = ctx;
 
         ctx->setEnabled(enable_default);
+        ctx->setMinimumLevel( defaultLevel );
         if ( enabled_majors.find(maj) != enabled_majors.end() ) {
             ctx->setEnabled(true);
         }
@@ -42,4 +43,19 @@ void LogManager::_enableAllForMajor(const std::string& maj) {
 
     enabled_majors.insert(maj);
 }
+
+void LogManager::_logEverything() {
+    map_type::iterator itr;
+    for( itr = m_db.begin(); itr != m_db.end(); ++ itr ) {
+        _enableAllForMajor(itr->first);
+        iterator cur;
+        iterator end;
+    
+        _getLogsForMajor(itr->first, cur, end);
+        for( ; cur != end; ++ cur ) {
+            cur->second->setMinimumLevel( defaultLevel );
+        }
+    }
+}
+
 }
