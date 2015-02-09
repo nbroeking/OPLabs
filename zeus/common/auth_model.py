@@ -37,7 +37,7 @@ class User(db.Model):
             token_id = auth_token.split(':')[0]
             recs = db.session.query(User).filter(User.user_id == token_id).all()
         else:
-            raise RuntimeError("Must provide either email, user_id, or auth_token!")
+            return None
 
         if len(recs) != 1:
             return None
