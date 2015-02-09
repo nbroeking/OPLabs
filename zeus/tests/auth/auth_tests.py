@@ -19,19 +19,19 @@ def test_authenticated(token):
 
     json = resp.json()
     assert json['status'] == 'success', \
-        FAILURE("testfunc did not return status:success!")
+        FAILURE("testfunc did not return status:success!", token=token)
 
     assert json['your_email'] == Context.email, \
-        FAILURE("testfunc returned wrong email!")
+        FAILURE("testfunc returned wrong email!", token=token)
 
-    print SUCCESS("Authenticated method")
+    print SUCCESS("Authenticated method", token=token)
 
 def test_unauthenticated(token="asdfdsasdf"):
     """ An invalid token should not be able to call authenticated methods. """
     resp = testfunc(token)
     check_status(resp, code=401, fields=['status'])
 
-    print SUCCESS("Unauthenticated method")
+    print SUCCESS("Unauthenticated method", token=token)
 
 def all_tests():
     print UNDERLINE(INFO("Running Basic Authentication tests"))

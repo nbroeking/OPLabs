@@ -14,19 +14,25 @@ __COL_BOLD = '\033[1m'
 __COL_ULIN = '\033[4m'
 __COL_ENDC = '\033[0m'
 
-def SUCCESS(test_name):
-    return "[{grn}PASS{end}] Test {msg}".format(
-        grn=__COL_GOOD,
+def __TEST__(status, msg, color, args):
+    args = ", ".join([str(key)+'='+str(args[key]) for key in args.keys()])
+    if args:
+        args = "(" + args + ")"
+    return "[{color}{status}{end}] {msg} {args}".format(
+        color=color,
+        status=status,
         end=__COL_ENDC,
-        msg=test_name
+        msg=msg,
+        args=args
         )
 
-def FAILURE(test_name):
-    return "[{red}FAIL{end}] Test {msg}".format(
-        red=__COL_FAIL,
-        end=__COL_ENDC,
-        msg=test_name
-        )
+def SUCCESS(test_name, **kwargs):
+    msg = "Test {tname} passed.".format(tname=test_name)
+    return __TEST__('PASS', msg, __COL_GOOD, kwargs)
+
+def FAILURE(test_name, **kwargs):
+    msg = "Test {tname} failed.".format(tname=test_name)
+    return __TEST__('FAIL', msg, __COL_FAIL, kwargs)
 
 def ANSI_wrapper(prefix):
     def inner(message):
