@@ -18,7 +18,7 @@ class User(db.Model):
     """ 
     This model represents a user in the database.
     """
-    __tablename__ = "auth_user"
+    __tablename__ = "User"
     user_id = db.Column('user_id', db.Integer, primary_key=True)
     email = db.Column('email', db.String(50), unique=True, index=True)
     password = db.Column('password', db.String(256))
