@@ -37,7 +37,8 @@ def register():
     email = request.form['email']
     password = request.form['password']
 
-    User.create_user(email, password)
+    new_user = User(email, password)
+    new_user.save()
 
     return JSON_SUCCESS()
 

@@ -54,23 +54,23 @@ class User(db.Model):
         else:
             return some_user
 
-    @staticmethod
-    def create_user(email, password):
+    def __init__(self, email, password):
         """ Create a user for the given email and password.
             The password is expected to be plaintext, and will be hashed by the
             passlib module. """
         hash_pw = passlib_ctx.encrypt(password)
 
-        new_user = User()
-        new_user.email = email
-        new_user.password = hash_pw
-        new_user.permissions = ""
-        new_user.raw_token = ""
+        self.email = email
+        self.password = hash_pw
+        self.permissions = ""
+        self.raw_token = ""
 
-        db.session.add(new_user)
+        db.session.add(self)
         db.session.commit()
 
-        return new_user
+    def save(self):
+        """ Commits any outstanding changes to the database. """
+        db.session.commit()
 
     def password_matches(self, given_pw):
         """ Checks the given password against the stored password. Returns true
