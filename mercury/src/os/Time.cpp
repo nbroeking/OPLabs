@@ -44,4 +44,27 @@ timeout_t Time::sleep( timeout_t timeout ) {
 	return toMicros( ts_out ) ;
 }
 
+timeout_t Time::relativeToAbsoluteTime( timeout_t relative ) {
+    return relative + currentTimeMicros();
+}
+
+timeout_t Time::absoluteTimeToRelativeTime( timeout_t absolute ) {
+    return absolute - currentTimeMicros();
+}
+
+timeout_t Time::currentTimeMicros() {
+	#ifdef __MACH__
+		clock_serv_t cclock;
+		mach_timespec_t mts;
+		host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+		clock_get_time(cclock, &mts);
+		mach_port_deallocate(mach_task_self(), cclock);
+	#else
+        struct timespec mts;
+		clock_gettime(CLOCK_REALTIME, &mts);
+	#endif
+
+    return mts.tv_nsec/ 1000 + mts.tv_sec * 1000000;
+}
+
 }

@@ -24,6 +24,9 @@
     tester = [[Tester alloc] init];
     [tester start];
     [comm start];
+    
+    [comm login: self];
+    
     return YES;
 }
 

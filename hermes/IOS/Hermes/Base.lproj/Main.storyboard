@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="6MX-cn-MhF">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="4lt-yy-zz9">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
@@ -43,22 +44,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="qtY-dE-seg">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="EX8-he-28M">
-                                <rect key="frame" x="126" y="186" width="349" height="164"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="50g-s6-x10">
+                                <rect key="frame" x="206" y="72" width="188" height="118"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="164" id="VtD-IL-xwp"/>
-                                    <constraint firstAttribute="width" constant="349" id="v4P-0A-bWt"/>
+                                    <constraint firstAttribute="width" constant="188" id="XDS-uR-BIW"/>
                                 </constraints>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s9W-JX-83z">
-                                <rect key="frame" x="226" y="358" width="149" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ROh-FV-OGd">
+                                <rect key="frame" x="199" y="198" width="203" height="77"/>
                                 <color key="backgroundColor" red="0.52156862749999999" green="0.70980392160000005" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="BWe-8H-SIC"/>
-                                    <constraint firstAttribute="width" constant="149" id="pcA-Ct-3el"/>
+                                    <constraint firstAttribute="width" constant="203" id="0L8-u0-y36"/>
                                 </constraints>
                                 <state key="normal" title="Run Tests">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -68,14 +64,10 @@
                                     <segue destination="Ddd-mn-pLC" kind="show" id="fjQ-Pr-xKC"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NBB-jU-sdH">
-                                <rect key="frame" x="226" y="415" width="149" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G7A-QM-PDY">
+                                <rect key="frame" x="199" y="283" width="203" height="77"/>
                                 <color key="backgroundColor" red="0.52156862749999999" green="0.70980392160000005" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="l6x-CM-hNL"/>
-                                    <constraint firstAttribute="width" constant="149" id="p2g-ed-xf0"/>
-                                </constraints>
-                                <state key="normal" title="View Results">
+                                <state key="normal" title="View History">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -83,26 +75,17 @@
                                     <segue destination="qka-UC-AhF" kind="show" id="qcR-p9-WmR"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="2C5-3F-e9B">
-                                <rect key="frame" x="290" y="502" width="20" height="20"/>
-                            </activityIndicatorView>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fO3-o6-qUf">
-                                <rect key="frame" x="0.0" y="64" width="600" height="44"/>
-                                <items>
-                                    <navigationItem id="8w3-op-hEK">
-                                        <barButtonItem key="leftBarButtonItem" title="Login" id="y0H-B4-8RS">
-                                            <connections>
-                                                <segue destination="bey-In-emy" kind="show" identifier="PromptLoginTemp" id="Ifu-Ji-21j"/>
-                                            </connections>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Menu" id="F3X-Ud-4mz">
-                                            <connections>
-                                                <segue destination="LPi-d7-gll" kind="show" id="UBx-cg-GKH"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RfM-LV-hTN">
+                                <rect key="frame" x="199" y="368" width="203" height="77"/>
+                                <color key="backgroundColor" red="0.52156862749999999" green="0.70980392160000005" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Settings">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="LPi-d7-gll" kind="show" id="wek-lh-jjP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -123,6 +106,7 @@
                             <constraint firstItem="qtY-dE-seg" firstAttribute="bottom" secondItem="bWt-4N-fY2" secondAttribute="top" id="zF0-PA-PfB"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="CqN-3R-pU8"/>
                     <connections>
                         <segue destination="bey-In-emy" kind="custom" identifier="PromptLogin" id="QG5-qX-wT8"/>
@@ -260,7 +244,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xa4-ln-ID7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1275" y="328"/>
+            <point key="canvasLocation" x="1699" y="317"/>
         </scene>
         <!--Historical Results-->
         <scene sceneID="hGQ-Fj-HqV">
@@ -550,9 +534,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <segue destination="9Ls-CO-OvT" kind="show" identifier="Login" id="XwJ-q7-41t"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -579,25 +560,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lab-hi-1OT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="577" y="1063"/>
+            <point key="canvasLocation" x="525" y="1063"/>
         </scene>
         <!--Main Navigation Controller-->
-        <scene sceneID="Lm6-5m-eJw">
+        <scene sceneID="TmD-dy-YNS">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6MX-cn-MhF" customClass="MainNavigationController" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4lt-yy-zz9" customClass="MainNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="N1i-sF-5l9">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="BQa-j1-suy">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="9Ls-CO-OvT" kind="relationship" relationship="rootViewController" id="Azf-xj-8v6"/>
+                        <segue destination="9Ls-CO-OvT" kind="relationship" relationship="rootViewController" id="2kD-Da-zSc"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="I2N-gR-zSW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="h1C-G2-LLi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-140" y="328"/>
+            <point key="canvasLocation" x="169" y="317"/>
         </scene>
     </scenes>
     <resources>
@@ -605,9 +586,6 @@
         <image name="hermes-logo" width="3168" height="1453"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Azf-xj-8v6"/>
-        <segue reference="UBx-cg-GKH"/>
-        <segue reference="Ifu-Ji-21j"/>
-        <segue reference="qcR-p9-WmR"/>
+        <segue reference="cU0-PG-5WY"/>
     </inferredMetricsTieBreakers>
 </document>

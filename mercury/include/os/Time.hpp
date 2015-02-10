@@ -67,6 +67,26 @@ public:
 	 */
 	static timeout_t sleep( timeout_t to );
 
+    /**
+     * @brief Convert between relative and absolute time
+     * @param relative The relative time
+     * @return The absolute time
+     */
+    static timeout_t relativeToAbsoluteTime( timeout_t relative );
+
+    /**
+     * @brief Converts between absolute and relative time
+     * @param absolute The absolute time
+     * @return Time relatime to this
+     */
+    static timeout_t absoluteTimeToRelativeTime( timeout_t absolute );
+
+    /**
+     * @brief Return the system time in micro seconds
+     * @return The system time in micro seconds
+     */
+    static timeout_t currentTimeMicros();
+
     static inline struct timeval toTimeval( micros_t mics ) {
         struct timeval tv;
         tv.tv_sec = mics / 1000000;
