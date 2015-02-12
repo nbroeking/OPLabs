@@ -8,11 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Communication : NSObject <NSStreamDelegate>
+@interface Communication : NSObject <NSURLConnectionDelegate>
 {
     bool started;
-    bool inputOpen;
-    bool outputOpen;
     bool shouldRun;
     
 }
