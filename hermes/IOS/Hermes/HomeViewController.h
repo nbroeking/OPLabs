@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CommunicationDelegate.h"
+#import "SessionData.h"
 
-@interface HomeViewController : UIViewController
+@interface HomeViewController : UIViewController <CommunicationDelegate, UIAlertViewDelegate>
 
+@property (weak, nonatomic) SessionData* data;
+
+- (IBAction)goToSettings:(id)sender;
+
+-(BOOL) checkLogin;
+
+-(void) appBecameActive;
 @end

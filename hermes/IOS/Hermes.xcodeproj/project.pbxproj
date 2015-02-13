@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		562737031A71BB0D00F05935 /* Tester.m in Sources */ = {isa = PBXBuildFile; fileRef = 562737021A71BB0D00F05935 /* Tester.m */; };
+		56572C7C1A8D6A3D00EF6582 /* SessionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 56572C7B1A8D6A3D00EF6582 /* SessionData.m */; };
+		56572C7F1A8D6E2000EF6582 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 56572C7E1A8D6E2000EF6582 /* Settings.bundle */; };
 		566ABD471A6B9D6100B114C1 /* Communication.m in Sources */ = {isa = PBXBuildFile; fileRef = 566ABD461A6B9D6100B114C1 /* Communication.m */; };
 		56A717C81A6B6576006E1198 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717C71A6B6576006E1198 /* main.m */; };
 		56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CA1A6B6576006E1198 /* AppDelegate.m */; };
@@ -16,9 +18,7 @@
 		56A717D91A6B6576006E1198 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D81A6B6576006E1198 /* Images.xcassets */; };
 		56A717E81A6B6576006E1198 /* CommunicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717E71A6B6576006E1198 /* CommunicationTests.m */; };
 		56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */; };
-		56C7AFB51A6F1A3500AAA0EB /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */; };
 		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
-		56C7AFEF1A6F1E9600AAA0EB /* ViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */; };
 		56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7E0FD1A721A9300965DE3 /* TesterTests.m */; };
 		DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7B71A78306800E169AA /* LoginViewController.m */; };
 		DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7BA1A78309500E169AA /* SignupViewController.m */; };
@@ -39,6 +39,10 @@
 /* Begin PBXFileReference section */
 		562737011A71BB0D00F05935 /* Tester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tester.h; sourceTree = "<group>"; };
 		562737021A71BB0D00F05935 /* Tester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tester.m; sourceTree = "<group>"; };
+		56572C7A1A8D6A3D00EF6582 /* SessionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionData.h; sourceTree = "<group>"; };
+		56572C7B1A8D6A3D00EF6582 /* SessionData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionData.m; sourceTree = "<group>"; };
+		56572C7E1A8D6E2000EF6582 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
+		56572C811A8D7D8B00EF6582 /* CommunicationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommunicationDelegate.h; sourceTree = "<group>"; };
 		566ABD451A6B9D6100B114C1 /* Communication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Communication.h; sourceTree = "<group>"; };
 		566ABD461A6B9D6100B114C1 /* Communication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Communication.m; sourceTree = "<group>"; };
 		56A717C21A6B6576006E1198 /* Hermes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hermes.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,11 +58,7 @@
 		56A717E71A6B6576006E1198 /* CommunicationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommunicationTests.m; sourceTree = "<group>"; };
 		56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
-		56C7AFB31A6F1A3500AAA0EB /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
-		56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController2.h; sourceTree = "<group>"; };
-		56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController2.m; sourceTree = "<group>"; };
 		56C7E0FD1A721A9300965DE3 /* TesterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TesterTests.m; sourceTree = "<group>"; };
 		DB34B7B61A78306800E169AA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		DB34B7B71A78306800E169AA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
@@ -88,13 +88,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		56572C801A8D7D3100EF6582 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				56572C811A8D7D8B00EF6582 /* CommunicationDelegate.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
 		565B11A71A8424C20033E442 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				56C7AFB31A6F1A3500AAA0EB /* MainViewController.h */,
-				56C7AFB41A6F1A3500AAA0EB /* MainViewController.m */,
-				56C7AFED1A6F1E9600AAA0EB /* ViewController2.h */,
-				56C7AFEE1A6F1E9600AAA0EB /* ViewController2.m */,
 				DB34B7C81A783C5600E169AA /* MenuTableViewController.h */,
 				DB34B7C91A783C5600E169AA /* MenuTableViewController.m */,
 				DB34B7B61A78306800E169AA /* LoginViewController.h */,
@@ -146,6 +150,7 @@
 		56A717C41A6B6576006E1198 /* Hermes */ = {
 			isa = PBXGroup;
 			children = (
+				56572C801A8D7D3100EF6582 /* Protocols */,
 				56C7AFA41A6F152700AAA0EB /* Main */,
 				566ABD441A6B9CF100B114C1 /* Tester */,
 				566ABD431A6B9CE500B114C1 /* Communication */,
@@ -157,6 +162,7 @@
 		56A717C51A6B6576006E1198 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				56572C7E1A8D6E2000EF6582 /* Settings.bundle */,
 				56A717C61A6B6576006E1198 /* Info.plist */,
 				56A717C71A6B6576006E1198 /* main.m */,
 			);
@@ -193,6 +199,8 @@
 				56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */,
 				56A717D81A6B6576006E1198 /* Images.xcassets */,
 				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
+				56572C7A1A8D6A3D00EF6582 /* SessionData.h */,
+				56572C7B1A8D6A3D00EF6582 /* SessionData.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -277,6 +285,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56572C7F1A8D6E2000EF6582 /* Settings.bundle in Resources */,
 				56A717D71A6B6576006E1198 /* Main.storyboard in Resources */,
 				56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */,
 				56A717D91A6B6576006E1198 /* Images.xcassets in Resources */,
@@ -297,15 +306,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56C7AFEF1A6F1E9600AAA0EB /* ViewController2.m in Sources */,
 				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
 				562737031A71BB0D00F05935 /* Tester.m in Sources */,
-				56C7AFB51A6F1A3500AAA0EB /* MainViewController.m in Sources */,
 				DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
 				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
 				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
+				56572C7C1A8D6A3D00EF6582 /* SessionData.m in Sources */,
 				56A717C81A6B6576006E1198 /* main.m in Sources */,
 				56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */,
 				DBE3C4F01A81609C00CB504A /* HomeViewController.m in Sources */,

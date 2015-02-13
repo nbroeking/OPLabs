@@ -13,6 +13,7 @@
 @end
 
 @implementation MainNavigationController
+@synthesize communicator;
 
 - (void)viewDidLoad {
     [super viewDidLoad];

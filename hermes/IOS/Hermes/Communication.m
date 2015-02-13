@@ -7,6 +7,8 @@
 //
 
 #import "Communication.h"
+#import "CommunicationDelegate.h"
+#import "HomeViewController.h"
 
 @interface Communication ()
 
@@ -14,7 +16,7 @@
 @property(strong, nonatomic) NSURL *loginURL;
 @property(strong, nonatomic) NSMutableData *responseData;
 @property(strong, nonatomic) NSURLConnection* webConnection;
-
+@property(weak, nonatomic)  HomeViewController* sender;
 
 -(void) loginToServer: (id) sender;
 
@@ -25,6 +27,7 @@
 @synthesize loginURL;
 @synthesize responseData;
 @synthesize webConnection;
+@synthesize sender;
 
 //Initlizes the Communication subsystem to 0
 -(instancetype)init{
@@ -35,7 +38,7 @@
         shouldRun = false;
         
         //Constants
-        loginURL = [NSURL URLWithString:@"https://128.138.202.143/api/auth/login"];
+        loginURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@%@", [[SessionData getData] hostname], @"/api/auth/login"]];
     }
     return self;
 }
@@ -106,8 +109,14 @@
     }
 }
 
--(void)login:(id)sender
+-(void)login:(id)sendert
 {
+    if( self.sender)
+    {
+        NSLog(@"SUPER BIG ERROR: Nic made a huge mistake with his logic and should go fix it now");
+    }
+    self.sender = sendert;
+    loginURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@%@", [[SessionData getData] hostname], @"/api/auth/login"]];
     [self performSelector:@selector(loginToServer:) onThread:thread withObject:sender waitUntilDone:NO];
 }
 -(void)loginToServer:(id)sender
@@ -119,8 +128,8 @@
     request.HTTPMethod = @"POST";
     
     // Set Header Values
-    [request setValue:@"nbroeking@me.com" forHTTPHeaderField:@"email"];
-    [request setValue:@"password1" forHTTPHeaderField:@"password"];
+    [request setValue: [[SessionData getData] email] forHTTPHeaderField:@"email"];
+    [request setValue:[[SessionData getData] password] forHTTPHeaderField:@"password"];
     
     // Convert your data and set your request's HTTPBody property
     NSString *stringData = @"";
@@ -131,6 +140,8 @@
 }
 
 #pragma mark NSURLConnection Delegate Methods
+//TODO: Not sure if what would happen if we tried to login btwice before we got a response
+
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     // A response has been received, this is where we initialize the instance var you created
     // so that we can append data to it in the didReceiveData method
@@ -146,18 +157,29 @@
     [responseData appendData:data];
 }
 
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
-                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
-    // Return nil to indicate not necessary to store a cached response for this connection
-    return nil;
-}
-
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     // The request is complete and data has been received
     // You can parse the stuff in your instance variable now
     
     NSLog(@"Comm: Connection did complete");
     NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+    
+    //Parse JSON
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:nil];
+    
+    NSString *token = [[NSString alloc] initWithString:[json objectForKey:@"status"]];
+    
+    if( ![token  isEqual: @"failure"])
+    {
+        [[SessionData getData] setSessionId: token];
+        NSLog(@"Token: %@", [[SessionData getData] sessionId]);
+    }
+    else
+    {
+        [[SessionData getData] setSessionId:nil];
+    }
+    [sender performSelectorOnMainThread:@selector(notifyLogin) withObject: nil waitUntilDone:NO];
+    sender = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -166,10 +188,7 @@
     NSLog(@"Comm: Connection failed with error %@", error);
 }
 
-- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
-    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
-}
-
+//Overloading the Authentication challenge to accept self signed certs
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
     {
@@ -178,4 +197,14 @@
     [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
 }
 
+//Used to see if we can AuthenticateAgainst Protection Space
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+}
+//Used to tell the connection that we dont want to cache the response
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+    // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
 @end

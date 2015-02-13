@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Communication.h"
 
 @interface MainNavigationController : UINavigationController
 
+@property (strong, atomic) Communication* communicator;
 
 @end
