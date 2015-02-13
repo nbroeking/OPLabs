@@ -127,16 +127,15 @@
     // Specify that it will be a POST request
     request.HTTPMethod = @"POST";
     
-    // Set Header Values
-    [request setValue: [[SessionData getData] email] forHTTPHeaderField:@"email"];
-    [request setValue:[[SessionData getData] password] forHTTPHeaderField:@"password"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+
+    NSString *postString = [NSString stringWithFormat:@"password=%@&email=%@", [[SessionData getData] password], [[SessionData getData] email]];
+    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+    [request setHTTPBody:data];
     
-    // Convert your data and set your request's HTTPBody property
-    NSString *stringData = @"";
-    NSData *requestBodyData = [stringData dataUsingEncoding:NSUTF8StringEncoding];
-    request.HTTPBody = requestBodyData;
     
-    webConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
 #pragma mark NSURLConnection Delegate Methods
@@ -165,18 +164,24 @@
     NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
     
     //Parse JSON
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:nil];
-    
-    NSString *token = [[NSString alloc] initWithString:[json objectForKey:@"status"]];
-    
-    if( ![token  isEqual: @"failure"])
-    {
-        [[SessionData getData] setSessionId: token];
-        NSLog(@"Token: %@", [[SessionData getData] sessionId]);
+    @try {
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:nil];
+
+        NSString *status = [[NSString alloc] initWithString:[json objectForKey:@"status"]];
+        if( [status  isEqual: @"success"])
+        {
+            [[SessionData getData] setSessionId: [[NSString alloc] initWithString:[json objectForKey:@"auth_token"]]];
+            NSLog(@"Token: %@", [[SessionData getData] sessionId]);
+        }
+        else
+        {
+            [[SessionData getData] setSessionId:nil];
+        }
     }
-    else
+    @catch (NSException* e)
     {
-        [[SessionData getData] setSessionId:nil];
+        NSLog(@"Caught Exception %@ This is normally caused by a bad domain.", e);
+        [[SessionData getData] setSessionId:@"DOMAIN"];
     }
     [sender performSelectorOnMainThread:@selector(notifyLogin) withObject: nil waitUntilDone:NO];
     sender = nil;
@@ -186,6 +191,10 @@
     // The request has failed for some reason!
     // Check the error var
     NSLog(@"Comm: Connection failed with error %@", error);
+    
+    [[SessionData getData] setSessionId:@"ERROR"];
+    [sender performSelectorOnMainThread:@selector(notifyLogin) withObject: nil waitUntilDone:NO];
+    sender = nil;
 }
 
 //Overloading the Authentication challenge to accept self signed certs

@@ -28,7 +28,6 @@
     [(MainNavigationController*)self.window.rootViewController setCommunicator:comm];
     [tester start];
     [comm start];
-    [[SessionData getData] sync];
     
     //Force app to always go back to home on relaunch
     [(MainNavigationController*)self.window.rootViewController popToRootViewControllerAnimated:NO];

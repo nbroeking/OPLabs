@@ -20,7 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    [[SessionData getData] sync];
     data = [SessionData getData];
     
     //Set the background color
@@ -57,7 +57,6 @@
     }
 }
 
-
 -(BOOL)checkLogin
 {
     //All Login checking
@@ -76,7 +75,22 @@
 {
     if ([data sessionId] != nil)
     {
-        NSLog(@"Successful");
+        if([[data sessionId] isEqualToString:@"ERROR"])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"There was an error connecting to the server." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+            [data setSessionId:nil];
+        }
+        else if([[data sessionId] isEqualToString:@"DOMAIN"])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname?" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
+            [alert show];
+            [data setSessionId:nil];
+        }
+        else
+        {
+             NSLog(@"Successful Login");
+        }
     }
     else
     {
@@ -104,6 +118,10 @@
 
 - (IBAction)goToSettings:(id)sender {
     NSLog(@"Go to Settings");
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    
+    if (&UIApplicationOpenSettingsURLString != NULL) {
+        NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:appSettings];
+    }
 }
 @end
