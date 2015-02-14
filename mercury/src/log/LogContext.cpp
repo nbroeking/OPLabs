@@ -9,7 +9,7 @@ const logger::LogLevel SUCCESS(32, "SUCCESS", 10, true);
 
 const logger::LogLevel WARN(33, "WARN", 15, true);
 const logger::LogLevel ERROR(31, "ERROR", 20, true);
-const logger::LogLevel FATAL(31, "FATAL", 15, true);
+const logger::LogLevel FATAL(31, "FATAL", 15, false);
 
 using namespace std;
 

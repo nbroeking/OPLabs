@@ -14,99 +14,28 @@
 #include <proc/ProcessManager.hpp>
 #include <unistd.h>
 
+#include <mercury/Mercury.hpp>
+
+using namespace mercury ;
 using namespace logger ;
 using namespace std ;
 using namespace proc ;
 using namespace io ;
 using namespace os ;
 
-class MyProcess2: public Process {
-public:
-    MyProcess2() : Process("MyProcess2") {
-    }
-
-    void run() {
-        LogContext& log = LogManager::instance().getLogContext("MyProcess2", "run");
-        log.printfln(INFO, "MyProcess2 starting.");
-        log.printfln(INFO, "Attempting to get a process and send a message");
-
-        ProcessProxy* proxy = ProcessManager::instance().getProcessByName("MyProcess");
-        if( ! proxy ) {
-            log.printfln(ERROR, "Unable to find process.");
-            return ;
-        }
-
-        const char* str = "ping";
-        proxy->sendMessage(getAddress(), (byte*)str, strlen(str));
-
-        sleep(50000000);
-    }
-
-protected:
-    virtual void messageReceivedCallback( ProcessAddressProxy& from, const byte* bytes, size_t len ) {
-        LogContext& log =
-            LogManager::instance().getLogContext("MyProcess2", "MyProcess2");
-        log.printfln(INFO, "Message received");
-        log.printHex(INFO, bytes, len);
-        from.sendMessage( getAddress(), (byte*)"ping", strlen("ping") );
-    }
-};
-
-class MyProcess: public Process {
-public:
-    MyProcess() : Process("MyProcess") {
-    }
-
-    void run() {
-        LogContext& log = LogManager::instance().getLogContext("MyProcess", "run");
-        log.printfln(INFO, "MyProcess starting.");
-
-        sleep(50000000);
-    }
-
-protected:
-    virtual void messageReceivedCallback( ProcessAddressProxy& from, const byte* bytes, size_t len ) {
-        LogContext& log =
-            LogManager::instance().getLogContext("MyProcess", "MyProcess");
-        log.printfln(INFO, "Message received");
-        log.printHex(INFO, bytes, len);
-        from.sendMessage( getAddress(), (byte*)"pong", strlen("pong") );
-    }
-};
-
 int main( int argc, char** argv ) {
-    (void) argc; (void) argv;
+    (void) argc ; (void) argv ;
 
-    LogManager::instance().setEnableByDefault(true);
-    LogContext& log = LogManager::instance().getLogContext("Main", "Main");
-
-    log.printfln(TRACE, "simulating debug");
-    log.printfln(DEBUG, "simulating debug");
-    log.printfln(INFO, "logging has started");
-    log.printfln(SUCCESS, "simulating success");
-    log.printfln(WARN, "simulating a warning");
-    log.printfln(ERROR, "This is simulating an error");
-
-    {
-        vector< uptr<SocketAddress> > addrs = 
-            Resolv::getHostByName("google.com");
-        vector< uptr<SocketAddress> >::iterator itr;
-        for( itr = addrs.begin() ; itr != addrs.end() ; ++ itr ) {
-            log.printfln(INFO, "Found address: %s", (*itr)->toString().c_str());
-        }
+    try {
+        LogManager::instance().logEverything();
+        Mercury main_obj;
+        Thread* thread = Thread::begin(main_obj);
+    
+        thread->join();
+    } catch ( Exception& e ) {
+        logger::LogContext& log = logger::LogManager::instance().getLogContext("Main", "Main");       
+        log.printfln(FATAL, "Terminate after throwing uncaught exception\n\t%s", e.getMessage());
     }
 
-    ProcessManager& man = ProcessManager::instance();
-    log.printfln(INFO, "man: %p", &man);
-
-    MyProcess process;
-    Thread* m_thread = process.start();
-
-    sleep(1);
-    MyProcess2 process2;
-    Thread* m_thread2 = process2.start();
-    (void)m_thread2;
-
-    m_thread->join();
     return 0;
 }

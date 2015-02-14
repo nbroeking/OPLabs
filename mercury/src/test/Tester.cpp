@@ -5,6 +5,9 @@ using namespace std;
 
 namespace test {
 
+LogLevel PASSED(32, "PASSED", 10);
+LogLevel FAILED(31, "FAILED", 10);
+
 Tester* p_instance = NULL;
 
 Tester::Tester(const char* name):
@@ -42,10 +45,10 @@ int Tester::exit() {
 #define PURPLE  "\e[1;35m"
 int Tester::testBool( const char* name, bool b, const char* function, const char* file, size_t line ) {
     if( b ) {
-        m_log.printfln(SUCCESS, "%-20s [PASSED] - "PURPLE"@(%s %s:%d)", name, function, file, line);
+        m_log.printfln(PASSED, "%-20s - "PURPLE"@(%s %s:%d)", name, function, file, line);
         m_tests_passed ++;
     } else {
-        m_log.printfln(ERROR, "%-20s [FAILED] - "PURPLE"@(%s %d:%d)", name, function, file, line);
+        m_log.printfln(FAILED, "%-20s - "PURPLE"@(%s %d:%d)", name, function, file, line);
         m_tests_failed ++;
         failed.push_back(name);
     }
