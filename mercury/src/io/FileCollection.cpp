@@ -130,7 +130,7 @@ void FileCollection::run() {
                         } else {
 #ifdef  HAS_FIONREAD
                             long n_read = 1;
-                            int err;
+                            int err = 0;
                             if( (err = ioctl( vitr->fd, FIONREAD, &n_read )) ){
                                 log.printfln(WARN, "ioctl failed: %s", strerror(err));
                             }
@@ -142,6 +142,7 @@ void FileCollection::run() {
 #ifdef  HAS_FIONREAD
                             } else {
                                 log.printfln(DEBUG, "Unsubscrbing %d due to EOF", vitr->fd);
+                                unsubscribe( vitr->fd );
                             }
 #endif
                         }
