@@ -53,6 +53,7 @@ public:
 private:
 	Runnable& m_runner;
 	pthread_t m_thread;
+    bool joined;
 };
 
 }
