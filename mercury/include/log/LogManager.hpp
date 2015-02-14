@@ -81,7 +81,7 @@ public:
     void logEverything() {
         os::ScopedLock __sl(m_mutex);
         setEnableByDefault( true );
-        setDefaultLevel(DEFAULT_LEVEL);
+        setDefaultLevel(TRACE);
         _logEverything();
     }
 
