@@ -7,6 +7,13 @@ using namespace std;
 using namespace logger;
 using namespace lang;
 
+#define HAS_FIONREAD
+
+#ifdef HAS_FIONREAD
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#endif
+
 namespace io {
 
 
@@ -38,7 +45,7 @@ void FileCollection::subscribeForRead( int fd, FileCollectionObserver* observer,
 void FileCollection::subscribeForWrite( int fd, FileCollectionObserver* observer,
        dealloc_T* dealloc ) {
 
-    m_log->printfln(DEBUG, "Subscribing new file descriptor %d with observer %p for write", fd, observer);
+    m_log->printfln(DEBUG, "SubscrIbing new file descriptor %d with observer %p for write", fd, observer);
     m_map[fd] = observer;
     if( dealloc ) {
         m_deallocators[observer] = dealloc;
@@ -121,9 +128,22 @@ void FileCollection::run() {
                             log.printfln(DEBUG, "Unsubscribing hungup file descriptor %d", vitr->fd);
                             unsubscribe( vitr->fd );
                         } else {
-                            /* This file descriptor had an event.
-                             * Fire that event */
-                            fireEvent(vitr->fd, vitr->revents);
+#ifdef  HAS_FIONREAD
+                            long n_read = 1;
+                            int err;
+                            if( (err = ioctl( vitr->fd, FIONREAD, &n_read )) ){
+                                log.printfln(WARN, "ioctl failed: %s", strerror(err));
+                            }
+                            if( n_read > 0 ) {
+#endif
+                                /* This file descriptor had an event.
+                                 * Fire that event */
+                                fireEvent(vitr->fd, vitr->revents);
+#ifdef  HAS_FIONREAD
+                            } else {
+                                log.printfln(DEBUG, "Unsubscrbing %d due to EOF", vitr->fd);
+                            }
+#endif
                         }
                     }
 
