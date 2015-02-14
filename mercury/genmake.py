@@ -74,6 +74,7 @@ export ROOT_DIR=.
 include targets/$(TGT)/$(ENV).mk 
 
 export CXX
+export CC
 export AR
 
 CXXFLAGS := $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
@@ -81,7 +82,7 @@ CXXFLAGS := $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
 HACK2 := $(shell mkdir -p _$(TGT)_obs/tests/)
 
-LDFLAGS := $(LDFLAGS) -lpthread
+LDFLAGS := 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
 
 QEMU?=
 export QEMU
