@@ -73,7 +73,7 @@ MercuryState Mercury::onCookieReceived() {
 
     m_buffer_data.clear();
     Curl request;
-    request.setURL("http://localhost/");
+    request.setURL("https://example.com/");
     request.setFollowLocation(true);
 
     m_log.printfln(INFO, "Sending curl request");

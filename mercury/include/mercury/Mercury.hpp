@@ -90,6 +90,7 @@ private:
     class MercuryCurlObserver: public curl::CurlObserver {
     public:
         void onException( curl::CurlException& excp ) {
+            m_sup->m_log.printfln(ERROR, "Error with curl request: %s", excp.getMessage());
             m_sup->m_state_machine.sendStimulus( BAD_REQUEST );
         }
         void onOK() {
