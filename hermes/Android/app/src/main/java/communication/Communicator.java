@@ -28,16 +28,16 @@ public class Communicator extends HandlerThread {
 		mHandler = null;
 		Log.i(TAG, "Communicator constructed");
 	}
-	
+
 	@Override
 	public void run() {
 		//Set up looper
 		Looper.prepare();
-		
-		mHandler = new CommMessageHandler();		
+
+		mHandler = new CommMessageHandler();
 		Looper.loop();
 	}
-	
+
 	synchronized public String name(){
 		return mName;
 	}

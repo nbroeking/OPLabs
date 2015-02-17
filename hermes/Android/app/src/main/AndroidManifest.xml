@@ -8,20 +8,49 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 
+    <service
+        android:name=".Communication"
+        android:label="@string/CommServiceName" >
+    </service>
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
     <application
+        android:name="main.HermesApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name="main.HermesApplication" >
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="main.MainActivity"
+            android:name="hermes.Views.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".main.Results"
+            android:label="@string/title_activity_results"
+            android:parentActivityName="hermes.Views.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hermes.Views.MainActivity" />
+        </activity>
+        <activity
+            android:name="hermes.Views.ResultsActivity"
+            android:label="@string/title_activity_results"
+            android:parentActivityName="hermes.Views.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hermes.Views.MainActivity" />
         </activity>
     </application>
 
