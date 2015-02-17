@@ -17,6 +17,7 @@ import sys
 import os
 import os.path
 import re
+import platform
 
 def get_targets():
     for _, dirs, _  in os.walk('targets'):
@@ -25,6 +26,14 @@ def get_targets():
 PATTERN = re.compile('#include\\s+<\\s*((\w|.)*)\\s*>\\s+')
 INCLUDE_DIRS = ['include', 'src']
 OBJS_DIR = '_$(TGT)_obs/'
+
+platform_cflags = {
+    "OpenBSD": "-I /usr/local/include"
+}.get(platform.system(), "")
+
+platform_ldflags = {
+    "OpenBSD": "-L /usr/local/include"
+}.get(platform.system(), "")
 
 MAKEFILE_HEADER='''
 # ############################################################# #
@@ -77,12 +86,12 @@ export CXX
 export CC
 export AR
 
-CXXFLAGS := -I include -I 3rdparty $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
+CXXFLAGS := ''' + platform_cflags + ''' -I include -I 3rdparty $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
 
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
 HACK2 := $(shell mkdir -p _$(TGT)_obs/tests/)
 
-LDFLAGS := 3rdparty/libjson/_$(TGT)_obs/libjson.a 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
+LDFLAGS := ''' + platform_ldflags + ''' 3rdparty/libjson/_$(TGT)_obs/libjson.a 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
 
 QEMU?=
 export QEMU
@@ -92,7 +101,7 @@ default: all
 
 MAKEFILE_FOOTER = '''
 clean:
-	for i in $$(find -name '_$(TGT)_obs') ; do rm -rfv $$i ; done
+	for i in $$(find . -name '_$(TGT)_obs') ; do rm -rfv $$i ; done
 
 .PHONY: tools tests 3rdparty
 3rdparty:
@@ -109,7 +118,7 @@ test: tests
 	./test.sh
 
 cleanall:
-	for i in $$(find -name '_*_obs') ; do rm -rfv $$i ; done
+	for i in $$(find . -name '_*_obs') ; do rm -rfv $$i ; done
 
 .PHONY: doc
 doc:
