@@ -13,6 +13,9 @@
 #include <string>
 #include <cstring>
 
+#define FOR_EACH(itr, vec)\
+    for( itr = vec.begin() ; itr != vec.end() ; ++ itr )
+
 /**
  * @brief A simple class that acts like a pointer, but deletes itself after going out of scope
  *
@@ -108,6 +111,12 @@ protected:
         this->message = mesg;
     }
     std::string message;
+};
+
+class InvalidArgumentException: public Exception {
+public:
+    inline InvalidArgumentException( const char* msg ):
+        Exception(msg) {}
 };
 
 class CException : public Exception {

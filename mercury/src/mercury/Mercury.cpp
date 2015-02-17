@@ -47,7 +47,8 @@ void Mercury::AcceptHandler::observe(int fd, int events) {
     m_sup->m_log.printfln(INFO, "cliend = %p", client);
 
     if( client ) {
-        m_sup->getFileCollection().subscribeForRead(
+        m_sup->getFileCollection().subscribe(
+            FileCollection::SUBSCRIBE_READ,
             client, new SocketHandler(client, m_sup),
                 lang::std_deallocator<FileCollectionObserver>());
     }
@@ -103,7 +104,7 @@ Mercury::Mercury():
     setupStateMachine();
 
     m_log.printfln(INFO, "Subscribing for read" );
-    this->getFileCollection().subscribeForRead( &m_sock, &m_accept_handler );
+    this->getFileCollection().subscribe( FileCollection::SERVER_SOCKET, &m_sock, &m_accept_handler );
 }
 
 void Mercury::run() {
