@@ -9,9 +9,9 @@
 #import "HomeViewController.h"
 #import "SessionData.h"
 #import "MainNavigationController.h"
+#import "HermesAlert.h"
 
 @interface HomeViewController ()
-
 @end
 
 @implementation HomeViewController
@@ -28,6 +28,7 @@
     
     //Ask the notification center to message us when we the app becomes active
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:@"LOGIN" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -64,7 +65,8 @@
     NSLog(@"Check Login");
     if( [[data email] isEqualToString:@""]|| [[data password] isEqualToString:@""] || [[data hostname] isEqualToString:@""])
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome" message:@"Welcome to hermes. Please set up your login information." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Welcome" message:@"Welcome to hermes. Please set up your login information." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert setType:login];
         [alert show];
         return false;
     }
@@ -77,13 +79,15 @@
     {
         if([[data sessionId] isEqualToString:@"ERROR"])
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"There was an error connecting to the server." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error connecting to the server." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert setType:nothing];
             [alert show];
             [data setSessionId:nil];
         }
         else if([[data sessionId] isEqualToString:@"DOMAIN"])
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname?" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
+            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
+            [alert setType: settings];
             [alert show];
             [data setSessionId:nil];
         }
@@ -94,15 +98,27 @@
     }
     else
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert setType:login];
         [alert show];
     }
 }
 #pragma mark - Alert View
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex == 0){
-        //delete it
+    
+    enum Type type = [(HermesAlert*)alertView getType];
+    
+    if( type == settings)
+    {
         [self goToSettings:self];
+    }
+    else if(type == login)
+    {
+        [self goToLogin:self];
+    }
+    else
+    {
+        NSLog(@"Nothing should happen on this alert");
     }
 }
 
@@ -116,6 +132,11 @@
 }
 */
 
+-(IBAction)goToLogin:(id)sender
+{
+    NSLog(@"Go to Login");
+    [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+}
 - (IBAction)goToSettings:(id)sender {
     NSLog(@"Go to Settings");
     

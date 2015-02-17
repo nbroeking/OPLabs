@@ -20,5 +20,6 @@
 @property (strong, atomic) NSString *password;
 
 -(void) sync;
+-(void) save;
 - (void)registerDefaultsFromSettingsBundle;
 @end

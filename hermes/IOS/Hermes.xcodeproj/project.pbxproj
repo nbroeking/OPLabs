@@ -20,6 +20,7 @@
 		56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */; };
 		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
 		56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7E0FD1A721A9300965DE3 /* TesterTests.m */; };
+		56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EE05461A93CEE100ACCA49 /* HermesAlert.m */; };
 		DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7B71A78306800E169AA /* LoginViewController.m */; };
 		DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7BA1A78309500E169AA /* SignupViewController.m */; };
 		DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C91A783C5600E169AA /* MenuTableViewController.m */; };
@@ -60,6 +61,8 @@
 		56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		56C7E0FD1A721A9300965DE3 /* TesterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TesterTests.m; sourceTree = "<group>"; };
+		56EE05451A93CEE100ACCA49 /* HermesAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HermesAlert.h; sourceTree = SOURCE_ROOT; };
+		56EE05461A93CEE100ACCA49 /* HermesAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HermesAlert.m; sourceTree = SOURCE_ROOT; };
 		DB34B7B61A78306800E169AA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		DB34B7B71A78306800E169AA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		DB34B7B91A78309500E169AA /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
@@ -201,6 +204,8 @@
 				56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */,
 				56572C7A1A8D6A3D00EF6582 /* SessionData.h */,
 				56572C7B1A8D6A3D00EF6582 /* SessionData.m */,
+				56EE05451A93CEE100ACCA49 /* HermesAlert.h */,
+				56EE05461A93CEE100ACCA49 /* HermesAlert.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -310,6 +315,7 @@
 				562737031A71BB0D00F05935 /* Tester.m in Sources */,
 				DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
+				56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */,
 				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
 				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,

@@ -58,6 +58,14 @@
     }
 }
 
+-(void)save
+{
+    NSLog(@"Save Settings");
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    [standardUserDefaults setValue:email forKey:@"email"];
+    [standardUserDefaults setValue:password forKey:@"password"];
+    //Save Data
+}
 #pragma NSUserDefaults
 //This method will only be called once. On the very first time that the app is launched
 - (void)registerDefaultsFromSettingsBundle {
