@@ -53,6 +53,10 @@ public:
     inline void setFollowLocation( bool follow ) {
         curl_easy_setopt(raw, CURLOPT_FOLLOWLOCATION, follow);
     }
+    
+    inline void setPostFields( const char* data ) {
+        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, data);
+    }
 
 private:
     CURL* raw;

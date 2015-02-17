@@ -2,12 +2,21 @@
 
 #include <io/Inet4Address.hpp>
 #include <curl/AsyncCurl.hpp>
+#include <io/binary/Base64Putter.hpp>
 
 using namespace io;
 using namespace lang;
 using namespace curl;
+using namespace std;
 
 namespace mercury {
+
+byte mercury_magic_cookie[ MAGIC_COOKIE_LENGTH ] = {
+    0xe2, 0x1a, 0x14, 0xc8, 0xa2, 0x35, 0x0a, 0x92,
+    0xaf, 0x1a, 0xff, 0xd6, 0x35, 0x2b, 0xa4, 0xf3, 
+    0x97, 0x79, 0xaf, 0xb5, 0xc1, 0x23, 0x43, 0xf0,
+    0xf7, 0x14, 0x17, 0x62, 0x53, 0x4a, 0xa9, 0x7e, 
+};
 
 Mercury::SocketHandler::SocketHandler(StreamSocket* sock, Mercury* sup):
     m_sock(sock), m_sup(sup) {
@@ -19,24 +28,42 @@ Mercury::SocketHandler::~SocketHandler() {
 
 void Mercury::SocketHandler::observe(int fd, int events) {
     (void) events;
+    /* At this point we are waiting for the magic cookie
+     * to be sent */
     static logger::LogContext& log =
         logger::LogManager::instance().getLogContext("Mercury","Socket");
 
     log.printfln(INFO, "Witness observation in fd %d", fd);
-    byte bytes[1024];
-    size_t bytes_read;
-    bytes_read = m_sock->read( bytes, 1024 );
-    log.printHex( INFO, bytes, bytes_read );
 
-    if( !strncmp((char*)bytes, "hello\n", bytes_read) ) {
+
+    union {
+        struct {
+            byte magic_cookie[ MAGIC_COOKIE_LENGTH ];
+            byte new_id[ SERVER_ID_LENGTH ];
+        } str;
+        byte buffer[ MAGIC_COOKIE_LENGTH + SERVER_ID_LENGTH ];
+    };
+
+    size_t bytes_read;
+    bytes_read = m_sock->read( buffer, sizeof(buffer) );
+    log.printHex( INFO, buffer, bytes_read );
+
+    if( bytes_read < MAGIC_COOKIE_LENGTH + SERVER_ID_LENGTH ) {
+        m_sup->m_state_machine.sendStimulus( BAD_COOKIE_RECEIVED );
+        return ;
+    }
+
+    bool equal = std::equal( str.magic_cookie, str.magic_cookie + MAGIC_COOKIE_LENGTH,
+                                    mercury_magic_cookie );
+
+    if( equal ) {
         /* the magic cookie was received */
-        MercuryStim stm = COOKIE_RECEIVED;       
-        m_sup->m_state_machine.sendStimulus(stm);
+        m_sup->setId( str.new_id );
+        m_sup->m_state_machine.sendStimulus(COOKIE_RECEIVED);
     } else {
         /* Something other than the magic cookie was
          * received */
-        MercuryStim stm = BAD_COOKIE_RECEIVED;
-        m_sup->m_state_machine.sendStimulus(stm);
+        m_sup->m_state_machine.sendStimulus(BAD_COOKIE_RECEIVED);
     }
 }
 
@@ -71,12 +98,24 @@ MercuryState Mercury::onCookieReceived() {
     MercuryCurlObserver* observer = new MercuryCurlObserver();
     observer->m_sup = this;
 
+    Base64Putter putter;
+    putter.putBytes(m_id, sizeof(m_id));
+    std::string m_id_enc = putter.serialize();
+
+    m_log.printfln(DEBUG, "Serialized id %s", m_id_enc.c_str());
+
     m_buffer_data.clear();
     Curl request;
-    request.setURL("https://example.com/");
-    request.setFollowLocation(true);
 
-    m_log.printfln(INFO, "Sending curl request");
+    char posts[128];
+    snprintf(posts, sizeof(posts), "id=%s", m_id_enc.c_str());
+    request.setURL("https://128.138.202.143/api/testfunc");
+    request.setPostFields(posts);
+    request.setFollowLocation(true);
+    request.setSSLHostVerifyEnabled(false);
+    request.setSSLPeerVerifyEnabled(false);
+
+    m_log.printfln(INFO, "Sending curl request: %s", posts);
     m_asnc_curl.sendRequest(request, observer,
         lang::std_deallocator<CurlObserver>() );
 

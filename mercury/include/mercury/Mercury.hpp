@@ -14,6 +14,9 @@
 #include <io/ServerSocket.hpp>
 #include <curl/AsyncCurl.hpp>
 
+#define SERVER_ID_LENGTH 32
+#define MAGIC_COOKIE_LENGTH 32
+
 namespace mercury {
 
 enum MercuryStim {
@@ -81,6 +84,12 @@ public:
     MercuryState onBadRequest();
     MercuryState onGoodRequest();
 
+
+    inline void setId( byte* bytes /* MUST BE LENGTH 32 */ ) {
+        m_log.printfln(DEBUG, "Setting new id to");
+        m_log.printHex(DEBUG, bytes, SERVER_ID_LENGTH);
+        std::copy(bytes, bytes + SERVER_ID_LENGTH, m_id);
+    }
 private:
 
     friend class AcceptHandler;
@@ -138,6 +147,8 @@ private:
     logger::LogContext& m_log;
 
     std::vector<byte> m_buffer_data;
+
+    byte m_id[ SERVER_ID_LENGTH ]; /* server side identification */
 };
 
 }
