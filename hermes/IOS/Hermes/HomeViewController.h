@@ -15,8 +15,10 @@
 @property (weak, nonatomic) SessionData* data;
 
 - (IBAction)goToSettings:(id)sender;
-
 -(BOOL) checkLogin;
-
 -(void) appBecameActive;
+
+-(void)startLogin;
+-(void)endLogin;
+
 @end

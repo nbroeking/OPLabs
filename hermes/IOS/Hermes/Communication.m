@@ -183,6 +183,7 @@
         NSLog(@"Caught Exception %@ This is normally caused by a bad domain.", e);
         [[SessionData getData] setSessionId:@"DOMAIN"];
     }
+
     [sender performSelectorOnMainThread:@selector(notifyLogin) withObject: nil waitUntilDone:NO];
     sender = nil;
 }

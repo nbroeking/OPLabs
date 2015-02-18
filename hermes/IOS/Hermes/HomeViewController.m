@@ -12,10 +12,11 @@
 #import "HermesAlert.h"
 
 @interface HomeViewController ()
+@property (nonatomic, strong) UIAlertView *loading;
 @end
 
 @implementation HomeViewController
-@synthesize data;
+@synthesize data, loading;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -54,6 +55,7 @@
     
     if([self checkLogin])
     {
+        [self startLogin];
         [[(MainNavigationController*)self.navigationController communicator] login:self];
     }
 }
@@ -102,6 +104,7 @@
         [alert setType:login];
         [alert show];
     }
+    [self performSelector:@selector(endLogin) withObject:nil afterDelay:1];
 }
 #pragma mark - Alert View
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -121,7 +124,27 @@
         NSLog(@"Nothing should happen on this alert");
     }
 }
-
+-(void)startLogin
+{
+    NSLog(@"Start Login");
+    loading = [[HermesAlert alloc] initWithTitle:@"Logging in" message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
+    
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [indicator startAnimating];
+    [loading setValue:indicator forKey:@"accessoryView"];
+    [loading show];
+}
+-(void)endLogin
+{
+    NSLog(@"End Login");
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:2];
+    [UIView setAnimationDelay:1.0];
+    [loading dismissWithClickedButtonIndex:0 animated:YES];
+    [UIView commitAnimations];
+    loading = nil;
+}
 /*
 #pragma mark - Navigation
 
