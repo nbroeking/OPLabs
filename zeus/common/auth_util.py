@@ -1,7 +1,12 @@
-from flask import jsonify, request
+from flask import request
 from common.auth_model import User
 from functools import wraps
-from json_util import JSON_FAILURE
+from .json_util import JSON_FAILURE
+from binascii import unhexlify
+
+# This is the magic cookie the router is expecting
+MAGIC_COOKIE_HEX = "e21a14c8a2350a92af1affd6352ba4f39779afb5c12343f0f7141762534aa97e"
+MAGIC_COOKIE = unhexlify(MAGIC_COOKIE_HEX)
 
 INVALID_AUTH = (JSON_FAILURE(), 401)
 
