@@ -16,4 +16,4 @@ if __name__ == '__main__':
     if Context.is_up():
         run_tests()
     else:
-        print FAILURE("Could not connect to server!")
+        print (FAILURE("Could not connect to server!"))
