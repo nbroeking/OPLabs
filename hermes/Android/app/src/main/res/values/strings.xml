@@ -7,4 +7,7 @@
     <string name="CommServiceName">Communication</string>
     <string name="title_activity_results">Results</string>
 
+    <string name="defaultemail">""</string>
+    <string name="defaulthostname">https://128.138.202.143</string>
+    <string name="defaultpassword">""</string>
 </resources>

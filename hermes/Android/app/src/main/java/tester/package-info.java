@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author NBroeking
- *
- */
-package tester;

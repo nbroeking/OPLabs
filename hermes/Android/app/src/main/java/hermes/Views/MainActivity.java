@@ -2,15 +2,17 @@ package hermes.Views;
 
 import com.oplabs.hermes.R;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends Activity {
+import general.HermesActivity;
+import interfaces.CommunicationDelegate;
+
+public class MainActivity extends HermesActivity implements CommunicationDelegate{
 
     private final String TAG = "HermesMainActivity";
 	@Override
@@ -20,65 +22,58 @@ public class MainActivity extends Activity {
 
         Log.i(TAG, "OnCreate");
 	}
+
     @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        Log.i(TAG, "OnDestroy");
-    }
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        Log.i(TAG, "OnStart");
-    }
-    @Override
-    protected void onRestart()
-    {
-        super.onRestart();
-        Log.i(TAG, "OnRestart");
-    }
-    @Override
-    protected void onResume()
+    public void onResume()
     {
         super.onResume();
-        Log.i(TAG, "OnResume");
+        data.sync(this);
+        checkLogin();
     }
+    //Methods for Login in
+    //Allows the Communication thread to communicate back
     @Override
-    protected void onPause()
+    public void notifyLogin()
     {
-        super.onPause();
-        Log.i(TAG, "OnPause");
+        Log.i(TAG, "Notify Login");
     }
-    @Override
-    protected void onStop()
+    //Check login
+    public void checkLogin()
     {
-        super.onStop();
-        Log.i(TAG, "OnStop");
+        Log.i(TAG, "Check Login");
+        if( data.getEmail().equals("")|| data.getPassword().equals("") || data.getHostname().equals(""))
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("Welcome")
+                    .setMessage("Welcome to hermes. Please set up your login information.")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.i("ALERT CLICKED", "ALERT CLICKED");
+                            // continue with delete
+                            goToLogin(null);
+                        }
+                    })
+                    .setIcon(R.drawable.ic_launcher)
+                    .show();
+        }
     }
 
+    //Marks Login
+    public void startLogin()
+    {
+
+    }
+    public void endLogin()
+    {
+
+    }
+
+    //Methods for changing views
+    //Run test
     public void runTest(View view)
     {
         Log.i(TAG, "RunTest");
         Intent myIntent = new Intent(MainActivity.this, ResultsActivity.class);
         MainActivity.this.startActivity(myIntent);
     }
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 }
