@@ -65,7 +65,9 @@ class TestResult(db.Model):
         if device_type:
             if device_type not in DEVICE_TYPES:
                 raise ValueError("Invalid Device type: %s" % str(device_type))
-        state = 'wait'
+            self.device_type = device_type
+
+        self.state = 'wait'
         db.session.add(self)
         db.session.commit()
 
