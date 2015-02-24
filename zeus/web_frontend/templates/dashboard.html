@@ -2,12 +2,27 @@
 
 {% block body %}
 
+<script>
+
+function delete_rec(row_id) {
+    $.ajax({
+        type: "POST",
+        url: "/api/delete_result",
+        data: {"test_id" : row_id},
+        success: function() {
+            location.reload();
+        }
+    });
+}
+
+</script>
 
 <table class="table table-striped">
     <tr>
         <th> Device IP </th>
         <th> Device Type </th>
         <th> Device Status </th>
+        <th> Delete </th>
     </tr>
     {% for test_set in user_sets %}
     {% for result in test_set.tests %}
@@ -21,6 +36,9 @@
         {% else %}
         <td> Unknown </td>
         {% endif %}
+        <td>
+            <button type="button" class="btn btn-danger" onclick="delete_rec({{result.test_id}})"> Delete </button>
+        </td>
     </tr>
     {% endfor %}
     {% endfor %}

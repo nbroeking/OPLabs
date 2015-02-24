@@ -8,10 +8,11 @@ Date: 02/21/2015
 
 """
 from flask import request
+from app import db
 from common.auth_model import User
 from common.test_result import TestResult
 from common.auth_util import requires_token
-from common.json_util import JSON_SUCCESS
+from common.json_util import JSON_SUCCESS, JSON_FAILURE
 from . import rest_blueprint
 
 @rest_blueprint.route("/testfunc", methods=['POST'])
@@ -47,3 +48,13 @@ def start_test():
     return JSON_SUCCESS(
             config=config
         )
+
+@rest_blueprint.route("/delete_result", methods=['POST'])
+def delete_result():
+    if User.from_session():
+        rec = TestResult.get_set_by_id(request.form['test_id'])
+        db.session.delete(rec)
+        db.session.commit()
+        return JSON_SUCCESS()
+    else:
+        return JSON_FAILURE()

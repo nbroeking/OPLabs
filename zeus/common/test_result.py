@@ -55,11 +55,10 @@ class TestResult(db.Model):
                 ).first()
 
     @staticmethod
-    def new_anon_result():
-        res = TestResult()
-        db.session.add(res)
-        db.session.commit()
-        return res.test_id
+    def get_set_by_id(result_id):
+        return db.session.query(TestResult).filter(
+                TestResult.test_id == result_id
+                ).first()
 
     def __init__(self, device_type=None):
         if device_type:
