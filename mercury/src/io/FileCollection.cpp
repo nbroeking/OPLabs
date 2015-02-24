@@ -1,40 +1,64 @@
-#include <io/FileCollection.hpp>
 
 #include <sys/poll.h>
 #include <unistd.h>
 
+#define HAS_FIONREAD
+
+#include <sys/stat.h>
+
+#ifdef HAS_FIONREAD
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#endif
+
+#include <io/FileCollection.hpp>
+
 using namespace std;
 using namespace logger;
+using namespace lang;
+using namespace os;
+
+
 namespace io {
 
+const char* subscribe_str[] = {
+    "ServerSocket", "Read", "Write"
+};
 
-FileCollection::FileCollection() {
+
+FileCollection::FileCollection():
+    m_log(LogManager::instance().getLogContext("IO", "FileCollection::Static")) {
     pipe( m_pipe );
-    m_map[m_pipe[1]].push_back(NULL);
-    m_log = &LogManager::instance().getLogContext("IO", "FileCollection::Static");
+    this->subscribe(SUBSCRIBE_READ, m_pipe[0], NULL);
 }
 
 void FileCollection::interrupt() {
-    m_log->printfln(TRACE, "Interrupt called");
+    m_log.printfln(DEBUG, "Interrupt called");
     byte bytes[1];
 	bytes[0] = 0;
-    write(m_pipe[0], bytes, 1);
+    write(m_pipe[1], bytes, 1);
 }
 
-void FileCollection::subscribeForRead( int fd, FileCollectionObserver* observer ) {
-    m_log->printfln(DEBUG, "Subscribing new file descriptor %d with observer %p for read", fd, observer);
-    m_map[fd].push_back(observer);
-    interrupt();
-}
+void FileCollection::subscribe( SubscriptionType type, int f,
+    FileCollectionObserver* observer, dealloc_T* dealloc) {
+    if( type > SUBSCRIBE_N ) {
+        throw InvalidArgumentException("Enum out of bounds");
+    }
 
-void FileCollection::subscribeForWrite( int fd, FileCollectionObserver* observer ) {
-    m_log->printfln(DEBUG, "Subscribing new file descriptor %d with observer %p for write", fd, observer);
-    m_map[fd].push_back(observer);
+    ScopedLock __sl(m_mutex);
+    m_log.printfln(DEBUG, "Subscribing new file descripotr %d with observer %p for %s",
+        f, observer, subscribe_str[type]
+    );
+
+    entry_T entry = make_pair( type, observer );
+    m_deallocators[observer] = dealloc;
+    m_map[f] = entry;
+
     interrupt();
 }
 
 void FileCollection::fireEvent( int fd, int events ) {
-    m_log->printfln(DEBUG, "FireEvent for file descriptor %d events=%d,%d,%d|%d,%d,%d", fd,
+    m_log.printfln(DEBUG, "FireEvent for file descriptor %d events=%d,%d,%d|%d,%d,%d", fd,
         !!(events&POLLIN),
         !!(events&POLLOUT),
         !!(events&POLLPRI),
@@ -44,40 +68,114 @@ void FileCollection::fireEvent( int fd, int events ) {
         !!(events&POLLNVAL)
     );
 
-    vector<FileCollectionObserver*>& vec = m_map[fd];
-    vector<FileCollectionObserver*>::iterator itr;
-
-    for( itr = vec.begin() ; itr != vec.end() ; ++ itr ) {
-        if( * itr ) {
-            (*itr)->observe(fd, events);
-        }
+    FileCollectionObserver* obs = m_map[fd].second;
+    if( obs ) {
+        obs->observe(fd, events);
     }
 }
 
+int subscriptionTypeToBitmask( FileCollection::SubscriptionType typ ) {
+    switch(typ) {
+    case FileCollection::SERVER_SOCKET:
+    case FileCollection::SUBSCRIBE_READ:
+        return POLLIN;
+    case FileCollection::SUBSCRIBE_WRITE:
+        return POLLOUT;
+    default:
+        throw InvalidArgumentException("Enum out of range");
+    }
+
+}
+
+
+void FileCollection::handle_poll_results( 
+    logger::LogContext& log,
+    std::vector<struct pollfd>& poll_data ) {
+
+    vector<int> unsubscriptions;
+    vector< pair<int,int> > events;
+    m_mutex.lock();
+
+    log.printfln(DEBUG, "Events detected");
+    vector<struct pollfd>::iterator vitr;
+
+    for( vitr = poll_data.begin(); vitr != poll_data.end(); ++ vitr ) {
+        if( vitr->revents != 0 ) {
+
+            entry_T entry = m_map[vitr->fd];
+            if( vitr->fd == m_pipe[0] ) {
+                /* There was an interrupt, throw away the
+                 * data */
+                log.printfln(DEBUG, "There is an interrupt");
+                byte bytes[1024];
+                read(m_pipe[0], bytes, 1024);
+            } else {
+                /* Fire the event for the correct file descriptor */
+                if( vitr->revents & POLLHUP ) {
+
+                    /* There was a hangup, we need to remove the
+                     * file descriptor */
+                    log.printfln(DEBUG, "Unsubscribing hungup file descriptor %d", vitr->fd);
+                    unsubscriptions.push_back(vitr->fd);
+                } else {
+                    /* There _might_ be data to read */
+#ifdef  HAS_FIONREAD
+                    bool not_is_server = entry.first != SERVER_SOCKET;
+                    long n_read = 1;
+                    int err = 0;
+
+                    if( not_is_server && (err = ioctl( vitr->fd, FIONREAD, &n_read )) ){
+                        log.printfln(WARN, "ioctl failed: %s", strerror(err));
+                    }
+
+                    if( n_read > 0 ) {
+#endif
+                        /* This file descriptor had an event.
+                         * Fire that event */
+                        events.push_back( make_pair(vitr->fd, vitr->revents) );
+
+#ifdef  HAS_FIONREAD
+                    } else {
+                        log.printfln(DEBUG, "Unsubscrbing %d due to EOF", vitr->fd);
+                        unsubscriptions.push_back(vitr->fd);
+                    }
+#endif
+                }
+            }
+
+        }
+    }
+
+    m_mutex.unlock();
+    vector<int>::iterator itr1;
+    vector< pair<int,int> >::iterator itr2;
+    
+    FOR_EACH(itr1, unsubscriptions) {
+        _unsubscribe( *itr1 );
+    }
+
+    FOR_EACH(itr2, events) {
+        fireEvent(itr2->first, itr2->second);
+    }
+
+}
+
 void FileCollection::run() {
-    vector<struct pollfd> poll_data;
     LogContext& log = LogManager::instance().getLogContext("IO", "FileCollection::Run");
     log.printfln(DEBUG, "Start FileCollection::run");
 
     for( ; ; ) {
-        map<int, vector<FileCollectionObserver*> >::iterator itr;
-        itr = m_map.begin();
+        vector<struct pollfd> poll_data;
+        map_T::iterator itr;
 
         /* Add the poll data from the reading map */
-        for( ; itr != m_map.end() ; ++ itr ) {
-            struct pollfd pfd;
-            pfd.revents = 0;
-            pfd.fd = itr->first;
-            pfd.events = POLLIN | POLLPRI;
-            poll_data.push_back(pfd);
-        }
+        for( itr = m_map.begin() ; itr != m_map.end() ; ++ itr ) {
+            log.printfln(TRACE,"Adding for input set fd %d", itr->first);
 
-        /* Add all the data from the writing map */
-        for( itr = m_write_map.begin(); itr != m_write_map.end() ; ++ itr ) {
             struct pollfd pfd;
             pfd.revents = 0;
             pfd.fd = itr->first;
-            pfd.events = POLLOUT;
+            pfd.events = subscriptionTypeToBitmask(itr->second.first);
             poll_data.push_back(pfd);
         }
 
@@ -88,24 +186,42 @@ void FileCollection::run() {
         }
 
         if( rc != 0 ) {
-            log.printfln(DEBUG, "Events detected");
-            vector<struct pollfd>::iterator vitr;
-            for( vitr = poll_data.begin(); vitr != poll_data.end(); ++ vitr ) {
-                if( vitr->revents != 0 ) {
-                    if( vitr->fd == m_pipe[1] ) {
-                        /* There was an interrupt, throw away the
-                         * data */
-                        byte bytes[1024];
-                        read(m_pipe[1], bytes, 1024);
-                    } else {
-                        /* Fire the event for the correct file descriptor */
-                        fireEvent(vitr->fd, vitr->revents);
-                    }
-                }
-            }
+            handle_poll_results( log, poll_data );
         }
 
     }
+}
+
+bool FileCollection::_unsubscribe( int fd ) {
+    m_log.printfln(DEBUG, "Unsubscribing file descriptor %d", fd);
+
+    map_T::iterator itr = m_map.find(fd);
+
+    if( itr == m_map.end() ) return false;
+
+    if( itr->second.second )
+        itr->second.second->onUnsubscribe(fd);
+
+    dealloc_map_T::iterator ditr;
+    ditr = m_deallocators.find( itr->second.second );
+
+    if( ditr != m_deallocators.end() ) {
+        if( ditr->second ) {
+            ditr->second->deallocate( itr->second.second );
+        }
+        m_deallocators.erase(ditr);
+    }
+
+    m_map.erase(itr);
+
+    return true;
+}
+
+bool FileCollection::unsubscribe( int fd ) {
+    ScopedLock __sl( m_mutex );
+    interrupt();
+    bool ret = _unsubscribe(fd);
+    return ret;
 }
 
 FileCollection::~FileCollection() {

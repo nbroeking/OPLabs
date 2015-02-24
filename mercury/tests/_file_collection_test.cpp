@@ -10,7 +10,7 @@ using namespace logger;
 using namespace std;
 using namespace io;
 
-class PrintSocketObserver : public SingleFileCollectionObserver {
+class PrintSocketObserver: public FileCollectionObserver {
 public:
 
 DatagramSocket* sock;
@@ -82,6 +82,6 @@ int main( int argc, char** argv ) {
     sock.bind(addr);
     observer->sock = &sock;
 
-    collection.subscribeForRead(observer);
+    collection.subscribe(FileCollection::SUBSCRIBE_READ, observer->getFd(), observer);
     collection.run();
 }

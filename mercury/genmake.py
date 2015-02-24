@@ -73,25 +73,31 @@ ENV?=devel
 export ROOT_DIR=.
 include targets/$(TGT)/$(ENV).mk 
 
-CXXFLAGS := $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
+export CXX
+export CC
+export AR
+
+CXXFLAGS := -I include -I 3rdparty $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
 
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
 HACK2 := $(shell mkdir -p _$(TGT)_obs/tests/)
 
-LDFLAGS := $(LDFLAGS) -lpthread
+LDFLAGS := 3rdparty/libjson/_$(TGT)_obs/libjson.a 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
 
 QEMU?=
 export QEMU
 
-default: tests notests
+default: all
 '''
 
 MAKEFILE_FOOTER = '''
 clean:
-	rm -rf '''+OBJS_DIR+'''
-	rm -f mercury
+	for i in $$(find -name '_$(TGT)_obs') ; do rm -rfv $$i ; done
 
-.PHONY: tools tests
+.PHONY: tools tests 3rdparty
+3rdparty:
+	for i in $$(find 3rdparty/ -iname "makefile"); do $(MAKE) -C $$(dirname $$i) $(MAKECMDGOALS) ; done
+
 tools: notests
 	for i in $$(find tools/ -iname "makefile"); do pushd $$(dirname $$i) && make && popd ; done
 
@@ -103,8 +109,7 @@ test: tests
 	./test.sh
 
 cleanall:
-	rm -rf _*_obs
-	rm -f mercury
+	for i in $$(find -name '_*_obs') ; do rm -rfv $$i ; done
 
 .PHONY: doc
 doc:
@@ -152,7 +157,7 @@ def get_dependencies(f):
 
 # Return all the cpp source files
 def get_source_files():
-    for dirpath, dirs, files in os.walk('.'):
+    for dirpath, dirs, files in os.walk('src'):
         for i in files:
             f = os.path.join(dirpath, i)
             if f.endswith('.cpp') and not f.startswith('main'):
@@ -198,13 +203,13 @@ def main(argv):
     sys.stdout.write(OBJS_DIR + 'libmercury.a: ' + '\\\n    '.join(object_files) + '\n')
     sys.stdout.write('\t$(AR) -rcs '+OBJS_DIR+'/libmercury.a ' + '\\\n    '.join(object_files) + '\n\n')
 
-    sys.stdout.write('notests:' + ' main.cpp '+OBJS_DIR+'libmercury.a\n')
+    sys.stdout.write('notests: ' +OBJS_DIR+'libmercury.a\n')
     sys.stdout.write('\t$(CXX) -o main '+OBJS_DIR+'libmercury.a $(LDFLAGS)\n\n')
 
     sys.stdout.write('tests: ' + '\\\n    '.join(test_binaries))
     sys.stdout.write('\n\n')
 
-    sys.stdout.write('all: tests notests tools')
+    sys.stdout.write('all: 3rdparty tests notests tools')
     sys.stdout.write('\n\n')
 
     sys.stdout.write(MAKEFILE_FOOTER)

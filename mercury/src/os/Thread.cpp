@@ -18,6 +18,7 @@ static void* run_thread( void* _thread ) {
 
 Thread::Thread(Runnable& runner) : m_runner(runner) {
 	m_thread = (pthread_t)0;
+    joined = false;
 }
 
 int Thread::start() {
@@ -28,10 +29,17 @@ int Thread::start() {
 }
 
 int Thread::join() {
-	return pthread_join(m_thread, NULL);
+    if( ! joined ) {
+        int ret;
+    	ret = pthread_join(m_thread, NULL);
+        joined = true;
+        return ret;
+    }
+    return 0;
 }
 
 Thread::~Thread() {
+    join();
     s_thread_db[m_thread]=NULL;
 }
 

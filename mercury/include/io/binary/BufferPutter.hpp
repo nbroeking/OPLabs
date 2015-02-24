@@ -36,6 +36,10 @@ public:
 		}
 		bytes[cur ++] = b;
 	}
+
+    inline size_t getSize() const {
+        return cur;
+    }
 private:
 	byte* bytes;
 	size_t len;
