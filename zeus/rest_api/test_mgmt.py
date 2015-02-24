@@ -35,6 +35,9 @@ def start_test():
 
     rec = TestResult.get_set_by_token_ip(token, ip)
 
+    if not rec:
+        return JSON_FAILURE()
+
     rec.state = 'ack'
     rec.save()
 
