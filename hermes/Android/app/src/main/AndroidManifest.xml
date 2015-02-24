@@ -8,6 +8,20 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_CALL_LOG" />
+
     <application
         android:name="main.HermesApplication"
         android:allowBackup="true"
@@ -43,6 +57,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="general.HermesActivity" />
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName="hermes.Views.MainActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hermes.Views.MainActivity" />
         </activity>
     </application>
 

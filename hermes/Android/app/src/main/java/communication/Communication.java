@@ -62,6 +62,12 @@ public class Communication extends Service {
 
     //Communication Methods
 
+    public void login()
+    {
+        Log.i(TAG, "Scheduling Login");
+
+
+    }
     public class MyLocalBinder extends Binder {
         public Communication getService() {
             return Communication.this;

@@ -72,6 +72,10 @@
         [alert show];
         return false;
     }
+    
+    if (![[data sessionId] isEqualToString:@""]) {
+        return false;
+    }
     return true;
 }
 #pragma mark -Communication
