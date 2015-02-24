@@ -9,8 +9,8 @@ Date: 02/21/2015
 """
 from flask import request
 from common.auth_model import User
-from common.test_result import TestResult
-from common.test_set import TestSet
+##from common.test_result import TestResult
+#from common.test_set import TestSet
 from common.auth_util import requires_token
 from common.json_util import JSON_SUCCESS
 from . import rest_blueprint
