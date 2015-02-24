@@ -11,6 +11,11 @@
 
 namespace io {
 
+class ConnectException: public CException {
+public:
+	ConnectException(const char* msg, int rc): CException(msg, rc){}
+};
+
 /*
  * Author: jrahm
  * created: 2014/11/07
