@@ -67,7 +67,7 @@ def csrf_protect(some_route):
 def generate_csrf_token():
     if '_csrf_token' not in session:
         session['_csrf_token'] = base64.b64encode(os.urandom(64))
-        session['_csrf_timestamp'] = str(int(time.time()))
+    session['_csrf_timestamp'] = str(int(time.time()))
 
     return session['_csrf_token']
 
