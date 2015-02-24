@@ -53,3 +53,6 @@ proguard/
 # End of Android
 # Python
 .ropeproject
+
+_*_obs/
+mercury/doc/

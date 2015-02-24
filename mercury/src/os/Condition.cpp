@@ -17,7 +17,8 @@ bool Condition::wait( Mutex& mutex )  {
 bool Condition::timedwait( Mutex& mutex, timeout_t timeout )  {
     timespec ts ;
     Time::microsInFuture( &ts, timeout ) ;
-    return !pthread_cond_timedwait( & this->m_condition, mutex.raw(), &ts ) ;
+    int ret = pthread_cond_timedwait( & this->m_condition, mutex.raw(), &ts );
+    return !ret;
 } ;
 
 Condition::~Condition() {

@@ -40,14 +40,14 @@ int main( int argc, char** argv ) {
 
         pq.push(i);
     }
-    size_t check = sum( pq.internal() );
+    size_t check = sum( pq.internal() ) + pq.internal().size();
     
     for( size_t j = 0 ; j < to_rm.size() ; ++ j ) {
         Tester::getLog().printfln(INFO, "Remove %d", to_rm[j]);
         pq.remove(to_rm[j]);
         TEST_BOOL("HeapVerify:remove", pq.verify());
     }
-    size_t check2 = sum( pq.internal() ) + sum( to_rm );
+    size_t check2 = sum( pq.internal() ) + sum( to_rm ) + pq.internal().size() + to_rm.size();
     
     TEST_BOOL("HeapChecksum", check == check2);
 

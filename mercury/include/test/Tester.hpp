@@ -12,7 +12,6 @@
 
 namespace test {
 
-#define PURPLE  "\e[1;35m"
 #define TEST_BOOL(name, b) \
     test::Tester::instance().testBool(name, b, __FUNCTION__, __FILE__, __LINE__)
 

@@ -35,7 +35,7 @@ public:
 /**
  * @brief An abstraction of a server socket over C style Berekly sockets.
  */
-class StreamServerSocket {
+class StreamServerSocket: public HasRawFd {
 public:
     /**
      * @brief Do all of the work for you. Binds and begins listening.
@@ -85,7 +85,9 @@ public:
      */
     void close();
 
-    ~StreamServerSocket();   
+    inline int getRawFd() { return m_fd; }
+
+    virtual ~StreamServerSocket();   
 private:
     int m_fd ;
 };

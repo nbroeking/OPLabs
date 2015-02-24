@@ -186,7 +186,9 @@ protected:
      * @param bytes The bytes sent
      * @param len The length of the bytes
      */
-    virtual void messageReceivedCallback(ProcessAddressProxy& from_addr, const byte* bytes, size_t len) = 0;
+    virtual inline void messageReceivedCallback(ProcessAddressProxy& from_addr, const byte* bytes, size_t len) {
+        (void) from_addr ; (void) bytes ; (void) len ;
+    }
 
 private:
     /* Class that digests messages for the
