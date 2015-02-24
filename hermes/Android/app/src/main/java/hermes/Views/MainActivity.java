@@ -12,7 +12,7 @@ import android.view.View;
 import general.HermesActivity;
 import interfaces.CommunicationDelegate;
 
-public class MainActivity extends HermesActivity implements CommunicationDelegate{
+public class MainActivity extends HermesActivity{
 
     private final String TAG = "HermesMainActivity";
 	@Override
@@ -28,7 +28,13 @@ public class MainActivity extends HermesActivity implements CommunicationDelegat
     {
         super.onResume();
         data.sync(this);
-        checkLogin();
+        data.setSessionId("");
+
+        if(checkLogin())
+        {
+            startLogin();
+            commService.login();
+        }
     }
     //Methods for Login in
     //Allows the Communication thread to communicate back
@@ -38,7 +44,7 @@ public class MainActivity extends HermesActivity implements CommunicationDelegat
         Log.i(TAG, "Notify Login");
     }
     //Check login
-    public void checkLogin()
+    public boolean checkLogin()
     {
         Log.i(TAG, "Check Login");
         if( data.getEmail().equals("")|| data.getPassword().equals("") || data.getHostname().equals(""))
@@ -48,14 +54,18 @@ public class MainActivity extends HermesActivity implements CommunicationDelegat
                     .setMessage("Welcome to hermes. Please set up your login information.")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.i("ALERT CLICKED", "ALERT CLICKED");
-                            // continue with delete
+                            // login
                             goToLogin(null);
                         }
                     })
                     .setIcon(R.drawable.ic_launcher)
                     .show();
+            return false;
         }
+        if( !(data.getSessionId().equals(""))) {
+            return false;
+        }
+        return true;
     }
 
     //Marks Login
