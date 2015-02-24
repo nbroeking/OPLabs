@@ -18,7 +18,7 @@ from . import rest_blueprint
 @requires_token()
 def test_func():
     """ Test function for logged in users. """
-    auth_user = User.get_user(auth_token=request.form['token'])
+    auth_user = User.get_user(auth_token=request.form['id'])
 
     return JSON_SUCCESS(
         your_email=auth_user.email
