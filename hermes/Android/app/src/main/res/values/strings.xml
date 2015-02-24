@@ -4,5 +4,10 @@
     <string name="app_name">Hermes</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="CommServiceName">Communication</string>
+    <string name="title_activity_results">Results</string>
 
+    <string name="defaultemail">""</string>
+    <string name="defaulthostname">https://128.138.202.143</string>
+    <string name="defaultpassword">""</string>
 </resources>

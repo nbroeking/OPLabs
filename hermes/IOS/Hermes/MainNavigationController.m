@@ -13,10 +13,14 @@
 @end
 
 @implementation MainNavigationController
+@synthesize communicator;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //Get Log In information
+    
 }
 
 

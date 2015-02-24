@@ -7,22 +7,27 @@
 //
 
 #import "Communication.h"
+#import "CommunicationDelegate.h"
+#import "HomeViewController.h"
 
 @interface Communication ()
 
-@property(strong, atomic) NSInputStream* inputStream;
-@property(strong, atomic) NSOutputStream* outputStream;
+@property(strong, atomic) NSThread *thread;
+@property(strong, nonatomic) NSURL *loginURL;
+@property(strong, nonatomic) NSMutableData *responseData;
+@property(strong, nonatomic) NSURLConnection* webConnection;
+@property(weak, nonatomic)  HomeViewController* sender;
 
--(void) setUpSockets;
--(void) tearDownSockets;
--(void) tearDownRunLoop;
+-(void) loginToServer: (id) sender;
 
 @end
 
 @implementation Communication
-@synthesize inputStream;
-@synthesize outputStream;
 @synthesize thread;
+@synthesize loginURL;
+@synthesize responseData;
+@synthesize webConnection;
+@synthesize sender;
 
 //Initlizes the Communication subsystem to 0
 -(instancetype)init{
@@ -31,84 +36,25 @@
     {
         started = false;
         shouldRun = false;
-        inputStream = nil;
-        outputStream = nil;
-        NSLog(@"Created Communication Object");
+        
+        //Constants
+        loginURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@%@", [[SessionData getData] hostname], @"/api/auth/login"]];
     }
     return self;
-}
-//Call back delegate that gets called when any stream has an event occure
-- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
-    NSLog(@"Stream Event triggered.");
-    
-    switch(event) {
-        case NSStreamEventHasSpaceAvailable: {
-            if(stream == outputStream) {
-                NSLog(@"outputStream is ready to write.");
-            }
-            break;
-        }
-        case NSStreamEventHasBytesAvailable: {
-            if(stream == inputStream) {
-                NSLog(@"inputStream is ready.");
-                
-                uint8_t buf[1024];
-                
-                //We need to account for tcp messages not all being sent at once
-                //Protocol should have first 4 bytes send the number of bytes expected
-                NSInteger len = [inputStream read:buf maxLength: 1024];
-                
-                if(len > 0) {
-                    NSMutableData* data=[[NSMutableData alloc] initWithLength:0];
-                    
-                    [data appendBytes: (const void *)buf length:len];
-                    
-                    NSString *s = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-                    
-                    NSLog(@"Bytes Received: %@", s);
-                }
-            } 
-            break;
-        }
-        case NSStreamEventOpenCompleted: {
-            NSLog(@"NSStreamEventOpenCompleted");
-            break;
-        }
-        case NSStreamEventEndEncountered: {
-            NSLog(@"NSStreamEventEndEncouterd");
-            break;
-        }
-        case NSStreamEventErrorOccurred: {
-            NSLog(@"Stream Error Occured");
-            break;
-        }
-        case NSStreamEventNone: {
-            NSLog(@"No Sream Event");
-            break;
-        }
-        default: {
-            NSLog(@"Stream is sending an Event: %lu", event);
-            
-            break;
-        }
-    }
 }
 //Main Thread Run Loop
 -(void)threadMain
 {
-    NSLog(@"Communication Start");
+    //Give the runloop something to watch to prevent closing
+    NSPort *port = [NSMachPort port];
+    [[NSRunLoop currentRunLoop] addPort:port forMode:NSDefaultRunLoopMode];
+    
     //Set up json parser
-    
-    [self setUpSockets];
-    
     while(shouldRun)
     {
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        NSLog(@"Communication Run Loop Reset");
     }
     @synchronized(self){
-        [self tearDownSockets];
-    
         //Reseting member variables
         thread = nil;
         started = false;
@@ -146,39 +92,7 @@
         [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
     }
 }
-//Set up the TCP Connections
--(void)setUpSockets
-{
-    CFReadStreamRef readStream;
-    CFWriteStreamRef writeStream;
-    CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)@"10.0.1.10", 54321, &readStream, &writeStream);
-    
-    inputStream = (NSInputStream*) CFBridgingRelease(readStream);
-    outputStream = (NSOutputStream*) CFBridgingRelease(writeStream);
-    
-    [inputStream setDelegate:self];
-    [outputStream setDelegate:self];
-    
-    //Schedule in run loop
-    [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
-    
-    [inputStream open];
-    [outputStream open];
-}
-//Tear down the TCP connections
--(void)tearDownSockets
-{
-    [inputStream setDelegate:nil];
-    [outputStream setDelegate:nil];
-    
-    [inputStream close];
-    [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [outputStream close];
-    
-    //Point to nil for ARC
-    inputStream = nil;
-    outputStream = nil;
-}
+
 //Tear down the run loop
 -(void)tearDownRunLoop
 {
@@ -193,5 +107,116 @@
     {
         return started;
     }
+}
+
+-(void)login:(id)sendert
+{
+    NSLog(@"Comm received a login request");
+    if( self.sender)
+    {
+        NSLog(@"SUPER BIG ERROR: Nic made a huge mistake with his logic and should go fix it now");
+    }
+    self.sender = sendert;
+    loginURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@%@", [[SessionData getData] hostname], @"/api/auth/login"]];
+    [self performSelector:@selector(loginToServer:) onThread:thread withObject:sender waitUntilDone:NO];
+}
+-(void)loginToServer:(id)sender
+{
+    NSLog(@"Login to server");
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:loginURL];
+    
+    // Specify that it will be a POST request
+    request.HTTPMethod = @"POST";
+    
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+
+    NSString *postString = [NSString stringWithFormat:@"password=%@&email=%@", [[SessionData getData] password], [[SessionData getData] email]];
+    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+    [request setHTTPBody:data];
+    
+    
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    [NSURLConnection connectionWithRequest:request delegate:self];
+}
+
+#pragma mark NSURLConnection Delegate Methods
+//TODO: Not sure if what would happen if we tried to login btwice before we got a response
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    // A response has been received, this is where we initialize the instance var you created
+    // so that we can append data to it in the didReceiveData method
+    // Furthermore, this method is called each time there is a redirect so reinitializing it
+    // also serves to clear it
+    responseData = [[NSMutableData alloc] init];
+    NSLog(@"Comm: Connection did Receive Response");
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    // Append the new data to the instance variable you declared
+    NSLog(@"Comm: Did Receive Data");
+    [responseData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    // The request is complete and data has been received
+    // You can parse the stuff in your instance variable now
+    
+    NSLog(@"Comm: Connection did complete");
+    NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+    
+    //Parse JSON
+    @try {
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:nil];
+
+        NSString *status = [[NSString alloc] initWithString:[json objectForKey:@"status"]];
+        if( [status  isEqual: @"success"])
+        {
+            [[SessionData getData] setSessionId: [[NSString alloc] initWithString:[json objectForKey:@"auth_token"]]];
+            NSLog(@"Token: %@", [[SessionData getData] sessionId]);
+        }
+        else
+        {
+            [[SessionData getData] setSessionId:nil];
+        }
+    }
+    @catch (NSException* e)
+    {
+        NSLog(@"Caught Exception %@ This is normally caused by a bad domain.", e);
+        [[SessionData getData] setSessionId:@"DOMAIN"];
+    }
+
+    [sender performSelectorOnMainThread:@selector(notifyLogin) withObject: nil waitUntilDone:NO];
+    sender = nil;
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    // The request has failed for some reason!
+    // Check the error var
+    NSLog(@"Comm: Connection failed with error %@", error);
+    
+    [[SessionData getData] setSessionId:@"ERROR"];
+    [sender performSelectorOnMainThread:@selector(notifyLogin) withObject: nil waitUntilDone:NO];
+    sender = nil;
+}
+
+//Overloading the Authentication challenge to accept self signed certs
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
+    {
+        [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+    }
+    [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+}
+
+//Used to see if we can AuthenticateAgainst Protection Space
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+}
+//Used to tell the connection that we dont want to cache the response
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+    // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
 }
 @end

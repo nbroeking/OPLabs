@@ -43,7 +43,6 @@
     while(shouldRun)
     {
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        NSLog(@"Tester Run Loop Reset");
     }
     @synchronized(self){
         
@@ -61,16 +60,15 @@
         
         if( started)
         {
-            NSLog(@"Communication already started: try again");
+            NSLog(@"Tester already started: try again");
             return;
         }
         shouldRun = true;
         started = true;
         
-        NSLog(@"Starting Threads");
         //Start the run loop
         thread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
-        [thread setName:@"Communication"];
+        [thread setName:@"Tester"];
         [thread start];
     }
 }

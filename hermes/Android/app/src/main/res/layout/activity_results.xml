@@ -10,31 +10,19 @@
     tools:context="hermes.Views.MainActivity" >
 
 
-    <Button
+    <TextView
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:text="Settings"
-        android:id="@+id/button"
+        android:layout_height="250dp"
+        android:text="Results: \nJitter: \nOther Stuff:"
+        android:id="@+id/textView"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="104dp"
-        />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:text="History"
-        android:id="@+id/button2"
-        android:layout_above="@+id/button"
         android:layout_centerHorizontal="true" />
 
-    <Button
+    <FrameLayout
+        android:id="@+id/ResultsFrame"
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:text="Run Test"
-        android:id="@+id/button3"
-        android:layout_above="@+id/button2"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:onClick="runTest"/>
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/textView"></FrameLayout>
 </RelativeLayout>
