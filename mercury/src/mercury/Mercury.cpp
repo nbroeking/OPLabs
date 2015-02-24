@@ -96,7 +96,10 @@ MercuryState Mercury::onGoodRequest() {
     m_configuration.ping_address.clear();
     m_configuration.dns_address.clear();
 
-    parseConfigPacket(m_configuration);
+    int rc;
+    if( (rc = parseConfigPacket(m_configuration)) ) {
+        m_log.printfln(ERROR, "Error parsing JSON, rc=%d", rc);
+    }
 
     return IDLE;
 }
@@ -159,6 +162,7 @@ int Mercury::parseConfigPacket(ConfigPacket& pkt) {
     JSONNODE_ITERATOR i = json_begin(n);
     char buffer[1024];
     buffer[1023] = 0;
+    int rc;
     while ( i != json_end(n) ) {
         if ( * i == NULL || * i == JSON_NULL ) {
             return 1;
@@ -185,7 +189,9 @@ int Mercury::parseConfigPacket(ConfigPacket& pkt) {
                 /* not a node */
                 return 3;
             }
-            parse_config_node( *i, pkt );
+            if( (rc = parse_config_node( *i, pkt )) ) {
+                return rc;
+            }
         }
 
         ++ i;
