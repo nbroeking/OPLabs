@@ -82,7 +82,7 @@ CXXFLAGS := $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
 HACK2 := $(shell mkdir -p _$(TGT)_obs/tests/)
 
-LDFLAGS := 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
+LDFLAGS := 3rdparty/libjson/_$(TGT)_obs/libjson.a 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
 
 QEMU?=
 export QEMU
@@ -157,7 +157,7 @@ def get_dependencies(f):
 
 # Return all the cpp source files
 def get_source_files():
-    for dirpath, dirs, files in os.walk('.'):
+    for dirpath, dirs, files in os.walk('src'):
         for i in files:
             f = os.path.join(dirpath, i)
             if f.endswith('.cpp') and not f.startswith('main'):
@@ -203,7 +203,7 @@ def main(argv):
     sys.stdout.write(OBJS_DIR + 'libmercury.a: ' + '\\\n    '.join(object_files) + '\n')
     sys.stdout.write('\t$(AR) -rcs '+OBJS_DIR+'/libmercury.a ' + '\\\n    '.join(object_files) + '\n\n')
 
-    sys.stdout.write('notests:' + ' main.cpp '+OBJS_DIR+'libmercury.a\n')
+    sys.stdout.write('notests: ' +OBJS_DIR+'libmercury.a\n')
     sys.stdout.write('\t$(CXX) -o main '+OBJS_DIR+'libmercury.a $(LDFLAGS)\n\n')
 
     sys.stdout.write('tests: ' + '\\\n    '.join(test_binaries))
