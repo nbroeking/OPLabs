@@ -25,7 +25,7 @@ def test_func():
         your_email=auth_user.email
         )
 
-@rest_blueprint.route("/start_test", methods=['POST'])
+@rest_blueprint.route("/starttest", methods=['POST'])
 def start_test():
     """ Test function for logged in users. """
 
