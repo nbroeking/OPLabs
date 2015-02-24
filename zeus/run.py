@@ -20,8 +20,11 @@ Date: 01/26/2015
 from app import app
 import config
 
-from rest_api.controller import rest_blueprint
+from rest_api import rest_blueprint
+from web_frontend import web_blueprint
+
 app.register_blueprint(rest_blueprint, url_prefix="/api")
+app.register_blueprint(web_blueprint, url_prefix="/")
 
 if __name__ == "__main__":
     app.run()

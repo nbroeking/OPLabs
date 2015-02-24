@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+<table class="table table-striped">
+    <tr>
+        <th> Device IP </th>
+        <th> Device Type </th>
+        <th> Device Status </th>
+    </tr>
+    {% for test_set in user_sets %}
+    {% for result in test_set.tests %}
+    <tr>
+        <td>  {{ result.device_ip }}  </td>
+        <td>  {{ result.device_type }}  </td>
+        {% if result.device_state == "wait" %}
+        <td> Message Pending </td>
+        {% elif result.device_state == "ack" %}
+        <td> Message Acknowledged </td>
+        {% else %}
+        <td> Unknown </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    {% endfor %}
+
+</table>
+
+
+{% endblock %}

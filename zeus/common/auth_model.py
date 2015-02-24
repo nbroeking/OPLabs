@@ -10,6 +10,7 @@ Date: 01/27/2015
 
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
+from flask import session
 import base64
 from passlib.apps import custom_app_context as passlib_ctx
 from app import db
@@ -18,7 +19,7 @@ class User(db.Model):
     """ 
     This model represents a user in the database.
     """
-    __tablename__ = "auth_user"
+    __tablename__ = "User"
     user_id = db.Column('user_id', db.Integer, primary_key=True)
     email = db.Column('email', db.String(50), unique=True, index=True)
     password = db.Column('password', db.String(256))
@@ -55,22 +56,33 @@ class User(db.Model):
             return some_user
 
     @staticmethod
-    def create_user(email, password):
+    def from_session():
+        """ Attempts to load user from the current session. Returns None
+            if a valid user could not be found in the current sesssion. """
+        if 'email' in session:
+            user = User.get_user(email=session['email'])
+            if user:
+                return user
+        return None
+
+
+    def __init__(self, email, password):
         """ Create a user for the given email and password.
             The password is expected to be plaintext, and will be hashed by the
             passlib module. """
         hash_pw = passlib_ctx.encrypt(password)
 
-        new_user = User()
-        new_user.email = email
-        new_user.password = hash_pw
-        new_user.permissions = ""
-        new_user.raw_token = ""
+        self.email = email
+        self.password = hash_pw
+        self.permissions = ""
+        self.raw_token = ""
 
-        db.session.add(new_user)
+        db.session.add(self)
         db.session.commit()
 
-        return new_user
+    def save(self):
+        """ Commits any outstanding changes to the database. """
+        db.session.commit()
 
     def password_matches(self, given_pw):
         """ Checks the given password against the stored password. Returns true

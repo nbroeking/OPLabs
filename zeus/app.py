@@ -14,7 +14,7 @@ import config
 import os
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/noop/')
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 app.debug = config.DEBUG
 db = SQLAlchemy(app)

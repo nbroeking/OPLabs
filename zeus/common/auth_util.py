@@ -1,7 +1,13 @@
-from flask import jsonify, request
+from flask import request, render_template, flash
 from common.auth_model import User
 from functools import wraps
-from json_util import JSON_FAILURE
+from .json_util import JSON_FAILURE
+from binascii import unhexlify
+
+# This is the magic cookie the router is expecting
+MAGIC_PORT = 8639
+MAGIC_COOKIE_HEX = "e21a14c8a2350a92af1affd6352ba4f39779afb5c12343f0f7141762534aa97e"
+MAGIC_COOKIE = unhexlify(MAGIC_COOKIE_HEX)
 
 INVALID_AUTH = (JSON_FAILURE(), 401)
 
@@ -26,3 +32,14 @@ class requires_token():
                     return route_handler(*args, **kwargs)
             return self.invalid_handler()
         return on_request
+
+def requires_session(some_route):
+    # Flask requires that decorators are implemented utilizing functools
+    @wraps(some_route)
+    def protected(*args, **kwargs):
+        if User.from_session():
+            return some_route(*args, **kwargs)
+        else:
+            flash("Please login before continuing.", 'error')
+            return render_template("login.html")
+    return protected
