@@ -216,6 +216,21 @@ void Mercury::log_config_pkt(ConfigPacket& pkt) {
         m_log.printfln(DEBUG, "%s", (*itr)->toString().c_str());
 }
 
+inline std::string html_escape(const std::string& in) {
+    string::const_iterator itr;
+    string out;
+
+    for( itr = in.begin() ; itr != in.end() ; ++ itr ) {
+        if( *itr == '+' ) {
+            out += "%43";
+        } else {
+            out.push_back( *itr );
+        }
+    }
+
+    return out;
+}
+
 MercuryState Mercury::onCookieReceived() {
     m_log.printfln(INFO, "Magic cookie was received");
 
@@ -226,6 +241,7 @@ MercuryState Mercury::onCookieReceived() {
     putter.putBytes(m_id, sizeof(m_id));
     std::string m_id_enc = putter.serialize();
 
+    html_escape(m_id_enc);
     m_log.printfln(DEBUG, "Serialized id %s", m_id_enc.c_str());
 
     m_buffer_data.clear();
