@@ -29,7 +29,7 @@ def start_test():
     """ Test function for logged in users. """
 
     ip = request.remote_addr
-    token = request.form['id']
+    token = request.form['id'].strip()
     print ip, token
 
     rec = TestResult.get_set_by_token_ip(token, ip)
