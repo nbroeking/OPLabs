@@ -145,6 +145,7 @@
                                 </state>
                                 <connections>
                                     <action selector="SignUp:" destination="bey-In-emy" eventType="touchUpInside" id="nep-dp-nb8"/>
+                                    <segue destination="dBT-eC-90T" kind="show" id="c7i-eq-gsd"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-rq-a15">
@@ -187,6 +188,91 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lab-hi-1OT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1251" y="1053"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="ZB3-Ob-Q1A">
+            <objects>
+                <viewController id="dBT-eC-90T" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Cem-V3-kQG"/>
+                        <viewControllerLayoutGuide type="bottom" id="uOj-KA-0LW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="rUZ-ek-Bl7">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="KgZ-Q2-Kki">
+                                <rect key="frame" x="129" y="83" width="343" height="164"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="164" id="CJN-gg-n4m"/>
+                                    <constraint firstAttribute="width" constant="343" id="QfR-GM-Dmv"/>
+                                </constraints>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="center" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="O1V-RB-neR">
+                                <rect key="frame" x="168" y="266" width="226" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Yh-Rp-j83">
+                                <rect key="frame" x="168" y="304" width="226" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="226" id="5gM-Jy-UGI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cEy-IQ-hlf">
+                                <rect key="frame" x="168" y="342" width="226" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="226" id="Czb-uj-p2e"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sVZ-uP-DBa">
+                                <rect key="frame" x="168" y="380" width="226" height="30"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" link="YES"/>
+                                </accessibility>
+                                <state key="normal" title="Have an account? Login here!">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="SignUp:" destination="bey-In-emy" eventType="touchUpInside" id="Bab-46-PJf"/>
+                                    <segue destination="bey-In-emy" kind="show" id="4Q2-me-DsM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmQ-TO-NEt">
+                                <rect key="frame" x="222" y="433" width="118" height="30"/>
+                                <color key="backgroundColor" red="0.40254530179999998" green="0.54748505960000005" blue="0.74733664769999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="118" id="qcS-0z-aYa"/>
+                                </constraints>
+                                <state key="normal" title="Signup">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="Login:" destination="bey-In-emy" eventType="touchUpInside" id="CIC-br-tKv"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="sVZ-uP-DBa" firstAttribute="top" secondItem="5Yh-Rp-j83" secondAttribute="bottom" constant="15" id="1WC-9B-358"/>
+                            <constraint firstItem="5Yh-Rp-j83" firstAttribute="leading" secondItem="O1V-RB-neR" secondAttribute="leading" id="CbI-cI-gy7"/>
+                            <constraint firstItem="5Yh-Rp-j83" firstAttribute="top" secondItem="O1V-RB-neR" secondAttribute="bottom" constant="8" symbolic="YES" id="J0Y-iQ-1Aw"/>
+                            <constraint firstItem="zmQ-TO-NEt" firstAttribute="top" secondItem="sVZ-uP-DBa" secondAttribute="bottom" constant="36" id="Jql-p6-tc0"/>
+                            <constraint firstItem="KgZ-Q2-Kki" firstAttribute="centerX" secondItem="O1V-RB-neR" secondAttribute="centerX" id="NdZ-GR-qET"/>
+                            <constraint firstItem="O1V-RB-neR" firstAttribute="top" secondItem="KgZ-Q2-Kki" secondAttribute="bottom" constant="8" symbolic="YES" id="nCL-3h-8tc"/>
+                            <constraint firstItem="5Yh-Rp-j83" firstAttribute="leading" secondItem="sVZ-uP-DBa" secondAttribute="leading" id="r33-uY-f4J"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7gG-dz-sEk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1985" y="1053"/>
         </scene>
         <!--Results-->
         <scene sceneID="u34-Xf-s50">
@@ -268,4 +354,7 @@
         <image name="background" width="1536" height="2272"/>
         <image name="hermes-logo" width="3168" height="1453"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="4Q2-me-DsM"/>
+    </inferredMetricsTieBreakers>
 </document>
