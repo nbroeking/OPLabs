@@ -73,7 +73,8 @@
         return false;
     }
     
-    if (![[data sessionId] isEqualToString:@""]) {
+    if (!([data sessionId] == NULL) &&![[data sessionId] isEqualToString:@""]) {
+        NSLog(@"Already Logged in: %@", [data sessionId]);
         return false;
     }
     return true;
