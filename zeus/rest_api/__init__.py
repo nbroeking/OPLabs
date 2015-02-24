@@ -18,4 +18,4 @@ rest_blueprint = Blueprint('RestAPI',
                            template_folder='')
 
 from .auth_api import login, logout, register
-from .test_mgmt import test_func
+from .test_mgmt import test_func, start_test
