@@ -38,6 +38,8 @@ def start_router_test():
     router_record.test_token = base64.b64encode(router.req_id)
     router_record.device_ip = ip
     router_record.save()
+    
+    new_set.save()
 
     try:
         router.wakeup()

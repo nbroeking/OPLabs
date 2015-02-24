@@ -49,24 +49,24 @@ class TestResult(db.Model):
 
     @staticmethod
     def get_set_by_token_ip(token, ip):
-        token = base64.b64encode(token)
         return db.session.query(TestResult).filter(
                 TestResult.test_token == token and
                 TestResult.device_ip == ip
                 ).first()
 
     @staticmethod
-    def new_anon_result():
-        res = TestResult()
-        db.session.add(res)
-        db.session.commit()
-        return res.test_id
+    def get_set_by_id(result_id):
+        return db.session.query(TestResult).filter(
+                TestResult.test_id == result_id
+                ).first()
 
     def __init__(self, device_type=None):
         if device_type:
             if device_type not in DEVICE_TYPES:
                 raise ValueError("Invalid Device type: %s" % str(device_type))
-        state = 'wait'
+            self.device_type = device_type
+
+        self.state = 'wait'
         db.session.add(self)
         db.session.commit()
 
