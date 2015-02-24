@@ -1,5 +1,5 @@
 from . import web_blueprint
-from flask import render_template, request, session, redirect, url_for
+from flask import render_template, request, session, redirect, url_for, flash
 from common.auth_model import User
 from common.auth_util import requires_session
 
@@ -33,8 +33,8 @@ def register():
                     email=email)
 
         new_user = User(email, pw1)
-        return render_template('login.html',
-                alert='Account successfully created.')
+        flash("Account successfully created.")
+        return render_template('login.html')
     else:
        return render_template('register.html')
 

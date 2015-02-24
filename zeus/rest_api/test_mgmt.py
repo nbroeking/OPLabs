@@ -9,8 +9,7 @@ Date: 02/21/2015
 """
 from flask import request
 from common.auth_model import User
-##from common.test_result import TestResult
-#from common.test_set import TestSet
+from common.test_result import TestResult
 from common.auth_util import requires_token
 from common.json_util import JSON_SUCCESS
 from . import rest_blueprint
@@ -29,13 +28,13 @@ def test_func():
 def start_test():
     """ Test function for logged in users. """
 
-    #auth_user = User.get_user(auth_token=request.form['token'])
-    #token = request.form['id']
+    ip = request.remote_addr
+    token = request.form['token']
+    print ip, token
 
-    #recs = TestResult.get_set_by_id(token)
+    rec = TestResult.get_set_by_token_ip(token, ip)
 
-    #if not recs:
-    #    test_set = TestSet(auth_user)
+    rec.state = 'ack'
 
 
     # Ookla IPs / DNS IPs / Ping IPs

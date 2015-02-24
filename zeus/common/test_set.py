@@ -20,7 +20,7 @@ class TestSet(db.Model):
     loc_latitude = db.Column('loc_latitude', db.Float)
     loc_longitude = db.Column('loc_longitude', db.Float)
     recorded = db.Column('recorded', db.DATETIME)
-    owner_id = db.Column('owner_id', db.ForeignKey('auth_user.user_id'))
+    owner_id = db.Column('owner_id', db.ForeignKey('User.user_id'))
     tests = db.relationship('TestResult', backref='parent_set')
 
     def __init__(self, owner):
@@ -31,9 +31,9 @@ class TestSet(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def new_result(self):
+    def new_result(self, device_type=None):
         """ Create and return a new TestResult inside the current test set. """
-        res = TestResult()
+        res = TestResult(device_type=device_type)
         self.tests.append(res)
 
         return res
