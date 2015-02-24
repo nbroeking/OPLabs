@@ -40,6 +40,14 @@ enum MercuryState {
     , N_MERC_STATES
 };
 
+struct ConfigPacket {
+    /* Ookla, Ping, Dns */
+
+    std::vector< uptr<io::SocketAddress> > ookla_address;
+    std::vector< uptr<io::SocketAddress> > ping_address;
+    std::vector< uptr<io::SocketAddress> > dns_address;
+};
+
 inline std::string toString( MercuryStim stim ) {
     static const char* names[] = {
         "CookieReceived", "BadCookieReceived",

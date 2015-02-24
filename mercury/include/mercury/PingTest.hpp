@@ -60,7 +60,7 @@ public:
 
     virtual void startTest() OVERRIDE ;
 
-    virtual void run() OVERRIDE {};
+    virtual inline void run() OVERRIDE {};
     
 private:
     logger::LogContext& m_log;

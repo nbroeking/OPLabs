@@ -110,7 +110,7 @@ MercuryState Mercury::onCookieReceived() {
 
     char posts[128];
     snprintf(posts, sizeof(posts), "id=%s", m_id_enc.c_str());
-    request.setURL("https://128.138.202.143/api/testfunc");
+    request.setURL("https://128.138.202.143/api/start_test");
     request.setPostFields(posts);
     request.setFollowLocation(true);
     request.setSSLHostVerifyEnabled(false);
