@@ -1,5 +1,5 @@
 from . import web_blueprint
-from flask import render_template, request, flash
+from flask import render_template, request, flash, redirect, url_for
 from common.auth_model import User
 from common.auth_util import requires_session
 from common.test_set import TestSet
@@ -37,10 +37,10 @@ def start_router_test():
 
     try:
         router.wakeup()
-        error = None
         flash("Your test has been initiated")
     except:
-        error = "Test failed to be initiated!"
+        flash("Test failed to be initiated!", 'error')
 
 
-    return render_template('showtests.html', user=user, error=error)
+    #return render_template('showtests.html', user=user, error=error)
+    return redirect(url_for("WebInterface.showtests"))

@@ -12,8 +12,9 @@ def loginportal():
             if user:
                 session['email'] = email
                 return redirect(url_for('WebInterface.dashboard'))
-        return render_template('login.html',
-                error="Incorrect Username or Password! Please check and try again.")
+
+        flash("Incorrect Username or Password! Please check and try again.", 'error')
+        return render_template('login.html')
     else:
         return render_template('login.html')
 
@@ -24,12 +25,12 @@ def register():
         email = request.form['email']
         pw1, pw2 = request.form['password1'], request.form['password2']
         if pw1 != pw2:
+            flash("Passwords do not match!", 'error')
             return render_template('register.html',
-                    error="Passwords do not match!",
                     email=email)
         elif len(pw1) < 6:
+            flash("Passwords must be at least six characters!", 'error')
             return render_template('register.html',
-                    error="Passwords must be at least six characters!",
                     email=email)
 
         new_user = User(email, pw1)

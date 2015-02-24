@@ -1,4 +1,4 @@
-from flask import request, render_template, session
+from flask import request, render_template, flash
 from common.auth_model import User
 from functools import wraps
 from .json_util import JSON_FAILURE
@@ -40,5 +40,6 @@ def requires_session(some_route):
         if User.from_session():
             return some_route(*args, **kwargs)
         else:
-            return render_template("login.html", error="Please login before continuing.")
+            flash("Please login before continuing.", 'error')
+            return render_template("login.html")
     return protected

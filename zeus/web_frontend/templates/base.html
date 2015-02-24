@@ -74,14 +74,14 @@
 
 <div class="container">
     </br>
-    {% if error %}
-    <div class="alert alert-danger"> {{ error }} </div>
-    {% endif %}
-
-    {% with alerts = get_flashed_messages() %}
+    {% with alerts = get_flashed_messages(with_categories=true) %}
     {% if alerts %}
-    {% for alert in alerts %}
+    {% for cat, alert in alerts %}
+    {% if cat == "error" %}
+    <div class="alert alert-danger"> {{ alert }} </div>
+    {% else %}
     <div class="alert alert-info"> {{ alert }} </div>
+    {% endif %}
     {% endfor %}
     {% endif %}
     {% endwith %}
