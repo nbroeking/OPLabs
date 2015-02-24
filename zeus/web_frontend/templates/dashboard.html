@@ -18,6 +18,8 @@
         <td> Message Pending </td>
         {% elif result.device_state == "ack" %}
         <td> Message Acknowledged </td>
+        {% else %}
+        <td> Unknown </td>
         {% endif %}
     </tr>
     {% endfor %}
