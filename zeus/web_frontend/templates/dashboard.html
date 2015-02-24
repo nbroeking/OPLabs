@@ -39,9 +39,9 @@ function delete_rec(row_id) {
     <tr>
         <td>  {{ result.device_ip }}  </td>
         <td>  {{ result.device_type }}  </td>
-        {% if result.device_state == "wait" %}
+        {% if result.state == "wait" %}
         <td> Message Pending </td>
-        {% elif result.device_state == "ack" %}
+        {% elif result.state == "ack" %}
         <td> Message Acknowledged </td>
         {% else %}
         <td> Unknown </td>
