@@ -10,7 +10,11 @@ import base64
 @requires_session
 def dashboard():
     user = User.from_session()
-    return render_template('dashboard.html', user=user)
+    user_sets = TestSet.get_all_user_sets(user)
+
+    return render_template('dashboard.html',
+            user=user,
+            user_sets=user_sets)
 
 @web_blueprint.route('tests', methods=['GET'])
 @requires_session

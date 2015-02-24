@@ -53,7 +53,7 @@ class TestResult(db.Model):
         return db.session.query(TestResult).filter(
                 TestResult.test_token == token and
                 TestResult.device_ip == ip
-                ).all()
+                ).first()
 
     @staticmethod
     def new_anon_result():

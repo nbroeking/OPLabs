@@ -23,6 +23,11 @@ class TestSet(db.Model):
     owner_id = db.Column('owner_id', db.ForeignKey('User.user_id'))
     tests = db.relationship('TestResult', backref='parent_set')
 
+    @staticmethod
+    def get_all_user_sets(owner):
+        """ Retrieve all of the test sets that are associated with the user "owner" """
+        return db.session.query(TestSet).filter(TestSet.owner_id == owner.user_id).all()
+
     def __init__(self, owner):
         """ Create a new test set, which belongs to the given user.
             By default, sets the recorded datetime to the current datetime."""
@@ -37,8 +42,3 @@ class TestSet(db.Model):
         self.tests.append(res)
 
         return res
-
-    def get_all_user_sets(self, owner):
-        """ Retrieve all of the test sets that are associated with the user "owner" """
-        return db.session.query(TestSet).filter(TestSet.owner_id == owner.user_id).all()
-
