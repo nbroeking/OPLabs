@@ -110,8 +110,15 @@ private:
             m_sup->m_log.printfln(ERROR, "Error with curl request: %s", excp.getMessage());
             m_sup->m_state_machine.sendStimulus( BAD_REQUEST );
         }
-        void onOK() {
-            m_sup->m_state_machine.sendStimulus( GOOD_REQUEST );
+        void onOK(curl::http_response_code_t code) {
+            m_sup->m_log.printfln(INFO, "Curl status code returned %d", code);
+
+            if( code == 200 ) {
+                /* Only send a good stim on success */
+                m_sup->m_state_machine.sendStimulus( GOOD_REQUEST );
+            } else {
+                m_sup->m_state_machine.sendStimulus( BAD_REQUEST );
+            }
         }
         void read( const byte* bytes, size_t len ) {
             for( size_t i = 0; i < len ; ++ i )
@@ -119,6 +126,9 @@ private:
         }
         Mercury* m_sup;
     };
+
+    int parseConfigPacket(ConfigPacket& cfg);
+    void log_config_pkt(ConfigPacket& pkt);
 
     /* Class that handles a single socket connection using
      * the file collection interface */
@@ -159,6 +169,8 @@ private:
     byte m_id[ SERVER_ID_LENGTH ]; /* server side identification */
 
     proc::ProcessProxy* m_ping_test;
+
+    ConfigPacket m_configuration;
 };
 
 }

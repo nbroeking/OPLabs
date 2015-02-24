@@ -77,7 +77,7 @@ export CXX
 export CC
 export AR
 
-CXXFLAGS := $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
+CXXFLAGS := -I include -I 3rdparty $(CXXFLAGS) -DTARGET_$(TGT) -DENVIRONMENT_$(ENV)
 
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
 HACK2 := $(shell mkdir -p _$(TGT)_obs/tests/)

@@ -4,6 +4,7 @@
 #include <curl/AsyncCurl.hpp>
 #include <io/binary/Base64Putter.hpp>
 #include <proc/ProcessManager.hpp>
+#include <libjson/libjson.h>
 
 using namespace io;
 using namespace lang;
@@ -90,7 +91,123 @@ MercuryState Mercury::onBadRequest() {
 MercuryState Mercury::onGoodRequest() {
     m_log.printfln(SUCCESS, "Good request");
     m_log.printHex(INFO, &m_buffer_data[0], m_buffer_data.size());
+
+    m_configuration.ookla_address.clear();
+    m_configuration.ping_address.clear();
+    m_configuration.dns_address.clear();
+
+    parseConfigPacket(m_configuration);
+
     return IDLE;
+}
+
+int parse_sock_addr_vector( JSONNODE* json, vector< uptr<SocketAddress> >& vec ) {
+    JSONNODE_ITERATOR i = json_begin(json);
+
+    while ( i != json_end(i) ) {
+        json_char* str = json_as_string(*i);
+        SocketAddress* addr = new Inet4Address(str, 0);
+        vec.push_back(addr);
+    }
+
+    return 0;
+}
+
+int parse_config_node( JSONNODE* n, ConfigPacket& pkt ) {
+    JSONNODE_ITERATOR i = json_begin(n);
+
+    while ( i != json_end(n) ) {
+        json_char* name = json_name(*i);
+
+        if( ! strcmp(name, "ookla_ips") ) {
+            if ( json_type(*i) != JSON_ARRAY ) {
+                return 4;
+            }
+
+            parse_sock_addr_vector( *i, pkt.ookla_address );
+        }
+
+        else if( ! strcmp(name, "ping_ips") ) {
+            if ( json_type(*i) != JSON_ARRAY ) {
+                return 4;
+            }
+
+            parse_sock_addr_vector( *i, pkt.ping_address );
+        }
+
+        else if( ! strcmp(name, "dns_ips") ) {
+            if ( json_type(*i) != JSON_ARRAY ) {
+                return 4;
+            }
+
+            parse_sock_addr_vector( *i, pkt.dns_address );
+        }
+    }
+
+    return 0;
+}
+
+int Mercury::parseConfigPacket(ConfigPacket& pkt) {
+    m_buffer_data.push_back(0);
+    string json_str( (char*) m_buffer_data.data() );
+
+    JSONNODE* n = json_parse(json_str.c_str());
+    if( ! n || n == JSON_NULL ) {
+        return 1;
+    }
+
+    JSONNODE_ITERATOR i = json_begin(n);
+    char buffer[1024];
+    buffer[1023] = 0;
+    while ( i != json_end(n) ) {
+        if ( * i == NULL || * i == JSON_NULL ) {
+            return 1;
+        }
+
+        json_char* name = json_name(*i);
+        json_char* value;
+
+        if( ! strcmp(name, "status") ) {
+            /* check the status */
+            value = json_as_string(*i);
+            strncpy(buffer, value, 1023);
+            json_free(value);
+
+            if( strcmp(buffer, "success") ) {
+                /* We were not successful */
+                return 2;
+            }
+        }
+
+        if( ! strcmp(name, "config") ) {
+            /* This is the actual config node */
+            if ( json_type(*i) != JSON_NODE ) {
+                /* not a node */
+                return 3;
+            }
+            parse_config_node( *i, pkt );
+        }
+
+        ++ i;
+    }
+
+    log_config_pkt(pkt);
+    return 0;
+}
+
+void Mercury::log_config_pkt(ConfigPacket& pkt) {
+    std::vector< uptr<io::SocketAddress> >::iterator itr;
+
+    m_log.printfln(DEBUG, "Got configuration:");
+    m_log.printfln(DEBUG, "Ookla ips:");
+    for ( itr = pkt.ookla_address.begin() ; itr != pkt.ookla_address.end() ; ++ itr )
+        m_log.printfln(DEBUG, "%s", (*itr)->toString().c_str());
+    m_log.printfln(DEBUG, "Ping ips:");
+    for ( itr = pkt.ping_address.begin() ; itr != pkt.ping_address.end() ; ++ itr )
+        m_log.printfln(DEBUG, "%s", (*itr)->toString().c_str());
+    m_log.printfln(DEBUG, "Dns ips:");
+    for ( itr = pkt.dns_address.begin() ; itr != pkt.dns_address.end() ; ++ itr )
+        m_log.printfln(DEBUG, "%s", (*itr)->toString().c_str());
 }
 
 MercuryState Mercury::onCookieReceived() {

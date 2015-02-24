@@ -56,13 +56,15 @@ void AsyncCurl::run() {
         CURLcode res;
         res = curl_easy_perform(tr->request);
 
+        s32_t http_code = 0;
         if( res != CURLE_OK ) {
             log.printfln( WARN, "Error with curl request" );
             CurlException e(curl_easy_strerror(res), res);
             tr->observer->onException(e);
         } else {
             log.printfln( DEBUG, "Curl request finished" );
-            tr->observer->onOK();
+            curl_easy_getinfo (tr->request, CURLINFO_RESPONSE_CODE, &http_code);
+            tr->observer->onOK(http_code);
         }
 
         curl_easy_cleanup(tr->request);

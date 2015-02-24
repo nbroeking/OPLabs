@@ -21,9 +21,10 @@ public:
         CException(err, code){}
 };
 
+typedef s32_t http_response_code_t;
 class CurlObserver {
 public:
-    virtual void onOK() = 0 ;
+    virtual void onOK(http_response_code_t status_code) = 0 ;
     virtual void onException(CurlException& exc) = 0 ;
     virtual void read(const byte* bytes, size_t size) = 0 ;
     virtual inline ~CurlObserver(){}
