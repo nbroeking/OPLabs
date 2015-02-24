@@ -3,6 +3,7 @@
 #include <io/Inet4Address.hpp>
 #include <curl/AsyncCurl.hpp>
 #include <io/binary/Base64Putter.hpp>
+#include <proc/ProcessManager.hpp>
 
 using namespace io;
 using namespace lang;
@@ -132,6 +133,7 @@ Mercury::Mercury():
     Process("Mercury"), m_state_machine(* this, IDLE),
     m_log(logger::LogManager::instance().getLogContext("Mercury", "Internal")) {
 
+    m_ping_test = proc::ProcessManager::instance().getProcessByName("PingTest");
     m_log.printfln(INFO, "Consttructing Mercury.");
     Inet4Address addr(INADDR_ANY, 8639);
 

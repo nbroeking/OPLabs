@@ -149,6 +149,8 @@ private:
     std::vector<byte> m_buffer_data;
 
     byte m_id[ SERVER_ID_LENGTH ]; /* server side identification */
+
+    proc::ProcessProxy* m_ping_test;
 };
 
 }

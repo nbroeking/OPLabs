@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include <mercury/Mercury.hpp>
+#include <mercury/PingTest.hpp>
 
 using namespace mercury ;
 using namespace logger ;
@@ -28,6 +29,7 @@ int main( int argc, char** argv ) {
 
     try {
         LogManager::instance().logEverything();
+        PingTest ping_test;
         Mercury main_obj;
         Thread* thread = Thread::begin(main_obj);
     
