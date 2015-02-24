@@ -66,6 +66,9 @@ inline std::string toString( MercuryState state ) {
     return state < N_MERC_STATES ? state_names[state] : "Unknown";
 }
 
+
+extern byte mercury_magic_cookie[ MAGIC_COOKIE_LENGTH ];
+
 class Mercury: public proc::Process {
 public:
     Mercury();
