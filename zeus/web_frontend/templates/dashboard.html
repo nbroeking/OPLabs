@@ -4,18 +4,28 @@
 
 <script>
 
+CSRF_TOKEN = "{{csrf_token()}}"
+
+function reload() {
+    location.reload()
+}
+
 function delete_rec(row_id) {
     $.ajax({
         type: "POST",
         url: "/api/delete_result",
-        data: {"test_id" : row_id},
-        success: function() {
-            location.reload();
-        }
+        data: {"test_id" : row_id,
+        "_csrf_token": CSRF_TOKEN },
+        success: reload,
+        error: reload
     });
 }
 
 </script>
+
+<h2> Your tests run </h2>
+
+<br>
 
 <table class="table table-striped">
     <tr>

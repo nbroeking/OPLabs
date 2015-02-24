@@ -1,8 +1,11 @@
-from flask import request, render_template, flash
+from flask import request, render_template, flash, session, abort, flash
 from common.auth_model import User
 from functools import wraps
 from .json_util import JSON_FAILURE
 from binascii import unhexlify
+import base64
+import time
+import os
 
 # This is the magic cookie the router is expecting
 MAGIC_PORT = 8639
@@ -43,3 +46,30 @@ def requires_session(some_route):
             flash("Please login before continuing.", 'error')
             return render_template("login.html")
     return protected
+
+def csrf_protect(some_route):
+    @wraps(some_route)
+    def protected(*args, **kwargs):
+        # We don't check the timestamp
+        good_token = session.pop('_csrf_token', None)
+        good_tstamp = session.pop('_csrf_timestamp', None)
+        user_token = request.form.get('_csrf_token')
+
+        if good_token:
+            if user_token == good_token and time.time() - int(good_tstamp) < (60*5):
+                return some_route(*args, **kwargs)
+
+        flash("Session expired, please try again")
+        # Otherwise we abort
+        abort(403)
+    return protected
+
+def generate_csrf_token():
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = base64.b64encode(os.urandom(64))
+        session['_csrf_timestamp'] = str(int(time.time()))
+
+    return session['_csrf_token']
+
+from app import app
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
