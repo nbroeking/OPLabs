@@ -56,7 +56,7 @@ public:
     }
     
     inline void setPostFields( const char* data ) {
-        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, strdup(data));
     }
 
 private:
