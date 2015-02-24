@@ -1,168 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+{% extends "base.html" %}
 
-  <title>OPLabs</title>
+{% block body %}
+<div class="container marketing">
 
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
-
-  <style>
-  /**DROPDOWN HOVER**/
-  .sidebar-nav {
-    padding: 9px 0;
-  }
-
-  .dropdown-menu .sub-menu {
-    left: 100%;
-    position: absolute;
-    top: 0;
-    visibility: hidden;
-    margin-top: -1px;
-  }
-
-  .dropdown-menu li:hover .sub-menu {
-    visibility: visible;
-  }
-
-  .dropdown:hover .dropdown-menu {
-    display: block;
-  }
-
-  .nav-tabs .dropdown-menu, .nav-pills .dropdown-menu, .navbar .dropdown-menu {
-    margin-top: 0;
-  }
-
-  .navbar .sub-menu:before {
-    border-bottom: 7px solid transparent;
-    border-left: none;
-    border-right: 7px solid rgba(0, 0, 0, 0.2);
-    border-top: 7px solid transparent;
-    left: -7px;
-    top: 10px;
-  }
-  .navbar .sub-menu:after {
-    border-top: 6px solid transparent;
-    border-left: none;
-    border-right: 6px solid #fff;
-    border-bottom: 6px solid transparent;
-    left: 10px;
-    top: 11px;
-    left: -6px;
-  }
-
-  body {
-    padding-top: 40px;
-  }
-
-  @media screen and (max-width: 768px) {
-    body {padding-top: 40px; }
-  }
-  </style>
-</head>
-<!-- NAVBAR
-  ================================================== -->
-  <body>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <div class="navbar-wrapper">
-      <div class="container">
-
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="main.html">OPLabs</a>
-            </div>
-            <div class="navbar-collapse collapse">
-              <ul class="nav navbar-nav">
-		<li><a href="main.html">Home</a></li>
-		<li><a href="#">Tests</a></li>
-                <!-- <li><a href="{{ url_for('main') }}">Home</a></li>
-                <li><a href="{{ url_for('test') }}">Tests</a></li> -->
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Sign Up</a></li>
-                <li class="divider-vertical"></li>
-                <li class="dropdown">
-                  <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In<strong class="caret"></strong></a>
-                  <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-                    <form action="[YOUR ACTION]" method="post" accept-charset="UTF-8">
-                      <input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="30" placeholder="Username"/>
-                      <input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" placeholder="Password"/>
-                      <input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
-                      <label class="string optional" for="user_remember_me">Remember me</label>
-
-                      <a class="btn btn-primary" role="button">Sign In</a>
-                    </form>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
+  <!-- Three columns of text below the carousel -->
+  <div class="row">
+    <div class="col-md-offset-4 col-md-4">
+      <center>
+        <h2>Mobile Applications</h2>
+        <img src="#" Width="50" Height="50" border="5">
+        <p>
+        Install our mobile applications and run speedtests from your
+        own phone. Available on the iOS App Store and Android Play Store.
+        </p>
+        <div class="col-md-6">
+            <a class="btn btn-default" href="#" role="button">Get iOS &raquo;</a>
         </div>
-      </div>
-    </div>
-
-    <div class="container marketing">
-
-      <!-- Three columns of text below the carousel -->
-      <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-          <center>
-            <h2>Mercury</h2>
-            <img src="#" Width="50" Height="50" border="5">
-            <p>dryhdfghkjdf</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-          </center>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-md-offset-4 col-md-4">
-          <center>
-            <h2>Hermes</h2>
-            <img src="#" Width="50" Height="50" border="5">
-            <p>asdfsdtfjd</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </center
-            >        </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
-
-
-          <!-- FOOTER -->
-          <footer>
-            <p>&copy; OPLabs, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-          </footer>
-
-        </div><!-- /.container -->
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/holder.js"></script>
-    <script>
-    $(function() {
-      // Setup drop down menu
-      $('.dropdown-toggle').dropdown();
-      // Fix input element click problem
-      $('.dropdown input, .dropdown label').click(function(e) {
-        e.stopPropagation();
-      });
-    });
-    </script>
-  </body>
-  </html>
+        <div class="col-md-6">
+            <a class="btn btn-default" href="#" role="button">Get Android &raquo;</a>
+        </div>
+      </center>
+    </div><!-- /.col-lg-4 -->
+      <!-- FOOTER -->
+      <footer>
+        <!--
+            OPlabs is not an incorporated entity nor can it hold copyrights
+        <p>&copy; OPLab, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        -->
+      </footer>
+    </div><!-- /.container -->
+{% endblock %}

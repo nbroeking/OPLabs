@@ -18,9 +18,16 @@ class Router(object):
         outside of the standard REST interface. This is necessary in
         case where the Router is idle but we wish to notify it of something.
     """
-    def __init__(self, ip_addr):
+    def __init__(self, ip_addr, req_id=None):
         self.addr = IP(ip_addr)
-        self.req_id = os.urandom(32)
+        if req_id == None:
+            self.req_id = os.urandom(32)
+        else:
+            self.req_id = str(self.req_id)
+            reqlen = len(self.req_id)
+            if reqlen > 32:
+                raise ValueError("Request ID too long!")
+            self.req_id = os.urandom(32-reqlen) + self.req_id
 
     def wakeup(self):
         """ Attempt to contact the router and wake it up. The expected 
