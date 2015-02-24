@@ -18,6 +18,7 @@ import os
 import os.path
 import re
 import platform
+from itertools import chain
 
 def get_targets():
     for _, dirs, _  in os.walk('targets'):
@@ -166,7 +167,7 @@ def get_dependencies(f):
 
 # Return all the cpp source files
 def get_source_files():
-    for dirpath, dirs, files in os.walk('src'):
+    for dirpath, dirs, files in chain.from_iterable(os.walk(path) for path in ["./src/", "./tests/"]):
         for i in files:
             f = os.path.join(dirpath, i)
             if f.endswith('.cpp') and not f.startswith('main'):
@@ -194,6 +195,7 @@ def main(argv):
     prelude()
 
     source_files = [i for i in get_source_files()]
+
     object_files = [to_object_file(i[0]) for i in source_files]
     zipped = list(zip(source_files, object_files))
     test_binaries = []
