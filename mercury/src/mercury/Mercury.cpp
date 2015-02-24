@@ -241,7 +241,7 @@ MercuryState Mercury::onCookieReceived() {
     putter.putBytes(m_id, sizeof(m_id));
     std::string m_id_enc = putter.serialize();
 
-    html_escape(m_id_enc);
+    m_id_enc = html_escape(m_id_enc);
     m_log.printfln(DEBUG, "Serialized id %s", m_id_enc.c_str());
 
     m_buffer_data.clear();
