@@ -40,6 +40,9 @@ void PingTest::onPacketReceived(const PingTestPacket& pckt) {
     m_log.printfln(DEBUG, "Received packet of type %s", toString(pckt.type).c_str());
 }
 
+void PingTest::startTest() {
+}
+
 const char* ping_packet_type_names[] = {
     "BeginTest", "Ack", "Results"
 };

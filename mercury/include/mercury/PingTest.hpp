@@ -35,8 +35,9 @@ inline void putObject( io::Putter& putter, const PingTestPacket& packet ) {
     }
 }
 
-inline void getObject( io::Getter& getter, PingTestPacket& packet ) {
-    getObject( getter, packet.type );
+// int getObject<PingTestPacketType>(io::Getter&, PingTestPacketType&)
+inline int getObject( io::Getter& getter, PingTestPacket& packet ) {
+    packet.type = (PingTestPacketType)getter.getByte();
     u32_t u ;
     if( packet.type == RESULTS ) {
         u = getter.getInt32be();
