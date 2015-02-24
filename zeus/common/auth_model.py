@@ -10,6 +10,7 @@ Date: 01/27/2015
 
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
+from flask import session
 import base64
 from passlib.apps import custom_app_context as passlib_ctx
 from app import db
@@ -53,6 +54,17 @@ class User(db.Model):
             return None
         else:
             return some_user
+
+    @staticmethod
+    def from_session():
+        """ Attempts to load user from the current session. Returns None
+            if a valid user could not be found in the current sesssion. """
+        if 'email' in session:
+            user = User.get_user(email=session['email'])
+            if user:
+                return user
+        return None
+
 
     def __init__(self, email, password):
         """ Create a user for the given email and password.

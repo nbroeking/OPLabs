@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, render_template, session
 from common.auth_model import User
 from functools import wraps
 from .json_util import JSON_FAILURE
@@ -32,3 +32,13 @@ class requires_token():
                     return route_handler(*args, **kwargs)
             return self.invalid_handler()
         return on_request
+
+def requires_session(some_route):
+    # Flask requires that decorators are implemented utilizing functools
+    @wraps(some_route)
+    def protected(*args, **kwargs):
+        if User.from_session():
+            return some_route(*args, **kwargs)
+        else:
+            return render_template("login.html", error="Please login before continuing.")
+    return protected

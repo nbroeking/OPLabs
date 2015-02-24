@@ -18,3 +18,4 @@ web_blueprint = Blueprint('WebInterface',
 
 from .public import home
 from .account_management import loginportal, register
+from .dashboard import dashboard
