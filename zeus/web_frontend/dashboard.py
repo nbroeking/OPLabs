@@ -35,8 +35,12 @@ def start_router_test():
     router_record.device_ip = ip
     router_record.save()
 
-    router.wakeup()
+    try:
+        router.wakeup()
+        error = None
+        flash("Your test has been initiated")
+    except:
+        error = "Test failed to be initiated!"
 
-    flash("Your test has been initiated")
 
-    return render_template('showtests.html', user=user)
+    return render_template('showtests.html', user=user, error=error)

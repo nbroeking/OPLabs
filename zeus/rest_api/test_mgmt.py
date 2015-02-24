@@ -29,13 +29,13 @@ def start_test():
     """ Test function for logged in users. """
 
     ip = request.remote_addr
-    token = request.form['token']
+    token = request.form['id']
     print ip, token
 
     rec = TestResult.get_set_by_token_ip(token, ip)
 
     rec.state = 'ack'
-
+    rec.save()
 
     # Ookla IPs / DNS IPs / Ping IPs
     config = {
