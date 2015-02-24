@@ -222,7 +222,7 @@ inline std::string html_escape(const std::string& in) {
 
     for( itr = in.begin() ; itr != in.end() ; ++ itr ) {
         if( *itr == '+' ) {
-            out += "%43";
+            out += "%2b";
         } else {
             out.push_back( *itr );
         }
