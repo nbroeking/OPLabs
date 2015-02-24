@@ -17,4 +17,4 @@ web_blueprint = Blueprint('WebInterface',
                           static_url_path='static')
 
 from .public import home
-from .account_management import loginportal
+from .account_management import loginportal, register
