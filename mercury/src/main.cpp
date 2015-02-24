@@ -29,6 +29,7 @@ int main( int argc, char** argv ) {
 
     try {
         LogManager::instance().logEverything();
+        LogManager::instance().setDefaultLevel(DEBUG);
         PingTest ping_test;
         Mercury main_obj;
         Thread* thread = Thread::begin(main_obj);
