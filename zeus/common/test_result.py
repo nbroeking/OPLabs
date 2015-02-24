@@ -49,7 +49,6 @@ class TestResult(db.Model):
 
     @staticmethod
     def get_set_by_token_ip(token, ip):
-        token = base64.b64encode(token)
         return db.session.query(TestResult).filter(
                 TestResult.test_token == token and
                 TestResult.device_ip == ip
