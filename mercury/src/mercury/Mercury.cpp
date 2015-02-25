@@ -139,7 +139,7 @@ int Mercury::parseConfigPacket(ConfigPacket& pkt) {
             return 2;
         }
 
-        for( size_t j = 0; i < json_array_size(cur); ++ j ) {
+        for( size_t j = 0; j < json_array_size(cur); ++ j ) {
             json_t* jsn = json_array_get(cur, j);
             if(!json_is_string(jsn)) {
                 return 3;
