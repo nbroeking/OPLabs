@@ -100,6 +100,8 @@ MercuryState Mercury::onGoodRequest() {
         m_log.printfln(ERROR, "Error parsing JSON, rc=%d", rc);
     }
 
+    log_config_pkt(m_configuration);
+
     return IDLE;
 }
 
