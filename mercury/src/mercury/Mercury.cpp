@@ -107,6 +107,7 @@ MercuryState Mercury::onGoodRequest() {
 int Mercury::parseConfigPacket(ConfigPacket& pkt) {
     m_buffer_data.push_back(0);
     json_t* root;
+    json_t* config;
 
     json_t* cur;
     json_error_t err;
@@ -119,6 +120,9 @@ int Mercury::parseConfigPacket(ConfigPacket& pkt) {
     if( ! json_is_object(root) ) {
         return 1;
     }
+
+    config = json_object_get(root, "config");
+
     
     static const char* json_ips_arr[] = {
         "ookla_ips", "ping_ips", "dns_ips", NULL
@@ -130,7 +134,7 @@ int Mercury::parseConfigPacket(ConfigPacket& pkt) {
 
     size_t i;
     for (i = 0 ; json_ips_arr[i]; ++ i) {
-        cur = json_object_get(root, json_ips_arr[i]);
+        cur = json_object_get(config, json_ips_arr[i]);
         if( ! json_is_array(cur) ) {
             return 2;
         }
