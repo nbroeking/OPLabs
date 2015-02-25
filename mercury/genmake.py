@@ -92,7 +92,7 @@ CXXFLAGS := ''' + platform_cflags + ''' -I include -I 3rdparty $(CXXFLAGS) -DTAR
 HACK  := $(shell mkdir -p _$(TGT)_obs/)
 HACK2 := $(shell mkdir -p _$(TGT)_obs/tests/)
 
-LDFLAGS := ''' + platform_ldflags + ''' 3rdparty/libjson/_$(TGT)_obs/libjson.a 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl
+LDFLAGS := ''' + platform_ldflags + ''' 3rdparty/base64/_$(TGT)_obs/libb64.a $(LDFLAGS) -lpthread -lcurl -ljansson
 
 QEMU?=
 export QEMU

@@ -4,7 +4,7 @@
 #include <curl/AsyncCurl.hpp>
 #include <io/binary/Base64Putter.hpp>
 #include <proc/ProcessManager.hpp>
-#include <libjson/libjson.h>
+#include <jansson.h>
 
 using namespace io;
 using namespace lang;
@@ -13,8 +13,7 @@ using namespace std;
 
 namespace mercury {
 
-byte mercury_magic_cookie[ MAGIC_COOKIE_LENGTH ] = {
-    0xe2, 0x1a, 0x14, 0xc8, 0xa2, 0x35, 0x0a, 0x92,
+byte mercury_magic_cookie[ MAGIC_COOKIE_LENGTH ] = { 0xe2, 0x1a, 0x14, 0xc8, 0xa2, 0x35, 0x0a, 0x92,
     0xaf, 0x1a, 0xff, 0xd6, 0x35, 0x2b, 0xa4, 0xf3, 
     0x97, 0x79, 0xaf, 0xb5, 0xc1, 0x23, 0x43, 0xf0,
     0xf7, 0x14, 0x17, 0x62, 0x53, 0x4a, 0xa9, 0x7e, 
@@ -104,100 +103,48 @@ MercuryState Mercury::onGoodRequest() {
     return IDLE;
 }
 
-int parse_sock_addr_vector( JSONNODE* json, vector< uptr<SocketAddress> >& vec ) {
-    JSONNODE_ITERATOR i = json_begin(json);
-
-    while ( i != json_end(i) ) {
-        json_char* str = json_as_string(*i);
-        SocketAddress* addr = new Inet4Address(str, 0);
-        vec.push_back(addr);
-    }
-
-    return 0;
-}
-
-int parse_config_node( JSONNODE* n, ConfigPacket& pkt ) {
-    JSONNODE_ITERATOR i = json_begin(n);
-
-    while ( i != json_end(n) ) {
-        json_char* name = json_name(*i);
-
-        if( ! strcmp(name, "ookla_ips") ) {
-            if ( json_type(*i) != JSON_ARRAY ) {
-                return 4;
-            }
-
-            parse_sock_addr_vector( *i, pkt.ookla_address );
-        }
-
-        else if( ! strcmp(name, "ping_ips") ) {
-            if ( json_type(*i) != JSON_ARRAY ) {
-                return 4;
-            }
-
-            parse_sock_addr_vector( *i, pkt.ping_address );
-        }
-
-        else if( ! strcmp(name, "dns_ips") ) {
-            if ( json_type(*i) != JSON_ARRAY ) {
-                return 4;
-            }
-
-            parse_sock_addr_vector( *i, pkt.dns_address );
-        }
-    }
-
-    return 0;
-}
 
 int Mercury::parseConfigPacket(ConfigPacket& pkt) {
     m_buffer_data.push_back(0);
-    string json_str( (char*) m_buffer_data.data() );
+    json_t* root;
 
-    JSONNODE* n = json_parse(json_str.c_str());
-    if( ! n || n == JSON_NULL ) {
+    json_t* cur;
+    json_error_t err;
+    root = json_loads( (char*) m_buffer_data.data(), 0, &err );
+
+    if( ! root ) {
         return 1;
     }
 
-    JSONNODE_ITERATOR i = json_begin(n);
-    char buffer[1024];
-    buffer[1023] = 0;
-    int rc;
-    while ( i != json_end(n) ) {
-        if ( * i == NULL || * i == JSON_NULL ) {
-            return 1;
+    if( ! json_is_object(root) ) {
+        return 1;
+    }
+    
+    static const char* json_ips_arr[] = {
+        "ookla_ips", "ping_ips", "dns_ips", NULL
+    };
+
+    vector< uptr<SocketAddress> >* vectors[] = {
+        &pkt.ookla_address, &pkt.ping_address, &pkt.dns_address
+    };
+
+    size_t i;
+    for (i = 0 ; json_ips_arr[i]; ++ i) {
+        cur = json_object_get(root, json_ips_arr[i]);
+        if( ! json_is_array(cur) ) {
+            return 2;
         }
 
-        json_char* name = json_name(*i);
-        json_char* value;
-
-        if( ! strcmp(name, "status") ) {
-            /* check the status */
-            value = json_as_string(*i);
-            strncpy(buffer, value, 1023);
-            json_free(value);
-
-            if( strcmp(buffer, "success") ) {
-                /* We were not successful */
-                return 2;
-            }
-        }
-
-        if( ! strcmp(name, "config") ) {
-            /* This is the actual config node */
-            if ( json_type(*i) != JSON_NODE ) {
-                /* not a node */
+        for( size_t j = 0; i < json_array_size(cur); ++ j ) {
+            json_t* jsn = json_array_get(cur, j);
+            if(!json_is_string(jsn)) {
                 return 3;
             }
-            if( (rc = parse_config_node( *i, pkt )) ) {
-                return rc;
-            }
+            SocketAddress* addr = new Inet4Address(json_string_value(jsn), 0);
+            vectors[i]->push_back(addr);
         }
-
-        ++ i;
     }
 
-    log_config_pkt(pkt);
     return 0;
 }
 
