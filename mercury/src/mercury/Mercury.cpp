@@ -1,4 +1,5 @@
 #include <mercury/Mercury.hpp>
+#include <mercury/PingTest.hpp>
 
 #include <io/Inet4Address.hpp>
 #include <curl/AsyncCurl.hpp>
@@ -97,10 +98,19 @@ MercuryState Mercury::onGoodRequest() {
 
     int rc;
     if( (rc = parseConfigPacket(m_configuration)) ) {
+        /* TODO change this to use exceptions */
         m_log.printfln(ERROR, "Error parsing JSON, rc=%d", rc);
     }
 
-    return IDLE;
+    ProcessProxy* process = proc::ProcessManager::instance().getProcessByName("PingTest");
+    if( !process ) {
+        m_log.printfln(ERROR, "Error; no process called PingTest");
+        return IDLE;
+    }
+
+    PingTest::begin(this->getAddress(), process);
+
+    return TESTING_PING;
 }
 
 

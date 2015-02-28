@@ -36,7 +36,7 @@ enum MercuryState {
     , PAUSE /* wait some time before starting up */
     , TEST_STARTED /* stimulate some test state machine */
     , RESULTS_POSTED
-
+    , TESTING_PING
     , N_MERC_STATES
 };
 
@@ -93,7 +93,7 @@ public:
     MercuryState onCookieReceived();
     MercuryState onIncorrectCookie();
     MercuryState onBadRequest();
-    MercuryState onGoodRequest();
+    MercuryState onGoodRequest(); /* Parse the json and go into ping state */
 
 
     inline void setId( byte* bytes /* MUST BE LENGTH 32 */ ) {

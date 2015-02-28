@@ -8,6 +8,7 @@
  */
 
 #include <proc/Process.hpp>
+#include <io/binary/BufferPutter.hpp>
 
 enum PingTestPacketType {
       BEGIN_TEST
@@ -23,6 +24,7 @@ struct PingTestPacket {
         struct {
             f32_t mean_latency;
         } results;
+        byte data[sizeof(results)];
     };
 };
 
@@ -43,11 +45,24 @@ inline int getObject( io::Getter& getter, PingTestPacket& packet ) {
         u = getter.getInt32be();
         packet.results.mean_latency = integerBytesToFloat( u );
     }
+    return 0;
 }
 
 class PingTest: public proc::Process {
 public:
     PingTest();
+
+    static inline void begin(const proc::ProcessAddress& from, proc::ProcessProxy* to) {
+        PingTestPacket packet;
+        packet.type = BEGIN_TEST;
+        std::fill(packet.data, packet.data + sizeof(packet.data), 0);
+
+        byte buffer[sizeof(PingTestPacket) + 1];
+        io::BufferPutter putter(buffer, sizeof(buffer));
+        putObject(putter, packet);
+
+        to->sendMessage(from, buffer, putter.getSize());
+    }
 
     /* Overridden */
     virtual void messageReceivedCallback(
@@ -58,7 +73,7 @@ public:
 
     virtual void onPacketReceived(const PingTestPacket& packet);
 
-    virtual void startTest() OVERRIDE ;
+    virtual void startTest() ;
 
     virtual inline void run() OVERRIDE {};
     
