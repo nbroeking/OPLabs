@@ -29,12 +29,14 @@ int main( int argc, char** argv ) {
 
     try {
         LogManager::instance().logEverything();
-        LogManager::instance().setDefaultLevel(DEBUG);
+        // LogManager::instance().setDefaultLevel(DEBUG);
         PingTest ping_test;
         Mercury main_obj;
-        Thread* thread = Thread::begin(main_obj);
+        Thread* thread = main_obj.start();
+        Thread* ping_thread = ping_test.start();
     
         thread->join();
+        ping_thread->join();
     } catch ( Exception& e ) {
         logger::LogContext& log = logger::LogManager::instance().getLogContext("Main", "Main");       
         log.printfln(FATAL, "Terminate after throwing uncaught exception\n\t%s", e.getMessage());
