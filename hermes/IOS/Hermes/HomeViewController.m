@@ -64,19 +64,27 @@
 {
     //All Login checking
     //Change to waiting for login
+     if (!([data sessionId] == NULL) &&![[data sessionId] isEqualToString:@""]) {
+        NSLog(@"Already Logged in: %@", [data sessionId]);
+        return false;
+    }
+    
     NSLog(@"Check Login");
-    if( [[data email] isEqualToString:@""]|| [[data password] isEqualToString:@""] || [[data hostname] isEqualToString:@""])
+    if( ([[data email] isEqualToString:@""]&& [[data password] isEqualToString:@""]))
     {
         HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Welcome" message:@"Welcome to hermes. Please set up your login information." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert setType:login];
         [alert show];
         return false;
     }
-    
-    if (!([data sessionId] == NULL) &&![[data sessionId] isEqualToString:@""]) {
-        NSLog(@"Already Logged in: %@", [data sessionId]);
+    else if ([[data hostname] isEqualToString:@""])
+    {
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Errror" message:@"Invalid Hostname configured." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert setType:settings];
+        [alert show];
         return false;
     }
+   
     return true;
 }
 #pragma mark -Communication

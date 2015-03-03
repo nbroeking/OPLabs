@@ -22,6 +22,8 @@
         android:maxSdkVersion="18" />
     <android:uses-permission android:name="android.permission.READ_CALL_LOG" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="main.HermesApplication"
         android:allowBackup="true"
@@ -53,8 +55,8 @@
         <activity
             android:name="hermes.Views.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="general.HermesActivity" >
-            <meta-data
+            android:parentActivityName="hermes.Views.MainActivity">
+        <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="general.HermesActivity" />
         </activity>

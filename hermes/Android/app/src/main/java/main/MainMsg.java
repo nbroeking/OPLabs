@@ -1,10 +1,8 @@
 package main;
 
-/**
- * Created by NBroeking on 2/5/15.
- */
 public final class MainMsg {
 
-    public static final int QUIT = 0;
+    //This starts at 1 because 0 is reserved for quit
+    public static final int NOTIFYLOGIN = 1;
 
 }

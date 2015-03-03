@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-import main.MainMsg;
+import interfaces.CommunicationDelegate;
 
 import static android.os.Message.obtain;
 
@@ -21,15 +21,14 @@ public class Communication extends Service {
     private CommThread commThread;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received an Intent to start");
         //TODO do something useful
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
         Log.i(TAG, "Comm Service Created and Threads Started");
         commThread = new CommThread("Communication");
@@ -37,10 +36,9 @@ public class Communication extends Service {
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         Message msg = obtain();
-        msg.what = MainMsg.QUIT;
+        msg.what = CommMsg.QUIT;
         msg.obj = null;
         commThread.mHandler.sendMessage(msg);
 
@@ -61,13 +59,16 @@ public class Communication extends Service {
     }
 
     //Communication Methods
-
-    public void login()
-    {
+    public void login(CommunicationDelegate sender) {
         Log.i(TAG, "Scheduling Login");
 
+        Message msg = obtain();
+        msg.what = CommMsg.LOGIN;
+        msg.obj = sender;
+        commThread.mHandler.sendMessage(msg);
 
     }
+
     public class MyLocalBinder extends Binder {
         public Communication getService() {
             return Communication.this;
