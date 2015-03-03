@@ -14,27 +14,42 @@
         android:layout_width="fill_parent"
         android:layout_height="80dp"
         android:text="Settings"
+        android:textColor="#ffffff"
+        android:textSize="45px"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="104dp"
-        />
+        android:layout_above="@+id/button3"
+        android:layout_alignParentLeft="true" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="80dp"
         android:text="History"
+        android:textColor="#ffffff"
+        android:textSize="45px"
         android:id="@+id/button2"
         android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="80dp"
         android:text="Run Test"
+        android:textColor="#ffffff"
+        android:textSize="45px"
         android:id="@+id/button3"
-        android:layout_above="@+id/button2"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:onClick="runTest"/>
+        android:onClick="runTest"
+        android:layout_marginBottom="59dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/hermes_logo"
+        android:layout_above="@+id/button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="49dp" />
 </RelativeLayout>
