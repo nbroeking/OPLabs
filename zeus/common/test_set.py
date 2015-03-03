@@ -42,3 +42,7 @@ class TestSet(db.Model):
         self.tests.append(res)
 
         return res
+
+    def save(self):
+        """ Save the record to the database. """
+        db.session.commit()

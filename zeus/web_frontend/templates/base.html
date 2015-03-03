@@ -3,7 +3,6 @@
 <head>
 {% block head %}
 {% endblock %}
-</head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +16,7 @@
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap.min.css')}}">
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap-theme.min.css')}}">
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='css/custom.css')}}">
+</head>
 
 <body>
 <div class="navbar-wrapper">
@@ -62,7 +62,7 @@
                                 <label class="string optional" for="user_remember_me">Remember me</label>
 
                                 <button type="submit" class="btn btn-primary">Sign in</button>
-                                </br>
+                                <br>
                             </form>
                         </div>
                         </li>
@@ -75,7 +75,7 @@
 </div>
 
 <div class="container">
-    </br>
+    <br>
     {% with alerts = get_flashed_messages(with_categories=true) %}
     {% if alerts %}
     {% for cat, alert in alerts %}
