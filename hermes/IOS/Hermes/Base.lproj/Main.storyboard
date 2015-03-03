@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="u5W-wt-aO6">
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="6MX-cn-MhF">
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="4lt-yy-zz9">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
@@ -18,14 +16,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="oip-Hh-1t7">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="oip-Hh-1t7">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="oip-Hh-1t7" firstAttribute="leading" secondItem="jKu-UR-rDR" secondAttribute="leading" id="bcW-zM-T9O"/>
                             <constraint firstItem="oip-Hh-1t7" firstAttribute="height" secondItem="jKu-UR-rDR" secondAttribute="height" id="jWT-NC-UHL"/>
                             <constraint firstItem="oip-Hh-1t7" firstAttribute="width" secondItem="jKu-UR-rDR" secondAttribute="width" id="tdM-zw-2BW"/>
+                            <constraint firstItem="oip-Hh-1t7" firstAttribute="bottom" secondItem="RQi-5t-pli" secondAttribute="top" id="zEp-Ae-AId"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -69,9 +69,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <segue destination="qka-UC-AhF" kind="show" id="qcR-p9-WmR"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RfM-LV-hTN">
                                 <rect key="frame" x="199" y="408" width="203" height="50"/>
@@ -198,7 +195,7 @@
                         <constraints>
                             <constraint firstItem="fe4-0L-gex" firstAttribute="top" secondItem="fft-me-w21" secondAttribute="bottom" constant="8" symbolic="YES" id="2BB-es-sXX"/>
                             <constraint firstAttribute="centerX" secondItem="p0y-rq-a15" secondAttribute="centerX" id="9eF-nL-X2o"/>
-                            <constraint firstItem="2ee-7t-1FG" firstAttribute="bottom" secondItem="EQ6-fT-XDh" secondAttribute="top" id="CHu-VU-qMo"/>
+                            <constraint firstAttribute="bottom" secondItem="EQ6-fT-XDh" secondAttribute="top" id="CHu-VU-qMo"/>
                             <constraint firstItem="0UH-kj-7xr" firstAttribute="top" secondItem="fe4-0L-gex" secondAttribute="bottom" constant="8" symbolic="YES" id="CPK-3X-66u"/>
                             <constraint firstItem="dQX-mh-MCb" firstAttribute="top" secondItem="0UH-kj-7xr" secondAttribute="bottom" constant="15" id="Q9Y-ix-Ebw"/>
                             <constraint firstAttribute="centerX" secondItem="fe4-0L-gex" secondAttribute="centerX" id="Qle-gz-m6o"/>
@@ -206,11 +203,16 @@
                             <constraint firstItem="fft-me-w21" firstAttribute="top" secondItem="2CN-nP-3Ka" secondAttribute="bottom" constant="25" id="aK2-JF-wp4"/>
                             <constraint firstItem="p0y-rq-a15" firstAttribute="top" secondItem="dQX-mh-MCb" secondAttribute="bottom" constant="36" id="icE-XV-bMP"/>
                             <constraint firstAttribute="centerX" secondItem="dQX-mh-MCb" secondAttribute="centerX" id="ltA-Ql-mPz"/>
-                            <constraint firstItem="2ee-7t-1FG" firstAttribute="centerX" secondItem="p0y-rq-a15" secondAttribute="centerX" id="n5Y-d9-AFK"/>
+                            <constraint firstAttribute="centerX" secondItem="p0y-rq-a15" secondAttribute="centerX" id="n5Y-d9-AFK"/>
                             <constraint firstItem="0UH-kj-7xr" firstAttribute="leading" secondItem="fe4-0L-gex" secondAttribute="leading" id="o7U-xy-x2h"/>
                             <constraint firstItem="fft-me-w21" firstAttribute="centerX" secondItem="fe4-0L-gex" secondAttribute="centerX" id="oN3-Ro-GRj"/>
                             <constraint firstAttribute="centerX" secondItem="0UH-kj-7xr" secondAttribute="centerX" id="qvC-dg-SQH"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="CHu-VU-qMo"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="1jk-gF-AmR"/>
                     <connections>
@@ -237,11 +239,7 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="6fb-OQ-bra">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Jitter:
-Latency:
-DNS Response:
-Packet Loss:
-Delay:" translatesAutoresizingMaskIntoConstraints="NO" id="5rV-Qc-ITo">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Jitter: Latency: DNS Response: Packet Loss: Delay:" translatesAutoresizingMaskIntoConstraints="NO" id="5rV-Qc-ITo">
                                 <rect key="frame" x="150" y="333" width="300" height="128"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
