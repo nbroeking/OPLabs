@@ -17,6 +17,7 @@
 		56A717D71A6B6576006E1198 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D51A6B6576006E1198 /* Main.storyboard */; };
 		56A717D91A6B6576006E1198 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D81A6B6576006E1198 /* Images.xcassets */; };
 		56A717E81A6B6576006E1198 /* CommunicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717E71A6B6576006E1198 /* CommunicationTests.m */; };
+		56ACB6211AA63F6700CCDB75 /* DataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 56ACB6201AA63F6700CCDB75 /* DataTest.m */; };
 		56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */; };
 		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
 		56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7E0FD1A721A9300965DE3 /* TesterTests.m */; };
@@ -57,6 +58,7 @@
 		56A717E11A6B6576006E1198 /* HermesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HermesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A717E61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56A717E71A6B6576006E1198 /* CommunicationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommunicationTests.m; sourceTree = "<group>"; };
+		56ACB6201AA63F6700CCDB75 /* DataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataTest.m; sourceTree = "<group>"; };
 		56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 			children = (
 				56A717E71A6B6576006E1198 /* CommunicationTests.m */,
 				56C7E0FD1A721A9300965DE3 /* TesterTests.m */,
+				56ACB6201AA63F6700CCDB75 /* DataTest.m */,
 				56A717E51A6B6576006E1198 /* Supporting Files */,
 			);
 			path = HermesTests;
@@ -332,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */,
+				56ACB6211AA63F6700CCDB75 /* DataTest.m in Sources */,
 				56A717E81A6B6576006E1198 /* CommunicationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
