@@ -1,43 +1,33 @@
-/**
- * 
- */
 package communication;
 
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 
-/**
- * @author NBroeking
- *
- */
-public class Communicator extends HandlerThread {
+public class CommThread extends HandlerThread {
 	
-	private static final String TAG = "HermesComm";
+	private static final String TAG = "Hermes Comm Thread";
 	private String mName;
 	
 	public CommMessageHandler mHandler;
-	
-	/**
-	 * 
-	 */
-	public Communicator(String name) {
+
+	public CommThread(String name) {
 		super(name);
 		mName = name;
 
 		mHandler = null;
-		Log.i(TAG, "Communicator constructed");
+		Log.i(TAG, "CommThread constructed");
 	}
-	
+
 	@Override
 	public void run() {
-		//Set up looper
+        Log.i(TAG, "Running Thread");
 		Looper.prepare();
-		
-		mHandler = new CommMessageHandler();		
+
+		mHandler = new CommMessageHandler();
 		Looper.loop();
 	}
-	
+
 	synchronized public String name(){
 		return mName;
 	}
