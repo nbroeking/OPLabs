@@ -163,6 +163,8 @@ public:
         msg.from_address = from;
         msg.message = io::Buffer<byte>(bytes, len);
 
+        m_log.printfln(TRACE, "Message received");
+        m_log.printHex(TRACE, bytes, len);
         inbound_messages.push(msg);
     }
 
@@ -188,6 +190,8 @@ protected:
      */
     virtual inline void messageReceivedCallback(ProcessAddressProxy& from_addr, const byte* bytes, size_t len) {
         (void) from_addr ; (void) bytes ; (void) len ;
+        m_log.printfln(WARN, "Unhandled message");
+        m_log.printHex(WARN, bytes, len);
     }
 
 private:
@@ -206,6 +210,7 @@ private:
     std::string name;
     MessageDigester m_mesg_digest;
 
+    logger::LogContext& m_log;
     ProcessAddress m_id;
 };
 

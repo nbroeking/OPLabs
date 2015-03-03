@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 using namespace std;
+using namespace logger;
 using namespace os;
 using namespace io;
 
@@ -46,7 +47,7 @@ public:
     }
 };
 
-Process::Process(const char* name) : name(name) {
+Process::Process(const char* name) : name(name), m_log(LogManager::instance().getLogContext("Process", name)) {
     m_id = ProcessManager::instance().registerProcess(this);
 }
 
@@ -67,8 +68,8 @@ Process* Process::getProcess() {
 
 Thread* Process::start() {
     m_mesg_digest.super = this;
-    Thread* dig = new Thread(m_mesg_digest);
     Thread* thr = new Thread(*this);
+    Thread* dig = this->newThread(m_mesg_digest);
 
     dig->start();
     thr->start();
@@ -77,6 +78,8 @@ Thread* Process::start() {
 }
 
 void Process::MessageDigester::run() {
+    LogContext& l_log = logger::LogManager::instance().getLogContext("Process", "MessageDigester");
+    l_log.printfln(TRACE, "Message digester start");
     while ( true ) {
         Message msg = super->inbound_messages.front();
         super->inbound_messages.pop();
@@ -84,13 +87,12 @@ void Process::MessageDigester::run() {
         ProcessAddressProxy proxy(msg.from_address);
     
         if ( ! proxy.isValid() ) {
-            logger::LogManager::instance()
-                .getLogContext("Process", "MessageDigester")
-                    .printfln(ERROR, "Message from unknown sender @%u\n",
-                        msg.from_address.thread);
+            l_log.printfln(ERROR, "Message from unknown sender @%u\n",
+                msg.from_address.thread);
             return ;
         }
         
+        l_log.printfln(TRACE, "Message popped off queue");
         super->messageReceivedCallback(proxy,
                 msg.message.rawPointer(), msg.message.length());
     }

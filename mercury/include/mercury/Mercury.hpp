@@ -61,7 +61,7 @@ inline std::string toString( MercuryStim stim ) {
 inline std::string toString( MercuryState state ) {
     static const char* state_names[] = {
         "Idle", "RequestMade", "Pause",
-        "TestStarted", "ResultsPosted"
+        "TestStarted", "ResultsPosted", "TestingPing", NULL
     };
     return state < N_MERC_STATES ? state_names[state] : "Unknown";
 }
