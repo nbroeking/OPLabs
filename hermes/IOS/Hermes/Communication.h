@@ -8,15 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Communication : NSObject <NSStreamDelegate>
+@interface Communication : NSObject <NSURLConnectionDelegate>
 {
     bool started;
-    bool inputOpen;
-    bool outputOpen;
     bool shouldRun;
+    
 }
-@property(strong, atomic) NSThread *thread;
-
 //Initilizer for the communication thread
 -(instancetype)init;
 
@@ -32,5 +29,7 @@
 //Checks to see if the sub system is running
 -(BOOL) isRunning;
 
+//Methods for Communicating with the server
+-(void) login:(id) sender;
 
 @end
