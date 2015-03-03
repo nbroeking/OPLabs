@@ -43,7 +43,6 @@
     while(shouldRun)
     {
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        NSLog(@"Tester Run Loop Reset");
     }
     @synchronized(self){
         
@@ -67,7 +66,6 @@
         shouldRun = true;
         started = true;
         
-        NSLog(@"Starting Threads");
         //Start the run loop
         thread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
         [thread setName:@"Tester"];
