@@ -42,6 +42,7 @@
 }
 
 #myBanner {
+    padding-top: 50px;
     width: 100%;
     background-color: blue;
     background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
@@ -55,7 +56,67 @@
   margin: auto;
 }
 
+h2 { 
+  font-size: 3em;
+  font-family: 'Open Sans', sans-serif;
+}
+
+h3 {
+  color: #5698f1;
+  font-family: 'Open Sans', sans-serif;
+}
+
+h4 {
+  color: black;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.5em;
+}
+
+p {
+  color: gray;
+  font-size: 1.1em;
+}
+
+.col-md-4 {
+  padding: 20px;
+}
+
+.mobileApp {
+  font-size: 1.5em;
+  color: white;
+  padding: 15px;
+  background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#96c3f6, #5698f1 ); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#96c3f6, #5698f1 ); /* Standard syntax (must be last) */
+}
+
+.mobileApp:hover {
+  background: -webkit-linear-gradient(#5698f1, #5698f1); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#5698f1, #5698f1); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#5698f1, #5698f1); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#5698f1, #5698f1); /* Standard syntax (must be last) */
+  text-decoration: none;
+  color: white;
+}
+
+.mobileApp:visited {
+  text-decoration: none;
+  color: white;
+}
+
 body {
+}
+
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background-color: #3C3C3C;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+  color: gray;
 }
 
 @media screen and (max-width: 768px) {

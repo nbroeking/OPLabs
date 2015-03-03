@@ -1,38 +1,37 @@
 {% extends "base.html" %}
 
-<div id="myBanner">
-  <img src="../static/images/hermes-logo.png" width="500px">
-</div>
 {% block body %}
 <div class="container marketing">
-  <div id="myBanner">
-  <img src="../static/images/hermes-logo.png" width="500px">
-</div>
   <!-- Three columns of text below the carousel -->
   <div class="row">
-    <div class="col-md-offset-4 col-md-4">
-      <center>
-        <h2>Mobile Applications</h2>
-        <img src="{{url_for("WebInterface.static", filename='images/hermes-logo.png')}}" Width="100%" border="5">
+    <div class="col-md-8">
+        <h2>Curious about the speed of your home network?</h2>
         <p>
         <br>
-        Install our mobile applications and run speedtests from your
-        own phone. Available on the iOS App Store and Android Play Store.
+        Hermes is a new application that tests the quality of your Wifi connection within your home by comparing the speed of your phone running tests to your router running tests. If your internet provider has set you up with a router that supports Hermes, follow these simple steps to get started today!
+        <br>
         </p>
-        <div class="col-md-6">
-            <a class="btn btn-default" href="#" role="button">Get iOS &raquo;</a>
-        </div>
-        <div class="col-md-6">
-            <a class="btn btn-default" href="#" role="button">Get Android &raquo;</a>
-        </div>
-      </center>
-    </div><!-- /.col-lg-4 -->
-      <!-- FOOTER -->
-      <footer>
-        <!--
-            OPlabs is not an incorporated entity nor can it hold copyrights
-        <p>&copy; OPLab, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-        -->
-      </footer>
-    </div><!-- /.container -->
+        <h3>Step 1: Create an Account</h3>
+        <p>
+        <br>
+        Hermes requires you to create an account so that your router settings can be remembered, and so that unique historical results can be provided to you. The email you provide will only be used in cases of password reset. 
+        <br>
+        </p>
+        <h3>Step 2: Download the Mobile App</h3>
+        <p>
+        <br>
+        Install our mobile applications and run speedtests from your own phone. Available on the iOS App Store and Android Play Store. Use the account you create here to login on the app.
+        <br>
+        <br>
+        <br>
+        </p>
+    </div><!-- /.col-lg-8 -->
+    <div class="col-md-4">
+        <h4>Download the App</h4>
+        <br>
+        <a class="mobileApp" href="#" role="button">Get iOS &raquo;</a>
+        <a class="mobileApp" href="#" role="button">Get Android &raquo;</a>
+    </div>
+  </div>
+</div><!-- /.container -->
 {% endblock %}
