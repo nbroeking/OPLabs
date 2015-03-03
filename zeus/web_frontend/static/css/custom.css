@@ -119,6 +119,17 @@ footer {
   color: gray;
 }
 
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background-color: #3C3C3C;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+  color: gray;
+}
+
 @media screen and (max-width: 768px) {
     body {padding-top: 40px; }
 }
