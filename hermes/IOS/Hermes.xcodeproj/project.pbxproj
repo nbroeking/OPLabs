@@ -24,7 +24,6 @@
 		DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7BA1A78309500E169AA /* SignupViewController.m */; };
 		DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C91A783C5600E169AA /* MenuTableViewController.m */; };
 		DBE3C4F01A81609C00CB504A /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBE3C4EF1A81609C00CB504A /* HomeViewController.m */; };
-		DBE3C4F21A8160B400CB504A /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBE3C4F11A8160B400CB504A /* SettingsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,8 +68,6 @@
 		DB34B7C91A783C5600E169AA /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = "<group>"; };
 		DBE3C4EE1A81609C00CB504A /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		DBE3C4EF1A81609C00CB504A /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
-		DBE3C4F11A8160B400CB504A /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		DBE3C4F31A8160F200CB504A /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,8 +103,6 @@
 				DB34B7BA1A78309500E169AA /* SignupViewController.m */,
 				DBE3C4EE1A81609C00CB504A /* HomeViewController.h */,
 				DBE3C4EF1A81609C00CB504A /* HomeViewController.m */,
-				DBE3C4F11A8160B400CB504A /* SettingsViewController.m */,
-				DBE3C4F31A8160F200CB504A /* SettingsViewController.h */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -314,7 +309,6 @@
 				56A717C81A6B6576006E1198 /* main.m in Sources */,
 				56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */,
 				DBE3C4F01A81609C00CB504A /* HomeViewController.m in Sources */,
-				DBE3C4F21A8160B400CB504A /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
