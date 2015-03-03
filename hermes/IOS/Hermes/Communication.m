@@ -111,6 +111,7 @@
 
 -(void)login:(id)sendert
 {
+    NSLog(@"Comm received a login request");
     if( self.sender)
     {
         NSLog(@"SUPER BIG ERROR: Nic made a huge mistake with his logic and should go fix it now");
@@ -121,6 +122,7 @@
 }
 -(void)loginToServer:(id)sender
 {
+    NSLog(@"Login to server");
     // Create the request.
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:loginURL];
     

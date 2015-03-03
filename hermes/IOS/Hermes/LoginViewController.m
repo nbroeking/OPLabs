@@ -11,12 +11,14 @@
 
 @interface LoginViewController ()
 @property (strong, nonatomic) SessionData *data;
+@property (strong, nonatomic) NSURL *regURL;
 @end
 
 @implementation LoginViewController
 @synthesize data;
 @synthesize emailField;
 @synthesize passwordField;
+@synthesize regURL;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -26,6 +28,8 @@
     
     //Get Data Singleton
     data = [SessionData getData];
+    
+    regURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@%@", [[SessionData getData] hostname], @"/register"]];
     
     //Set up the tap recognizer to close keyboard
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
@@ -73,5 +77,6 @@
 
 - (IBAction)SignUp:(id)sender {
     NSLog(@"SignUp");
+    [[UIApplication sharedApplication] openURL:regURL];
 }
 @end
