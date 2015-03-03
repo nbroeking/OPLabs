@@ -1,38 +1,27 @@
-#!/usr/bin/env python
 """
 
-run.py makes it easy to start Flask's built-in development webserver.
+app.py sets up the global context and configuration for the web server.
 
-To start a development server, ensure all the necessary packages are
-installed: (I suggest setting up a Virtualenv for this)
-
-$ pip install -r requirements.txt
-< ... >
-$ python run.py
- * Running on http://127.0.0.1:5000/
- * Restarting with reloader
+This is where the database and other WebApp settings are configured.
 
 Author: Zach Anders
-Date: 01/26/2015
+Date: 02/03/2015
 
 """
-
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import os
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_url_path='/noop/')
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
+app.debug = config.DEBUG
 db = SQLAlchemy(app)
 
-if __name__ == "__main__":
-    app.debug = config.DEBUG
-    if app.debug:
-        # This makes debugging a lot easier. Otherwise the current session gets
-        # invalidated every time flask reloads itself.
-        app.secret_key = 'debug'
-    else:
-        app.secret_key = os.urandom(128)
-
-    app.run()
+if app.debug:
+    # This makes debugging a lot easier. Otherwise the current session gets
+    # invalidated every time flask reloads itself.
+    app.secret_key = 'debug'
+else:
+    app.secret_key = os.urandom(128)

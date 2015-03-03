@@ -73,7 +73,7 @@ ProcessManager::ProcessManager():
     m_addr = UnixAddress(name);
     m_outside.bind(m_addr);
 
-    m_filecollection.subscribeForRead(&m_outside, this);
+    m_filecollection.subscribe(FileCollection::SUBSCRIBE_READ, &m_outside, this);
     m_filecol_thread = new Thread(m_filecollection);
     m_filecol_thread->start();
 

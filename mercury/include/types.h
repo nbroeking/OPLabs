@@ -52,4 +52,25 @@ typedef int32_t s32_t;
 typedef int16_t s16_t;
 typedef int8_t  s8_t;
 
+typedef float f32_t;
+typedef double f64_t;
+
+#ifdef __cplusplus
+inline u32_t floatToIntegerBytes( f32_t fl ) {
+    return *(u32_t*)(&fl);
+}
+
+inline f32_t integerBytesToFloat( u32_t i ) {
+    return *(f32_t*)(&i);
+}
+
+inline u64_t doubleToIntegerBytes( f64_t fl ) {
+    return *(u64_t*)(&fl);
+}
+
+inline f64_t integerBytesToDouble( u64_t i ) {
+    return *(f64_t*)(&i);
+}
+#endif
+
 #endif /* TYPES_H_ */

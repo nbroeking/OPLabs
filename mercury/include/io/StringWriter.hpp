@@ -35,7 +35,7 @@ public:
     /**
      * @brief Construct a StringWriter with no BaseIO.
      */
-    inline StringWriter( ) {}
+    inline StringWriter( ): m_is_owner(false) {}
 
     /**
      * @brief Sets the BaseIO of this Writer and assumes ownership of it

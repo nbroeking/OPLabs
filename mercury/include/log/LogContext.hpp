@@ -15,12 +15,6 @@
 #include <io/BaseIO.hpp>
 #include <io/StringWriter.hpp>
 
-#if defined(ENVIRONMENT_release)
-#define DEFUALT_MIN_LOG 3
-#else
-#define DEFUALT_MIN_LOG 1
-#endif
-
 namespace logger {
 
 class LogManager;

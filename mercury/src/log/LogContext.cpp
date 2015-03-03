@@ -9,7 +9,7 @@ const logger::LogLevel SUCCESS(32, "SUCCESS", 10, true);
 
 const logger::LogLevel WARN(33, "WARN", 15, true);
 const logger::LogLevel ERROR(31, "ERROR", 20, true);
-const logger::LogLevel FATAL(31, "FATAL", 15, true);
+const logger::LogLevel FATAL(31, "FATAL", 15, false);
 
 using namespace std;
 
@@ -19,7 +19,7 @@ namespace logger {
 io::FilePointer p_stdout(stdout);
 
 LogContext::LogContext(const string& maj, const string& minor) :
-    min_lev( DEFUALT_MIN_LOG ),
+    min_lev( 0 ),
     major_context( maj ),
     minor_context( minor ),
     enabled( false ),
@@ -97,9 +97,10 @@ char nybtochr( byte b ) {
 
 void LogContext::log16hex( const LogLevel& lev, const byte* bytes, size_t len ) {
     char buf1[16 * 3 + 1] = {0};
-    char buf2[16 + 1] = {0};
+    char buf2[18 + 1] = {0};
     buf1[16*3] = 0;
-    buf2[16] = 0;
+    buf2[18] = 0;
+    buf2[0] = buf2[17] = '|';
 
 
     for ( size_t i = 0 ; i < len; ++ i ) {
@@ -109,14 +110,14 @@ void LogContext::log16hex( const LogLevel& lev, const byte* bytes, size_t len ) 
         
         if( (isprint((char)bytes[i]) && ! isspace((char)bytes[i])) ||
             bytes[i] == ' ' ) {
-            buf2[i] = bytes[i];
+            buf2[i+1] = bytes[i];
         } else {
-            buf2[i] = '.';
+            buf2[i+1] = '.';
         }
             
     }
 
-    printfln(lev, "%-52s|    %-22s", buf1, buf2);
+    printfln(lev, "%-52s    %-22s", buf1, buf2);
 }
 
 
