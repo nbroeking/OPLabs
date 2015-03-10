@@ -11,6 +11,7 @@ import base64
 def dashboard():
     user = User.from_session()
     user_sets = TestSet.get_all_user_sets(user)
+    print user_sets
 
     return render_template('dashboard.html',
             user=user,
