@@ -38,9 +38,16 @@ void PingTest::sendAck( ProcessProxy& proxy ) {
 
 void PingTest::onPacketReceived(const PingTestPacket& pckt) {
     m_log.printfln(DEBUG, "Received packet of type %s", toString(pckt.type).c_str());
+    
+    switch(pckt.type) {
+        case BEGIN_TEST:
+            this->startTest();
+            break;
+    }
 }
 
 void PingTest::startTest() {
+    
 }
 
 const char* ping_packet_type_names[] = {

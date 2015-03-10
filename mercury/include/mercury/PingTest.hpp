@@ -9,6 +9,7 @@
 
 #include <proc/Process.hpp>
 #include <io/binary/BufferPutter.hpp>
+#include <proc/StateMachine.hpp>
 
 enum PingTestPacketType {
       BEGIN_TEST
@@ -48,6 +49,34 @@ inline int getObject( io::Getter& getter, PingTestPacket& packet ) {
     return 0;
 }
 
+enum PingTestStim {
+    PING_RECIEVED,
+    START_TEST,
+    NPING_STIMS
+};
+
+enum PingState {
+    IDLE,
+    TEST_STARTED,
+    PINGS_SENT,
+    NPING_STATES,
+};
+
+const char* toString( PingTestStim stim ) {
+    const char* names[] = {
+        "pingRecieved", "StartTest"
+    };
+    return stim >= NPING_STIMS ? "Unknown" : names[stim];
+}
+
+const char* toString( PingState state ) {
+    const char* names[] = {
+        "Idle", "TestStarted", "PingsSent"
+    };
+    return state >= NPING_STATES ? "Unknown" : names[state];
+}
+
+
 class PingTest: public proc::Process {
 public:
     PingTest();
@@ -78,6 +107,7 @@ public:
     virtual inline void run() OVERRIDE {};
     
 private:
+    StateMachine<PingTestStim, PingTest, PingState> m_state_machine;
     logger::LogContext& m_log;
 };
 
