@@ -40,12 +40,17 @@ int StreamSocket::close() {
     }
 }
 
+
 int StreamSocket::connect( const SocketAddress& addr ) {
     m_fd = socket(addr.linkProtocol(), SOCK_STREAM, 0);
-    if( m_fd < 0 ) return -2 ;
 
-    if( ::connect( m_fd, addr.raw(), addr.rawlen() ) ) {
-        return -3;
+	int rc;
+    if( m_fd < 0 ) {
+		throw ConnectException("Unable to connect", m_fd);
+	}
+
+    if( (rc = ::connect( m_fd, addr.raw(), addr.rawlen() )) ) {
+		throw ConnectException("Unable to connect", rc);
     }
 
     m_is_closed = false;

@@ -77,6 +77,8 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
         {
             Log.i("Hermes Activity", "Trying to stop the service");
             stopService(new Intent(this, Communication.class));
+            //logout
+            data.setSessionId(null);
         }
     }
 

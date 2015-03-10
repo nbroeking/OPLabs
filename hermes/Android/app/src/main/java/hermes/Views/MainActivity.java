@@ -32,8 +32,8 @@ public class MainActivity extends HermesActivity {
 
     //Activity Methods
     public void goToLogin(View view) {
-        //Temporary until we get a login page
-        goToSettings(view);
+        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+        MainActivity.this.startActivityForResult(myIntent, 0);
     }
 
     public void goToSettings(View view) {
