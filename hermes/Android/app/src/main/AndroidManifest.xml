@@ -32,8 +32,11 @@
         android:theme="@style/AppTheme" >
         <service
             android:name="communication.Communication"
-            android:label="@string/CommServiceName" >
-        </service>
+            android:label="@string/CommServiceName" />
+
+        <service
+            android:name="tester.TestService"
+            android:label="TestService" />
 
         <activity
             android:name="hermes.Views.MainActivity"

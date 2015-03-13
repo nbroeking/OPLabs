@@ -9,14 +9,14 @@
     android:background="@drawable/background"
     tools:context="hermes.Views.LoginActivity" >
 
-    <!--ImageView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/hermes_logo"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/editText" /-->
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="fill_parent"
@@ -53,12 +53,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/password"
         android:text="Not a User? Sign Up Here!"
-        android:id="@+id/password"
+        android:id="@+id/notauser"
         android:layout_above="@+id/button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="31dp" />
-
 
 </RelativeLayout>

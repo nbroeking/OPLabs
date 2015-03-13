@@ -17,8 +17,9 @@
         android:textColor="#ffffff"
         android:textSize="45px"
         android:id="@+id/button"
-        android:layout_above="@+id/button3"
-        android:layout_alignParentLeft="true" />
+        android:layout_below="@+id/button2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="fill_parent"
@@ -27,8 +28,9 @@
         android:textColor="#ffffff"
         android:textSize="45px"
         android:id="@+id/button2"
-        android:layout_above="@+id/button"
-        android:layout_alignParentLeft="true" />
+        android:layout_below="@+id/button3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="fill_parent"
@@ -38,18 +40,14 @@
         android:textSize="45px"
         android:id="@+id/button3"
         android:onClick="runTest"
-        android:layout_marginBottom="59dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/hermes_logo"
-        android:layout_above="@+id/button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="49dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

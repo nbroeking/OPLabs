@@ -1,20 +1,25 @@
 package hermes.Views;
 
-import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.oplabs.hermes.R;
 
 import general.HermesActivity;
+import tester.TestService;
+import tester.TestState;
 
 public class ResultsActivity extends HermesActivity {
 
     private final String TAG = "HermesResultsActivity";
+    private boolean testBound;
+    private TestService testService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,42 +31,51 @@ public class ResultsActivity extends HermesActivity {
                     .add(R.id.ResultsFrame, new AnimationFragment())
                     .commit();
         }
+        testBound = false;
+        testService = null;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "OnDestroy");
+    public void checkStatus()
+    {
+        //Start Testing Process if IDLE
+        if(testService.getState() == TestState.State.IDLE)
+        {
+            //Start Testing
+            Log.i(TAG, "START TESTING");
+        }
+        else if(testService.getState() == TestState.State.COMPLETED)
+        {
+            //Get Results and move to results fragment
+        }
+        else
+        {
+            //We are in a testing state and we should update the view to show animation
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.i(TAG, "OnStart");
-    }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i(TAG, "OnRestart");
-    }
+        /*NOTE: The Hermes Activity will check to see that we are still loggen in*/
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "OnResume");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "OnPause");
+        startService(new Intent(this, TestService.class));
+        Intent intent = new Intent(this, TestService.class);
+        bindService(intent, testConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Log.i(TAG, "OnStop");
+
+        if(!(testService == null)) {
+            unbindService(testConnection);
+            if (testService.getState() == TestState.State.IDLE) {
+                stopService(new Intent(this, TestService.class));
+            }
+        }
     }
 
     public void goToLogin(View view) {
@@ -76,18 +90,25 @@ public class ResultsActivity extends HermesActivity {
         startActivity(intent);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
+    /*Methods Used to interact with the test service
+
      */
-    public static class AnimationFragment extends Fragment {
-
-        public AnimationFragment() {
+    protected ServiceConnection testConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            TestService.MyLocalBinder binder = (TestService.MyLocalBinder) service;
+            testService = binder.getService();
+            testService.setCommunicator(commService);
+            checkStatus();
+        }
+        public void onServiceDisconnected(ComponentName arg0) {
+            testBound = false;
+            testService = null;
         }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_results, container, false);
+        public void completedLogin()
+        {
+            notifyLogin();
         }
-    }
+
+    };
 }
