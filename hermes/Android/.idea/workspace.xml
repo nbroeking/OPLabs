@@ -17,37 +17,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: com.oplabs.hermes" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b155b86-6ca2-4a48-9458-b7474c9d2bd2" name="Default" comment="Working on State Machine">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/tester/Tester.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/communication/CommMessageHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/CommMessageHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/communication/CommMsg.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/CommMsg.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/communication/HermesSocketFactory.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/HermesSocketFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/general/ActivityMessageHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/helpers/ActivityMessageHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/general/HermesActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/helpers/HermesActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/hermes/Views/AnimationFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Views/AnimationFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/hermes/Views/LoginActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Views/LoginActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/hermes/Views/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Views/MainActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/hermes/Views/ResultsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Views/ResultsActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/hermes/Views/SettingsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Views/SettingsActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/main/HermesApplication.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Application/HermesApplication.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/main/MainMsg.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/helpers/MainMsg.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/main/SessionData.java" afterPath="$PROJECT_DIR$/app/src/main/java/main/Application/SessionData.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/tester/TestMessageHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestMessageHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/tester/TestMsg.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestMsg.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/tester/TestThread.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/communication/CommThread.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/CommThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/communication/Communication.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Communication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/interfaces/CommunicationDelegate.java" afterPath="$PROJECT_DIR$/app/src/main/java/interfaces/CommunicationDelegate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/tester/TestService.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/TestService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/tester/TestState.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/TestState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_results.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_results.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_results.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_results.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_login.xml" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_login.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_results.xml" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_results.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+    <list default="true" id="2b155b86-6ca2-4a48-9458-b7474c9d2bd2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Android.iws" />
@@ -1715,6 +1685,11 @@
       <created>1426216799426</created>
       <updated>1426216799426</updated>
     </task>
+    <task id="LOCAL-00001" summary="Working on State Machine">
+      <created>1426358149467</created>
+      <updated>1426358149467</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1733,7 +1708,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3296582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3296582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39911798" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
