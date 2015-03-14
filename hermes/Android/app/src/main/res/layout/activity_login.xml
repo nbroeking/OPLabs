@@ -7,7 +7,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
-    tools:context="hermes.Views.LoginActivity" >
+    tools:context="main.Views.LoginActivity" >
 
     <ImageView
         android:layout_width="wrap_content"

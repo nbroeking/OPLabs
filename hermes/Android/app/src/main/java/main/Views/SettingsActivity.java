@@ -1,10 +1,8 @@
-package hermes.Views;
+package main.Views;
 
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -16,11 +14,11 @@ import com.oplabs.hermes.R;
 
 import java.util.List;
 
-import main.SessionData;
+import main.Application.SessionData;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    private final String TAG = "HERMES SETTINGS";
+    private final static String TAG = "HERMES SETTINGS";
 
     @Override
     public void onStop()

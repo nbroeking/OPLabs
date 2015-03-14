@@ -1,25 +1,17 @@
-package main;
+package main.Application;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.oplabs.hermes.R;
 
-/**
- * Created by NBroeking on 2/18/15.
- */
 public class SessionData {
     //Singleton Members
     private static SessionData ourInstance = new SessionData();
 
     public static SessionData getInstance() {
-        return ourInstance;
-    }
-
-    public static SessionData getOurInstance() {
         return ourInstance;
     }
 

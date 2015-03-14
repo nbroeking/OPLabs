@@ -1,4 +1,4 @@
-package hermes.Views;
+package main.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.oplabs.hermes.R;
 
-import general.HermesActivity;
+import main.helpers.HermesActivity;
 
 public class MainActivity extends HermesActivity {
 

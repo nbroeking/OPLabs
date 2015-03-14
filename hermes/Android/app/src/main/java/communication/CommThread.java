@@ -4,6 +4,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 
+import communication.Helpers.CommMessageHandler;
+
 public class CommThread extends HandlerThread {
 	
 	private static final String TAG = "Hermes Comm Thread";

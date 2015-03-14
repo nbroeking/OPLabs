@@ -1,4 +1,4 @@
-package general;
+package main.helpers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,15 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.oplabs.hermes.R;
-
-import communication.ActivityMessageHandler;
-import communication.CommMessageHandler;
 import communication.Communication;
-import hermes.Views.MainActivity;
-import hermes.Views.SettingsActivity;
-import main.SessionData;
+import main.Application.SessionData;
 
 public abstract class HermesActivity extends Activity implements interfaces.CommunicationDelegate{
 
@@ -82,9 +76,8 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
         }
     }
 
-    //Methods for login
     @Override
-    public void notifyLogin()
+    public void notifyComm()
     {
         if (data.getSessionId() != null)
         {
@@ -189,11 +182,11 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
     //Marks Login
     public void startLogin()
     {
-
+        Log.e(TAG, "Start Login: Should Not be called by HERMES ACTIVITY. This method should be overloaded");
     }
     public void endLogin()
     {
-
+        Log.e(TAG, "End Login: Should Not be called by HERMES ACTIVITY. This method should be overloaded");
     }
 
     //Service Connection
@@ -224,7 +217,7 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
 
         public void completedLogin()
         {
-            notifyLogin();
+            notifyComm();
         }
 
     };

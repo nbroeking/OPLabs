@@ -1,4 +1,4 @@
-package main;
+package main.Application;
 
 import android.util.*;
 import android.app.Application;

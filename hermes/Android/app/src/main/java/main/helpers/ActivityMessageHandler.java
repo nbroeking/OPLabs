@@ -1,19 +1,17 @@
-package communication;
+package main.helpers;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import interfaces.CommunicationDelegate;
-import main.MainMsg;
-import main.SessionData;
 
+//This handler is running on the main thread and can call UI methods
 public class ActivityMessageHandler extends Handler {
 
-    private SessionData data;
     private CommunicationDelegate delegate;
 
     public ActivityMessageHandler(CommunicationDelegate value) {
-        data = SessionData.getInstance();
         delegate = value;
     }
 
@@ -22,8 +20,11 @@ public class ActivityMessageHandler extends Handler {
         switch (msg.what) {
             // things that this thread should do
             case MainMsg.NOTIFYLOGIN:
-                delegate.notifyLogin();
+                delegate.notifyComm();
                 break;
+
+            default:
+                Log.e("ACTIVITY MESSAGE HANDLER", "Received an unknown message");
         }
     }
 }

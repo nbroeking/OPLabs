@@ -1,4 +1,4 @@
-package hermes.Views;
+package main.Views;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.view.View;
 
 import com.oplabs.hermes.R;
 
-import general.HermesActivity;
+import main.helpers.HermesActivity;
 import tester.TestService;
 import tester.TestState;
 
@@ -35,13 +35,18 @@ public class ResultsActivity extends HermesActivity {
         testService = null;
     }
 
+    //Pretty much only called on an app start up
     public void checkStatus()
     {
         //Start Testing Process if IDLE
         if(testService.getState() == TestState.State.IDLE)
         {
-            //Start Testing
-            Log.i(TAG, "START TESTING");
+            //Tell Tester that we have prepared
+            testService.startTest();
+        }
+        else if( testService.getState() == TestState.State.PREPARING)
+        {
+            //We are preparing to Run a Test
         }
         else if(testService.getState() == TestState.State.COMPLETED)
         {
@@ -53,13 +58,13 @@ public class ResultsActivity extends HermesActivity {
         }
     }
 
+    //On start and on Stop methods
     @Override
     protected void onStart() {
         super.onStart();
         Log.i(TAG, "OnStart");
 
-        /*NOTE: The Hermes Activity will check to see that we are still loggen in*/
-
+        /*NOTE: The Hermes Activity will check to see that we are still logged in*/
         startService(new Intent(this, TestService.class));
         Intent intent = new Intent(this, TestService.class);
         bindService(intent, testConnection, Context.BIND_AUTO_CREATE);
@@ -72,12 +77,14 @@ public class ResultsActivity extends HermesActivity {
 
         if(!(testService == null)) {
             unbindService(testConnection);
-            if (testService.getState() == TestState.State.IDLE) {
+            if (testService.getState() == TestState.State.IDLE  ||
+                    testService.getState() == TestState.State.COMPLETED) {
                 stopService(new Intent(this, TestService.class));
             }
         }
     }
 
+    //View Methods
     public void goToLogin(View view) {
         //Temporary until we get a login page
         goToSettings(view);
@@ -90,13 +97,12 @@ public class ResultsActivity extends HermesActivity {
         startActivity(intent);
     }
 
-    /*Methods Used to interact with the test service
-
-     */
+    //Methods Used to interact with the test service
     protected ServiceConnection testConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             TestService.MyLocalBinder binder = (TestService.MyLocalBinder) service;
             testService = binder.getService();
+            testBound = true;
             testService.setCommunicator(commService);
             checkStatus();
         }
@@ -104,11 +110,5 @@ public class ResultsActivity extends HermesActivity {
             testBound = false;
             testService = null;
         }
-
-        public void completedLogin()
-        {
-            notifyLogin();
-        }
-
     };
 }

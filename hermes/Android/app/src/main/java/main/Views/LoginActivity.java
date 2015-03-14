@@ -1,11 +1,9 @@
-package hermes.Views;
+package main.Views;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,7 +13,7 @@ import android.widget.EditText;
 
 import com.oplabs.hermes.R;
 
-import main.SessionData;
+import main.Application.SessionData;
 
 public class LoginActivity extends Activity {
 

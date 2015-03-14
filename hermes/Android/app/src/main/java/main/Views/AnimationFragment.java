@@ -1,4 +1,4 @@
-package hermes.Views;
+package main.Views;
 
 import android.app.Fragment;
 import android.os.Bundle;
