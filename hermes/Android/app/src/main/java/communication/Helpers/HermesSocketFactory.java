@@ -1,4 +1,4 @@
-package communication;
+package communication.Helpers;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 

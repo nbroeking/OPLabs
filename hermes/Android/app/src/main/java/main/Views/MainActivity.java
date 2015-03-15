@@ -1,4 +1,4 @@
-package hermes.Views;
+package main.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.oplabs.hermes.R;
 
-import general.HermesActivity;
+import main.helpers.HermesActivity;
 
 public class MainActivity extends HermesActivity {
 
@@ -32,8 +32,8 @@ public class MainActivity extends HermesActivity {
 
     //Activity Methods
     public void goToLogin(View view) {
-        //Temporary until we get a login page
-        goToSettings(view);
+        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+        MainActivity.this.startActivityForResult(myIntent, 0);
     }
 
     public void goToSettings(View view) {

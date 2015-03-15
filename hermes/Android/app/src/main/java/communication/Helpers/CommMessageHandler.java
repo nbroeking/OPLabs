@@ -1,4 +1,4 @@
-package communication;
+package communication.Helpers;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -29,13 +29,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyStore;
 
-import general.HermesActivity;
+import main.helpers.HermesActivity;
 import interfaces.CommunicationDelegate;
-import main.MainMsg;
-import main.SessionData;
+import main.helpers.MainMsg;
+import main.Application.SessionData;
+import tester.TestService;
+import tester.helpers.TestMsg;
 
 import static android.os.Message.obtain;
 
+//This handler is running on the Comm Thread and will handle all communication related events
 public class CommMessageHandler extends Handler {
 
     private final String TAG = "CommMessageHandler";
@@ -58,11 +61,25 @@ public class CommMessageHandler extends Handler {
                 break;
 
             case CommMsg.LOGIN:
-                loginToServer((HermesActivity) msg.obj);
+                loginToServer( (CommunicationDelegate) msg.obj);
                 break;
+
+            case CommMsg.REQUEST_TEST:
+                serverStartTest((CommunicationDelegate) msg.obj);
         }
 	}
 
+    public void serverStartTest(CommunicationDelegate sender)
+    {
+       //Ask the server for a config and then give it back to the tester
+
+        //We are going to notify directly because the Tester service will add a async message to its
+        //subsystem
+        Message msg = obtain();
+        msg.what = TestMsg.START_TEST;
+        msg.obj = null; //Config
+        ((TestService)sender).getHandler().sendMessage(msg);
+    }
     public void loginToServer(CommunicationDelegate sender)
     {
         Log.i(TAG, "Login to server");
@@ -90,7 +107,8 @@ public class CommMessageHandler extends Handler {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
+                    String addline = line + "\n";
+                    sb.append(addline);
                 }
                 result = sb.toString();
 

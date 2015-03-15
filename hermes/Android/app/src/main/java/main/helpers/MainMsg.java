@@ -1,4 +1,4 @@
-package main;
+package main.helpers;
 
 public final class MainMsg {
 

@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import communication.Helpers.CommMsg;
 import interfaces.CommunicationDelegate;
 
 import static android.os.Message.obtain;
@@ -69,6 +70,12 @@ public class Communication extends Service {
 
     }
 
+    public void sendTestRequest(CommunicationDelegate sender) {
+        Message msg = obtain();
+        msg.what = CommMsg.REQUEST_TEST;
+        msg.obj = sender;
+        commThread.mHandler.sendMessage(msg);
+    }
     public class MyLocalBinder extends Binder {
         public Communication getService() {
             return Communication.this;
