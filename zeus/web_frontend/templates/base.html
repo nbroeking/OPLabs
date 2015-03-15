@@ -15,7 +15,7 @@
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap.min.css')}}">
-<link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap-theme.min.css')}}">
+<!-- <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap-theme.min.css')}}"> -->
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='css/custom.css')}}">
 </head>
 
@@ -103,8 +103,10 @@
   </footer>
 
 <!-- Load both jQuery and Bootstrap's JS -->
-<script src="{{url_for('WebInterface.static', filename='jquery/jquery-1.11.0.js')}}"/>
-<script src="{{url_for('WebInterface.static', filename='bootstrap/js/bootstrap.min.js')}}"/>
+<script src="{{url_for('WebInterface.static', filename='jquery/jquery-1.11.0.js')}}">
+</script>
+<script src="{{url_for('WebInterface.static', filename='bootstrap/js/bootstrap.min.js')}}">
+</script>
 
     <script>
         $(function() {

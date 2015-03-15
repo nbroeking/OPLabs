@@ -1,0 +1,140 @@
+<!-- Throughput and latency -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">Throughput</h1>
+            </div>
+            <div class="panel-body">
+                <p>
+                Sustained throughput (or Bandwidth) is the rate at which you can download
+                data from the internet onto your computer. The larger this
+                number is, the less time it takes to download pictures, song
+                and movies.
+                </p>
+            </div>
+
+            <ul class="list-group">
+                <li class="list-group-item"> </li>
+                <li class="list-group-item">
+                Average Sustained Throughput: {{ result.throughput_avg }}
+                </li>
+                <li class="list-group-item">
+                Standard Deviation: {{ result.throughput_sdev }}
+                </li>
+            </ul>
+        </div> <!-- Panel -->
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    Latency
+                </h1>
+            </div>
+            <div class="panel-body">
+                <p>
+                Latency is how long it takes a single bit of data to travel from
+                the internet to your computer. High latency increases the initial delay
+                to load a webpage, and is the phenomonon known in online gaming as "Lag".
+                </p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"> </li>
+                <li class="list-group-item">
+                Average Packet Latency: {{ result.latency_avg }}
+                </li>
+                <li class="list-group-item">
+                Standard Deviation: {{ result.latency_sdev }}
+                </li>
+            </ul>
+        </div> <!-- Panel -->
+    </div>
+</div>
+
+<!-- Test details -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    Details
+                </h1>
+            </div>
+            <div class="panel-body">
+                Test Details:
+            </div>
+        </div> <!-- Panel -->
+    </div>
+</div>
+
+<!-- Packet loss, DNS response, Packet Jitter-->
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    Packet Loss
+                </h1>
+            </div>
+            <div class="panel-body">
+                <p>
+                [ Description pending ]
+                </p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"> </li>
+                <li class="list-group-item">
+                Percentage of Packets Lost: {{ result.packet_lost }}
+                </li>
+            </ul>
+        </div> <!-- Panel -->
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    DNS Response Time
+                </h1>
+            </div>
+            <div class="panel-body">
+                <p>
+                [ Description pending ]
+                </p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"> </li>
+                <li class="list-group-item">
+                Average DNS Response Latency: {{ result.dns_response_avg }}
+                </li>
+                <li class="list-group-item">
+                Standard Deviation: {{ result.dns_response_sdev }}
+                </li>
+            </ul>
+        </div> <!-- Panel -->
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    Packet Jitter
+                </h1>
+            </div>
+            <div class="panel-body">
+                <p>
+                [ Description pending ]
+                </p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"> </li>
+                <li class="list-group-item">
+                Average Packet Jitter: {{ result.jitter_avg }}
+                </li>
+                <li class="list-group-item">
+                Standard Deviation: {{ result.jitter_sdev }}
+                </li>
+            </ul>
+        </div> <!-- Panel -->
+    </div>
+</div>
