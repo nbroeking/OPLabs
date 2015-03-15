@@ -13,6 +13,12 @@
 #include <string>
 #include <cstring>
 
+#define ENUM_TO_STRING(EnumType, Num, ...) \
+    const char* toString(EnumType en) { \
+        const char* names[] = { __VA_ARGS__ }; \
+        return en >= Num ? "(Unknown)" : names[en]; \
+    }
+
 #define FOR_EACH(itr, vec)\
     for( itr = vec.begin() ; itr != vec.end() ; ++ itr )
 

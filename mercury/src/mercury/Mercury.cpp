@@ -1,11 +1,11 @@
 #include <mercury/Mercury.hpp>
-#include <mercury/PingTest.hpp>
 
 #include <io/Inet4Address.hpp>
 #include <curl/AsyncCurl.hpp>
 #include <io/binary/Base64Putter.hpp>
-#include <proc/ProcessManager.hpp>
 #include <jansson.h>
+
+#include <mercury/ping/Test.hpp>
 
 using namespace io;
 using namespace lang;
@@ -103,13 +103,15 @@ MercuryState Mercury::onGoodRequest() {
     }
 
     log_config_pkt(m_configuration);
-    ProcessProxy* process = proc::ProcessManager::instance().getProcessByName("PingTest");
-    if( !process ) {
-        m_log.printfln(ERROR, "Error; no process called PingTest");
-        return IDLE;
-    }
 
-    PingTest::begin(this->getAddress(), process);
+    ping::TestProxy& proxy = ping::Test::instance();
+    // ProcessProxy* process = proc::ProcessManager::instance().getProcessByName("PingTest");
+    // if( !process ) {
+    //     m_log.printfln(ERROR, "Error; no process called PingTest");
+    //     return IDLE;
+    // }
+
+    // PingTest::begin(this->getAddress(), process);
 
     return TESTING_PING;
 }
@@ -234,7 +236,6 @@ Mercury::Mercury():
     Process("Mercury"), m_state_machine(* this, IDLE),
     m_log(logger::LogManager::instance().getLogContext("Mercury", "Internal")) {
 
-    m_ping_test = proc::ProcessManager::instance().getProcessByName("PingTest");
     m_log.printfln(INFO, "Consttructing Mercury.");
     Inet4Address addr(INADDR_ANY, 8639);
 

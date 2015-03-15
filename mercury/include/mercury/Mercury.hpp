@@ -171,8 +171,6 @@ private:
 
     byte m_id[ SERVER_ID_LENGTH ]; /* server side identification */
 
-    proc::ProcessProxy* m_ping_test;
-
     ConfigPacket m_configuration;
 };
 
