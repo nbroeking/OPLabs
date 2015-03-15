@@ -8,6 +8,7 @@ using namespace io;
 
 PingTest::PingTest():
     Process("PingTest"),
+    m_state_machine(*this, IDLE),
     m_log( LogManager::instance().getLogContext("Process", "PingTest") ) {
 }
 
@@ -41,13 +42,31 @@ void PingTest::onPacketReceived(const PingTestPacket& pckt) {
     
     switch(pckt.type) {
         case BEGIN_TEST:
-            this->startTest();
+            m_state_machine.sendStimulus(START_TEST);
             break;
     }
 }
 
-void PingTest::startTest() {
+void PingTest::observe(int fd, int events) {
+    (void)fd; (void)events;
+    io::ICMPPacket packet;
+    uptr<SocketAddress> addr;
     
+    m_sock->receive(packet, addr.get());
+    m_recieve_queue.push(packet);
+
+    m_state_machine.sendStimulus(PING_RECIEVED);
+}
+
+PingState PingTest::startTest() {
+    m_sock = new ICMPSocket();
+    m_sock->init();
+    m_sock->setNonBlocking();
+    getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, m_sock, this) ;
+
+    u16_t echo_id = 0x5555;
+
+    ICMPPacket pkt;
 }
 
 const char* ping_packet_type_names[] = {

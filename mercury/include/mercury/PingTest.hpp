@@ -7,9 +7,11 @@
  * PingTest.hpp: <description>
  */
 
+#include <containers/BlockingQueue.hpp>
 #include <proc/Process.hpp>
 #include <io/binary/BufferPutter.hpp>
 #include <proc/StateMachine.hpp>
+#include <io/ICMPSocket.hpp>
 
 enum PingTestPacketType {
       BEGIN_TEST
@@ -77,9 +79,13 @@ const char* toString( PingState state ) {
 }
 
 
-class PingTest: public proc::Process {
+class PingTest: public proc::Process, io::FileCollectionObserver {
 public:
     PingTest();
+
+    inline void setupStateMachine() {
+        m_state_machine.setEdge(IDLE, START_TEST, &PingTest::startTest);
+    }
 
     static inline void begin(const proc::ProcessAddress& from, proc::ProcessProxy* to) {
         PingTestPacket packet;
@@ -102,13 +108,18 @@ public:
 
     virtual void onPacketReceived(const PingTestPacket& packet);
 
-    virtual void startTest() ;
+    virtual PingState startTest() ;
 
     virtual inline void run() OVERRIDE {};
+
+    void observe(int fd, int events);
     
 private:
     StateMachine<PingTestStim, PingTest, PingState> m_state_machine;
     logger::LogContext& m_log;
+    io::ICMPSocket* m_sock;
+
+    containers::BlockingQueue<io::ICMPPacket> m_recieve_queue;
 };
 
 #endif /* PINGTEST_HPP_ */

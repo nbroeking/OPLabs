@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <io/SocketAddress.hpp>
 #include <io/ICMPHeader.hpp>
+#include <io/HasRawFd.hpp>
 
 #include <log/LogManager.hpp>
 
@@ -137,7 +138,7 @@ private:
 /**
  * @brief A socket class for ICMP packets 
  */
-class ICMPSocket {
+class ICMPSocket: public HasRawFd {
 public:
     ICMPSocket() ;
 
@@ -177,6 +178,10 @@ public:
      * @param mics The number of microseconds for the timeout
      */
     void setTimeout( os::micros_t mics );
+
+    int getRawFd() {
+        return m_fd;
+    }
 
 private:
     int m_fd ;
