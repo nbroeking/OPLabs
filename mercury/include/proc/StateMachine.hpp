@@ -67,6 +67,10 @@ public:
         m_state_map[ std::make_pair(current_state, stim) ] = fn;
     }
 
+    State_T getCurrentState() {
+        return m_current_state;
+    }
+
 protected:
     logger::LogContext* m_log;
 

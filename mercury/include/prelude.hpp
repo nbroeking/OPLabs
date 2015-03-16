@@ -14,7 +14,7 @@
 #include <cstring>
 
 #define ENUM_TO_STRING(EnumType, Num, ...) \
-    const char* toString(EnumType en) { \
+    std::string toString(EnumType en) { \
         const char* names[] = { __VA_ARGS__ }; \
         return en >= Num ? "(Unknown)" : names[en]; \
     }

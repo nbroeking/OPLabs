@@ -8,6 +8,7 @@
  */
 
 #include <mercury/ping/TestObserver.hpp>
+#include <mercury/ping/TestConfig.hpp>
 
 namespace ping {
 
@@ -20,7 +21,7 @@ public:
     /**
      * Begin the test
      */
-    virtual void start(TestObserver* observer) = 0;
+    virtual void start(const TestConfig& conf, TestObserver* observer) = 0;
 };
 
 }

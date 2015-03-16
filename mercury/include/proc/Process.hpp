@@ -61,17 +61,36 @@ public:
     /* the run method. Starts executing a process */
     virtual void run() = 0;
 
+    inline logger::LogContext& getLogContext() {
+        return m_log;
+    }
 
     /**
      * @brief Starts this process in a new thread
      * @return The new thread created by the process
      */
-    os::Thread* start();
+    virtual os::Thread* start();
 
 private:
     io::FileCollection m_file_collection;
     std::string name;
+
+protected:
     logger::LogContext& m_log;
+};
+
+/* A process that starts with a mutex locked
+ * to prevent race conditions */
+class ProtectedProcess: public Process {
+public:
+    ProtectedProcess(const char* name): Process(name) {}
+    virtual os::Thread* start() {
+        m_mutex.lock();
+        return Process::start();
+    }
+
+protected:
+    os::Mutex m_mutex;
 };
 
 }

@@ -42,8 +42,9 @@ Process* Process::getProcess() {
 
 Thread* Process::start() {
     Thread* thr = new Thread(*this);
-
     thr->start();
+    Thread* fc = this->newThread(getFileCollection());
+    fc->start();
 
     return thr;
 }
