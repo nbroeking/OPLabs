@@ -51,7 +51,7 @@
                         <div class="dropdown-menu">
                             <a href="/useredit">User Edit</a>
                             <br>
-                            <a href="/admin">Admin</a>
+                            <a href="#">Admin</a>
                         </div>
                         </li>
                         <!-- <li><a class="dropdown-toggle" href="#" data-toggle="dropdown">Welcome {{ user.email }}</a></li> -->
