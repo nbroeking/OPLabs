@@ -233,7 +233,7 @@ MercuryState Mercury::onIncorrectCookie() {
 
 
 Mercury::Mercury():
-    Process("Mercury"), m_state_machine(* this, IDLE),
+    Process("Mercury"), m_state_machine(* this, IDLE, getScheduler()),
     m_log(logger::LogManager::instance().getLogContext("Mercury", "Internal")) {
 
     m_log.printfln(INFO, "Consttructing Mercury.");

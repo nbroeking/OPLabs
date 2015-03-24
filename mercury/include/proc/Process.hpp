@@ -10,6 +10,7 @@
 #include <io/FileCollection.hpp>
 #include <io/Buffer.hpp>
 #include <os/Thread.hpp>
+#include <os/Scheduler.hpp>
 #include <containers/BlockingQueue.hpp>
 
 namespace proc {
@@ -39,7 +40,7 @@ public:
      * thread. May return NULL if the thread has no controlling
      * process
      */
-    static Process* getProcess();
+    static Process& getProcess();
 
     /**
      * Return the main FileCollection used to handle
@@ -65,6 +66,10 @@ public:
         return m_log;
     }
 
+    inline os::Scheduler& getScheduler() {
+        return m_scheduler;
+    }
+
     /**
      * @brief Starts this process in a new thread
      * @return The new thread created by the process
@@ -74,6 +79,7 @@ public:
 private:
     io::FileCollection m_file_collection;
     std::string name;
+    os::Scheduler m_scheduler;
 
 protected:
     logger::LogContext& m_log;

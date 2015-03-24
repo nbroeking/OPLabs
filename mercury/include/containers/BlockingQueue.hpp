@@ -134,6 +134,13 @@ public:
         m_queue.pop() ;
     }
 
+    /**
+     * @brief test to see if there are no elements in the queue
+     */
+    inline bool empty() {
+        return m_queue.empty();
+    }
+
     virtual ~BlockingQueue() {}
 private:
     delegate_T m_queue ;

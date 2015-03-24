@@ -42,6 +42,10 @@ public:
         this->hdr = header;
     }
 
+    inline const ICMPHeader getHeader() const {
+        return this->hdr;
+    }
+
     /** Take a message and deserialize it */
     void deserialize( const byte* message, size_t len ) {
         BufferGetter getter(message, len);

@@ -2,6 +2,7 @@
 #include <io/ICMPSocket.hpp>
 #include <proc/StateMachine.hpp>
 #include <proc/Process.hpp>
+#include <unistd.h>
 
 using namespace io;
 using namespace os;
@@ -13,7 +14,8 @@ namespace ping {
 enum Stim {
       BEGIN_TEST
     , CANCEL_TEST
-    , PING_RECIEVED
+    , MAP_EMPTY
+    , TIMEOUT
 };
 
 enum State {
@@ -21,13 +23,13 @@ enum State {
     , PINGS_SENT
 };
 
-ENUM_TO_STRING(Stim, 3, "BeginTest", "CancelTest", "PingReceived")
-ENUM_TO_STRING(State, 2, "Idle", "PingsSent")
+ENUM_TO_STRING(Stim, 4, "BeginTest", "CancelTest", "MapEmpty", "Timeout")
+ENUM_TO_STRING(State, 2, "Idle", "PingsSent", "Timeout")
 
 class PingTestImpl: public ProtectedProcess, FileCollectionObserver {
 public:
     PingTestImpl(): ProtectedProcess("PingTest"),
-                    m_state_machine(*this, IDLE) {
+                    m_state_machine(*this, IDLE, getScheduler()) {
         /* Build up the state machine */
         setup_state_machine();
         if(m_socket.init()) {
@@ -47,10 +49,42 @@ public:
         m_socket.receive(packet, addr.get());
 
         m_log.printfln(DEBUG, "Ping received from %s", addr->toString().c_str());
+
+        ICMPHeader header = packet.getHeader();
+        u16_t echo_id = header.getEchoId();
+        u16_t echo_seq = header.getEchoSequence();
+
+        {   ScopedLock __sl(m_ds_mutex);
+            map<u32_t,ping_data>::iterator itr;
+            itr = m_table.find((echo_id << 16) | echo_seq);
+
+            if(itr == m_table.end()) {
+                m_log.printfln(WARN, "Unsolicited echo from %s", addr->toString().c_str());
+            } else {
+                ping_data data = (*itr).second;
+                timeout_t current = Time::currentTimeMicros();
+                timeout_t diff = current - data.time;
+                m_table.erase(itr);
+
+                m_log.printfln(DEBUG, "Ping received from %s (id=%hu,seq=%hu; target=%s, time=%dus, this=%p)",
+                    addr->toString().c_str(), echo_id, echo_seq, data.addr.toString().c_str(),
+                    diff, this);
+
+                if(m_table.empty()) {
+                    m_state_machine.sendStimulus(MAP_EMPTY);
+                }
+
+                data.time = diff;
+                results.push_back(data);
+            }
+        }
+
     }
 
     void setup_state_machine() {
         m_state_machine.setEdge(IDLE, BEGIN_TEST, &PingTestImpl::on_start_test);
+        m_state_machine.setEdge(PINGS_SENT, MAP_EMPTY, &PingTestImpl::on_finish);
+        m_state_machine.setEdge(PINGS_SENT, TIMEOUT, &PingTestImpl::on_finish);
     }
     /* }}} */
 
@@ -63,13 +97,59 @@ public:
         u16_t echo_seq = 0;
 
         vector<Inet4Address>::iterator itr;
-        FOR_EACH(itr, m_config.ping_addrs) {
-            send_ping(*itr, echo_id, echo_seq);
+        for( ; echo_seq < 10 ; ++ echo_seq ) {
+            FOR_EACH(itr, m_config.ping_addrs) {
+                m_log.printfln(DEBUG, "Sending echo request (id=%hu,seq=%hu)", echo_id, echo_seq);
+    
+    
+                {   ScopedLock __sl(m_ds_mutex);
+                    ping_data& data = m_table[(echo_id << 16) | echo_seq];
+                    data.time = Time::currentTimeMicros();
+                    data.addr = *itr;
+                    m_log.printfln(TRACE, "Write data target=%s time=%d to data slot %d (this=%p)",
+                        data.addr.toString().c_str(), data.time, echo_id, this);
+                    send_ping(*itr, echo_id, echo_seq);
+                }
+                ++ echo_id;
+
+            }
         }
 
-        /* In theory, all the pings should return eventually */
+        /* In theory, all the pings should return eventually,
+         * but in case they did not, set a stim to timeout after a
+         * second */
+        m_state_machine.setTimeoutStim(1 SECS, TIMEOUT);
         return PINGS_SENT;
     }
+
+    State on_finish() {
+        /* This is called if all pings were sucessfully returned
+         * or if the 1 second timeout was reached */
+        u64_t total_time = 0;
+        size_t cnt = 0;
+
+        vector<ping_data>::iterator itr;
+        FOR_EACH(itr, results) {
+            total_time += itr->time;
+            cnt ++;
+        }
+
+        u64_t average = total_time / cnt;
+
+        map<u32_t, ping_data>::iterator mitr;
+        cnt = 0;
+        FOR_EACH(mitr, m_table) {
+            /* count all the unreturned pings */
+            cnt ++;
+        }
+        m_table.clear();
+
+        m_log.printfln(INFO, "Ping time average %luus", average);
+        m_log.printfln(INFO, "%d lost packets", cnt);
+
+        return IDLE;
+    }
+
     /* }}} */
     
     void set_configuration(const TestConfig& conf) {
@@ -100,20 +180,31 @@ public:
     /* }}} */
 private:
 
+    struct ping_data {
+        timeout_t time;
+        Inet4Address addr;
+    };
+
     void send_ping(SocketAddress& to, u16_t echo_id, u16_t echo_seq) {
         ICMPHeader header = ICMPHeader::Echo(echo_id, echo_seq);
         ICMPPacket packet;
 
         packet.setHeader(header);
-        packet.setMessage((const byte*)"TestPing", sizeof("TestPing"));
+        packet.setMessage((const byte*)"TestPing", sizeof("TestPing")-1);
 
         m_socket.send(packet, to);
     }
+
+    vector<ping_data> results;
 
     StateMachine<Stim, PingTestImpl, State> m_state_machine;
     ICMPSocket m_socket;
 
     Condition m_condition;
+
+    Mutex m_ds_mutex;
+    map<u32_t, ping_data> m_table;
+
 
     /* this is the configuration that needs to be set {{{ */
     TestConfig m_config;

@@ -10,6 +10,16 @@ using namespace io;
 namespace proc {
 
 map<Thread*,Process*> m_threads_db;
+Process* main;
+
+class MainProcess : public Process {
+public:
+    MainProcess(const char* name): Process(name) {}
+
+    void run() OVERRIDE{
+     /* Empty */   
+    }
+};
 
 class SubProcessThread : public Thread {
 public:
@@ -35,16 +45,26 @@ Thread* Process::newThread(Runnable& runner) {
     return ret;
 }
 
-Process* Process::getProcess() {
+Process& Process::getProcess() {
     Thread* me = Thread::getCurrentThread();
-    return m_threads_db[me];
+    map<Thread*, Process*>::iterator itr;
+    itr = m_threads_db.find(me);
+
+    if(itr == m_threads_db.end()) {
+        if(main == NULL) {
+            main = new MainProcess("Main");
+        }
+        return* main;
+    }
+    return* itr->second;
 }
 
 Thread* Process::start() {
-    Thread* thr = new Thread(*this);
+    Thread* thr = this->newThread(*this);
     thr->start();
     Thread* fc = this->newThread(getFileCollection());
     fc->start();
+    getScheduler().start();
 
     return thr;
 }

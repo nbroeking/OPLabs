@@ -16,15 +16,20 @@ void Scheduler::schedule(Runnable* r, timeout_t when) {
     drop.when = Time::relativeToAbsoluteTime(when);
     cont = false;
     del = false;
+
+    m_log->printfln(TRACE, "Signal Condition\n");
     cond.signal();
 }
 
 void Scheduler::cancel(Runnable* r) {
     m_guard.lock();
+    m_log->printfln(TRACE, "Request to cancel %p", r);
     ScopedLock __sl(m_mutex);
     drop.to_run = r;
     cont = false;
     del = true;
+
+    m_log->printfln(TRACE, "Signal Condition\n");
     cond.signal();
 }
 
@@ -33,6 +38,8 @@ void Scheduler::stop() {
     ScopedLock __sl(m_mutex);
     cont = false;
     exit = true;
+
+    m_log->printfln(TRACE, "Signal Condition\n");
     cond.signal();
 }
 
@@ -40,6 +47,8 @@ void Scheduler::setStopOnEmpty(bool stop) {
     ScopedLock __sl(m_mutex);
     m_empty_stop = stop;
     cont = true;
+
+    m_log->printfln(TRACE, "Signal Condition\n");
     cond.signal();
 }
 
@@ -55,12 +64,15 @@ void Scheduler::run() {
         if( m_queue.empty() ) {
             m_log->printfln(DEBUG, "Queue is empty, waiting for signal");
             cond.wait( m_mutex );
+            m_log->printfln(DEBUG, "wait over");
         } else {
             Schedule& top = m_queue.front();
             timeout_t wait = Time::absoluteTimeToRelativeTime(top.when);
             wait = wait < 0 ? 0 : wait;
+
             m_log->printfln(DEBUG, "Waiting for %f seconds", wait / 1000000.0);
             rc = cond.timedwait(m_mutex, wait);
+            m_log->printfln(DEBUG, "wait over");
 
         }
 

@@ -14,6 +14,7 @@
 
 #include <io/BaseIO.hpp>
 #include <io/StringWriter.hpp>
+#include <os/Mutex.hpp>
 
 namespace logger {
 
@@ -73,12 +74,23 @@ public:
     }
 };
 
+class HollowLock {
+public:
+    inline void lock() {};
+    inline void unlock() {};
+};
+
 /**
  * @brief A context to a log. Use this class for all Logging.
  * @see LogManager
  */
 class LogContext {
 public:
+#ifdef ENVIRONMENT_devel
+    static os::Mutex shared_lock;
+#else
+    static HollowLock shared_lock;
+#endif
 
     /**
      * @brief Set the minimum allowable log level. Default for

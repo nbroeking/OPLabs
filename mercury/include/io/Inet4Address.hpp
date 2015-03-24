@@ -41,6 +41,10 @@ public:
      * @param port The port number
      */
     Inet4Address(u32_t addr, u16_t port);
+    inline Inet4Address() {
+        setPort(0);
+        setAddress(0);
+    }
 
     Inet4Address(const char* addr, u16_t port);
     inline Inet4Address(const sockaddr_in& addr) {

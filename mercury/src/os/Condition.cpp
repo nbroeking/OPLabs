@@ -7,11 +7,16 @@ Condition::Condition() {
 }
 
 void Condition::signal() {
+    printf("Condition signal %p\n", &m_condition);
    pthread_cond_signal( & this->m_condition ) ;
 } ;
 
 bool Condition::wait( Mutex& mutex )  {
-    return !pthread_cond_wait( & this->m_condition, mutex.raw() ) ;
+    printf("Condition wait %p\n", &m_condition);
+    int ret = !pthread_cond_wait( & this->m_condition, mutex.raw() ) ;
+    printf("Wait end\n");
+
+    return ret;
 } ;
 
 bool Condition::timedwait( Mutex& mutex, timeout_t timeout )  {

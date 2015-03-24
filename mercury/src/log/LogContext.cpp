@@ -32,10 +32,16 @@ void LogContext::setMinimumLevel( const LogLevel& lev ) {
     min_lev = lev.level;
 }
 
+#ifdef ENVIRONMENT_devel
+os::Mutex LogContext::shared_lock;
+#else
+HollowLock LogContext::shared_lock;
+#endif
 void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
     if( ! enabled ) return ;
     if( lev.level < min_lev ) return ;       
 
+    shared_lock.lock();
     if( color ) {
         out.printf( "[%s%s\e[00m|%s%s\e[00m][",
             lev.esc.c_str(),
@@ -57,6 +63,7 @@ void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
     out.vprintf( fmt, ls );
 
     out.printf("\e[00m");
+    shared_lock.unlock();
 }
 
 void LogContext::printf(const LogLevel& lev, const char* fmt, ... ) {
