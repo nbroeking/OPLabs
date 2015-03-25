@@ -31,8 +31,8 @@ public:
     }
 };
 
-Process::Process(const char* name) : name(name),
-    m_log(LogManager::instance().getLogContext("Process", name)) {
+Process::Process(const char* name) : name(name) {
+    m_log = &LogManager::instance().getLogContext("Process", name);
 }
 
 FileCollection& Process::getFileCollection() {
@@ -64,7 +64,8 @@ Thread* Process::start() {
     thr->start();
     Thread* fc = this->newThread(getFileCollection());
     fc->start();
-    getScheduler().start();
+    Thread* sched = this->newThread(getScheduler());
+    sched->start();
 
     return thr;
 }

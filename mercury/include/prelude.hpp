@@ -68,6 +68,7 @@ public:
     void operator=( T* oth ) {
         unref();
         nref = new int(1);
+        mine = oth;
     }
 
     T& operator *() {

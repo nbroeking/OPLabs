@@ -55,10 +55,7 @@ public:
     void setTimeoutStim( os::timeout_t timeout, Stim_T to_send ) {
         // os::ScopedLock __sl(m_mutex);
 
-        // schedule_timeout(timeout, to_send);   
-        std::pair<Stim_T, os::timeout_t> p;
-        p.first = to_send; p.second = timeout;
-        m_timeouts.push(p);
+        schedule_timeout(timeout, to_send);   
     }
 
     void setEdge( State_T current_state, Stim_T stim, State_T (Internal_T::*fn)() ) {
@@ -82,8 +79,10 @@ protected:
 
 private:
     void _clearTimeout() {
-        m_log->printfln(DEBUG, "Clearing timeout stim %s", toString(m_timer.to_send).c_str());
-        m_scheduler.cancel(&m_timer);
+        if(m_timer.engaged) {
+            m_log->printfln(DEBUG, "Clearing timeout stim %s", toString(m_timer.to_send).c_str());
+            m_scheduler.cancel(&m_timer);
+        }
     }
 
     void _sendStimulus(Stim_T stim) {
@@ -103,28 +102,15 @@ private:
         transitionState( (m_delegate.*fn)() );
     }
     void transitionState( State_T new_state ) {
-        process_timeouts();
         m_log->printfln(DEBUG, "Transitioning from state %s to state %s",
             toString(m_current_state).c_str(), toString(new_state).c_str());
         m_current_state = new_state;
     }
 
-    void process_timeouts() {
-        /* Add all timeouts to the scheduler */
-        while( ! m_timeouts.empty() ) {
-            std::pair<Stim_T, os::timeout_t> l_pair;
-            l_pair = m_timeouts.front();
-            schedule_timeout(l_pair.second, l_pair.first);
-            m_timeouts.pop();
-        }
-    }
-
     void schedule_timeout( os::timeout_t timeout, Stim_T to_send) {
-        m_log->printfln(DEBUG, "Setting timeout for stim %s", 
+        m_log->printfln(DEBUG, "Setting timeout %lu for stim %s",
+            timeout,
             toString(to_send).c_str());
-
-        m_timer.to_send = to_send;
-        m_timer.engaged = true;
 
         m_scheduler.cancel(&m_timer);
 
@@ -142,12 +128,8 @@ private:
         bool engaged;
 
         void run() OVERRIDE {
-            /* Lock the mutex and send a stimulus without
-             * the mutex */
-            os::ScopedLock __sl(sm->m_mutex);
-            if(engaged) {
-                sm->_sendStimulus(to_send);
-            }
+            this->engaged = false;
+            sm->sendStimulus(to_send);
         }
         
     };
@@ -162,7 +144,6 @@ private:
     std::map< std::pair<State_T, Stim_T> ,
               State_T (Internal_T::*)() > m_state_map;
 
-    containers::BlockingQueue< std::pair<Stim_T, os::timeout_t> > m_timeouts;
     os::Mutex m_mutex;
     os::Scheduler& m_scheduler;
 };

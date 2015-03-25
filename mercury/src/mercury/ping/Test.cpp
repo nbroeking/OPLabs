@@ -33,7 +33,8 @@ public:
         /* Build up the state machine */
         setup_state_machine();
         if(m_socket.init()) {
-            m_log.printfln(ERROR, "Error initializing icmp socket. (need root?)");
+            printf("this %p\n", this);
+            m_log->printfln(ERROR, "Error initializing icmp socket. (need root?)");
         }
 
         /* Attach this to be the consumer of data from the ICMP socket */
@@ -43,12 +44,12 @@ public:
     /* Begin implementation of non-state machine related {{{ */
     virtual void observe(int fd, int events) OVERRIDE {
         (void) fd; (void) events;
-        m_log.printfln(DEBUG, "Observation on ICMP socket");
+        m_log->printfln(TRACE, "Observation on ICMP socket");
         ICMPPacket packet;
         uptr<SocketAddress> addr;
         m_socket.receive(packet, addr.get());
 
-        m_log.printfln(DEBUG, "Ping received from %s", addr->toString().c_str());
+        m_log->printfln(TRACE, "Ping received from %s", addr->toString().c_str());
 
         ICMPHeader header = packet.getHeader();
         u16_t echo_id = header.getEchoId();
@@ -59,14 +60,14 @@ public:
             itr = m_table.find((echo_id << 16) | echo_seq);
 
             if(itr == m_table.end()) {
-                m_log.printfln(WARN, "Unsolicited echo from %s", addr->toString().c_str());
+                m_log->printfln(WARN, "Unsolicited echo from %s", addr->toString().c_str());
             } else {
                 ping_data data = (*itr).second;
                 timeout_t current = Time::currentTimeMicros();
                 timeout_t diff = current - data.time;
                 m_table.erase(itr);
 
-                m_log.printfln(DEBUG, "Ping received from %s (id=%hu,seq=%hu; target=%s, time=%dus, this=%p)",
+                m_log->printfln(TRACE, "Ping received from %s (id=%hu,seq=%hu; target=%s, time=%dus, this=%p)",
                     addr->toString().c_str(), echo_id, echo_seq, data.addr.toString().c_str(),
                     diff, this);
 
@@ -99,14 +100,14 @@ public:
         vector<Inet4Address>::iterator itr;
         for( ; echo_seq < 10 ; ++ echo_seq ) {
             FOR_EACH(itr, m_config.ping_addrs) {
-                m_log.printfln(DEBUG, "Sending echo request (id=%hu,seq=%hu)", echo_id, echo_seq);
+                m_log->printfln(DEBUG, "Sending echo request (id=%hu,seq=%hu)", echo_id, echo_seq);
     
     
                 {   ScopedLock __sl(m_ds_mutex);
                     ping_data& data = m_table[(echo_id << 16) | echo_seq];
                     data.time = Time::currentTimeMicros();
                     data.addr = *itr;
-                    m_log.printfln(TRACE, "Write data target=%s time=%d to data slot %d (this=%p)",
+                    m_log->printfln(TRACE, "Write data target=%s time=%d to data slot %d (this=%p)",
                         data.addr.toString().c_str(), data.time, echo_id, this);
                     send_ping(*itr, echo_id, echo_seq);
                 }
@@ -118,7 +119,8 @@ public:
         /* In theory, all the pings should return eventually,
          * but in case they did not, set a stim to timeout after a
          * second */
-        m_state_machine.setTimeoutStim(1 SECS, TIMEOUT);
+        m_log->printfln(TRACE, "Set timeout stim for %ld\n", 5 SECS);
+        m_state_machine.setTimeoutStim(5 SECS, TIMEOUT);
         return PINGS_SENT;
     }
 
@@ -134,7 +136,7 @@ public:
             cnt ++;
         }
 
-        u64_t average = total_time / cnt;
+        f64_t average = total_time / ((f64_t)cnt);
 
         map<u32_t, ping_data>::iterator mitr;
         cnt = 0;
@@ -144,8 +146,8 @@ public:
         }
         m_table.clear();
 
-        m_log.printfln(INFO, "Ping time average %luus", average);
-        m_log.printfln(INFO, "%d lost packets", cnt);
+        m_log->printfln(INFO, "Ping time average %fus", average);
+        m_log->printfln(INFO, "%d lost packets", cnt);
 
         return IDLE;
     }

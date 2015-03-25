@@ -62,7 +62,7 @@ public:
     /* the run method. Starts executing a process */
     virtual void run() = 0;
 
-    inline logger::LogContext& getLogContext() {
+    inline logger::LogContext* getLogContext() {
         return m_log;
     }
 
@@ -82,7 +82,7 @@ private:
     os::Scheduler m_scheduler;
 
 protected:
-    logger::LogContext& m_log;
+    logger::LogContext* m_log;
 };
 
 /* A process that starts with a mutex locked

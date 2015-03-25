@@ -85,19 +85,19 @@ public:
      * The value will be placed in the variable referenced by
      * `into`
      *
-     * @return If the timeout was reached, then 0 else 1
+     * @return If the timeout was reached, return false otherwise return true
      */
-    int front_timed( T& into, os::timeout_t timeout ) {
+    bool front_timed( T& into, os::timeout_t timeout ) {
         os::ScopedLock _sl_( this->m_mutex ) ;
 
         if( m_queue.empty() ) {
             if( ! m_condition.timedwait( this->m_mutex, timeout ) ) {
-                return 1 ;
+                return false ;
             }
         }
 
         into = m_queue.front();
-        return 0 ;
+        return true ;
     }
 
     /**

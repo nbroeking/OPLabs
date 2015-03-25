@@ -12,11 +12,13 @@
 #include <os/Time.hpp>
 #include <os/Condition.hpp>
 #include <containers/PriorityQueue.hpp>
+#include <containers/BlockingQueue.hpp>
+
 #include <log/LogManager.hpp>
 
 namespace os {
 
-class Scheduler: Runnable {
+class Scheduler: public Runnable {
 public:
     Scheduler();
 
@@ -27,8 +29,6 @@ public:
     void stop() ;
 
     void setStopOnEmpty(bool stop) ;
-
-    Thread* start() ;
 
     void run() ;
 
@@ -51,21 +51,32 @@ private:
         }
     };
 
+    enum RequestType {
+        EXIT,
+        SCHEDULE,
+        CANCEL,
+        CONTINUE
+    };
 
+    struct Request {
+        RequestType typ;
 
-    Mutex m_mutex;
-    Mutex m_guard;
-
-    Condition cond;
-
-    Schedule drop;
-    bool del;
-    bool exit;
-    bool m_empty_stop;
-    bool cont;
+        union {
+            struct {
+                Schedule sched;
+            } sched;
+            struct {
+                Runnable* runner;
+            } cancel;
+        } un;
+    };
 
     logger::LogContext* m_log;
+
+    containers::BlockingQueue<Request> m_request_queue;
     containers::PriorityQueue<Schedule, ScheduleComp> m_queue;
+
+    bool m_empty_stop;
 
 };
 

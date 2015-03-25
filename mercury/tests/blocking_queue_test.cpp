@@ -63,12 +63,12 @@ int test_blocking_queue_stress( BlockingQueue<int>* bq ) {
 
 int test_blocking_queue_timeout( BlockingQueue<int>* bq ) {
     int test;
-    TEST_EQ( "ShouldTimeout", bq->front_timed( test, 100 ), 1 );
+    TEST_EQ( "ShouldTimeout", bq->front_timed( test, 100 ), false );
 
     test = (int)0xdeadbeef;
     bq->push( test );
     test = 0;
-    TEST_EQ( "ShouldNotTimeout", bq->front_timed( test, 100 ), 0 );
+    TEST_EQ( "ShouldNotTimeout", bq->front_timed( test, 100 ), true );
     TEST_EQ( "ShouldEqualBeef", test, ((int)0xdeadbeef) );
 
     return 0;
