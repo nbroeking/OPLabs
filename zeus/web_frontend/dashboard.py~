@@ -30,7 +30,7 @@ def useredit():
 
 @web_blueprint.route('admin', methods=['GET'])
 @requires_session
-def admin():
+def useredit():
     user = User.from_session()
     user_sets = TestSet.get_all_user_sets(user)
     print user_sets
