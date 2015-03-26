@@ -24,7 +24,7 @@ def get_targets():
     for _, dirs, _  in os.walk('targets'):
         return "#     " + "\n#     ".join(dirs)
 
-PATTERN = re.compile('#include\\s+<\\s*((\w|.)*)\\s*>\\s+')
+PATTERN = re.compile('#include\\s+[<"]\\s*((\\w|.)*)\\s*[>"]\\s+')
 INCLUDE_DIRS = ['include', 'src']
 OBJS_DIR = '_$(TGT)_obs/'
 
@@ -159,7 +159,9 @@ def get_dependencies(f):
     for line in fd.readlines():
         match = PATTERN.match(line)
         if match:
-            newdep = dependency_to_full_path(match.group(1))
+            filename = match.group(1)
+            dirname = os.path.dirname(f)
+            newdep = dependency_to_full_path(filename, dirname)
             if newdep != None:
                 ret.add(newdep)
                 ret.update(get_dependencies(newdep))
@@ -167,7 +169,7 @@ def get_dependencies(f):
 
 # Return all the cpp source files
 def get_source_files():
-    for dirpath, dirs, files in chain.from_iterable(os.walk(path) for path in ["./src/", "./tests/"]):
+    for dirpath, _, files in chain.from_iterable(os.walk(path) for path in ["./src/", "./tests/"]):
         for i in files:
             f = os.path.join(dirpath, i)
             if f.endswith('.cpp') and not f.startswith('main'):
@@ -181,8 +183,8 @@ def to_object_file(f):
 
     return OBJS_DIR + f.replace('.cpp', '.o').replace('/', '_')
 
-def dependency_to_full_path(dep):
-    for incl in INCLUDE_DIRS:
+def dependency_to_full_path(dep, path):
+    for incl in INCLUDE_DIRS + [path]:
         rincl = incl + '/' + dep
         if os.path.isfile(rincl):
             return rincl
@@ -191,7 +193,7 @@ def dependency_to_full_path(dep):
 def prelude():
     sys.stdout.write(MAKEFILE_HEADER)
 
-def main(argv):
+def main(_):
     prelude()
 
     source_files = [i for i in get_source_files()]
@@ -202,7 +204,7 @@ def main(argv):
 
     for ((source_file, dependencies), object_file) in zipped:
         if source_file.startswith('./tests/'):
-            binary = object_file[:12] + 'tests/' + object_file[12:-2];
+            binary = object_file[:12] + 'tests/' + object_file[12:-2]
             test_binaries.append(binary)
             sys.stdout.write(binary + ': ' + OBJS_DIR + 'libmercury.a ' + object_file + '\n')
             sys.stdout.write('\t$(CXX) -o ' + binary + ' ' + object_file + ' ' + OBJS_DIR + 'libmercury.a $(LDFLAGS)\n\n')

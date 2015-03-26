@@ -54,7 +54,7 @@ void StreamServerSocket::listen( int backlog ) {
 StreamSocket* StreamServerSocket::accept() {
     int connfd = ::accept(m_fd, NULL, NULL);
     if ( connfd <= 0 ) return NULL;
-    return new StreamSocket( connfd, true );
+    return new StreamSocket( connfd, false );
 }
 
 void StreamServerSocket::close() {

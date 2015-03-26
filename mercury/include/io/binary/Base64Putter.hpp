@@ -63,6 +63,12 @@ private:
     std::stringstream out;
 };
 
+inline std::string simpleBase64Encode(const byte* input, size_t size) {
+    Base64Putter putter;
+    putter.putBytes(input,size);
+    return putter.serialize();
+}
+
 }
 
 #endif /* BASE64PUTTER_HPP_ */
