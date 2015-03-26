@@ -41,6 +41,10 @@
     left: -6px;
 }
 
+p.modalDescText {
+    height: 125px;
+}
+
 #myBanner {
     padding-top: 50px;
     width: 100%;
@@ -133,3 +137,4 @@ footer {
 @media screen and (max-width: 768px) {
     body {padding-top: 40px; }
 }
+
