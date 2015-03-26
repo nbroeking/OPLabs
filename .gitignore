@@ -52,6 +52,7 @@ proguard/
 
 # End of Android
 # Python
+*.pyc
 .ropeproject
 
 _*_obs/
