@@ -68,7 +68,7 @@ public:
                 m_table.erase(itr);
 
                 m_log->printfln(TRACE, "Ping received from %s (id=%hu,seq=%hu; target=%s, time=%dus, this=%p)",
-                    addr->toString().c_str(), echo_id, echo_seq, data.addr.toString().c_str(),
+                    addr->toString().c_str(), echo_id, echo_seq, data.addr->toString().c_str(),
                     diff, this);
 
                 if(m_table.empty()) {
@@ -97,7 +97,7 @@ public:
         u16_t echo_id = rand();
         u16_t echo_seq = 0;
 
-        vector<Inet4Address>::iterator itr;
+        vector< uptr<SocketAddress> >::iterator itr;
         for( ; echo_seq < 10 ; ++ echo_seq ) {
             FOR_EACH(itr, m_config.ping_addrs) {
                 m_log->printfln(DEBUG, "Sending echo request (id=%hu,seq=%hu)", echo_id, echo_seq);
@@ -108,8 +108,8 @@ public:
                     data.time = Time::currentTimeMicros();
                     data.addr = *itr;
                     m_log->printfln(TRACE, "Write data target=%s time=%d to data slot %d (this=%p)",
-                        data.addr.toString().c_str(), data.time, echo_id, this);
-                    send_ping(*itr, echo_id, echo_seq);
+                        data.addr->toString().c_str(), data.time, echo_id, this);
+                    send_ping(*itr->get(), echo_id, echo_seq);
                 }
                 ++ echo_id;
 
@@ -149,6 +149,12 @@ public:
         m_log->printfln(INFO, "Ping time average %fus", average);
         m_log->printfln(INFO, "%d lost packets", cnt);
 
+        TestResults results;
+        results.avg_latency_micros = average;
+        results.packets_lost = cnt;
+
+        m_observer->onTestComplete(results);
+
         return IDLE;
     }
 
@@ -184,7 +190,7 @@ private:
 
     struct ping_data {
         timeout_t time;
-        Inet4Address addr;
+        uptr<SocketAddress> addr;
     };
 
     void send_ping(SocketAddress& to, u16_t echo_id, u16_t echo_seq) {

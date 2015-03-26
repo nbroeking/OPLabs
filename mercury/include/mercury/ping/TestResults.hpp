@@ -7,11 +7,14 @@
  * TestResults.hpp: <description>
  */
 
+#include <Prelude>
+
 namespace ping {
 
 class TestResults {
 public:
-    double total_time_micros;
+    double avg_latency_micros;
+    u32_t packets_lost;
 };
 
 }

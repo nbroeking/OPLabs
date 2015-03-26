@@ -15,7 +15,7 @@ namespace ping {
 class TestConfig {
 public:
     /* the list of address to test ping speed to */
-    std::vector<io::Inet4Address> ping_addrs;
+    std::vector< uptr<io::SocketAddress> > ping_addrs;
 };
 
 }

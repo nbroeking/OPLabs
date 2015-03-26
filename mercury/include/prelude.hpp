@@ -14,7 +14,7 @@
 #include <cstring>
 
 #define ENUM_TO_STRING(EnumType, Num, ...) \
-    std::string toString(EnumType en) { \
+    inline std::string toString(EnumType en) { \
         const char* names[] = { __VA_ARGS__ }; \
         return en >= Num ? "(Unknown)" : names[en]; \
     }
@@ -31,11 +31,12 @@
 template <class T>
 class uptr { /* unique pointer definition from C++ 11 */
 public:
-    uptr(T*& val) {
+    template <class U>
+    uptr(U* val) {
         mine = val;
-        val = NULL;
         nref = new int(1);
     }
+
 
     uptr() {
         mine = NULL;
@@ -50,6 +51,7 @@ public:
 
     void operator=( const uptr<T>& oth ) {
         mine = oth.mine;
+        nref = oth.nref;
         (*nref) ++;
     }
 

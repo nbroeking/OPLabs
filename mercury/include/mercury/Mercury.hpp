@@ -14,6 +14,8 @@
 #include <io/ServerSocket.hpp>
 #include <curl/AsyncCurl.hpp>
 
+#include <mercury/ping/TestObserver.hpp>
+
 #define SERVER_ID_LENGTH 32
 #define MAGIC_COOKIE_LENGTH 32
 
@@ -24,8 +26,7 @@ enum MercuryStim {
     , BAD_COOKIE_RECEIVED /* cause pause */
     , BAD_REQUEST /* unsolicited test request; cause pause */
     , GOOD_REQUEST
-    , TESTS_COMPLETE
-    , RESULT_POST_ACK
+    , PING_TEST_COMPLETE
 
     , N_MERC_STIMS
 };
@@ -34,9 +35,7 @@ enum MercuryState {
       IDLE /* initial state */
     , REQUEST_MADE /* curl request was sent */
     , PAUSE /* wait some time before starting up */
-    , TEST_STARTED /* stimulate some test state machine */
-    , RESULTS_POSTED
-    , TESTING_PING
+    , PING_TEST_STARTED /* stimulate some test state machine */
     , N_MERC_STATES
 };
 
@@ -48,28 +47,24 @@ struct ConfigPacket {
     std::vector< uptr<io::SocketAddress> > dns_address;
 };
 
-inline std::string toString( MercuryStim stim ) {
-    static const char* names[] = {
-        "CookieReceived", "BadCookieReceived",
-        "BadRequest", "GoodRequest", "TestsComplete",
-        "ResultPostAck"
-    };
-    return stim < N_MERC_STIMS ? names[stim] : "Unknown";
-}
+ENUM_TO_STRING(MercuryStim, 5
+    , "CookieRecieved"
+    , "BadCookieRecieved"
+    , "BadRequest"
+    , "GoodRequest"
+    , "PingTestComplete"
+    );
 
-
-inline std::string toString( MercuryState state ) {
-    static const char* state_names[] = {
-        "Idle", "RequestMade", "Pause",
-        "TestStarted", "ResultsPosted", "TestingPing", NULL
-    };
-    return state < N_MERC_STATES ? state_names[state] : "Unknown";
-}
-
+ENUM_TO_STRING(MercuryState, 4
+    , "Idle"
+    , "RequestMade"
+    , "Pause"
+    , "PingTestStarted"
+    );
 
 extern byte mercury_magic_cookie[ MAGIC_COOKIE_LENGTH ];
 
-class Mercury: public proc::Process {
+class Mercury: public proc::Process, private ping::TestObserver {
 public:
     Mercury();
 
@@ -87,9 +82,13 @@ public:
 
         m_state_machine.setEdge(REQUEST_MADE, GOOD_REQUEST,
             &Mercury::onGoodRequest);
+
+        m_state_machine.setEdge(PING_TEST_STARTED, PING_TEST_COMPLETE,
+            &Mercury::onPingTestComplete);
     }
 
     /* State machine implementation */
+    MercuryState onPingTestComplete();
     MercuryState onCookieReceived();
     MercuryState onIncorrectCookie();
     MercuryState onBadRequest();
@@ -106,6 +105,9 @@ private:
     friend class AcceptHandler;
     friend class SocketHandler;
     friend class MercuryCurlObserver;
+
+    /* Implement ping test observer */
+    void onTestComplete( const ping::TestResults res );
 
     class MercuryCurlObserver: public curl::CurlObserver {
     public:
@@ -172,7 +174,10 @@ private:
     byte m_id[ SERVER_ID_LENGTH ]; /* server side identification */
 
     ConfigPacket m_configuration;
+
+    ping::TestResults m_ping_results;
 };
+
 
 }
 

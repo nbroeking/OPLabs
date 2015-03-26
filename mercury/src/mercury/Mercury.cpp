@@ -104,16 +104,17 @@ MercuryState Mercury::onGoodRequest() {
 
     log_config_pkt(m_configuration);
 
-    ping::TestProxy& proxy = ping::Test::instance();
-    // ProcessProxy* process = proc::ProcessManager::instance().getProcessByName("PingTest");
-    // if( !process ) {
-    //     m_log.printfln(ERROR, "Error; no process called PingTest");
-    //     return IDLE;
-    // }
+    ping::TestConfig conf;
+    conf.ping_addrs = m_configuration.ping_address;
+    ping::TestProxy& ping_test_proxy = ping::Test::instance();
+    ping_test_proxy.start(conf, this);
 
-    // PingTest::begin(this->getAddress(), process);
+    return PING_TEST_STARTED;
+}
 
-    return TESTING_PING;
+void Mercury::onTestComplete(const ping::TestResults res) {
+    m_ping_results = res;
+    m_state_machine.sendStimulus(PING_TEST_COMPLETE);
 }
 
 
@@ -228,6 +229,10 @@ MercuryState Mercury::onCookieReceived() {
 
 MercuryState Mercury::onIncorrectCookie() {
     m_log.printfln(ERROR, "Bad magic cookie found! Pause.");
+    return IDLE;
+}
+
+MercuryState Mercury::onPingTestComplete() {
     return IDLE;
 }
 

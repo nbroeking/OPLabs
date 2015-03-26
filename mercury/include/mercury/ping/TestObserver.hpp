@@ -19,7 +19,7 @@ public:
     /**
      * Called when a test has completed.
      */
-    virtual void onTestComplete(const TestResults& results) = 0;
+    virtual void onTestComplete(const TestResults results) = 0;
 };
 
 }
