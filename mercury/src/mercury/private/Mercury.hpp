@@ -33,7 +33,8 @@ public:
         m_mercury_state_machine(this),
         m_state_machine(NULL),
         m_log(LogManager::instance().getLogContext("Process", "Mercury")),
-        m_response(NULL){}
+        m_response(NULL){
+        }
 
     void onException(CurlException& expt) {
         m_log.printfln(ERROR, "Error with curl request: %s", expt.getMessage());
@@ -64,8 +65,6 @@ public:
         if(fd == m_server_sock.getRawFd()) {
             /* This is a server socket event */
             StreamSocket* client = m_server_sock.accept();
-            /* TODO free the client when done. THIS IS A MEMORY LEAK */
-
             m_log.printfln(INFO, "Client socket registered %d->%p", client->getRawFd(), client);
             (*m_clients.get())[client->getRawFd()] = client;
             getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, client, this);
@@ -113,10 +112,16 @@ private:
             m_state_machine->sendStimulus(BAD_COOKIE_RECEIVED);
         }
     }
+
+    void setup_state_machine() {
+        m_state_machine->setEdge(IDLE, COOKIE_RECEIVED, &Mercury_StateMachine::onMagicCookieReceived);
+    }
+
     void _run() {
         m_log.printfln(INFO, "Starting mercury");
         m_state_machine = new StateMachine<Stim, Mercury_StateMachine, State>
                                 (m_mercury_state_machine, IDLE, getScheduler());
+        setup_state_machine();
 
         Thread* th = newThread(m_mercury_state_machine.m_async_curl);
         th->start();
