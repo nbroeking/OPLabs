@@ -10,7 +10,7 @@ Date: 02/21/2015
 
 import os
 import socket
-from .auth_util import MAGIC_COOKIE, MAGIC_PORT
+from util.rest.rest_auth import MAGIC_COOKIE, MAGIC_PORT
 from IPy import IP
 
 class Router(object):

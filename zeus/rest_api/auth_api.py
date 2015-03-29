@@ -10,9 +10,9 @@ Date: 02/21/2015
 
 """
 from flask import request
-from common.auth_model import User
-from common.auth_util import requires_token
-from common.json_util import JSON_SUCCESS, JSON_FAILURE
+from models.auth_model import User
+from util.rest.rest_auth import requires_user_token
+from util.rest.json_helpers import JSON_SUCCESS, JSON_FAILURE
 from . import rest_blueprint
 
 @rest_blueprint.route("/auth/login", methods=['POST'])
@@ -33,7 +33,7 @@ def login():
         )
 
 @rest_blueprint.route("/auth/logout", methods=['POST'])
-@requires_token()
+@requires_user_token()
 def logout():
     """ Called when an API user wishes to log out and stop using their token. """
     auth_user = User.get_user(auth_token=request.form['token'])

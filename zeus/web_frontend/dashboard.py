@@ -1,9 +1,9 @@
 from . import web_blueprint
 from flask import render_template, request, flash, redirect, url_for
-from common.auth_model import User
-from common.auth_util import requires_session
-from common.test_set import TestSet
-from common.router import Router
+from models.auth_model import User
+from models.test_set import TestSet
+from util.web.web_auth import requires_session
+from util.router import Router
 import base64
 
 @web_blueprint.route('dashboard', methods=['GET'])

@@ -22,6 +22,7 @@ class TestSet(db.Model):
     recorded = db.Column('recorded', db.DATETIME)
     owner_id = db.Column('owner_id', db.ForeignKey('User.user_id'))
     tests = db.relationship('TestResult', backref='parent_set')
+    owner = db.relationship('User')
 
     @staticmethod
     def get_all_user_sets(owner):
