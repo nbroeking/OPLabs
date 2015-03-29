@@ -35,7 +35,6 @@ class TestSet(db.Model):
         self.owner_id = owner.user_id
         self.recorded = datetime.now()
         db.session.add(self)
-        db.session.commit()
 
     def new_result(self, device_type=None):
         """ Create and return a new TestResult inside the current test set. """

@@ -93,7 +93,6 @@ class User(db.Model):
         self.raw_token = ""
 
         db.session.add(self)
-        db.session.commit()
 
     def save(self):
         """ Commits any outstanding changes to the database. """
