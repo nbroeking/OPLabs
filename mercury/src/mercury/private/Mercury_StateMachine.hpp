@@ -16,6 +16,8 @@
 #include <proc/StateMachine.hpp>
 #include "Mercury_JSON.hpp"
 
+#include <mercury/ping/Test.hpp>
+
 
 using namespace logger;
 using namespace curl;
@@ -27,7 +29,8 @@ namespace mercury {
 enum State {
     IDLE,
     REQUEST_MADE,
-    TIMEOUT
+    TIMEOUT,
+    PING_TEST_RUNNING
 };
 
 enum Stim {
@@ -35,15 +38,18 @@ enum Stim {
     BAD_COOKIE_RECEIVED,
     BAD_REQUEST,
     GOOD_REQUEST,
-    WAIT_TIMEOUT
+    WAIT_TIMEOUT,
+    TEST_FINISHED
 };
 
-ENUM_TO_STRING(State, 3,
-    "Idle", "RequestMade", "Timeout")
+ENUM_TO_STRING(State, 4,
+    "Idle", "RequestMade",
+    "Timeout", "TestStarted")
 
-ENUM_TO_STRING(Stim, 5,
+ENUM_TO_STRING(Stim, 6,
     "CookieReceived", "BadCookieReceived",
-    "BadRequest", "GoodRequest", "WaitTimeout")
+    "BadRequest", "GoodRequest",
+    "WaitTimeout", "PingTestRunning")
 
 #define ID_SIZE 32
 
@@ -63,7 +69,7 @@ inline string html_escape(const string& in) {
 }
 
 class Mercury;
-class MercuryObserver: public CurlObserver {
+class MercuryObserver: public CurlObserver, public ping::TestObserver {
     /* Interface */
 };
 
@@ -124,8 +130,14 @@ State onGoodRequest() {
     string log = test_suite_log(conf);
     m_log.printfln(DEBUG, "%s", log.c_str());
 
+    /* build the configuration and start the
+     * test */
+    ping::TestConfig ping_conf;
+    ping_conf.ping_addrs = conf.ping_ips;
+    ping::Test::instance().start(ping_conf, m_observer);
+
     /* Start the ping test */
-    return IDLE;
+    return PING_TEST_RUNNING;
 }
 
 State onBadRequest() {
@@ -142,6 +154,12 @@ State onBadCookie() {
 
 State onWaitTimeoutComplete() {
     m_log.printfln(INFO, "Timeout complete");
+    return IDLE;
+}
+
+State onPingTestFinished() {
+    m_log.printfln(INFO, "Ping test complete. Sending results");
+    /* TODO: Send results */
     return IDLE;
 }
     

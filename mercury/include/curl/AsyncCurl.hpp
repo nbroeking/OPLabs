@@ -37,6 +37,7 @@ public:
     friend class AsyncCurl;
     inline Curl() {
         raw = curl_easy_init();
+        m_post_fields = NULL;
     }
 
     inline void setSSLPeerVerifyEnabled( bool enabled ) {
@@ -56,11 +57,15 @@ public:
     }
     
     inline void setPostFields( const char* data ) {
-        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, strdup(data));
+        if(m_post_fields)
+            delete[] m_post_fields;
+        m_post_fields = strdup(data);
+        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, m_post_fields);
     }
 
 private:
     CURL* raw;
+    char* m_post_fields;
 };
 
 class AsyncCurl: public os::ManagedRunnable {

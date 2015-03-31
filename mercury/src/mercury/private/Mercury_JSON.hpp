@@ -41,22 +41,18 @@ string test_suite_log(const TestSuiteConfiguration& conf) {
 
     return ret;
 }
-
 /* returns true if the status is ok */
-bool parseTestSuiteConfiguration(const char* data, TestSuiteConfiguration& conf) {
-    json_t* root;
-    json_t* config;
-    json_t* cur;
+bool _parseTestSuiteConfiguration(json_t*& root, json_t*& config, json_t*& cur, const char* data, TestSuiteConfiguration& conf) {
     json_error_t err;
 
     root = json_loads(data, 0, &err);
 
     if(!root) {
-        throw new JsonParseException("Unable to parse root node");
+        throw JsonParseException("Unable to parse root node");
     }
     
     if(!json_is_object(root)) {
-        throw new JsonParseException("Root node is not an object");
+        throw JsonParseException("Root node is not an object");
     }
 
     cur = json_object_get(root, "status");
@@ -77,12 +73,12 @@ bool parseTestSuiteConfiguration(const char* data, TestSuiteConfiguration& conf)
     for(i = 0; json_ips_arr[i]; ++ i) {
         cur = json_object_get(config, json_ips_arr[i]);
         if(!json_is_array(cur)) {
-            throw new JsonParseException("Ips node is not an array");
+            throw JsonParseException("Ips node is not an array");
         }
         for(size_t j = 0; j < json_array_size(cur); ++ j) {
             json_t* jsn = json_array_get(cur, j);
             if(!json_is_string(jsn)) {
-                throw new JsonParseException("Element inside ip vector not a string");
+                throw JsonParseException("Element inside ip vector not a string");
             }
             SocketAddress* addr = new Inet4Address(json_string_value(jsn), 0);
             vectors[i]->push_back(addr);
@@ -90,6 +86,22 @@ bool parseTestSuiteConfiguration(const char* data, TestSuiteConfiguration& conf)
     }
 
     return true;
+}
+
+bool parseTestSuiteConfiguration(const char* data, TestSuiteConfiguration& conf) {
+    json_t* root = NULL;
+    json_t* config = NULL;
+    json_t* cur = NULL;
+
+    bool ret;
+    try {
+        ret = _parseTestSuiteConfiguration(root, config, cur, data, conf);
+        json_delete(root);
+        return ret;
+    } catch(Exception& ex) {
+        json_delete(root);
+        throw ex;
+    }
 }
 
 }

@@ -36,19 +36,17 @@ public:
         m_response(NULL){
         }
 
-    void onException(CurlException& expt) {
-        m_log.printfln(ERROR, "Error with curl request: %s", expt.getMessage());
-        m_state_machine->sendStimulus(BAD_REQUEST);
-    }
-
+    /* File collection observer */
     void read(const byte* bytes, size_t len) {
         m_response_putter.putBytes(bytes, len);
     }
 
+    /* CURL Asyc Observer */
     void onOK(http_response_code_t status_code) {
         m_log.printfln(INFO, "Curl returned status %d", status_code);
         if(status_code == 200) {
             delete[] m_response;
+            m_response_putter.putByte(0);
             m_response = m_response_putter.serialize(m_response_len);
             m_response_putter.clear();
             m_mercury_state_machine.m_response = m_response;
@@ -58,7 +56,19 @@ public:
             m_state_machine->sendStimulus(BAD_REQUEST);
         }
     }
+
+    void onException(CurlException& expt) {
+        m_log.printfln(ERROR, "Error with curl request: %s", expt.getMessage());
+        m_state_machine->sendStimulus(BAD_REQUEST);
+    }
     
+    /* Implement ping test observer */
+    void onTestComplete(const ping::TestResults res) {
+        m_log.printfln(DEBUG, "Test results in avg_latency=%fs; packets_lost=%d",
+            res.avg_latency_micros/1e6, res.packets_lost);
+        m_state_machine->sendStimulus(TEST_FINISHED);
+    }
+
     void observe(int fd, int events) OVERRIDE {
         (void) events;
         if(fd == m_server_sock.getRawFd()) {

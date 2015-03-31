@@ -86,6 +86,7 @@ public:
         m_state_machine.setEdge(IDLE, BEGIN_TEST, &PingTestImpl::on_start_test);
         m_state_machine.setEdge(PINGS_SENT, MAP_EMPTY, &PingTestImpl::on_finish);
         m_state_machine.setEdge(PINGS_SENT, TIMEOUT, &PingTestImpl::on_finish);
+        newThread(m_state_machine)->start();
     }
     /* }}} */
 
