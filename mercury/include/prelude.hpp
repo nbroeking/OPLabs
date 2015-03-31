@@ -40,20 +40,20 @@ public:
 
     uptr() {
         mine = NULL;
-        nref = new int(0);
+        nref = NULL;
     }
 
     uptr(const uptr<T>& oth) {
         mine = oth.mine;
         nref = oth.nref;
-        (*nref) ++;
+        if(nref) (*nref) ++;
     }
 
     void operator=( const uptr<T>& oth ) {
         mine = oth.mine;
         unref();
         nref = oth.nref;
-        (*nref) ++;
+        if(nref) (*nref) ++;
     }
 
     bool operator==(T* oth) {
@@ -61,10 +61,12 @@ public:
     }
 
     void unref() {
-        (*nref) --;
-        if( *nref == 0 ) {
-            delete mine;
-            delete nref;
+        if(nref) {
+            (*nref) --;
+            if( *nref == 0 ) {
+                delete mine;
+                delete nref;
+            }
         }
     }
 
