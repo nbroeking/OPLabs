@@ -7,7 +7,7 @@ import android.util.Log;
 import tester.helpers.TestMsg;
 
 public class TestState {
-    public enum State {IDLE, COMPLETED, PREPARING, TESTINGPING}
+    public enum State {IDLE, COMPLETED, PREPARING, TESTINGPING, TESTINGDNS}
 
     private State state;
     private final static String TAG = "TESTSTATE";

@@ -21,4 +21,9 @@ public class AnimationFragment extends Fragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_results, container, false);
     }
+
+    public void update()
+    {
+        
+    }
 }
