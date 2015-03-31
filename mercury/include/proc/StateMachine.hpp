@@ -133,7 +133,6 @@ private:
     }
 
     void process_stim(Stim_T stim) {
-        clearTimeout();
         m_log->printfln(DEBUG, "Processing stim %s", toString(stim).c_str());
         typename StateMapT::iterator itr = m_state_map.find(std::make_pair(m_current_state, stim));
 
@@ -144,6 +143,7 @@ private:
             return;
         }
 
+        clearTimeout();
         State_T (Internal_T::*fn)() = itr->second;
         transitionState((m_delegate.*fn)());
     }
