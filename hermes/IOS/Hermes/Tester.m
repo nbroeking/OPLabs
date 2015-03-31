@@ -27,6 +27,11 @@
     }
     return self;
 }
+
+-(void)startTest
+{
+    
+}
 //Main Thread Run Loop
 -(void)threadMain
 {
