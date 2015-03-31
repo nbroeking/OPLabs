@@ -39,6 +39,8 @@
  * and a function and makes an entry stating when a stim of that type is received
  * in that state, call the function and the function returns the new state.
  *
+ * @note It is very _important_ that the edge function do _not_ block.
+ *
  * @param Stim_T must define std::string toString() and must be orderable
  * @param State_T must define std::string toString() and must be orderable
  */
@@ -104,6 +106,7 @@ public:
             m_command_queue.pop();
             switch(cmd.type) {
             case EXIT:
+                m_log->printfln(INFO, "Receieved request to stop");
                 _cleanup();
                 return;
 

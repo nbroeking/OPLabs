@@ -82,7 +82,15 @@ public:
         return get();
     }
 
+    const T* operator ->() const {
+        return mine;
+    }
+
     T*& get() {
+        return mine;
+    }
+
+    const T*& get() const {
         return mine;
     }
 

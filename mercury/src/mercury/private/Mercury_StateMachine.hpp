@@ -14,6 +14,7 @@
 #include <io/binary/GlobPutter.hpp>
 
 #include <proc/StateMachine.hpp>
+#include "Mercury_JSON.hpp"
 
 
 using namespace logger;
@@ -37,12 +38,12 @@ enum Stim {
     WAIT_TIMEOUT
 };
 
-ENUM_TO_STRING(State, 2,
-    "Idle", "RequestMade")
+ENUM_TO_STRING(State, 3,
+    "Idle", "RequestMade", "Timeout")
 
-ENUM_TO_STRING(Stim, 4,
+ENUM_TO_STRING(Stim, 5,
     "CookieReceived", "BadCookieReceived",
-    "BadRequest", "GoodRequest")
+    "BadRequest", "GoodRequest", "WaitTimeout")
 
 #define ID_SIZE 32
 
@@ -103,18 +104,39 @@ State onMagicCookieReceived() {
 State onGoodRequest() {
     m_log.printfln(SUCCESS, "Good request made. Returned string %s", m_response);
     /* do the json stuff */
+
+    TestSuiteConfiguration conf;
+    bool success;
+    try {
+        success = parseTestSuiteConfiguration((char*)m_response, conf);
+    } catch(JsonParseException& ex) {
+        m_log.printfln(ERROR, "Error parsing JSON request: %s", ex.getMessage());
+        return IDLE;
+    }
+
+    if(!success) {
+        m_log.printfln(ERROR, "Server returned failure status. Timeout.");
+        m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
+        return TIMEOUT;
+    }
+
+    m_log.printfln(SUCCESS, "Good configuration response");
+    string log = test_suite_log(conf);
+    m_log.printfln(DEBUG, "%s", log.c_str());
+
+    /* Start the ping test */
     return IDLE;
 }
 
 State onBadRequest() {
     m_log.printfln(WARN, "Bad request made.");
-    m_state_machine->setTimeoutStim(5000, WAIT_TIMEOUT);
+    m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
     return TIMEOUT;
 }
 
 State onBadCookie() {
     m_log.printfln(WARN, "Bad magic cookie found");
-    m_state_machine->setTimeoutStim(5000, WAIT_TIMEOUT);
+    m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
     return TIMEOUT;
 }
 
