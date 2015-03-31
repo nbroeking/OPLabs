@@ -13,6 +13,8 @@
 #include <io/binary/Base64Putter.hpp>
 #include <io/binary/GlobPutter.hpp>
 
+#include <proc/StateMachine.hpp>
+
 
 using namespace logger;
 using namespace curl;
@@ -23,14 +25,16 @@ namespace mercury {
 
 enum State {
     IDLE,
-    REQUEST_MADE
+    REQUEST_MADE,
+    TIMEOUT
 };
 
 enum Stim {
     COOKIE_RECEIVED,
     BAD_COOKIE_RECEIVED,
     BAD_REQUEST,
-    GOOD_REQUEST
+    GOOD_REQUEST,
+    WAIT_TIMEOUT
 };
 
 ENUM_TO_STRING(State, 2,
@@ -38,7 +42,7 @@ ENUM_TO_STRING(State, 2,
 
 ENUM_TO_STRING(Stim, 4,
     "CookieReceived", "BadCookieReceived",
-    "GoodRequest", "BadRequest")
+    "BadRequest", "GoodRequest")
 
 #define ID_SIZE 32
 
@@ -96,13 +100,35 @@ State onMagicCookieReceived() {
     return REQUEST_MADE;
 }
 
+State onGoodRequest() {
+    m_log.printfln(SUCCESS, "Good request made. Returned string %s", m_response);
+    /* do the json stuff */
+    return IDLE;
+}
+
+State onBadRequest() {
+    m_log.printfln(WARN, "Bad request made.");
+    m_state_machine->setTimeoutStim(5000, WAIT_TIMEOUT);
+    return TIMEOUT;
+}
+
 State onBadCookie() {
     m_log.printfln(WARN, "Bad magic cookie found");
+    m_state_machine->setTimeoutStim(5000, WAIT_TIMEOUT);
+    return TIMEOUT;
+}
+
+State onWaitTimeoutComplete() {
+    m_log.printfln(INFO, "Timeout complete");
     return IDLE;
 }
     
 
 private:
+
+/* these two classes really operate as the
+ * same class, but for clarity are broken into
+ * separate ones. */
 friend class Mercury;
 
 /* This will be an instance of mercury and will
@@ -117,6 +143,7 @@ AsyncCurl m_async_curl;
 
 ssize_t m_response_len;
 byte* m_response;
+StateMachine<Stim, Mercury_StateMachine, State>* m_state_machine;
 };
 
 }

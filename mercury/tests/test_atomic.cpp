@@ -14,9 +14,10 @@ public:
         m_atomic(vec) {}
 
     void run() {
-        for(int i = 0; i < 10000000; ++ i){
+        for(int i = 0; i <= 1000000; ++ i){
             m_atomic.get()->push_back(i);
         }
+
     }
 
     AtomicHolder< list<int> >& m_atomic;
@@ -31,20 +32,23 @@ public:
         LogContext& log = LogManager::instance().getLogContext("Test", "Consumer");
         int x = 0;
         while(x < 1000000) {
-            if(!m_atomic.get()->empty()) {
-                x = m_atomic.get()->front();
-                m_atomic.get()->pop_front();
+            Atomic< list<int> > atomic = m_atomic.get();
+            if(!atomic->empty()) {
+                x = atomic->front();
+                atomic->pop_front();
                 if(x % 10000 == 0) {
                     log.printfln(INFO, "%d%% complete", x/10000);
                 }
             }
         }
+
     }
 
     AtomicHolder< list<int> >& m_atomic;
 };
 
 int main(int argc, char** argv) {
+    LogManager::instance().logEverything();
     AtomicHolder< list<int> > lst;
 
     Consumer consumer(lst);
@@ -57,5 +61,6 @@ int main(int argc, char** argv) {
     th2->start();
 
     th1->join();
+    th2->join();
     return 0;
 }

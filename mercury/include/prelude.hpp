@@ -51,6 +51,7 @@ public:
 
     void operator=( const uptr<T>& oth ) {
         mine = oth.mine;
+        unref();
         nref = oth.nref;
         (*nref) ++;
     }

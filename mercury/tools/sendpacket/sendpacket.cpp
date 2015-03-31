@@ -16,7 +16,6 @@ byte mercury_magic_cookie[ 32 ] = {
 int main( int argc, char** argv ) {
 	LogContext& m_log = LogManager::instance().getLogContext("SendPacket", "SendPacket");
 	LogManager::instance().logEverything();
-	m_log.printfln(INFO, "This is a thing");
 
 	try {
     	StreamSocket sock;

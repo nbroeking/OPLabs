@@ -15,6 +15,8 @@
 
 namespace proc {
 
+class _InternalThread;
+
 /**
  * A process is a type of Thread that has some extra
  * support for asyncronicity.
@@ -22,7 +24,7 @@ namespace proc {
  * A process is an entity that is global on a per thread
  * basis.
  */
-class Process: public os::Runnable {
+class Process: public os::ManagedRunnable {
 public:
     Process(const char* name);
 
@@ -57,7 +59,7 @@ public:
      * new process when operating under the process
      * model.
      */
-    os::Thread* newThread(Runnable& runner);
+    os::Thread* newThread(os::ManagedRunnable& runner);
 
     /* the run method. Starts executing a process */
     virtual void run() = 0;
@@ -76,10 +78,14 @@ public:
      */
     virtual os::Thread* start();
 
+    virtual void stop();
+
 private:
     io::FileCollection m_file_collection;
     std::string name;
     os::Scheduler m_scheduler;
+
+    std::vector<_InternalThread*> m_threads;
 
 protected:
     logger::LogContext* m_log;

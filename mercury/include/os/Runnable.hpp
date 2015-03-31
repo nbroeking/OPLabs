@@ -43,6 +43,14 @@ private:
 	void (*m_function)(T& arg);
 };
 
+/**
+ * A runnable that may be signaled to be stopped.
+ */
+class ManagedRunnable: public Runnable {
+public:
+    virtual void stop() = 0 ;
+};
+
 }
 
 #endif

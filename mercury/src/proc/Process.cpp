@@ -21,13 +21,17 @@ public:
     }
 };
 
-class SubProcessThread : public Thread {
+class _InternalThread : public Thread {
 public:
-    SubProcessThread(Runnable& r) :
+    _InternalThread(ManagedRunnable& r) :
         Thread(r) {}
 
-    ~SubProcessThread(){
+    ~_InternalThread(){
         m_threads_db[this] = NULL;
+    }
+
+    ManagedRunnable& getManagedRunnable() {
+        return (ManagedRunnable&) getRunnable();
     }
 };
 
@@ -39,10 +43,27 @@ FileCollection& Process::getFileCollection() {
     return m_file_collection;
 }
 
-Thread* Process::newThread(Runnable& runner) {
-    Thread* ret = new SubProcessThread(runner);
+Thread* Process::newThread(ManagedRunnable& runner) {
+    _InternalThread* ret = new _InternalThread(runner);
     m_threads_db[ret] = this;
+    m_threads.push_back(ret);
+
     return ret;
+}
+
+void Process::stop() {
+    vector<_InternalThread*>::iterator itr;
+
+    /* Tell all the threads to stop */
+    FOR_EACH(itr, m_threads) {
+        (*itr)->getManagedRunnable().stop();
+    }
+
+    FOR_EACH(itr, m_threads) {
+        delete (*itr);
+    }
+
+    m_threads.clear();
 }
 
 Process& Process::getProcess() {

@@ -53,7 +53,6 @@ public:
             m_response_putter.clear();
             m_mercury_state_machine.m_response = m_response;
             m_mercury_state_machine.m_response_len = m_response_len;
-            
             m_state_machine->sendStimulus(GOOD_REQUEST);
         } else {
             m_state_machine->sendStimulus(BAD_REQUEST);
@@ -115,12 +114,17 @@ private:
 
     void setup_state_machine() {
         m_state_machine->setEdge(IDLE, COOKIE_RECEIVED, &Mercury_StateMachine::onMagicCookieReceived);
+        m_state_machine->setEdge(REQUEST_MADE, GOOD_REQUEST, &Mercury_StateMachine::onGoodRequest);
+        m_state_machine->setEdge(REQUEST_MADE, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
+        m_state_machine->setEdge(TIMEOUT, WAIT_TIMEOUT, &Mercury_StateMachine::onWaitTimeoutComplete);
+        newThread(*m_state_machine)->start();
     }
 
     void _run() {
         m_log.printfln(INFO, "Starting mercury");
         m_state_machine = new StateMachine<Stim, Mercury_StateMachine, State>
                                 (m_mercury_state_machine, IDLE, getScheduler());
+        m_mercury_state_machine.m_state_machine = m_state_machine;
         setup_state_machine();
 
         Thread* th = newThread(m_mercury_state_machine.m_async_curl);

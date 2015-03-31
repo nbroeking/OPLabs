@@ -21,7 +21,6 @@ LogContext& LogManager::_getLogContext(const std::string& maj, const std::string
         }
     }
 
-    printf("Returning %p\n", m_db[maj][min]);
     return * m_db[maj][min];
 }
 

@@ -18,7 +18,11 @@
 
 namespace os {
 
-class Scheduler: public Runnable {
+/**
+ * Class that may schedule runnables at specific times
+ * in the future.
+ */
+class Scheduler: public ManagedRunnable {
 public:
     Scheduler();
 
@@ -32,6 +36,7 @@ public:
 
     void run() ;
 
+    /* For debugging */
     inline bool verify_queue() {
         return m_queue.verify();
     }

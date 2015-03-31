@@ -46,7 +46,7 @@ public:
 /**
  * @brief A collection of file descriptors that can be run as a thread.
  */
-class FileCollection: public os::Runnable {
+class FileCollection: public os::ManagedRunnable {
 public:
     FileCollection();
 
@@ -99,6 +99,8 @@ public:
      */
     void run();
 
+    void stop();
+
     ~FileCollection();
 
 protected:
@@ -116,10 +118,11 @@ private:
 
     /* the pipe is a way to specify */
     int m_pipe[2]; 
+    bool m_stop;
 
     /* file an event */
     void fireEvent( int fd, int events );
-    void handle_poll_results(
+    bool handle_poll_results(
         logger::LogContext& log,
         std::vector<struct pollfd>& poll_data );
     bool _unsubscribe( int fd );

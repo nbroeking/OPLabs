@@ -27,7 +27,8 @@ const char* subscribe_str[] = {
 
 
 FileCollection::FileCollection():
-    m_log(LogManager::instance().getLogContext("IO", "FileCollection::Static")) {
+    m_log(LogManager::instance().getLogContext("IO", "FileCollection::Static")),
+    m_stop(false) {
     pipe( m_pipe );
     this->subscribe(SUBSCRIBE_READ, m_pipe[0], NULL);
 }
@@ -88,7 +89,7 @@ int subscriptionTypeToBitmask( FileCollection::SubscriptionType typ ) {
 }
 
 
-void FileCollection::handle_poll_results( 
+bool FileCollection::handle_poll_results( 
     logger::LogContext& log,
     std::vector<struct pollfd>& poll_data ) {
 
@@ -109,6 +110,11 @@ void FileCollection::handle_poll_results(
                 log.printfln(DEBUG, "There is an interrupt");
                 byte bytes[1024];
                 read(m_pipe[0], bytes, 1024);
+
+                /* If the stop() method was called it will have
+                 * set the m_stop flag to true */
+                m_mutex.unlock();
+                if(m_stop) return false;
             } else {
                 /* Fire the event for the correct file descriptor */
                 if( vitr->revents & POLLHUP ) {
@@ -158,6 +164,7 @@ void FileCollection::handle_poll_results(
         fireEvent(itr2->first, itr2->second);
     }
 
+    return true;
 }
 
 void FileCollection::run() {
@@ -186,7 +193,10 @@ void FileCollection::run() {
         }
 
         if( rc != 0 ) {
-            handle_poll_results( log, poll_data );
+            if(!handle_poll_results( log, poll_data )) {
+                /* The stop flag was set. Time to exit */
+                return ;
+            }
         }
 
     }
@@ -222,6 +232,11 @@ bool FileCollection::unsubscribe( int fd ) {
     interrupt();
     bool ret = _unsubscribe(fd);
     return ret;
+}
+
+void FileCollection::stop() {
+    m_stop = true;
+    interrupt();
 }
 
 FileCollection::~FileCollection() {
