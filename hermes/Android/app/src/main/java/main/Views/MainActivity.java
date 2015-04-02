@@ -17,25 +17,24 @@ public class MainActivity extends HermesActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Log.i(TAG, "OnCreate");
 
     }
 
-    //Methods for changing views
-    //Run test
+    //Called by button press to initiate a test
     public void runTest(View view) {
         Log.i(TAG, "RunTest");
         Intent myIntent = new Intent(MainActivity.this, ResultsActivity.class);
         MainActivity.this.startActivity(myIntent);
     }
 
-    //Activity Methods
+    //Called by button press to go to the login page
     public void goToLogin(View view) {
         Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
         MainActivity.this.startActivityForResult(myIntent, 0);
     }
 
+    //Called by button press to go to the settings page
     public void goToSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.GeneralPrefs.class.getName());

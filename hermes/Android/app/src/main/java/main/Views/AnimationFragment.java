@@ -24,6 +24,6 @@ public class AnimationFragment extends Fragment {
 
     public void update()
     {
-        
+
     }
 }

@@ -3,15 +3,14 @@ package communication;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-
 import communication.Helpers.CommMsg;
-import interfaces.CommunicationDelegate;
-
 import static android.os.Message.obtain;
 
+//The communication service. This service handles all communication of the network.
 public class Communication extends Service {
 
     //Tag for logs
@@ -21,13 +20,14 @@ public class Communication extends Service {
     private final IBinder myBinder = new MyLocalBinder();
     private CommThread commThread;
 
+    //The service can receive the intent to start.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received an Intent to start");
-        //TODO do something useful
         return super.onStartCommand(intent, flags, startId);
     }
 
+    //When created we start the thread.
     @Override
     public void onCreate() {
         super.onCreate();
@@ -36,6 +36,7 @@ public class Communication extends Service {
         commThread.start();
     }
 
+    //When we are destroyed we nicely clean up our threads and close everything down
     @Override
     public void onDestroy() {
         Message msg = obtain();
@@ -53,29 +54,34 @@ public class Communication extends Service {
         Log.i(TAG, "Comm Service and Background Thread Closed");
     }
 
+    //When something binds to the service we give it our binder so it can communicate with us
     @Override
     public IBinder onBind(Intent intent) {
         Log.i(TAG, "Something Bound to the service");
         return myBinder;
     }
 
-    //Communication Methods
-    public void login(CommunicationDelegate sender) {
+    //Anything can call this in its respective thread and we will put a request to login on our
+    //message queue
+    public void login() {
         Log.i(TAG, "Scheduling Login");
 
         Message msg = obtain();
         msg.what = CommMsg.LOGIN;
-        msg.obj = sender;
+        msg.obj = this;
         commThread.mHandler.sendMessage(msg);
-
     }
 
-    public void sendTestRequest(CommunicationDelegate sender) {
+    //Anything can call this in its respective thread and we will put in a request to start a test
+    //suit on our message queue
+    public void sendTestRequest(Handler sender) {
         Message msg = obtain();
         msg.what = CommMsg.REQUEST_TEST;
         msg.obj = sender;
         commThread.mHandler.sendMessage(msg);
     }
+
+    //The class that represents our binder
     public class MyLocalBinder extends Binder {
         public Communication getService() {
             return Communication.this;

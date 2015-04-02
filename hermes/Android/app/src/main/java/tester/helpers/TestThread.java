@@ -25,6 +25,9 @@ public class TestThread extends HandlerThread {
         Log.i(TAG, "TestThread constructed");
     }
 
+    //This method will return the testing handler
+    //It prevents things from attempting to get the handler before the subsytem has had a chance to
+    //create itself.
     public Handler getHandler()
     {
         lock.lock();
@@ -43,6 +46,8 @@ public class TestThread extends HandlerThread {
         }
         return null;
     }
+    //The main event loop that the thread takes
+    //It enters the loopers and then handles requests untill exit
     @Override
     public void run() {
         lock.lock();

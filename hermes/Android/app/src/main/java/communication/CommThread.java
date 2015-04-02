@@ -6,6 +6,7 @@ import android.util.Log;
 
 import communication.Helpers.CommMessageHandler;
 
+//This class is the Handler thread that runs the Communciation subsystem
 public class CommThread extends HandlerThread {
 	
 	private static final String TAG = "Hermes Comm Thread";
@@ -13,6 +14,7 @@ public class CommThread extends HandlerThread {
 	
 	public CommMessageHandler mHandler;
 
+    //Set everything to null. Member variables must be created after the thread is started
 	public CommThread(String name) {
 		super(name);
 		mName = name;
@@ -21,6 +23,7 @@ public class CommThread extends HandlerThread {
 		Log.i(TAG, "CommThread constructed");
 	}
 
+    //The main run loop for the communication subsystem
 	@Override
 	public void run() {
         Log.i(TAG, "Running Thread");

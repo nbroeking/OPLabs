@@ -20,6 +20,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     private final static String TAG = "HERMES SETTINGS";
 
+    //On stop we save our data and set all the values in the Session data
     @Override
     public void onStop()
     {
@@ -37,6 +38,7 @@ public class SettingsActivity extends PreferenceActivity {
         data.setPassword(password);
         data.setHostname(hostname);
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,6 @@ public class SettingsActivity extends PreferenceActivity {
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
-
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
@@ -64,7 +65,6 @@ public class SettingsActivity extends PreferenceActivity {
         }
         @Override
         public void onResume() {
-            Log.i("RESUME", "RESUME");
             super.onResume();
             getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
             for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); ++i) {
@@ -80,16 +80,18 @@ public class SettingsActivity extends PreferenceActivity {
             }
         }
 
+        //When the preferences have been changed we need to update them by key
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             updatePreference(findPreference(key));
-            Log.i("SETTINGS FRAG","Preference Changed");
+            Log.i(TAG,"Preference Changed");
         }
 
+        //Called when a preference is updated. We need to save that preference into the context
         private void updatePreference(Preference preference) {
             if (preference instanceof EditTextPreference)
             {
-                Log.i("Settings FRAG", "EDIT TEXT PREF");
+                Log.i(TAG, "EDIT TEXT PREF");
                 EditTextPreference textPreference = (EditTextPreference) preference;
                 if( !(textPreference.getKey()).equals("password")) {
                     preference.setSummary(textPreference.getText());

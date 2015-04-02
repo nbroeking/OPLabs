@@ -2,10 +2,12 @@ package main.helpers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,11 +18,8 @@ import com.oplabs.hermes.R;
 import communication.Communication;
 import main.Application.SessionData;
 
-public abstract class HermesActivity extends Activity implements interfaces.CommunicationDelegate{
-
-    //Message Handler
-    public ActivityMessageHandler mhandler;
-
+//All Activities inherit from this one. It allows us to have universal behavior accross all activities
+public abstract class HermesActivity extends Activity{
     //Tag
     protected final String TAG = "Hermes Activity";
 
@@ -34,13 +33,13 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
     //Data
     protected SessionData data;
 
+    //Starts the subsystems if they havnt been started already
     @Override
     protected void onStart()
     {
         super.onStart();
         isBound = false;
         commService = null;
-        mhandler = new ActivityMessageHandler(this);
 
         data = SessionData.getInstance();
         data.sync(this);
@@ -56,8 +55,13 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
         Intent intent = new Intent(this, Communication.class);
         Log.i(TAG, "Binding an activiy");
         bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
+
+        //Register the broadcast handler
+        IntentFilter filter = new IntentFilter("LoginComplete");
+        registerReceiver(HermesReceiver, filter);
     }
 
+    //Closes down the subsystems if we are not in the middle of a test
     @Override
     protected void onStop()
     {
@@ -74,10 +78,13 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
             //logout
             data.setSessionId(null);
         }
+
+        //Unregister the broadcast handler
+        unregisterReceiver(HermesReceiver);
     }
 
-    @Override
-    public void notifyComm()
+    //Notifies the current open activity that a login completed
+    public void notifyLogin()
     {
         if (data.getSessionId() != null)
         {
@@ -131,7 +138,8 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
         endLogin();
     }
 
-    //Check login
+    //Checkes the login at startup to make sure that we are already logged in. If we are not we
+    //put a request into the Communication service
     public boolean checkLogin()
     {
         Log.i(TAG, "Check Login");
@@ -179,17 +187,18 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
         return true;
     }
 
-    //Marks Login
+    //Used to do animations
     public void startLogin()
     {
         Log.e(TAG, "Start Login: Should Not be called by HERMES ACTIVITY. This method should be overloaded");
     }
+    //Used to do animations
     public void endLogin()
     {
         Log.e(TAG, "End Login: Should Not be called by HERMES ACTIVITY. This method should be overloaded");
     }
 
-    //Service Connection
+    //Service Connection that allows us to know when we have bound to the communication service
     protected ServiceConnection myConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             Communication.MyLocalBinder binder = (Communication.MyLocalBinder) service;
@@ -206,7 +215,7 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
 
             if( checkLogin())
             {
-                commService.login(HermesActivity.this);
+                commService.login();
                 startLogin();
             }
         }
@@ -217,7 +226,7 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
 
         public void completedLogin()
         {
-            notifyComm();
+            notifyLogin();
         }
 
     };
@@ -243,9 +252,18 @@ public abstract class HermesActivity extends Activity implements interfaces.Comm
         return super.onOptionsItemSelected(item);
     }
 
-    //Required Overloads
-
+    //Required Overloads All subclasses must have custom abilities to go to the login and settings pages
     public abstract void goToLogin(View view);
     public abstract void goToSettings(View view);
 
+    //Receives broadcasts from the service
+    //The service respond to requests with broadcasted intents
+    private BroadcastReceiver HermesReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Received Broadcast Intent");
+            notifyLogin(); //Tell the activity to process the login
+        }
+    };
 }

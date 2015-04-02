@@ -1,5 +1,7 @@
 package communication.Helpers;
 
+import android.app.Service;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -23,15 +25,11 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyStore;
-
-import main.helpers.HermesActivity;
-import interfaces.CommunicationDelegate;
-import main.helpers.MainMsg;
+import communication.Communication;
 import main.Application.SessionData;
 import tester.TestService;
 import tester.helpers.TestMsg;
@@ -51,6 +49,8 @@ public class CommMessageHandler extends Handler {
         data = SessionData.getInstance();
     }
 
+    //This handles all messages sent from the service
+    //They are processed on the Comm Thread
 	@Override
 	public void handleMessage(Message msg) {
         switch (msg.what) {
@@ -61,26 +61,30 @@ public class CommMessageHandler extends Handler {
                 break;
 
             case CommMsg.LOGIN:
-                loginToServer( (CommunicationDelegate) msg.obj);
+                loginToServer( (Service) msg.obj);
                 break;
 
             case CommMsg.REQUEST_TEST:
-                serverStartTest((CommunicationDelegate) msg.obj);
+                serverStartTest((Handler) msg.obj);
         }
 	}
 
-    public void serverStartTest(CommunicationDelegate sender)
+    //The helper method that is used to start a test. It reaches out to the controller and gets
+    //Test configurations. It is run on the Communication Thread
+    private void serverStartTest(Handler sender)
     {
-       //Ask the server for a config and then give it back to the tester
-
+        //Ask the server for a config and then give it back to the tester
         //We are going to notify directly because the Tester service will add a async message to its
         //subsystem
         Message msg = obtain();
         msg.what = TestMsg.START_TEST;
         msg.obj = null; //Config
-        ((TestService)sender).getHandler().sendMessage(msg);
+        sender.sendMessage(msg);
     }
-    public void loginToServer(CommunicationDelegate sender)
+
+    //This is the helper method that reaches out to the server and gets login information
+    //It is run on the Communication Thread
+    private void loginToServer(Service sender)
     {
         Log.i(TAG, "Login to server");
 
@@ -90,7 +94,6 @@ public class CommMessageHandler extends Handler {
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
-
             post.setEntity(new StringEntity("password=" + data.getPassword() + "&email=" + data.getEmail(), "UTF-8"));
 
             HttpResponse response = client.execute(post);
@@ -136,13 +139,14 @@ public class CommMessageHandler extends Handler {
             data.setSessionId("ERROR");
         }
 
+        Intent intent = new Intent();
+        intent.setAction("LoginComplete");
 
-        Message msg = obtain();
-        msg.what = MainMsg.NOTIFYLOGIN;
-        msg.obj = null;
-        ((HermesActivity) sender).mhandler.sendMessage(msg);
+        ((Communication)sender).sendBroadcast(intent);
+
     }
 
+    //Allows us to self sign our own certificates. Should be removed when we get real certs
     private HttpClient createHttpClient() {
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());

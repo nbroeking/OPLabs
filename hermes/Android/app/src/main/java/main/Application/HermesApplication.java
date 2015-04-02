@@ -4,6 +4,8 @@ import android.util.*;
 import android.app.Application;
 import android.content.res.Configuration;
 
+//This class allows us to control application level events.
+//Currently only used to debug application behavior
 public class HermesApplication extends Application 
 {
 	private final String TAG = "HermesApp";
@@ -21,9 +23,6 @@ public class HermesApplication extends Application
 	public void onCreate() {
 		super.onCreate();
 		Log.i(TAG, "Application onCreate");
-
-		//Start Services
-
 	}
 	
 	@Override
@@ -36,7 +35,5 @@ public class HermesApplication extends Application
 	public void onTerminate() {
         Log.i(TAG, "Application will Terminate");
 		super.onTerminate();
-
-        //Stop Services
 	}
 }

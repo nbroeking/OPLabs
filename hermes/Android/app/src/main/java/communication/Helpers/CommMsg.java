@@ -1,3 +1,5 @@
+//This class specifies the messages you can send to the Handler
+//Messages must contains ints. That is why this is not an enum
 package communication.Helpers;
 public final class CommMsg {
 

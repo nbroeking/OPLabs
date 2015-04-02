@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.oplabs.hermes.R;
 
+//Singleton that represents all data that the application needs.
 public class SessionData {
     //Singleton Members
     private static SessionData ourInstance = new SessionData();
@@ -19,7 +20,6 @@ public class SessionData {
     private final String TAG = "Session Data";
 
     //Constructor
-
     private SessionData() {
         sessionId = null;
         email = null;
@@ -33,11 +33,12 @@ public class SessionData {
     private String password;
     private String hostname;
 
+    //Saves the values
     public void save()
     {
-        Log.i(TAG, "Save");
-
+        Log.e(TAG, "Does not save yet");
     }
+    //Loads the values from the saved contex
     public void sync(Context context)
     {
         Log.i(TAG, "Sync");
@@ -50,7 +51,9 @@ public class SessionData {
         setPassword(pass);
         setHostname(host);
     }
-    //Getters and Setters
+
+    //Getters and Setters to interact with the data
+    //Must be thread safe because we dont know which threads will be needing this information
     public String getEmail() {
         synchronized (this) {
             return email;

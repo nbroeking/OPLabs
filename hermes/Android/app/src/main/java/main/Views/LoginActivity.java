@@ -15,12 +15,14 @@ import com.oplabs.hermes.R;
 
 import main.Application.SessionData;
 
+//This activity has the required info to allow a user to login and perform a test
 public class LoginActivity extends Activity {
 
     private final static String TAG = "Login Activity";
 
     private SessionData data;
 
+    //On create we lookup the current values and fill in our gui with them
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +30,6 @@ public class LoginActivity extends Activity {
         data = SessionData.getInstance();
 
         //Set Default Values
-
         EditText email = (EditText)findViewById(R.id.email);
         EditText password = (EditText)findViewById(R.id.password);
 
@@ -36,6 +37,8 @@ public class LoginActivity extends Activity {
         password.setText(data.getPassword());
     }
 
+    //When the user presses login we want to start the login process.
+    //We also save the newly entered data
     public void login(View view)
     {
         EditText email = (EditText)findViewById(R.id.email);
@@ -61,6 +64,7 @@ public class LoginActivity extends Activity {
         return true;
     }
 
+    //When the settings button is clicked we must honor the request and go to settings
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
