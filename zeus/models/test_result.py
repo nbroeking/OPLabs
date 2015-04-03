@@ -48,14 +48,14 @@ class TestResult(db.Model):
     connection_type = db.Column('connection_type', db.Enum(*CONNECTION_TYPES))
 
     @staticmethod
-    def get_set_by_token_ip(token, ip):
+    def get_result_by_token_ip(token, ip):
         return db.session.query(TestResult).filter(
                 TestResult.test_token == token and
                 TestResult.device_ip == ip
                 ).first()
 
     @staticmethod
-    def get_set_by_id(result_id):
+    def get_result_by_id(result_id):
         return db.session.query(TestResult).filter(
                 TestResult.test_id == result_id
                 ).first()
@@ -68,7 +68,23 @@ class TestResult(db.Model):
 
         self.state = 'wait'
         db.session.add(self)
+
+    def delete(self):
+        parent = self.parent_set
+        db.session.delete(self)
         db.session.commit()
+
+        if len(parent.tests) == 0:
+            db.session.delete(parent)
+            db.session.commit()
 
     def save(self):
         db.session.commit()
+
+    def updateFromDict(self, data):
+        for key in data:
+            if isinstance(getattr(self, key, None), db.Column):
+                print key, ':', data[key]
+                setattr(self, key, data[key])
+            else:
+                raise AttributeError("Invalid column: " + str(key))
