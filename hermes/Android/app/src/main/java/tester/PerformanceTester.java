@@ -5,7 +5,6 @@ import android.util.Log;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import tester.helpers.TestSettings;
@@ -55,7 +54,7 @@ public class PerformanceTester {
             InetAddress ip = InetAddress.getByName(settings.getDNSServer());
 
             //Construct the DNS packets
-            byte[] sendData = getContent();
+            byte[] sendData = getContent(string);
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 53);
             socket.send(sendPacket);
         }
@@ -90,9 +89,36 @@ public class PerformanceTester {
         return null;
     }
 
-    private byte[] getContent()
+    private byte[] getContent(String name)
     {
-        byte[] bytes = new byte[1024];
-        return null;
+        byte[] bytes = new byte[18 + name.length() ];
+
+        //Set the id
+        bytes[0] = 0x1a;
+        bytes[1] = 0x52;
+
+        //Set the flags
+        bytes[2] = 0x01;
+        bytes[3] = bytes[4]= 0x00;
+        bytes[5] = 0x01;
+
+        for( int i = 0; i < 6; i++)
+        {
+            bytes[6+i] = 0x00;
+        }
+        bytes[12] = 0x0A;
+
+        for(int i = 0; i < name.length(); i++)
+        {
+            bytes[13 + i] = (byte)name.toCharArray()[i];
+        }
+
+        //Set tailier
+
+        bytes[name.length()] = 0x00;
+        bytes[name.length()+1] = 0x01;
+        bytes[name.length()+2] = 0x00;
+        bytes[name.length()+3] = 0x01;
+        return bytes;
     }
 }

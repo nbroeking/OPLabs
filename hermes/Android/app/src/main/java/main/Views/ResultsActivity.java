@@ -46,20 +46,27 @@ public class ResultsActivity extends HermesActivity {
         //Start Testing Process if IDLE
         if(stateMachine.getState() == TestState.State.IDLE)
         {
+            Log.i(TAG, "We are IDLE");
             //Tell Tester that we have prepared
             testService.startTest();
         }
         else if( stateMachine.getState() == TestState.State.PREPARING)
         {
+            Log.i(TAG, "We are preparing");
             //We are preparing to Run a Test
         }
         else if(stateMachine.getState() == TestState.State.COMPLETED)
         {
             //Get Results and move to results fragment
+            Log.i(TAG, "We are completed");
+
+            //The user has seen the results so we can move to idle
+            TestState.getInstance().setState(TestState.State.IDLE, false);
         }
         else
         {
             //We are in a testing state and we should update the view to show animation
+            Log.i(TAG, "We are TESTING");
         }
     }
 
@@ -75,11 +82,9 @@ public class ResultsActivity extends HermesActivity {
         bindService(intent, testConnection, Context.BIND_AUTO_CREATE);
 
         //Set up broadcast receiver
-
-        IntentFilter filter = new IntentFilter("TestingCompleted");
+        IntentFilter filter = new IntentFilter("TestCompleted");
         registerReceiver(receiver, filter);
     }
-
     //On stop we clean up our broadcast requests and our states
     @Override
     protected void onStop() {
@@ -136,6 +141,8 @@ public class ResultsActivity extends HermesActivity {
             // Implement code here to be performed when
             // broadcast is detected
             Log.i(TAG, "Received Intent");
+
+            TestState.getInstance().setState(TestState.State.IDLE, false);
         }
     };
 }

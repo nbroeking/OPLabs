@@ -34,7 +34,7 @@ public class TestSettings {
     {
         for( int i = 0; i < 3; i++)
         {
-            validDomains.add("http://www.facebook.com");
+            validDomains.add("http://www.google.com");
             invalidDomains.add("http://dkfjadlfdaskf");
         }
     }

@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.oplabs.hermes.R;
 
 import main.helpers.HermesActivity;
+import tester.TestState;
 
 public class MainActivity extends HermesActivity {
 
@@ -18,7 +20,23 @@ public class MainActivity extends HermesActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i(TAG, "OnCreate");
+    }
 
+    @Override
+    protected void onStart()
+    {
+        Log.i(TAG, "ON Start");
+        super.onStart();
+        if(TestState.getInstance().getState() == TestState.State.IDLE)
+        {
+            Button button = (Button)findViewById(R.id.command);
+            button.setText("Run Test");
+        }
+        else
+        {
+            Button button = (Button)findViewById(R.id.command);
+            button.setText("Get Results");
+        }
     }
 
     //Called by button press to initiate a test
