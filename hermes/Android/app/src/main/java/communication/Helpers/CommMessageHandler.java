@@ -33,6 +33,7 @@ import communication.Communication;
 import main.Application.SessionData;
 import tester.TestService;
 import tester.helpers.TestMsg;
+import tester.helpers.TestSettings;
 
 import static android.os.Message.obtain;
 
@@ -41,6 +42,7 @@ public class CommMessageHandler extends Handler {
 
     private final String TAG = "CommMessageHandler";
     private final String LoginURL ="/api/auth/login";
+    private final String StartTestURL = "/api/test_set/create";
 
     private SessionData data;
 
@@ -76,9 +78,58 @@ public class CommMessageHandler extends Handler {
         //Ask the server for a config and then give it back to the tester
         //We are going to notify directly because the Tester service will add a async message to its
         //subsystem
+        HttpClient client = this.createHttpClient();
+        HttpPost post = new HttpPost(data.getHostname()+StartTestURL);
+
+        try {
+            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+
+            HttpResponse response = client.execute(post);
+            HttpEntity entity = response.getEntity();
+
+            InputStream inputStream = null;
+            try {
+                inputStream = entity.getContent();
+                String result;
+
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String addline = line + "\n";
+                    sb.append(addline);
+                }
+                result = sb.toString();
+                Log.e(TAG, result);
+
+                //JSON Parser
+                JSONObject json = new JSONObject(result);
+
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing json", e);
+            } finally {
+                try {
+                    if (inputStream != null) inputStream.close();
+                } catch (Exception s) {
+                    Log.e(TAG, "Could not close stream");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating Post", e);
+            data.setSessionId("ERROR");
+        }
+
+        //TODO:Create the settings object from the json
+
         Message msg = obtain();
         msg.what = TestMsg.START_TEST;
-        msg.obj = null; //Config
+        TestSettings settings = new TestSettings();
+        settings.setTesting();
+        settings.setDNSServer("8.8.8.8");
+        msg.obj = settings;
         sender.sendMessage(msg);
     }
 

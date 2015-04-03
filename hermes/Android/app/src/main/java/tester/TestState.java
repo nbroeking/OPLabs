@@ -9,7 +9,7 @@ import tester.helpers.TestMsg;
 public class TestState {
 
     //These are the current states that the testing subsystem can be in
-    public enum State {IDLE, COMPLETED, PREPARING, TESTINGPING, TESTINGDNS}
+    public enum State {IDLE, COMPLETED, PREPARING, TESTING}
 
     //Members
     private State state;
