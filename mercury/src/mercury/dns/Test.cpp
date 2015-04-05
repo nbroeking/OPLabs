@@ -8,7 +8,6 @@ TestConfig TestConfig::parse(json_t* json) {
     }
 
     json_t* cursor;
-    cursor = json_object_get();
     
 
 }
