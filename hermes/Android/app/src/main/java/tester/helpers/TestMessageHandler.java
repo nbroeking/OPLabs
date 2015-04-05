@@ -41,27 +41,18 @@ public class TestMessageHandler extends Handler {
 
                 if( msg.obj == null)
                 {
-                    //TODO:Requesting the test has failed
+                    TestState.getInstance().setState(TestState.State.COMPLETED, false);
+                    Intent intent = new Intent();
+                    intent.setAction("TestCompleted");
+                    intent.putExtra("Results", new TestResults());
+                    parent.sendBroadcast(intent);
                 }
                 //This next line should be replaced with a call to start the test suit
                 TestState.getInstance().setState(TestState.State.TESTING, false);
                 PerformanceTester tester = new PerformanceTester((TestSettings)msg.obj);
 
                 //Run Ping Test If null there was an error and we return to complete with error information
-                TestResults udpResults = tester.runUDPTest();
-
-                if(udpResults == null){
-                    //Error
-                    TestState.getInstance().setState(TestState.State.COMPLETED, false);
-                    Intent intent = new Intent();
-                    intent.setAction("TestCompleted");
-                    intent.putExtra("Results", "");
-
-                    parent.sendBroadcast(intent);
-                    return;
-                }
-
-                //Other Tests
+                TestResults results = tester.runTests();
                 break;
 
             //Called when there has been a state timeout

@@ -1,11 +1,14 @@
 package tester;
 
+import android.nfc.Tag;
 import android.util.Log;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import tester.helpers.TestSettings;
 
@@ -17,26 +20,68 @@ public class PerformanceTester {
     private final static String TAG = "Performance Tests";
     private TestSettings settings;
     private DatagramSocket socket;
+
+    private long timeStart;
+    private long timeEnd;
+
     public PerformanceTester(TestSettings settings1)
     {
         socket = null;
         settings = settings1;
+        timeStart = timeEnd = 0;
     }
 
     //Return dns, packet latency, packet jitter, packet loss
-    public TestResults runUDPTest()
+    public TestResults runTests()
     {
-        for( String x : settings.getValidDomains()) {
+        TestResults results = new TestResults();
 
-            //TODO:Check if should close
-
-            if( sendDNSRequest(x)){
-                getDNSResponce();
-            }
+        //Run a dns response Test
+        List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
+        int dnsResult = 0;
+        for (Integer x : times1)
+        {
+            Log.i(TAG, "Time= " + x);
+            dnsResult += x;
         }
-        return null;
+        dnsResult /= times1.size();
+        results.setAverageDNSResponseTime(dnsResult);
+        Log.d(TAG, "DNS Result = " + dnsResult);
+
+
+        //TODO: Run a test packet latency...
+        List<Integer> times2 = runDNSTest(settings.getInvalidDomains());
+
+
+        //Packet Loss is just 1 - times we have / times we should have
+        results.setPacketLoss((1- (times2.size()/settings.getValidDomains().size())));
+
+        //TODO: Run a packet jitter response
+
+        //TODO: Run a throughput response
+
+        return results;
     }
 
+    public List<Integer> runDNSTest(List<String> domains)
+    {
+        List<Integer> resultTimes = new ArrayList<Integer>();
+        //Run a dns test
+        short id = 0;
+        for( String x : domains) {
+            id += 1;
+            if( sendDNSRequest(x,id)){
+                if( getDNSResponse(id))
+                {
+                    long elapsedTime = timeEnd - timeStart;
+
+                    resultTimes.add((int)elapsedTime);
+                }
+            }
+        }
+
+        return resultTimes;
+    }
     // Throughput
     public TestResults runThroughputTest()
     {
@@ -44,9 +89,7 @@ public class PerformanceTester {
         return null;
     }
 
-    public boolean sendDNSRequest(String string){
-        Log.i(TAG, "Testing String: " + string);
-
+    public boolean sendDNSRequest(String string, short id){
         boolean returncode = true;
         socket = null;
         try {
@@ -54,8 +97,9 @@ public class PerformanceTester {
             InetAddress ip = InetAddress.getByName(settings.getDNSServer());
 
             //Construct the DNS packets
-            byte[] sendData = getContent(string);
+            byte[] sendData = getContent(string, id);
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 53);
+            timeStart = System.currentTimeMillis();
             socket.send(sendPacket);
         }
         catch(Exception e){
@@ -66,36 +110,63 @@ public class PerformanceTester {
         return returncode;
     }
 
-    public String getDNSResponce(){
+    public boolean getDNSResponse(short x){
         try {
-            Log.i(TAG, "GETTING RESPONCE");
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            socket.setSoTimeout(2000);
-            socket.receive(receivePacket);
-            String modifiedSentence = new String(receivePacket.getData());
-            Log.i(TAG, "Server said: "+ modifiedSentence);
+            short id = -1;
+
+            DatagramPacket receivePacket = null;
+            while(id != x) {
+                byte[] buffer = new byte[128];
+                receivePacket = new DatagramPacket(buffer, buffer.length);
+                socket.setSoTimeout(settings.getTimeout());
+                socket.receive(receivePacket);
+                byte[]data = receivePacket.getData();
+
+                id = ((short)(((int)data[0] << 8) | ((int)data[1])));
+
+                //Testing bytes
+               /* StringBuilder sb = new StringBuilder();
+                for (byte b : receivePacket.getData()) {
+                    sb.append(String.format("%02X ", b));
+                }
+                Log.i(TAG, "Server said: "+ sb.toString());*/
+            }
+            //Check if its valid
+            short valid = (short)(receivePacket.getData()[3]);
+            valid = (short)((int)valid & 0x000F);
+
+            if( valid != 0 && valid != 3)
+            {
+                Log.e(TAG, "DNS error"+ valid);
+                return false;
+            }
+            timeEnd = System.currentTimeMillis();
         }
         catch (SocketTimeoutException e)
         {
             Log.e(TAG, "Socket TIMEOUT");
+            return false;
         }
         catch (Exception e){
             Log.e(TAG, "Couldn't resolve hostname", e);
+            return false;
         }
         finally {
             socket.close();
         }
-        return null;
+        return true;
     }
 
-    private byte[] getContent(String name)
+    private byte[] getContent(String name, short id)
     {
-        byte[] bytes = new byte[18 + name.length() ];
+        String[] lists = name.split("\\.");
+
+
+        byte[] bytes = new byte[18 + name.length() + lists.length + 1 ];
 
         //Set the id
-        bytes[0] = 0x1a;
-        bytes[1] = 0x52;
+        bytes[0] = (byte)((id>>8)&0xFF);
+        bytes[1] = (byte)(id&0xFF);
 
         //Set the flags
         bytes[2] = 0x01;
@@ -106,19 +177,31 @@ public class PerformanceTester {
         {
             bytes[6+i] = 0x00;
         }
-        bytes[12] = 0x0A;
 
-        for(int i = 0; i < name.length(); i++)
+        //Add the sections
+        int index = 12;
+
+        for( String section: lists)
         {
-            bytes[13 + i] = (byte)name.toCharArray()[i];
+            bytes[index] = (byte)section.length();
+            index++;
+            for(int i = 0; i < section.length(); i++)
+            {
+                bytes[index + i] = (byte)section.toCharArray()[i];
+            }
+            index+= section.length();
         }
+        //Add another 0 to mark the end of the section
 
-        //Set tailier
+        bytes[index] = 0x00;
+        index++;
 
-        bytes[name.length()] = 0x00;
-        bytes[name.length()+1] = 0x01;
-        bytes[name.length()+2] = 0x00;
-        bytes[name.length()+3] = 0x01;
+        //Set trailer
+
+        bytes[index] = 0x00;
+        bytes[index+1] = 0x01;
+        bytes[index+2] = 0x00;
+        bytes[index+3] = 0x01;
         return bytes;
     }
 }

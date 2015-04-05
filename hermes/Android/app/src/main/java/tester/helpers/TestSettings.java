@@ -12,10 +12,13 @@ public class TestSettings {
     private List<String> validDomains;
     private List<String> invalidDomains;
     private String DNSServer;
+    private int timeout;
+    private boolean valid;
 
     public TestSettings(){
         validDomains = new ArrayList<String>();
         invalidDomains = new ArrayList<String>();
+        valid = true;
     }
     public void addValidDomain(String string){
         validDomains.add(string);
@@ -29,13 +32,15 @@ public class TestSettings {
     public List<String> getInvalidDomains(){
         return invalidDomains;
     }
+    public int getTimeout(){return timeout;}
+    public void setTimeout(int timeout1){ timeout = timeout1;}
 
     public void setTesting()
     {
         for( int i = 0; i < 3; i++)
         {
-            validDomains.add("http://www.google.com");
-            invalidDomains.add("http://dkfjadlfdaskf");
+            validDomains.add("www.google.com");
+            invalidDomains.add("www.yodelaho.com");
         }
     }
     public void setDNSServer(String string)
@@ -45,5 +50,14 @@ public class TestSettings {
     public String getDNSServer()
     {
         return DNSServer;
+    }
+
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid() {
+        this.valid = true;
     }
 }

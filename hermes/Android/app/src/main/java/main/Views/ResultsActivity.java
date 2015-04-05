@@ -1,8 +1,10 @@
 package main.Views;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -14,6 +16,7 @@ import android.view.View;
 import com.oplabs.hermes.R;
 
 import main.helpers.HermesActivity;
+import tester.TestResults;
 import tester.TestService;
 import tester.TestState;
 
@@ -59,7 +62,6 @@ public class ResultsActivity extends HermesActivity {
         {
             //Get Results and move to results fragment
             Log.i(TAG, "We are completed");
-
             //The user has seen the results so we can move to idle
             TestState.getInstance().setState(TestState.State.IDLE, false);
         }
@@ -142,6 +144,26 @@ public class ResultsActivity extends HermesActivity {
             // broadcast is detected
             Log.i(TAG, "Received Intent");
 
+            TestResults results = intent.getParcelableExtra("Results");
+
+            if( results.isValid())
+            {
+                //Display Error
+                new AlertDialog.Builder(ResultsActivity.this)
+                        .setTitle("Testing Error")
+                        .setMessage("There was an error running a test. Please check your internet connection and try again.")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Do nothing
+                            }
+                        })
+                        .setIcon(R.drawable.ic_launcher)
+                        .show();
+            }
+            //We expect this to always be completed and so we will move to the completed fragment
+            checkStatus();
+
+            //Set to idle because we can see the results and we want to reset
             TestState.getInstance().setState(TestState.State.IDLE, false);
         }
     };

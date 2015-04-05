@@ -123,13 +123,13 @@ public class CommMessageHandler extends Handler {
         }
 
         //TODO:Create the settings object from the json
-
         Message msg = obtain();
         msg.what = TestMsg.START_TEST;
         TestSettings settings = new TestSettings();
         settings.setTesting();
         settings.setDNSServer("8.8.8.8");
         msg.obj = settings;
+        msg.obj = null;
         sender.sendMessage(msg);
     }
 

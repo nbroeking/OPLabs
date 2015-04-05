@@ -25,7 +25,7 @@ public class MainActivity extends HermesActivity {
     @Override
     protected void onStart()
     {
-        Log.i(TAG, "ON Start");
+        Log.i(TAG, "On Start");
         super.onStart();
         if(TestState.getInstance().getState() == TestState.State.IDLE)
         {
