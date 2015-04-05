@@ -46,6 +46,9 @@ public class ResultsActivity extends HermesActivity {
     public void checkStatus()
     {
         TestState stateMachine = TestState.getInstance();
+        TestResults latestResults = stateMachine.getLatestResults();
+
+
         //Start Testing Process if IDLE
         if(stateMachine.getState() == TestState.State.IDLE)
         {
@@ -146,7 +149,7 @@ public class ResultsActivity extends HermesActivity {
 
             TestResults results = intent.getParcelableExtra("Results");
 
-            if( results.isValid())
+            if( !results.isValid())
             {
                 //Display Error
                 new AlertDialog.Builder(ResultsActivity.this)

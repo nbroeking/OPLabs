@@ -35,6 +35,7 @@ public class PerformanceTester {
     public TestResults runTests()
     {
         TestResults results = new TestResults();
+        results.setValid();
 
         //Run a dns response Test
         List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
@@ -48,10 +49,8 @@ public class PerformanceTester {
         results.setAverageDNSResponseTime(dnsResult);
         Log.d(TAG, "DNS Result = " + dnsResult);
 
-
         //TODO: Run a test packet latency...
         List<Integer> times2 = runDNSTest(settings.getInvalidDomains());
-
 
         //Packet Loss is just 1 - times we have / times we should have
         results.setPacketLoss((1- (times2.size()/settings.getValidDomains().size())));

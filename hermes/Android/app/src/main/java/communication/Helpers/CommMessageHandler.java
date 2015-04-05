@@ -129,7 +129,6 @@ public class CommMessageHandler extends Handler {
         settings.setTesting();
         settings.setDNSServer("8.8.8.8");
         msg.obj = settings;
-        msg.obj = null;
         sender.sendMessage(msg);
     }
 

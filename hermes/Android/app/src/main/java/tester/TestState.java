@@ -7,7 +7,6 @@ import tester.helpers.TestMsg;
 
 //Singleton class that allows everyone to know the state of the performance tests
 public class TestState {
-
     //These are the current states that the testing subsystem can be in
     public enum State {IDLE, COMPLETED, PREPARING, TESTING}
 
@@ -15,6 +14,7 @@ public class TestState {
     private State state;
     private final static String TAG = "TESTSTATE";
     private Handler handler;
+    private TestResults latestResults;
 
     //Singleton Members
     private static TestState ourInstance = new TestState();
@@ -23,6 +23,17 @@ public class TestState {
     }
     private TestState(){
         state = State.IDLE;
+    }
+
+    //Results
+    public TestResults getLatestResults() {
+        synchronized (this) {
+            return latestResults;
+        }
+    }
+
+    public void setLatestResults(TestResults latestResults) {
+        this.latestResults = latestResults;
     }
 
     //Returns the state of the tests

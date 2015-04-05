@@ -38,21 +38,27 @@ public class TestMessageHandler extends Handler {
 
             //Perform the tests
             case TestMsg.START_TEST:
+                //Create the information to return the state of the test
+                TestState.getInstance().setState(TestState.State.COMPLETED, false);
+                Intent intent = new Intent();
+                intent.setAction("TestCompleted");
 
-                if( msg.obj == null)
-                {
-                    TestState.getInstance().setState(TestState.State.COMPLETED, false);
-                    Intent intent = new Intent();
-                    intent.setAction("TestCompleted");
+                if( msg.obj == null){
+                    Log.e(TAG, "Received an error from the comm start test sub system");
                     intent.putExtra("Results", new TestResults());
-                    parent.sendBroadcast(intent);
                 }
-                //This next line should be replaced with a call to start the test suit
-                TestState.getInstance().setState(TestState.State.TESTING, false);
-                PerformanceTester tester = new PerformanceTester((TestSettings)msg.obj);
+                else {
+                    //a call to start the test suit
+                    TestState.getInstance().setState(TestState.State.TESTING, false);
+                    PerformanceTester tester = new PerformanceTester((TestSettings) msg.obj);
+                    TestResults results = tester.runTests();
+                    intent.putExtra(("Results"), results);
 
-                //Run Ping Test If null there was an error and we return to complete with error information
-                TestResults results = tester.runTests();
+                    //We have the state machine hold on to the results in case hermes isn't the main app
+                    TestState.getInstance().setLatestResults(results);
+                }
+
+                parent.sendBroadcast(intent);
                 break;
 
             //Called when there has been a state timeout
