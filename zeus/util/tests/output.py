@@ -30,6 +30,17 @@ def ANSI_wrapper(prefix):
         return prefix + message + __COL_ENDC
     return inner
 
+def truncate_repr(val):
+    output = str(val)
+    if len(output) <= 64:
+        return output
+    output = output[:64]
+    if isinstance(val, dict):
+        output += "...}"
+    elif isinstance(val, list):
+        output += "...]"
+    return output
+
 INFO = ANSI_wrapper(__COL_INFO)
 BOLD = ANSI_wrapper(__COL_BOLD)
 UNDERLINE = ANSI_wrapper(__COL_ULIN)
