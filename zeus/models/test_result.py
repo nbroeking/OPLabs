@@ -48,6 +48,23 @@ class TestResult(db.Model):
     connection_type = db.Column('connection_type', db.Enum(*CONNECTION_TYPES))
 
     @staticmethod
+    def get_public_columns():
+        return {'latency_avg':float,
+            'latency_sdev':float,
+            'jitter_avg':float,
+            'jitter_sdev':float,
+            'dns_response_avg':float,
+            'dns_response_sdev':float,
+            'throughput_avg':float,
+            'throughput_sdev':float,
+            'packet_loss':float,
+            'device_name':str,
+            'network_type':str,
+            'device_ip':str,
+            'state':str,
+            'connection_type':str, }
+
+    @staticmethod
     def get_result_by_token_ip(token, ip):
         return db.session.query(TestResult).filter(
                 TestResult.test_token == token and

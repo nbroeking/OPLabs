@@ -26,19 +26,7 @@ def edit_result(result_id=None):
         return invalid_res
 
     # Columns allowed to be updated and their types
-    columns = {'latency_avg':float,
-            'latency_sdev':float,
-            'jitter_avg':float,
-            'jitter_sdev':float,
-            'dns_response_avg':float,
-            'dns_response_sdev':float,
-            'throughput_avg':float,
-            'throughput_sdev':float,
-            'packet_loss':float,
-            'device_name':str,
-            'network_type':str,
-            'device_ip':str,
-            'connection_type':str, }
+    columns = TestResult.get_public_columns()
 
     for col in columns:
         if col in request.form:
