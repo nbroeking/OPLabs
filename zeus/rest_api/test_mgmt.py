@@ -96,7 +96,7 @@ def get_config():
     if not rec:
         return JSON_FAILURE()
 
-    rec.state = 'ack'
+    rec.state = 'running'
     db.session.commit()
     rec.save()
 

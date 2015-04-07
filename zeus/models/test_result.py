@@ -16,7 +16,7 @@ CONNECTION_TYPES = ('wired', 'wireless')
 
 DEVICE_TYPES = ('mobile', 'router', 'desktop')
 
-STATES = ('wait', 'ack')
+STATES = ('wait', 'running', 'finished')
 
 class TestResult(db.Model):
     __tablename__ = "TestResult"
