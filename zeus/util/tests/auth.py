@@ -18,6 +18,13 @@ def login(email=None, pw=None):
         pw = Context.passwd
     return do_post('/api/auth/login', {'email':email, 'password':pw})
 
+def ensure_default_account():
+    email = Context.email
+    pw = Context.passwd
+    if not User.log_user_in(email, pw):
+        new_user = User(email, pw)
+        new_user.save()
+
 def create_user(email=None, pw=None):
     """ Create a user with the given email and password.
         Defaults to the testing account. """
