@@ -8,7 +8,7 @@ requests.packages.urllib3.disable_warnings()
 
 def run_tests():
     # Run all of the basic API authentication tests
-    #auth_tests.all_tests()
+    auth_tests.all_tests()
     result_tests.all_tests()
 
 if __name__ == '__main__':

@@ -2,8 +2,9 @@
 Authentication tests related to logging in and out.
 """
 
-from .auth_util import login, logout
-from util import SUCCESS, FAILURE, check_status, Context
+from util.tests.auth import login, logout
+from util.tests.output import SUCCESS, FAILURE
+from util.tests.context import check_status, Context
 
 def test_valid_login():
     """ Accounts with valid user/pass should be able to login and 

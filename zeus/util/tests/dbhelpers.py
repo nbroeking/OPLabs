@@ -1,4 +1,4 @@
-from common.test_set import TestSet
+from models.test_set import TestSet
 from util.tests.auth import get_test_user
 import base64, os
 

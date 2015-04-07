@@ -7,8 +7,9 @@ Currently contains:
     test_authenticated - Tests an authenticated method
 
 """
-from .auth_util import testfunc
-from util import UNDERLINE, INFO, SUCCESS, FAILURE, check_status, Context
+from util.tests.auth import testfunc
+from util.tests.output import UNDERLINE, INFO, SUCCESS, FAILURE
+from util.tests.context import check_status, Context
 from .login_tests import test_valid_login, test_logout, test_invalid_login
 
 def test_authenticated(token):

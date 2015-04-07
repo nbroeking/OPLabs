@@ -1,5 +1,5 @@
 from util.tests.context import Context
-from common.auth_model import User
+from models.auth_model import User
 from util.tests.post import do_post
 import os, base64
 
