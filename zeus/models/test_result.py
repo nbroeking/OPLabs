@@ -81,10 +81,7 @@ class TestResult(db.Model):
     def save(self):
         db.session.commit()
 
-    def updateFromDict(self, data):
-        for key in data:
-            if isinstance(getattr(self, key, None), db.Column):
-                print key, ':', data[key]
-                setattr(self, key, data[key])
-            else:
-                raise AttributeError("Invalid column: " + str(key))
+    def update(self, key, data, typeCast=None):
+        if typeCast:
+            data = typeCast(data)
+        setattr(self, key, data)

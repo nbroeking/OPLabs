@@ -29,6 +29,12 @@ class TestSet(db.Model):
         """ Retrieve all of the test sets that are associated with the user "owner" """
         return db.session.query(TestSet).filter(TestSet.owner_id == owner.user_id).all()
 
+    @staticmethod
+    def get_set_by_id(set_id):
+        return db.session.query(TestSet).filter(
+                TestSet.set_id == set_id
+                ).first()
+
     def __init__(self, owner):
         """ Create a new test set, which belongs to the given user.
             By default, sets the recorded datetime to the current datetime."""
@@ -45,4 +51,11 @@ class TestSet(db.Model):
 
     def save(self):
         """ Save the record to the database. """
+        db.session.commit()
+
+    def delete(self):
+        """ Deletes this test set and everything under it. """
+        for test in self.tests:
+            db.session.delete(test)
+        db.session.delete(self)
         db.session.commit()
