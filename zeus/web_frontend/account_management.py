@@ -36,7 +36,8 @@ def register():
             return render_template('register.html',
                     email=email)
 
-        _ = User(email, pw1)
+        new_user = User(email, pw1)
+        new_user.save()
         flash("Account successfully created.", 'success')
         return render_template('login.html')
     else:
