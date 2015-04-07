@@ -51,3 +51,25 @@ def result_status(result_id=None):
     return JSON_SUCCESS(
             state=result.state
             )
+
+@rest_blueprint.route('/test_result/<result_id>', methods=['GET', 'POST'])
+@requires_user_token()
+def get_result(result_id=None):
+    invalid_res = JSON_FAILURE(reason='Invalid Result')
+    if not result_id: 
+        return invalid_res
+
+    result = TestResult.get_result_by_id(result_id)
+    if not result:
+        return invalid_res
+
+    columns = TestResult.get_public_columns()
+    print result.state
+    return_vals = {}
+    for col in columns:
+        return_vals[col] = getattr(result, col)
+
+    return JSON_SUCCESS(
+            **return_vals
+            )
+
