@@ -1,17 +1,29 @@
-import requests
-from util import Context
+from util.tests.context import Context
+from models.auth_model import User
+from util.tests.post import do_post
+import os, base64
 
-def do_post(url, params):
-    return requests.post(Context.make_url(url), data=params, verify=False)
+def get_test_user():
+    user = User.get_user(email='test')
+    if not user:
+        user = User('test', base64.b64encode(os.urandom(16)))
+    return user
 
 def login(email=None, pw=None):
     """ Attempt to login. Defaults to the special testing username and password specified
-        in auth/auth_util.py. """
+        in util/tests/context.py. """
     if email == None:
         email = Context.email
     if pw == None:
         pw = Context.passwd
     return do_post('/api/auth/login', {'email':email, 'password':pw})
+
+def ensure_default_account():
+    email = Context.email
+    pw = Context.passwd
+    if not User.log_user_in(email, pw):
+        new_user = User(email, pw)
+        new_user.save()
 
 def create_user(email=None, pw=None):
     """ Create a user with the given email and password.

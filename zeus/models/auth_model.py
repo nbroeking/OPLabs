@@ -10,10 +10,11 @@ Date: 01/27/2015
 
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
-from flask import session
+from flask import session, request
 import base64
 from passlib.apps import custom_app_context as passlib_ctx
 from app import db
+from models.test_set import TestResult
 
 class User(db.Model):
     """ 
@@ -65,6 +66,20 @@ class User(db.Model):
                 return user
         return None
 
+    @staticmethod
+    def from_user_token():
+        if 'token' in request.form:
+            return User.get_user(auth_token=request.form['token'])
+        return None
+
+    @staticmethod
+    def from_router_token():
+        ip = request.remote_addr
+        token = request.form['id'].strip()
+
+        rec = TestResult.get_result_by_token_ip(token, ip)
+        
+        return rec.parent_set.owner
 
     def __init__(self, email, password):
         """ Create a user for the given email and password.
@@ -78,7 +93,6 @@ class User(db.Model):
         self.raw_token = ""
 
         db.session.add(self)
-        db.session.commit()
 
     def save(self):
         """ Commits any outstanding changes to the database. """

@@ -16,7 +16,7 @@ CONNECTION_TYPES = ('wired', 'wireless')
 
 DEVICE_TYPES = ('mobile', 'router', 'desktop')
 
-STATES = ('wait', 'ack')
+STATES = ('wait', 'running', 'finished')
 
 class TestResult(db.Model):
     __tablename__ = "TestResult"
@@ -48,14 +48,31 @@ class TestResult(db.Model):
     connection_type = db.Column('connection_type', db.Enum(*CONNECTION_TYPES))
 
     @staticmethod
-    def get_set_by_token_ip(token, ip):
+    def get_public_columns():
+        return {'latency_avg':float,
+            'latency_sdev':float,
+            'jitter_avg':float,
+            'jitter_sdev':float,
+            'dns_response_avg':float,
+            'dns_response_sdev':float,
+            'throughput_avg':float,
+            'throughput_sdev':float,
+            'packet_loss':float,
+            'device_name':str,
+            'network_type':str,
+            'device_ip':str,
+            'state':str,
+            'connection_type':str, }
+
+    @staticmethod
+    def get_result_by_token_ip(token, ip):
         return db.session.query(TestResult).filter(
                 TestResult.test_token == token and
                 TestResult.device_ip == ip
                 ).first()
 
     @staticmethod
-    def get_set_by_id(result_id):
+    def get_result_by_id(result_id):
         return db.session.query(TestResult).filter(
                 TestResult.test_id == result_id
                 ).first()
@@ -68,7 +85,20 @@ class TestResult(db.Model):
 
         self.state = 'wait'
         db.session.add(self)
+
+    def delete(self):
+        parent = self.parent_set
+        db.session.delete(self)
         db.session.commit()
+
+        if len(parent.tests) == 0:
+            db.session.delete(parent)
+            db.session.commit()
 
     def save(self):
         db.session.commit()
+
+    def update(self, key, data, typeCast=None):
+        if typeCast:
+            data = typeCast(data)
+        setattr(self, key, data)

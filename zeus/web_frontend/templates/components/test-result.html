@@ -1,3 +1,19 @@
+<!-- Test details -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    Details
+                </h1>
+            </div>
+            <div class="panel-body">
+                Test Details:
+            </div>
+        </div> <!-- Panel -->
+    </div>
+</div>
+
 <!-- Throughput and latency -->
 <div class="row">
     <div class="col-md-6">
@@ -6,7 +22,7 @@
                 <h1 class="panel-title">Throughput</h1>
             </div>
             <div class="panel-body">
-                <p>
+                <p class="modalDescText">
                 Sustained throughput (or Bandwidth) is the rate at which you can download
                 data from the internet onto your computer. The larger this
                 number is, the less time it takes to download pictures, song
@@ -34,7 +50,7 @@
                 </h1>
             </div>
             <div class="panel-body">
-                <p>
+                <p class="modalDescText">
                 Latency is how long it takes a single bit of data to travel from
                 the internet to your computer. High latency increases the initial delay
                 to load a webpage, and is the phenomonon known in online gaming as "Lag".
@@ -53,24 +69,33 @@
     </div>
 </div>
 
-<!-- Test details -->
+<!-- Packet loss, DNS response, Packet Jitter-->
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    Details
+                    DNS Response Time
                 </h1>
             </div>
             <div class="panel-body">
-                Test Details:
+                <p class="modalDescText">
+                    DNS is the service which translates domain names (i.e. example.com) into
+                    and internet addresses. High DNS response latency can translate into
+                    large delays when initially accessing a website.
+                </p>
             </div>
+            <ul class="list-group">
+                <li class="list-group-item"> </li>
+                <li class="list-group-item">
+                Average DNS Response: {{ result.dns_response_avg }}
+                </li>
+                <li class="list-group-item">
+                Standard Deviation: {{ result.dns_response_sdev }}
+                </li>
+            </ul>
         </div> <!-- Panel -->
     </div>
-</div>
-
-<!-- Packet loss, DNS response, Packet Jitter-->
-<div class="row">
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -79,8 +104,10 @@
                 </h1>
             </div>
             <div class="panel-body">
-                <p>
-                [ Description pending ]
+                <p class="modalDescText">
+                    Packet loss describes the percentage of packets loss in transit
+                    to their destination. This can seriously affect realtime applications,
+                    such as voice or video chats, or certain online games.
                 </p>
             </div>
             <ul class="list-group">
@@ -95,35 +122,14 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    DNS Response Time
-                </h1>
-            </div>
-            <div class="panel-body">
-                <p>
-                [ Description pending ]
-                </p>
-            </div>
-            <ul class="list-group">
-                <li class="list-group-item"> </li>
-                <li class="list-group-item">
-                Average DNS Response Latency: {{ result.dns_response_avg }}
-                </li>
-                <li class="list-group-item">
-                Standard Deviation: {{ result.dns_response_sdev }}
-                </li>
-            </ul>
-        </div> <!-- Panel -->
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
                     Packet Jitter
                 </h1>
             </div>
             <div class="panel-body">
-                <p>
-                [ Description pending ]
+                <p class="modalDescText">
+                    "Packet jitter" refers to variations in latency. Excessive "jitter" can
+                    manifest itself as a connection that is sometimes very responsive but also
+                    sometimes very latent. (I.E. The same page loads fast sometimes, and slow other timers)
                 </p>
             </div>
             <ul class="list-group">

@@ -1,7 +1,7 @@
 from . import web_blueprint
 from flask import render_template, request, session, redirect, url_for, flash
-from common.auth_model import User
-from common.auth_util import requires_session
+from models.auth_model import User
+from util.web.web_auth import requires_session
 
 @web_blueprint.route('login', methods=['GET', 'POST'])
 def loginportal():
@@ -37,6 +37,7 @@ def register():
                     email=email)
 
         new_user = User(email, pw1)
+        new_user.save()
         flash("Account successfully created.", 'success')
         return render_template('login.html')
     else:

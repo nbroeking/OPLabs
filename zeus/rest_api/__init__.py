@@ -17,5 +17,7 @@ rest_blueprint = Blueprint('RestAPI',
                            __name__,
                            template_folder='')
 
-from .auth_api import login, logout, register
-from .test_mgmt import test_func, start_test
+from .auth_api import *
+from .test_mgmt import *
+from .test_result import *
+from .test_set import *
