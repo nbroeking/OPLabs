@@ -14,7 +14,7 @@ from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
 from util.rest.rest_auth import requires_user_token
 from . import rest_blueprint
 
-@rest_blueprint.route('/test_result/<result_id>/edit')
+@rest_blueprint.route('/test_result/<result_id>/edit', methods=['POST'])
 @requires_user_token()
 def edit_result(result_id=None):
     invalid_res = JSON_FAILURE(reason='Invalid Result')

@@ -14,7 +14,7 @@ from models.auth_model import User
 from models.test_set import TestSet
 from . import rest_blueprint
 
-@rest_blueprint.route('/test_set/create')
+@rest_blueprint.route('/test_set/create', methods=['POST'])
 @requires_user_token()
 def create_set():
     user = User.from_user_token()
@@ -24,7 +24,7 @@ def create_set():
             set_id=new_set.set_id,
             )
 
-@rest_blueprint.route('/test_set/<set_id>/delete')
+@rest_blueprint.route('/test_set/<set_id>/delete', methods=['POST'])
 @requires_user_token()
 def delete_set(set_id=None):
     invalid_set = JSON_FAILURE(reason='Invalid Set')

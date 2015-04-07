@@ -11,9 +11,13 @@ from flask import request
 from app import db
 from models.auth_model import User
 from models.test_result import TestResult
+from models.test_set import TestSet
+from models.config import TestConfiguration
 from util.rest.rest_auth import requires_user_token, requires_router_token
 from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
+from util.router import Router
 from . import rest_blueprint
+import base64
 
 @rest_blueprint.route("/testfunc", methods=['POST'])
 @requires_user_token()
@@ -22,12 +26,60 @@ def test_func():
     auth_user = User.get_user(auth_token=request.form['token'])
 
     return JSON_SUCCESS(
-        your_email=auth_user.email
-        )
+            your_email=auth_user.email
+            )
 
-@rest_blueprint.route("/start_test", methods=['POST'])
+
+@rest_blueprint.route("/start_test/<test_type>")
+@requires_user_token()
+def start_test(test_type=None):
+    if 'set_id' not in request.form:
+        return JSON_FAILURE(reason='Missing set_id')
+
+    set_id = request.form['set_id'].strip()
+    test_set = TestSet.get_set_by_id(set_id)
+
+    if not test_set:
+        return JSON_FAILURE(reason='Invalid set_id')
+    if not test_type:
+        return JSON_FAILURE(reason='Invalid test type')
+
+    config = TestConfiguration()
+    conf_json = config.get_config()
+
+    if test_type == 'mobile':
+        result = test_set.new_result(device_type="mobile")
+        test_set.save()
+
+        conf_json['set_id'] = result.test_id
+        
+        return JSON_SUCCESS(
+                config=conf_json
+                )
+    elif test_type == 'router':
+        result = test_set.new_result(device_type="router")
+
+        ip = request.remote_addr
+        router = Router(ip)
+        result.test_token = base64.b64encode(router.req_id)
+        result.device_ip = ip
+
+        result.save()
+        test_set.save()
+
+        router.wakeup()
+
+        conf_json['set_id'] = result.test_id
+        return JSON_SUCCESS(
+                config=conf_json
+                )
+    return JSON_FAILURE(
+            reason="Invalid test type!"
+            )
+
+@rest_blueprint.route("/router/get_config", methods=['POST'])
 @requires_router_token()
-def start_test():
+def get_config():
     ip = request.remote_addr
     token = request.form['id'].strip()
 
@@ -40,31 +92,8 @@ def start_test():
     db.session.commit()
     rec.save()
 
-    # Ookla IPs / DNS IPs / Ping IPs
-    config = {
-            'ookla_ips' : ['0.0.0.0', '1.1.1.1'],
-            'dns_ips' : ['8.8.8.8', '8.8.4.4'],
-            'ping_ips' : ['1.2.3.4', '2.3.4.5']
-    }
+    config = TestConfiguration()
 
     return JSON_SUCCESS(
-            config=config
+            config=config.get_config()
         )
-
-@rest_blueprint.route('/update_result', methods=['POST'])
-def update_result():
-    ip = request.remote_addr
-    token = request.form['id'].strip()
-
-    rec = TestResult.get_result_by_token_ip(token, ip)
-
-    if not rec:
-        return JSON_FAILURE()
-
-    data = request.form['data']
-    try:
-        rec.updateFromDict(data)
-    except AttributeError, e:
-        return JSON_FAILURE(error=e.message)
-
-    return JSON_SUCCESS()
