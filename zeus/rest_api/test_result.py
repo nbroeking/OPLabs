@@ -22,6 +22,8 @@ def edit_result(result_id=None):
         return invalid_res
 
     result = TestResult.get_result_by_id(result_id)
+    if not result:
+        return invalid_res
 
     # Columns allowed to be updated and their types
     columns = {'latency_avg':float,
@@ -47,3 +49,17 @@ def edit_result(result_id=None):
     result.save()
 
     return JSON_SUCCESS()
+
+@rest_blueprint.route('/test_result/<result_id>/status', methods=['GET'])
+@requires_user_token()
+def result_status(result_id=None):
+    invalid_res = JSON_FAILURE(reason='Invalid Result')
+    if not result_id: 
+        return invalid_res
+
+    result = TestResult.get_result_by_id(result_id)
+    if not result:
+        return invalid_res
+    return JSON_SUCCESS(
+            state=result.state
+            )
