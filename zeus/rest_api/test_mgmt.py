@@ -30,7 +30,7 @@ def test_func():
             )
 
 
-@rest_blueprint.route("/start_test/<test_type>")
+@rest_blueprint.route("/start_test/<test_type>", methods=['POST'])
 @requires_user_token()
 def start_test(test_type=None):
     if 'set_id' not in request.form:
@@ -48,17 +48,23 @@ def start_test(test_type=None):
     conf_json = config.get_config()
 
     if test_type == 'mobile':
+        # Create a new mobile TestResult
         result = test_set.new_result(device_type="mobile")
-        test_set.save()
 
-        conf_json['set_id'] = result.test_id
+        # Commit to database
+        test_set.save()
+        result.save()
         
+        # Return config + new result_id
         return JSON_SUCCESS(
-                config=conf_json
+                config=conf_json,
+                result_id=result.test_id,
                 )
     elif test_type == 'router':
+        # Create a new Router TestResult
         result = test_set.new_result(device_type="router")
 
+        # Get IP of connected client. This should be the address for the router
         ip = request.remote_addr
         router = Router(ip)
         result.test_token = base64.b64encode(router.req_id)
@@ -67,11 +73,13 @@ def start_test(test_type=None):
         result.save()
         test_set.save()
 
+        # Send a magic packet to the router
         router.wakeup()
 
-        conf_json['set_id'] = result.test_id
+        # Return config + new result_id
         return JSON_SUCCESS(
-                config=conf_json
+                config=conf_json,
+                result_id=result.test_id,
                 )
     return JSON_FAILURE(
             reason="Invalid test type!"
