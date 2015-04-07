@@ -27,7 +27,10 @@ class TestSet(db.Model):
     @staticmethod
     def get_all_user_sets(owner):
         """ Retrieve all of the test sets that are associated with the user "owner" """
-        return db.session.query(TestSet).filter(TestSet.owner_id == owner.user_id).all()
+        return db.session.query(TestSet)\
+            .filter(TestSet.owner_id == owner.user_id)\
+            .order_by(TestSet.recorded.desc())\
+            .all()
 
     @staticmethod
     def get_set_by_id(set_id):

@@ -2,7 +2,7 @@
 
 This module contains all of the APIs related to the registration
 of users. Most clients will start here because all of the interesting
-APIs can only be used with an auth_token, and auth_tokens are only
+APIs can only be used with an user_token, and user_tokens are only
 obtained through the /auth/login/ API.
 
 Author: Zach Anders
@@ -12,7 +12,7 @@ Date: 02/21/2015
 from flask import request
 from models.auth_model import User
 from util.rest.rest_auth import requires_user_token
-from util.rest.json_helpers import JSON_SUCCESS, JSON_FAILURE
+from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
 from . import rest_blueprint
 
 @rest_blueprint.route("/auth/login", methods=['POST'])
@@ -29,14 +29,14 @@ def login():
         return (JSON_FAILURE(), 401)
 
     return JSON_SUCCESS(
-        auth_token=this_user.new_token()
+        user_token=this_user.new_token()
         )
 
 @rest_blueprint.route("/auth/logout", methods=['POST'])
 @requires_user_token()
 def logout():
     """ Called when an API user wishes to log out and stop using their token. """
-    auth_user = User.get_user(auth_token=request.form['token'])
+    auth_user = User.get_user(user_token=request.form['user_token'])
     auth_user.clear_token()
     return JSON_SUCCESS()
 

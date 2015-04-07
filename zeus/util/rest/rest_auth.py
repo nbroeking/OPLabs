@@ -48,9 +48,9 @@ class base_requirement(object):
 
 class requires_user_token(base_requirement):
     def validator(self):
-        if 'token' in request.form:
-            token = request.form['token']
-            this_user = User.get_user(auth_token=token)
+        if 'user_token' in request.form:
+            token = request.form['user_token']
+            this_user = User.get_user(user_token=token)
             if this_user and this_user.token_matches(token):
                 return True
         return False
