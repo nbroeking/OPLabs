@@ -63,9 +63,9 @@ public:
     }
     
     /* Implement ping test observer */
-    void onTestComplete(const ping::TestResults res) {
+    void onTestComplete(const dns::TestResults& res) {
         m_log.printfln(DEBUG, "Test results in avg_latency=%fs; packets_lost=%d",
-            res.avg_latency_micros/1e6, res.packets_lost);
+            res.valid_avg_response_time_mircos/1e6, res.valid_packets_lost);
         m_state_machine->sendStimulus(TEST_FINISHED);
     }
 

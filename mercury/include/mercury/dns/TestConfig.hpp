@@ -11,6 +11,7 @@
 #include <io/Inet4Address.hpp>
 #include <os/Time.hpp>
 
+#include <json/JsonMercuryTempl.hpp>
 #include <json/Json.hpp>
 
 namespace dns {

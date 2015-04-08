@@ -202,19 +202,22 @@ def main(_):
     zipped = list(zip(source_files, object_files))
     test_binaries = []
 
+    object_files_no_tests = []
     for ((source_file, dependencies), object_file) in zipped:
         if source_file.startswith('./tests/'):
             binary = object_file[:12] + 'tests/' + object_file[12:-2]
             test_binaries.append(binary)
             sys.stdout.write(binary + ': ' + OBJS_DIR + 'libmercury.a ' + object_file + '\n')
             sys.stdout.write('\t$(CXX) -o ' + binary + ' ' + object_file + ' ' + OBJS_DIR + 'libmercury.a $(LDFLAGS)\n\n')
+        else:
+            object_files_no_tests.append(object_file)
 
     for ((source_file, dependencies), object_file) in zipped:
         sys.stdout.write(object_file + ': ' + source_file + ' ' + '\\\n    '.join(dependencies) + '\n')
         sys.stdout.write('\t$(CXX) $(CXXFLAGS) -c -o %s %s\n\n' % (object_file, source_file))
 
     sys.stdout.write(OBJS_DIR + 'libmercury.a: ' + '\\\n    '.join(object_files) + '\n')
-    sys.stdout.write('\t$(AR) -rcs '+OBJS_DIR+'/libmercury.a ' + '\\\n    '.join(object_files) + '\n\n')
+    sys.stdout.write('\t$(AR) -rcs '+OBJS_DIR+'/libmercury.a ' + '\\\n    '.join(object_files_no_tests) + '\n\n')
 
     sys.stdout.write('notests: ' +OBJS_DIR+'libmercury.a\n')
     sys.stdout.write('\t$(CXX) -o main '+OBJS_DIR+'libmercury.a $(LDFLAGS)\n\n')

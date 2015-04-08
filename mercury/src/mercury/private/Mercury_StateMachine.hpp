@@ -16,7 +16,7 @@
 #include <proc/StateMachine.hpp>
 #include "Mercury_JSON.hpp"
 
-#include <mercury/ping/Test.hpp>
+#include <mercury/dns/Test.hpp>
 
 
 using namespace logger;
@@ -69,7 +69,7 @@ inline string html_escape(const string& in) {
 }
 
 class Mercury;
-class MercuryObserver: public CurlObserver, public ping::TestObserver {
+class MercuryObserver: public CurlObserver, public dns::TestObserver {
     /* Interface */
 };
 
@@ -111,30 +111,27 @@ State onGoodRequest() {
     m_log.printfln(SUCCESS, "Good request made. Returned string %s", m_response);
     /* do the json stuff */
 
-    TestSuiteConfiguration conf;
-    bool success;
+    MercuryTestConfig conf;
+    bool fail;
+
     try {
-        success = parseTestSuiteConfiguration((char*)m_response, conf);
-    } catch(JsonParseException& ex) {
+        conf = parseMercuryTestConfig((char*)m_response, fail);
+    } catch(json::JsonException& ex) {
         m_log.printfln(ERROR, "Error parsing JSON request: %s", ex.getMessage());
         return IDLE;
     }
 
-    if(!success) {
+    if(fail) {
         m_log.printfln(ERROR, "Server returned failure status. Timeout.");
         m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
         return TIMEOUT;
     }
 
     m_log.printfln(SUCCESS, "Good configuration response");
-    string log = test_suite_log(conf);
-    m_log.printfln(DEBUG, "%s", log.c_str());
 
     /* build the configuration and start the
      * test */
-    ping::TestConfig ping_conf;
-    ping_conf.ping_addrs = conf.ping_ips;
-    ping::Test::instance().start(ping_conf, m_observer);
+    dns::Test::instance().startTest(conf.dns_test_config, m_observer);
 
     /* Start the ping test */
     return PING_TEST_RUNNING;

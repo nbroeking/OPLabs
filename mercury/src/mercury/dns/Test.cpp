@@ -5,6 +5,7 @@
 #include <proc/Process.hpp>
 
 #include <cmath>
+#include <missing.h>
 
 using namespace io;
 using namespace os;
@@ -48,7 +49,11 @@ public:
         SocketAddress* addr;
         ssize_t bytes_read;
 
-        m_socket.receive(bytes, sizeof(bytes), addr);
+        bytes_read = m_socket.receive(bytes, sizeof(bytes), addr);
+
+        m_log->printfln(TRACE, "Packet receieved:");
+        m_log->printHex(TRACE, bytes, bytes_read);
+
         m_state_machine->sendStimulus(PACKET_RECEIEVED);
     }
 
@@ -150,12 +155,12 @@ private:
     State send_results() {
         TestResults to_send;
         calc_half_results(m_valid_latency_times,
-            to_send.valid_avg_response_time_secs,
+            to_send.valid_avg_response_time_mircos,
             to_send.valid_response_time_stdev,
             to_send.valid_packets_lost);
 
         calc_half_results(m_invalid_latency_times,
-            to_send.invalid_avg_response_time_secs,
+            to_send.invalid_avg_response_time_mircos,
             to_send.invalid_response_time_stdev,
             to_send.invalid_packets_lost);
 
@@ -172,19 +177,55 @@ private:
         }
     }
     State send_dns() {
-        byte packet[1024];
-        size_t size = craft_dns_packet(packet, 1024);
+        byte* packet;
+        size_t packet_size;
+        packet = craft_dns_packet(to_resolve, 0, packet_size);
+
+        m_log->printfln(TRACE, "Crafted DNS packet to send:");
+        m_log->printHex(TRACE, packet, packet_size);
 
         packets_sent ++;
-        m_socket.sendTo(packet, size, *conf.server_address);
+        m_socket.sendTo(packet, packet_size, *conf.server_address);
         m_state_machine->setTimeoutStim(5 SECS, TIMEOUT); /* 5 SEC timeout */
         sent_time = Time::currentTimeMicros();
+
+        delete[] packet;
 
         return PACKET_SENT;
     }
 
-    size_t craft_dns_packet(byte* bytes, size_t len) {
-        return 0;
+    byte* craft_dns_packet(const std::string& hostname, short dnsid, size_t& sizeout) {
+        vector<string> splitted;
+        split(hostname, '.', splitted);
+        byte* packet = new byte[18 + hostname.size() + splitted.size() + 1];
+
+        packet[0] = (dnsid >> 8) & 0xFF;
+        packet[1] = dnsid & 0xFF;
+
+        packet[2] = 0x01;
+        packet[3] = packet[4] = 0x00;
+        packet[5] = 0x01;
+
+        for(size_t i = 0; i < 6; ++ i) {
+            packet[i + 6] = 0x00;
+        }
+
+        size_t i = 12;
+        vector<string>::iterator itr;
+        FOR_EACH(itr, splitted) {
+            packet[i ++] = (byte) itr->size();
+            std::copy(itr->begin(), itr->end(), packet + i);
+            i += itr->size();
+        }
+
+        packet[i ++] = 0x00;
+
+        packet[i+0] = 0x00;
+        packet[i+1] = 0x01;
+        packet[i+2] = 0x00;
+        packet[i+3] = 0x01;
+
+        return packet;
     }
     /* The callback observer for the results of
      * the test */
