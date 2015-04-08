@@ -99,7 +99,7 @@ State onMagicCookieReceived() {
     Curl request;
     char post_data[128];
     snprintf(post_data, sizeof(post_data), "id=%s", id_enc.c_str());
-    setup_curl(request, "https://128.138.202.143/api/start_test", post_data);
+    setup_curl(request, "https://128.138.202.143/api/router/get_config", post_data);
 
     m_log.printfln(INFO, "sending curl request with data %s", post_data);
     m_async_curl.sendRequest(request, m_observer);
