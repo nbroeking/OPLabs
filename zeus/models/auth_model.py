@@ -28,15 +28,15 @@ class User(db.Model):
     raw_token = db.Column('raw_token', db.String(88))
 
     @staticmethod
-    def get_user(email=None, user_id=None, auth_token=None):
-        """ Lookup user records by their email address, user_id, or auth_token.
+    def get_user(email=None, user_id=None, user_token=None):
+        """ Lookup user records by their email address, user_id, or user_token.
             This method does NOT do authentication. """
         if email:
             recs = db.session.query(User).filter(User.email == email).all()
         elif user_id:
             recs = db.session.query(User).filter(User.user_id == user_id).all()
-        elif auth_token:
-            token_id = auth_token.split(':')[0]
+        elif user_token:
+            token_id = user_token.split(':')[0]
             recs = db.session.query(User).filter(User.user_id == token_id).all()
         else:
             return None
@@ -68,8 +68,8 @@ class User(db.Model):
 
     @staticmethod
     def from_user_token():
-        if 'token' in request.form:
-            return User.get_user(auth_token=request.form['token'])
+        if 'user_token' in request.form:
+            return User.get_user(user_token=request.form['user_token'])
         return None
 
     @staticmethod

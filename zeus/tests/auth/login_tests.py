@@ -8,18 +8,18 @@ from util.tests.context import check_status, Context
 
 def test_valid_login():
     """ Accounts with valid user/pass should be able to login and 
-        get an auth_token. """
+        get an user_token. """
     ensure_default_account()
     resp = login()
-    check_status(resp, fields=['auth_token'])
+    check_status(resp, fields=['user_token'])
 
     json = resp.json()
 
-    token = json['auth_token']
+    token = json['user_token']
 
-    assert token != None and token != '', FAILURE("Login returned empty auth_token!")
+    assert token != None and token != '', FAILURE("Login returned empty user_token!")
 
-    assert len(token) > 64, FAILURE("Auth_token too small?")
+    assert len(token) > 64, FAILURE("user_token too small?")
 
     print (SUCCESS("Valid login test",
                   user=Context.email,

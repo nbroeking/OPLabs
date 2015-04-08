@@ -23,7 +23,7 @@ import base64
 @requires_user_token()
 def test_func():
     """ Test function for logged in users. """
-    auth_user = User.get_user(auth_token=request.form['token'])
+    auth_user = User.get_user(user_token=request.form['user_token'])
 
     return JSON_SUCCESS(
             your_email=auth_user.email

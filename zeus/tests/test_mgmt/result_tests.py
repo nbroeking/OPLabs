@@ -22,7 +22,7 @@ def assert_valid_config(config):
 
 
 def test_start_mobile(token, set_id):
-    params = {'token':token, 
+    params = {'user_token':token, 
             'set_id':set_id,
             }
 
@@ -39,7 +39,7 @@ def test_start_mobile(token, set_id):
     return js['result_id'] #, js['config']
 
 def test_post_results(token, result_id):
-    params = {'token':token,
+    params = {'user_token':token,
             }
     params.update(get_example_data())
 
@@ -49,7 +49,7 @@ def test_post_results(token, result_id):
     print (SUCCESS("Post Test Results data"))
 
 def test_get_results(token, result_id):
-    params = {'token':token,
+    params = {'user_token':token,
             }
     params.update(get_example_data())
 
@@ -75,11 +75,11 @@ def test_get_results(token, result_id):
 
 def get_token():
     resp = login()
-    check_status(resp, fields=['auth_token'])
-    return resp.json()['auth_token']
+    check_status(resp, fields=['user_token'])
+    return resp.json()['user_token']
 
 def test_new_set(token):
-    params = {'token':token, 
+    params = {'user_token':token, 
             }
 
     resp = do_post('/api/test_set/create', params)

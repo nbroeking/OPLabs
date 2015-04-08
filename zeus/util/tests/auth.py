@@ -34,8 +34,8 @@ def create_user(email=None, pw=None):
 
 def logout(token):
     """ Attempt to logout the user who is identified by the given token. """
-    return do_post('/api/auth/logout', {"token":token})
+    return do_post('/api/auth/logout', {"user_token":token})
 
 def testfunc(token):
     """ Make a call to the api testfunc. Require a valid authentication token."""
-    return do_post('/api/testfunc', {"token":token})
+    return do_post('/api/testfunc', {"user_token":token})
