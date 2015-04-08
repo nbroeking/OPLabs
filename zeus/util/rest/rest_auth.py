@@ -57,5 +57,6 @@ class requires_user_token(base_requirement):
 
 class requires_router_token(base_requirement):
     def validator(self):
-        pass
-
+        if User.from_router_token():
+            return True
+        return False
