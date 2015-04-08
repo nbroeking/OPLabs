@@ -58,7 +58,7 @@ public:
     void setAttribute(const char* attr, const Json& json);
 
     template <class T>
-    T convert() {
+    T convert() const {
         return JsonBasicConvert<T>::convert(*this);
     }
 

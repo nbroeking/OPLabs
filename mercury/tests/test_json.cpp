@@ -2,6 +2,8 @@
 #include <json/JsonMercuryTempl.hpp>
 #include <test/Tester.hpp>
 
+#include <mercury/dns/TestConfig.hpp>
+
 using namespace test;
 using namespace json;
 using namespace std;
@@ -56,14 +58,57 @@ void runtester() {
         (*jsn)["ipaddr"].convert<Inet4Address>().toString() == "8.8.8.8:0");
 }
 
+void test_dns_packet() {
+    const char* jsn_str = ""
+                    "{"
+                    "   \"valid_names\": ["
+                    "       \"google.com\""
+                    "   ],"
+                    "   \"invalid_names\": ["
+                    "       \"potato.xyz\""
+                    "   ],"
+                    "   \"dns_server\": \"8.8.4.4\","
+                    "   \"timeout\":1000"
+                    "}";
+    const char* jsn_str2 = ""
+                    "{"
+                    "   \"valid_names\": ["
+                    "       \"google.com\""
+                    "   ],"
+                    "   \"invalid_names\": ["
+                    "       \"potato.xyz\""
+                    "   ],"
+                    "   \"dns_server\": \"::1\","
+                    "   \"timeout\":1000"
+                    "}";
+
+    uptr<Json> jsn(Json::parse(jsn_str));
+    dns::TestConfig conf = jsn->convert<dns::TestConfig>();
+
+    TEST_STR_EQ("VALID_HOSTS", conf.valid_hostnames[0], "google.com");
+    TEST_STR_EQ("INVALID_HOSTS", conf.invalid_hostnames[0], "potato.xyz");
+    TEST_STR_EQ("SERVER", conf.server_address->toString(), "8.8.4.4:0");
+
+    uptr<Json> jsn2(Json::parse(jsn_str2));
+    conf = jsn2->convert<dns::TestConfig>();
+
+    TEST_STR_EQ("VALID_HOSTS", conf.valid_hostnames[0], "google.com");
+    TEST_STR_EQ("INVALID_HOSTS", conf.invalid_hostnames[0], "potato.xyz");
+    TEST_STR_EQ("SERVER", conf.server_address->toString(), "[0000:0000:0000:0000:0000:0000:0000:0100]:0");
+}
+
+
 int main(int argc, char** argv) {
     Tester::init("Json", argc, argv);
 
     try {
         runtester();
+        test_dns_packet();
     } catch(Exception& exp) {
         char arr[4096];
         snprintf(arr, sizeof(arr), "Exception thrown: %s", exp.getMessage());
         TEST_BOOL(arr, false);
     }
+
+    Tester::instance().exit();
 }

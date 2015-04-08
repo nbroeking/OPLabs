@@ -30,6 +30,8 @@ public:
      */
     Inet6Address(u8_t addr[16], u16_t port);
 
+    inline Inet6Address() {};
+
     /**
      * @brief Create an ip6 address from a string and a port
      * @param ipv6 the string to parse

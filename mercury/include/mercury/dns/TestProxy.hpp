@@ -21,7 +21,7 @@ public:
     /**
      * Begin the test
      */
-    virtual void start(const TestConfig& conf, TestObserver* observer) = 0;
+    virtual void startTest(const TestConfig& conf, TestObserver* observer) = 0;
 };
 
 }

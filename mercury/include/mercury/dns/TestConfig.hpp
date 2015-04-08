@@ -11,23 +11,31 @@
 #include <io/Inet4Address.hpp>
 #include <os/Time.hpp>
 
-#include <jansson.h>
+#include <json/Json.hpp>
 
 namespace dns {
 
 class TestConfig {
 public:
+    TestConfig(){}
     std::vector<std::string> valid_hostnames;
     std::vector<std::string> invalid_hostnames;
-    std::vector< uptr<io::SocketAddress> > dns_servers;
+    uptr<io::SocketAddress> server_address;
     os::timeout_t timeout_micros;
-
-    /**
-     * Attempt to parse a TestConfig for dns
-     */
-    static TestConfig parse(json_t* json);
 };
 
 }
+
+template <>
+struct JsonBasicConvert<dns::TestConfig> {
+    static dns::TestConfig convert(const json::Json& jsn) {
+        dns::TestConfig ret;
+        jsn["valid_names"].toVector(ret.valid_hostnames);
+        jsn["invalid_names"].toVector(ret.invalid_hostnames);
+        ret.server_address = jsn["dns_server"].convert<io::SocketAddress*>();
+        ret.timeout_micros = jsn["timeout"].intValue() * 1000;
+        return ret;
+    }
+};
 
 #endif /* MERCURY_TESTS_dns_TESTCONFIG_HPP_ */

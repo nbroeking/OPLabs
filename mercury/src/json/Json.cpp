@@ -8,7 +8,9 @@ Json Json::operator[](const std::string& str) const {
     json_type typ = getType();
 
     if(typ == JSON_OBJECT) {
-        return json_object_get(m_raw, str.c_str());
+        json_t* ret = json_object_get(m_raw, str.c_str());
+        if(!ret) throw JsonException((std::string("No such attribute ") + str.c_str()).c_str());
+        return ret;
     }
 
     throw JsonException("Json not an object in operator[]");

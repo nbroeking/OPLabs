@@ -50,8 +50,8 @@ public:
     }
 
     void operator=( const uptr<T>& oth ) {
-        mine = oth.mine;
         unref();
+        mine = oth.mine;
         nref = oth.nref;
         if(nref) (*nref) ++;
     }
