@@ -36,9 +36,13 @@ class DnsTestImpl: public Process,
 public:
     DnsTestImpl(): Process("DnsTest") {
         m_state_machine = new StateMachine<Stim, DnsTestImpl, State>(*this, IDLE, this->getScheduler());
+        m_log->printfln(TRACE, "[%p] Created new state machine: %p", this, m_state_machine);
         m_state_machine->setEdge(IDLE, BEGIN_TEST, &DnsTestImpl::onBeginTest);
         m_state_machine->setEdge(PACKET_SENT, PACKET_RECEIEVED, &DnsTestImpl::onPacketReceieved);
         m_state_machine->setEdge(PACKET_SENT, TIMEOUT, &DnsTestImpl::onTimeout);
+
+        m_socket.bind(Inet4Address("0.0.0.0", 0));
+        getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, &m_socket, this);
     }
     /* wait for observations in the DnsTestImpl */
     void observe(int fd, int events) OVERRIDE {
@@ -54,11 +58,11 @@ public:
         m_log->printfln(TRACE, "Packet receieved:");
         m_log->printHex(TRACE, bytes, bytes_read);
 
+        delete addr;
         m_state_machine->sendStimulus(PACKET_RECEIEVED);
     }
 
     State onBeginTest() {
-        m_socket.bind(Inet4Address("0.0.0.0", 0));
         enqueue_request_vector(conf.valid_hostnames);
         packets_sent = 0;
         m_testing_invalid = false;
@@ -84,6 +88,7 @@ public:
     State onPacketReceieved() {
         /* Add to the latency times */
         timeout_t to = Time::currentTimeMicros();
+        m_log->printfln(DEBUG, "Packet %d/50. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
         m_latency_times->push_back(to - sent_time);
         if(packets_sent < 50) {
             /* we send 50 dns requests for each
@@ -104,11 +109,16 @@ public:
             } else {
                 if(m_testing_invalid) {
                     /* we are done */
+                    m_log->printfln(INFO, "Finished running test. Sending results.");
                     return send_results();
                 } else {
                     m_testing_invalid = true;
                     m_latency_times = &m_invalid_latency_times;
                     enqueue_request_vector(conf.invalid_hostnames);
+
+                    m_log->printfln(INFO, "Move to testing invalid");
+                    to_resolve = m_waiting_to_resolve.front();
+                    m_waiting_to_resolve.pop();
                     return send_dns();
                 }
             }
@@ -118,6 +128,9 @@ public:
     virtual void startTest(const TestConfig& conf, TestObserver* obs) {
         this->conf = conf;
         m_observer = obs;
+
+        m_log->printfln(INFO, "[%p] Sending stimulus BEGIN_TEST", this);
+        m_state_machine->sendStimulus(BEGIN_TEST);
     }
 
     void stop() {
@@ -125,6 +138,8 @@ public:
     }
 
     void run() {
+        m_log->printfln(DEBUG, "Starting DnsTestImpl");
+        m_log->printfln(TRACE, "Running state machine %p", m_state_machine);
         m_state_machine->run();
     }
 
@@ -179,7 +194,7 @@ private:
     State send_dns() {
         byte* packet;
         size_t packet_size;
-        packet = craft_dns_packet(to_resolve, 0, packet_size);
+        packet = craft_dns_packet(to_resolve, rand(), packet_size);
 
         m_log->printfln(TRACE, "Crafted DNS packet to send:");
         m_log->printHex(TRACE, packet, packet_size);
@@ -220,11 +235,12 @@ private:
 
         packet[i ++] = 0x00;
 
-        packet[i+0] = 0x00;
-        packet[i+1] = 0x01;
-        packet[i+2] = 0x00;
-        packet[i+3] = 0x01;
+        packet[i++] = 0x00;
+        packet[i++] = 0x01;
+        packet[i++] = 0x00;
+        packet[i++] = 0x01;
 
+        sizeout = i;
         return packet;
     }
     /* The callback observer for the results of
@@ -257,12 +273,17 @@ private:
     timeout_t sent_time;
 };
 
+using namespace logger;
 TestProxy& Test::instance() {
+    LogContext& log = LogManager::instance().getLogContext("Main", "Main");
+    log.printfln(TRACE, "Test::instance)");
+
     if(!m_instance) {
         DnsTestImpl* testimpl = new DnsTestImpl();
+        log.printfln(TRACE, "Starting new dns test impl");
         testimpl->start();
 
-        m_instance = new DnsTestImpl();
+        m_instance = testimpl;
     }
     return *m_instance;
 }

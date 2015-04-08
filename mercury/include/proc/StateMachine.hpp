@@ -65,6 +65,8 @@ public:
         Command cmd;
         cmd.type = STIM;
         cmd.un.stim = stim;
+
+        m_log->printfln(TRACE, "[%p] Pushing onto command queue %s", this, toString(stim).c_str());
         m_command_queue.push(cmd);
     }
 
@@ -99,11 +101,14 @@ public:
     }
 
     void run() {
+        m_log->printfln(TRACE, "Running");
         Command cmd ;
 
         while(1) {
+            m_log->printfln(TRACE, "Waiting for next command");
             cmd = m_command_queue.front();
             m_command_queue.pop();
+            m_log->printfln(TRACE, "Command read from queue");
             switch(cmd.type) {
             case EXIT:
                 m_log->printfln(INFO, "Receieved request to stop");

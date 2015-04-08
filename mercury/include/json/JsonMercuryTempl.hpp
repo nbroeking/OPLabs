@@ -73,7 +73,9 @@ template <>
 struct JsonBasicConvert<io::SocketAddress*> {
     static io::SocketAddress* convert(const json::Json& jsn) {
         std::string str = jsn.stringValue();
-        if(str.find(':') != std::string::npos) {
+        size_t idx;
+        if((idx = str.find(':')) != std::string::npos &&
+            (str.rfind(':') != idx)) { /* If there are 2 ':' in the address */
             io::Inet6Address* ret = new io::Inet6Address(
                 JsonBasicConvert<io::Inet6Address>::convert(jsn)
             );
