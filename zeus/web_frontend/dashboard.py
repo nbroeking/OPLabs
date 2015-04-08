@@ -35,7 +35,7 @@ def dashboard():
             user_sets=user_sets,
             pages=pages,
             current_page=current_page,
-            prev_page=prev_page, next_page=next_page,
+            prev_page=int(prev_page), next_page=int(next_page),
             )
 
 @web_blueprint.route("dashboard/delete_result", methods=['POST'])
