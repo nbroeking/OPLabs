@@ -147,8 +147,8 @@ public:
 private:
     void calc_half_results(const vector<timeout_t>& vec,
                             f64_t& avg, f64_t& stdev, s64_t& lost) {
-        timeout_t sum;
-        timeout_t sumsq;
+        timeout_t sum = 0;
+        timeout_t sumsq = 0;
         size_t n = 0;
         lost = 0;
 
@@ -164,6 +164,7 @@ private:
             }
         }
 
+        m_log->printfln(TRACE, "SUM: %lu. N: %lu\n", sum, n);
         avg = ((f64_t)sum) / n;
         stdev = sqrt(1.0 / (n * (n-1)) * (n * sumsq - sum*sum));
     }
@@ -175,6 +176,15 @@ private:
             to_send.valid_packets_lost);
 
         calc_half_results(m_invalid_latency_times,
+            to_send.invalid_avg_response_time_mircos,
+            to_send.invalid_response_time_stdev,
+            to_send.invalid_packets_lost);
+
+        m_log->printfln(DEBUG, "Results: %f %f %lu | %f %f %lu",
+            to_send.valid_avg_response_time_mircos,
+            to_send.valid_response_time_stdev,
+            to_send.valid_packets_lost,
+
             to_send.invalid_avg_response_time_mircos,
             to_send.invalid_response_time_stdev,
             to_send.invalid_packets_lost);
