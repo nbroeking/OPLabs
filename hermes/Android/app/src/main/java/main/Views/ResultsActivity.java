@@ -158,6 +158,8 @@ public class ResultsActivity extends HermesActivity {
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 //Do nothing
+                                ResultsActivity.this.finish();
+                                Log.e(TAG, "Should be finished");
                             }
                         })
                         .setIcon(R.drawable.ic_launcher)

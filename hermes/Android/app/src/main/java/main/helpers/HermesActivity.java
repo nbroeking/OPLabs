@@ -150,6 +150,7 @@ public abstract class HermesActivity extends Activity{
         }
 
         if( !(data.getSessionId() == null) && !(data.getSessionId().equals(""))) {
+            Log.i(TAG, "We don't need to login because we are already logged in");
             return false;
         }
 

@@ -12,24 +12,25 @@ import java.io.Serializable;
  */
 public class TestResults implements Parcelable{
 
-    private int averageDNSResponseTime;
+    private double averageDNSResponseTime;
     private double packetLoss;
+    private double latency;
+    private double jitter;
     private boolean valid;
 
     public TestResults(){
         valid = false;
-        packetLoss = 0;
-        averageDNSResponseTime = 0;
+        packetLoss = -1;
+        averageDNSResponseTime = -1;
+        latency = -1;
     }
 
     public TestResults(Parcel in){
-
-        averageDNSResponseTime = in.readInt();
-        packetLoss = in.readDouble();
         valid = in.readByte() != 0; //Resets the bool
-
-        Log.d("TEST Parcel", "Checking: " + averageDNSResponseTime);
-
+        averageDNSResponseTime = in.readDouble();
+        packetLoss = in.readDouble();
+        latency = in.readDouble();
+        jitter = in.readDouble();
     }
     public double getPacketLoss() {
         return packetLoss;
@@ -47,9 +48,11 @@ public class TestResults implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(averageDNSResponseTime);
-        dest.writeDouble(packetLoss);
         dest.writeByte((byte) (valid ? 1 : 0));
+        dest.writeDouble(averageDNSResponseTime);
+        dest.writeDouble(packetLoss);
+        dest.writeDouble(latency);
+        dest.writeDouble(jitter);
     }
 
     //Create a parcel
@@ -63,19 +66,34 @@ public class TestResults implements Parcelable{
         }
     };
 
-    public int getAverageDNSResponseTime() {
+    public double getAverageDNSResponseTime() {
         return averageDNSResponseTime;
     }
 
-    public void setAverageDNSResponseTime(int averageDNSResponseTime) {
+    public void setAverageDNSResponseTime(double averageDNSResponseTime) {
         this.averageDNSResponseTime = averageDNSResponseTime;
     }
 
     public boolean isValid() {
         return valid;
     }
-
     public void setValid() {
         this.valid = true;
+    }
+
+    public double getLatency() {
+        return latency;
+    }
+
+    public void setLatency(double latency) {
+        this.latency = latency;
+    }
+
+    public double getJitter() {
+        return jitter;
+    }
+
+    public void setJitter(double jitter) {
+        this.jitter = jitter;
     }
 }

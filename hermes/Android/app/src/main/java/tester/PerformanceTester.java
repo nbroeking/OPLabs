@@ -42,18 +42,26 @@ public class PerformanceTester {
         int dnsResult = 0;
         for (Integer x : times1)
         {
-            Log.i(TAG, "Time= " + x);
             dnsResult += x;
         }
         dnsResult /= times1.size();
         results.setAverageDNSResponseTime(dnsResult);
         Log.d(TAG, "DNS Result = " + dnsResult);
 
-        //TODO: Run a test packet latency...
-        List<Integer> times2 = runDNSTest(settings.getInvalidDomains());
+        //Run a test packet latency test
+        List<Integer> times2 = runDNSTest(settings.getValidDomains());
+        int latencyResult = 0;
+        for (Integer x: times2)
+        {
+            latencyResult+=x;
+        }
+        latencyResult/= times2.size();
+        results.setLatency(latencyResult);
+        Log.d(TAG, "Latency Result = " + latencyResult);
 
         //Packet Loss is just 1 - times we have / times we should have
         results.setPacketLoss((1- (times2.size()/settings.getValidDomains().size())));
+        Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
 
         //TODO: Run a packet jitter response
 

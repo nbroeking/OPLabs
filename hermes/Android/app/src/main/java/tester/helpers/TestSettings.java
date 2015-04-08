@@ -13,13 +13,15 @@ public class TestSettings {
     private List<String> invalidDomains;
     private String DNSServer;
     private int timeout;
-    private boolean valid;
+    private int setId;
+    private int routerResultsID;
 
     public TestSettings(){
         validDomains = new ArrayList<String>();
         invalidDomains = new ArrayList<String>();
-        valid = true;
     }
+
+
     public void addValidDomain(String string){
         validDomains.add(string);
     }
@@ -34,15 +36,6 @@ public class TestSettings {
     }
     public int getTimeout(){return timeout;}
     public void setTimeout(int timeout1){ timeout = timeout1;}
-
-    public void setTesting()
-    {
-        for( int i = 0; i < 3; i++)
-        {
-            validDomains.add("www.google.com");
-            invalidDomains.add("www.yodelaho.com");
-        }
-    }
     public void setDNSServer(String string)
     {
         DNSServer = string;
@@ -51,13 +44,16 @@ public class TestSettings {
     {
         return DNSServer;
     }
-
-
-    public boolean isValid() {
-        return valid;
+    public int getSetId() {
+        return setId;
     }
-
-    public void setValid() {
-        this.valid = true;
+    public void setSetId(int setId) {
+        this.setId = setId;
+    }
+    public int getRouterResultsID() {
+        return routerResultsID;
+    }
+    public void setRouterResultsID(int routerResultsID) {
+        this.routerResultsID = routerResultsID;
     }
 }

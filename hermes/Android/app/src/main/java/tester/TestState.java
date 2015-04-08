@@ -57,7 +57,7 @@ public class TestState {
                 msg.what = TestMsg.STATE_TIMEOUT;
                 msg.obj = state;
 
-                handler.sendMessageDelayed(msg, 2000);
+                handler.sendMessageDelayed(msg, 20000);
             }
             Log.i(TAG, "State changed to " + state.toString());
         }
