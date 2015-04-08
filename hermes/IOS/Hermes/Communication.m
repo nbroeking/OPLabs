@@ -109,6 +109,17 @@
     }
 }
 
+//Requests
+-(void)requestTest:(id)sendert
+{
+    NSLog(@"Comm received a request to start the test");
+    if( self.sender)
+    {
+        NSLog(@"SUPER BIG ERROR: Nic made a huge mistake with his logic and should go fix it now");
+    }
+    self.sender = sendert;
+   
+}
 -(void)login:(id)sendert
 {
     NSLog(@"Comm received a login request");
@@ -120,6 +131,14 @@
     loginURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@%@", [[SessionData getData] hostname], @"/api/auth/login"]];
     [self performSelector:@selector(loginToServer:) onThread:thread withObject:sender waitUntilDone:NO];
 }
+
+-(void)requestTestFromServer:(id)sender
+{
+    NSLog(@"Requesting a test");
+    
+    //
+}
+//The method that gets called on the comm thread
 -(void)loginToServer:(id)sender
 {
     NSLog(@"Login to server");

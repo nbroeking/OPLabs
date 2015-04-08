@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
+from flask import render_template
 from . import web_blueprint
-from common.auth_model import User
+from models.auth_model import User
 
 @web_blueprint.route("/")
 def home():

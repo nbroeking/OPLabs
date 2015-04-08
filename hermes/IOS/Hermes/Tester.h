@@ -15,6 +15,10 @@
 }
 @property(strong, atomic) NSThread *thread;
 @property(strong, atomic) NSTimer *timer;
+
+//Testing Methods
+-(void)startTest;
+
 //Initilizer for the tester object
 -(instancetype)init;
 

@@ -22,50 +22,53 @@
         android:maxSdkVersion="18" />
     <android:uses-permission android:name="android.permission.READ_CALL_LOG" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:name="main.HermesApplication"
+        android:name="main.Application.HermesApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <service
             android:name="communication.Communication"
-            android:label="@string/CommServiceName" >
-        </service>
+            android:label="@string/CommServiceName" />
+
+        <service
+            android:name="tester.TestService"
+            android:label="TestService" />
 
         <activity
-            android:name="hermes.Views.MainActivity"
+            android:name="main.Views.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="hermes.Views.ResultsActivity"
+            android:name="main.Views.ResultsActivity"
             android:label="@string/title_activity_results"
-            android:parentActivityName="hermes.Views.MainActivity" >
+            android:parentActivityName="main.Views.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="hermes.Views.MainActivity" />
+                android:value="main.Views.MainActivity" />
         </activity>
         <activity
-            android:name="hermes.Views.SettingsActivity"
+            android:name="main.Views.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="general.HermesActivity" >
+            android:parentActivityName="main.Views.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="general.HermesActivity" />
+                android:value="main.Views.MainActivity" />
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="main.Views.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName="hermes.Views.MainActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:parentActivityName="main.Views.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="hermes.Views.MainActivity" />
+                android:value="main.Views.MainActivity" />
         </activity>
     </application>
 

@@ -1,9 +1,12 @@
 from . import web_blueprint
 from flask import render_template, request, flash, redirect, url_for
-from common.auth_model import User
-from common.auth_util import requires_session
-from common.test_set import TestSet
-from common.router import Router
+from app import db
+from models.auth_model import User
+from models.test_set import TestSet
+from models.test_result import TestResult
+from util.web.web_auth import requires_session, csrf_protect
+from util.router import Router
+from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
 import base64
 
 @web_blueprint.route('dashboard', methods=['GET'])
@@ -11,8 +14,43 @@ import base64
 def dashboard():
     user = User.from_session()
     user_sets = TestSet.get_all_user_sets(user)
+    print user_sets
 
     return render_template('dashboard.html',
+            user=user,
+            user_sets=user_sets)
+
+@web_blueprint.route("dashboard/delete_result", methods=['POST'])
+@requires_session
+@csrf_protect
+def delete_result():
+    if User.from_session():
+        rec = TestResult.get_result_by_id(request.form['test_id'])
+        rec.delete()
+
+        return JSON_SUCCESS()
+    else:
+        return JSON_FAILURE()
+
+@web_blueprint.route('useredit', methods=['GET'])
+@requires_session
+def useredit():
+    user = User.from_session()
+    user_sets = TestSet.get_all_user_sets(user)
+    print user_sets
+
+    return render_template('useredit.html',
+            user=user,
+            user_sets=user_sets)
+
+@web_blueprint.route('admin', methods=['GET'])
+@requires_session
+def admin():
+    user = User.from_session()
+    user_sets = TestSet.get_all_user_sets(user)
+    print user_sets
+
+    return render_template('admin.html',
             user=user,
             user_sets=user_sets)
 

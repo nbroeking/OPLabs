@@ -17,10 +17,12 @@
 		56A717D71A6B6576006E1198 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D51A6B6576006E1198 /* Main.storyboard */; };
 		56A717D91A6B6576006E1198 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56A717D81A6B6576006E1198 /* Images.xcassets */; };
 		56A717E81A6B6576006E1198 /* CommunicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717E71A6B6576006E1198 /* CommunicationTests.m */; };
+		56ACB6211AA63F6700CCDB75 /* DataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 56ACB6201AA63F6700CCDB75 /* DataTest.m */; };
 		56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */; };
 		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
 		56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7E0FD1A721A9300965DE3 /* TesterTests.m */; };
 		56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EE05461A93CEE100ACCA49 /* HermesAlert.m */; };
+		56FF827F1AB5285300C2FC01 /* TestState.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FF827E1AB5285300C2FC01 /* TestState.m */; };
 		DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7B71A78306800E169AA /* LoginViewController.m */; };
 		DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7BA1A78309500E169AA /* SignupViewController.m */; };
 		DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C91A783C5600E169AA /* MenuTableViewController.m */; };
@@ -57,12 +59,15 @@
 		56A717E11A6B6576006E1198 /* HermesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HermesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A717E61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56A717E71A6B6576006E1198 /* CommunicationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommunicationTests.m; sourceTree = "<group>"; };
+		56ACB6201AA63F6700CCDB75 /* DataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataTest.m; sourceTree = "<group>"; };
 		56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		56C7E0FD1A721A9300965DE3 /* TesterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TesterTests.m; sourceTree = "<group>"; };
 		56EE05451A93CEE100ACCA49 /* HermesAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HermesAlert.h; sourceTree = SOURCE_ROOT; };
 		56EE05461A93CEE100ACCA49 /* HermesAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HermesAlert.m; sourceTree = SOURCE_ROOT; };
+		56FF827D1AB5285300C2FC01 /* TestState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestState.h; sourceTree = "<group>"; };
+		56FF827E1AB5285300C2FC01 /* TestState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestState.m; sourceTree = "<group>"; };
 		DB34B7B61A78306800E169AA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		DB34B7B71A78306800E169AA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		DB34B7B91A78309500E169AA /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
@@ -128,6 +133,8 @@
 			children = (
 				562737011A71BB0D00F05935 /* Tester.h */,
 				562737021A71BB0D00F05935 /* Tester.m */,
+				56FF827D1AB5285300C2FC01 /* TestState.h */,
+				56FF827E1AB5285300C2FC01 /* TestState.m */,
 			);
 			name = Tester;
 			sourceTree = "<group>";
@@ -177,6 +184,7 @@
 			children = (
 				56A717E71A6B6576006E1198 /* CommunicationTests.m */,
 				56C7E0FD1A721A9300965DE3 /* TesterTests.m */,
+				56ACB6201AA63F6700CCDB75 /* DataTest.m */,
 				56A717E51A6B6576006E1198 /* Supporting Files */,
 			);
 			path = HermesTests;
@@ -315,6 +323,7 @@
 				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
 				562737031A71BB0D00F05935 /* Tester.m in Sources */,
 				DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */,
+				56FF827F1AB5285300C2FC01 /* TestState.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
 				56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */,
 				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
@@ -332,6 +341,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */,
+				56ACB6211AA63F6700CCDB75 /* DataTest.m in Sources */,
 				56A717E81A6B6576006E1198 /* CommunicationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

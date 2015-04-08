@@ -17,7 +17,6 @@ xcuserdata
 profile
 *.moved-aside
 DerivedData
-.idea/
 Pods
 project.pbxproj
 *.pbxproj
@@ -52,6 +51,8 @@ proguard/
 
 # End of Android
 # Python
+config.py
+*.pyc
 .ropeproject
 
 _*_obs/

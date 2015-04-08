@@ -13,9 +13,9 @@ Date: 02/03/2015
 from app import db
 
 # Import all of the models we want to define
-from common.auth_model import User
-from common.test_set import TestSet
-from common.test_result import TestResult
+from models.auth_model import User
+from models.test_set import TestSet
+from models.test_result import TestResult
 
 # Get SQLALchemy to create them
 db.create_all()

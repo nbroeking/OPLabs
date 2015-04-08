@@ -9,12 +9,13 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
 <title>{% block title %}{% endblock %}</title>
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap.min.css')}}">
-<link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap-theme.min.css')}}">
+<!-- <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='bootstrap/css/bootstrap-theme.min.css')}}"> -->
 <link rel="stylesheet" href="{{url_for('WebInterface.static', filename='css/custom.css')}}">
 </head>
 
@@ -33,7 +34,6 @@
                     </button>
                     <a class="navbar-brand" href="/">
                         <img class=".navbar-left" Width="25" Height="25" src="{{url_for('WebInterface.static', filename='images/hermes-logo-small.png')}}">
-                        OPLabs
                     </a>
                 </div>
                 <div class="navbar-collapse collapse">
@@ -46,7 +46,15 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user %}
-                        <li><a href="#">Welcome {{ user.email }}</a></li>
+                        <li class="dropdown">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Welcome {{ user.email }}<strong class="caret"></strong></a>
+                        <div class="dropdown-menu">
+                            <a href="/useredit">User Edit</a>
+                            <br>
+                            <a href="/admin">Admin</a>
+                        </div>
+                        </li>
+                        <!-- <li><a class="dropdown-toggle" href="#" data-toggle="dropdown">Welcome {{ user.email }}</a></li> -->
                         <li class="divider-vertical"></li>
                         <li><a href="/logout">Logout</a></li>
                         {% else %}
@@ -74,6 +82,10 @@
     </div>
 </div>
 
+<div id="myBanner">
+  <img src="../static/images/hermes-logo.png" width="500px">
+</div>
+
 <div class="container">
     <br>
     {% with alerts = get_flashed_messages(with_categories=true) %}
@@ -93,10 +105,16 @@
     {% block body %}
     {% endblock %}
 </div>
+  <footer>
+    Oplabs is not an incorporated entity nor can it hold copyrights
+    <p>&copy; OpLabs, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+  </footer>
 
 <!-- Load both jQuery and Bootstrap's JS -->
-<script src="{{url_for('WebInterface.static', filename='jquery/jquery-1.11.0.js')}}"/>
-<script src="{{url_for('WebInterface.static', filename='bootstrap/js/bootstrap.min.js')}}"/>
+<script src="{{url_for('WebInterface.static', filename='jquery/jquery-1.11.0.js')}}">
+</script>
+<script src="{{url_for('WebInterface.static', filename='bootstrap/js/bootstrap.min.js')}}">
+</script>
 
     <script>
         $(function() {

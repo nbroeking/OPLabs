@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h2> Your tests run </h2>
+
+<br>
+
+<table class="table table-striped">
+    <tr>
+        <th> User  </th>
+        <th> Edit </th>
+        <th> Delete </th>
+        <th> View </th>
+    </tr>
+    <tr>
+        <td>
+            <button type="button" class="btn btn-primary""> {{ user.email }} </button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-warning""> Edit </button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger""> Delete </button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-success""> View </button>
+        </td>
+    </tr>
+</table>
+
+
+{% endblock %}

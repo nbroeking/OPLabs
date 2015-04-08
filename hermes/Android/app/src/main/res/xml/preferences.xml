@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Server Settings"
+        android:key="serversettings">
+         <EditTextPreference
+             android:key="hostname"
+             android:title="Hostname"
+             android:defaultValue="https://128.138.202.143"
+              android:selectAllOnFocus="true"
+              android:inputType="textUri"
+              android:singleLine="true"
+              android:maxLines="1" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Login Settings"
+        android:key="usersettings">
+        <EditTextPreference
+            android:key="email"
+            android:title="email"
+            android:defaultValue=""
+            android:selectAllOnFocus="true"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:maxLines="1" />
+        <EditTextPreference
+            android:key="password"
+            android:title="password"
+            android:defaultValue=""
+            android:selectAllOnFocus="true"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:maxLines="1" />
+    </PreferenceCategory>
+</PreferenceScreen>
