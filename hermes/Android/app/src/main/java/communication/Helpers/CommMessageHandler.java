@@ -91,7 +91,7 @@ public class CommMessageHandler extends Handler {
                 break;
 
             case CommMsg.REQUEST_ROUTER_RESULTS:
-                requestTest((TestResults)msg.obj);
+                requestTestResults((TestResults)msg.obj);
                 break;
         }
 	}
@@ -105,15 +105,20 @@ public class CommMessageHandler extends Handler {
         //Each method will send an error if it breaks
         if( id >= 0)
         {
-            //Get the acctual settings
+            //Get the actual settings
             TestSettings settings = new TestSettings();
             settings.setSetId(id);
 
             if( startMobileTest(sender, settings))
             {
                 //If there is an error with Start Router Test then we have null as a routerid
-                startRouterTest(sender, settings);
-                Log.i(TAG, "Successfully told the router to start all tests");
+                if(startRouterTest(sender, settings)){
+                    Log.i(TAG, "Successfully told the router to start all tests");
+                }
+                else{
+                    Log.w(TAG, "Router returned an error. We probably don't have a compatible router.");
+                }
+
                 Message msg = obtain();
                 msg.what = TestMsg.START_TEST;
                 msg.obj = settings;
@@ -123,186 +128,74 @@ public class CommMessageHandler extends Handler {
     }
 
     //This method gets a report from the server
-    private void requestTest(TestResults results){
+    private void requestTestResults(TestResults results){
 
         Log.i(TAG, "Get Router Results");
 
         HttpClient client = this.createHttpClient();
         //Http post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
-
-       /* try {
-
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
-            post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8") +"&"+ results.getPost()));
-
-            HttpResponse response = client.execute(post);
-            HttpEntity entity = response.getEntity();
-
-            InputStream inputStream = null;
-
-            try {
-                inputStream = entity.getContent();
-                String result;
-                // json is UTF-8 by default
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String addline = line + "\n";
-                    sb.append(addline);
-                }
-                result = sb.toString();
-
-                //JSON Parser
-                JSONObject json = new JSONObject(result);
-                if (json.getString("status").equals("success")) {
-                    Log.d(TAG, "Received Status success");
-                } else {
-                    throw new Exception("Status failed reporting Results");
-                }
-
-                Log.i(TAG, "Reported Results");
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing json", e);
-            } finally {
-                try {
-                    if (inputStream != null) inputStream.close();
-                } catch (Exception s) {
-                    Log.e(TAG, "Could not close stream");
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error creating Post", e);
-        }*/
     }
 
-    //This method reports our test to the server
+    //This method reports our test to the controller
     private void reportTest(TestResults results){
-
-        HttpClient client = this.createHttpClient();
         HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
-
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
             post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8") +"&"+ results.getPost()));
 
-            HttpResponse response = client.execute(post);
-            HttpEntity entity = response.getEntity();
-
-            InputStream inputStream = null;
-
-            try {
-                inputStream = entity.getContent();
-                String result;
-                // json is UTF-8 by default
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String addline = line + "\n";
-                    sb.append(addline);
-                }
-                result = sb.toString();
-
-                //JSON Parser
-                JSONObject json = new JSONObject(result);
-                if (json.getString("status").equals("success")) {
-                    Log.d(TAG, "Received Status success");
-                } else {
-                    throw new Exception("Status failed reporting Results");
-                }
-
-                Log.i(TAG, "Reported Results");
-
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing json", e);
-            } finally {
-                try {
-                    if (inputStream != null) inputStream.close();
-                } catch (Exception s) {
-                    Log.e(TAG, "Could not close stream");
-                }
+            //JSON Parser
+            JSONObject json = sendPost(post);
+            if (json.getString("status").equals("success")) {
+                Log.d(TAG, "Received Status success");
+            } else {
+                throw new Exception("Status failed reporting Results");
             }
+
+            Log.i(TAG, "Reported Results");
         } catch (Exception e) {
-            Log.e(TAG, "Error creating Post", e);
+            Log.e(TAG, "Error reporting results", e);
         }
     }
     //This is the helper method that reaches out to the server and gets login information
     //It is run on the Communication Thread
     private void loginToServer(Service sender)
     {
-        Log.i(TAG, "Login to server");
+        Log.d(TAG, "Login to server");
 
-        HttpClient client = this.createHttpClient();
         HttpPost post = new HttpPost(data.getHostname()+LoginURL);
 
         try {
-
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
             post.setEntity(new StringEntity("password=" + data.getPassword() + "&email=" + data.getEmail(), "UTF-8"));
 
-            HttpResponse response = client.execute(post);
-            HttpEntity entity = response.getEntity();
-
-            InputStream inputStream = null;
-
-            try {
-                inputStream = entity.getContent();
-                String result;
-                // json is UTF-8 by default
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String addline = line + "\n";
-                    sb.append(addline);
-                }
-                result = sb.toString();
-
-                //JSON Parser
-                JSONObject json = new JSONObject(result);
-                if (json.getString("status").equals("success")) {
-                    data.setSessionId(json.getString("user_token"));
-                } else {
-                    data.setSessionId(null);
-                }
-
-                Log.i(TAG, "Received Login: " + result);
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing json", e);
-                data.setSessionId("DOMAIN");
-            } finally {
-                try {
-                    if (inputStream != null) inputStream.close();
-                } catch (Exception s) {
-                    Log.e(TAG, "Could not close stream");
-                }
+            //JSON Parser
+            JSONObject json = sendPost(post);
+            if (json.getString("status").equals("success")) {
+                data.setSessionId(json.getString("user_token"));
+            } else {
+                data.setSessionId(null);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
             data.setSessionId("ERROR");
         }
-
         Intent intent = new Intent();
         intent.setAction("LoginComplete");
 
         ((Communication)sender).sendBroadcast(intent);
-
     }
 
+    //This method tells the controller that we want to start a router test
+    //The controller will return the result id of the router set so we can fetch those results
+    //when we need them
     private Boolean startRouterTest(Handler sender, TestSettings settings)
     {
-        Log.i(TAG, "startRouterTest");
-        //Ask the server for a config and then give it back to the tester
-        //We are going to notify directly because the Tester service will add a async message to its
-        //subsystem
-        HttpClient client = this.createHttpClient();
+        Log.d(TAG, "startRouterTest");
         HttpPost post = new HttpPost(data.getHostname()+StartRouterURL);
 
         try {
+            //Create the post
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
             String postString = new String();
             postString += "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8");
@@ -310,45 +203,13 @@ public class CommMessageHandler extends Handler {
             postString += "set_id=" + URLEncoder.encode(Integer.toString(settings.getSetId()), "UTF-8");
             post.setEntity(new StringEntity( postString));
 
-            HttpResponse response = client.execute(post);
+            //Execute the post
+            JSONObject json = sendPost(post);
 
-            HttpEntity entity = response.getEntity();
-
-            InputStream inputStream = null;
-            try {
-                inputStream = entity.getContent();
-                String result;
-
-                // json is UTF-8 by default
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String addline = line + "\n";
-                    sb.append(addline);
-                }
-                result = sb.toString();
-
-                Log.i(TAG, "JSON from starting a router test = " + result);
-                //JSON Parser
-                JSONObject json = new JSONObject(result);
-
-                if((json.getString("status").equals("success"))) {
-                    Log.i(TAG, "Successful got router");
-
-                    //TODO: Set the settings values
-                    return true;
-                }
-                //Send the settings to the tester
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing Router json", e);
-            } finally {
-                try {
-                    if (inputStream != null) inputStream.close();
-                } catch (Exception s) {
-                    Log.e(TAG, "Could not close stream");
-                }
+            if((json.getString("status").equals("success"))) {
+                Log.i(TAG, "Successful got router");
+                //TODO: Set the settings values
+                return true;
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
@@ -356,96 +217,61 @@ public class CommMessageHandler extends Handler {
         return false;
     }
 
+    //This method will reach out to the controller and request that we start the mobile test
+    //This is to let the controller know the state of our system
     private Boolean startMobileTest(Handler sender, TestSettings settings)
     {
-        Log.i(TAG, "startMobileTest");
-        //Ask the server for a config and then give it back to the tester
-        //We are going to notify directly because the Tester service will add a async message to its
-        //subsystem
-        HttpClient client = this.createHttpClient();
+        Log.d(TAG, "startMobileTest");
         HttpPost post = new HttpPost(data.getHostname()+StartMobileURL);
-
         try {
+            //Create the post
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
             String postString = new String();
             postString += "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8");
             postString += "&";
             postString += "set_id=" + URLEncoder.encode(Integer.toString(settings.getSetId()), "UTF-8");
-
             post.setEntity(new StringEntity( postString));
-            HttpResponse response = client.execute(post);
 
-            HttpEntity entity = response.getEntity();
+            JSONObject json = sendPost(post);
 
-            InputStream inputStream = null;
-            try {
-                inputStream = entity.getContent();
-                String result;
+            if((json.getString("status").equals("success"))) {
+                Log.i(TAG, "Successful get settings");
 
-                // json is UTF-8 by default
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String addline = line + "\n";
-                    sb.append(addline);
-                }
-                result = sb.toString();
+                JSONObject dns_config = json.getJSONObject("config").getJSONObject("dns_config");
 
-                //JSON Parser
-                JSONObject json = new JSONObject(result);
-                Log.i(TAG, "JSON = " + result);
-                if((json.getString("status").equals("success"))) {
-                    Log.i(TAG, "Successful get settings");
-
-                    //Get Invalid Data
-                    JSONObject dns_config = json.getJSONObject("config").getJSONObject("dns_config");
-
-                    JSONArray jArray = dns_config.getJSONArray("invalid_names");
-                    if (jArray != null) {
-                        for (int i=0;i<jArray.length();i++){
-                            settings.addInvalidDomain(jArray.get(i).toString());
-                        }
+                JSONArray jArray = dns_config.getJSONArray("invalid_names");
+                if (jArray != null) {
+                    for (int i=0;i<jArray.length();i++){
+                        settings.addInvalidDomain(jArray.get(i).toString());
                     }
+                }
 
-                    //Get Valid Names
-                    jArray = dns_config.getJSONArray("valid_names");
-                    if (jArray != null) {
-                        for (int i=0;i<jArray.length();i++){
-                            settings.addValidDomain(jArray.get(i).toString());
-                        }
+                //Get Valid Names
+                jArray = dns_config.getJSONArray("valid_names");
+                if (jArray != null) {
+                    for (int i=0;i<jArray.length();i++){
+                        settings.addValidDomain(jArray.get(i).toString());
                     }
-
-                    //Set Resolver
-                    settings.setDNSServer(dns_config.getString("dns_server"));
-
-                    //Set the timeout
-                    settings.setTimeout(dns_config.getInt("timeout"));
-
-                    //Set the result ID
-                    settings.setResultID(json.getInt("result_id"));
-
-                    return true;
                 }
-                else
-                {
-                    //Send an error
-                    Message msg = obtain();
-                    msg.what = TestMsg.START_TEST;
-                    msg.obj = null;
-                    sender.sendMessage(msg);
-                }
-                //Send the settings to the tester
 
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing json", e);
-            } finally {
-                try {
-                    if (inputStream != null) inputStream.close();
-                } catch (Exception s) {
-                    Log.e(TAG, "Could not close stream");
-                }
+                //Set Resolver
+                settings.setDNSServer(dns_config.getString("dns_server"));
+
+                //Set the timeout
+                settings.setTimeout(dns_config.getInt("timeout"));
+
+                //Set the result ID
+                settings.setResultID(json.getInt("result_id"));
+
+                return true;
+            }
+            else {
+                //Send an error
+                Message msg = obtain();
+                msg.what = TestMsg.START_TEST;
+                msg.obj = null;
+                sender.sendMessage(msg);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
@@ -453,68 +279,80 @@ public class CommMessageHandler extends Handler {
         return false;
     }
 
+    //Returns the Set_id from the server so we know what set our results go with
     private int getSetId(Handler sender)
     {
-        Log.i(TAG, "getSetId");
-        //Ask the server for a config and then give it back to the tester
-        //We are going to notify directly because the Tester service will add a async message to its
-        //subsystem
-        HttpClient client = this.createHttpClient();
+        Log.d(TAG, "getSetId");
         HttpPost post = new HttpPost(data.getHostname()+StartTestURL);
 
         try {
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
             post.setEntity(new StringEntity( "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8"), "UTF-8"));
-            HttpResponse response = client.execute(post);
 
-            HttpEntity entity = response.getEntity();
+            JSONObject json = sendPost(post);
 
-            InputStream inputStream = null;
-            try {
-                inputStream = entity.getContent();
-                String result;
-
-                // json is UTF-8 by default
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String addline = line + "\n";
-                    sb.append(addline);
-                }
-                result = sb.toString();
-
-                //JSON Parser
-                JSONObject json = new JSONObject(result);
-
-                //TODO:Create the settings object from the json
-                Message msg = obtain();
-                msg.what = TestMsg.START_TEST;
-                msg.obj = null;
-
-                Log.i(TAG, "JSON = " + result);
-                if((json.getString("status").equals("success"))) {
-                    Log.i(TAG, "Successful start test");
-                    return json.getInt("set_id"); //Return the set ID
-                }
-                //Send the settings to the tester
-                sender.sendMessage(msg);
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing json", e);
-            } finally {
-                try {
-                    if (inputStream != null) inputStream.close();
-                } catch (Exception s) {
-                    Log.e(TAG, "Could not close stream");
-                }
+            if((json.getString("status").equals("success"))) {
+                Log.i(TAG, "Successful start test");
+                return json.getInt("set_id"); //Return the set ID
             }
+
+            //If an error we send the error to the sender
+            Message msg = obtain();
+            msg.what = TestMsg.START_TEST;
+            msg.obj = null;
+
+            //Send the settings to the tester
+            sender.sendMessage(msg);
+
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
         }
         return -1;
     }
 
+    //This method will send a http post and return the json object that is returned from that post
+    private JSONObject sendPost(HttpPost post){
+        HttpClient client = this.createHttpClient();
+        try {
+            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+            HttpResponse response = client.execute(post);
+
+            HttpEntity entity = response.getEntity();
+
+            InputStream inputStream = null;
+            try {
+                inputStream = entity.getContent();
+                String result;
+
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String addline = line + "\n";
+                    sb.append(addline);
+                }
+                result = sb.toString();
+
+                //JSON Parser
+                JSONObject json = new JSONObject(result);
+                return json;
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing json", e);
+            } finally {
+                try {
+                    if (inputStream != null) inputStream.close();
+                } catch (Exception s) {
+                    Log.e(TAG, "Could not close stream");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating Post", e);
+        }
+        return null;
+    }
     //Allows us to self sign our own certificates. Should be removed when we get real certs
     private HttpClient createHttpClient() {
         try {
