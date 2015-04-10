@@ -166,13 +166,13 @@ public class ResultsActivity extends HermesActivity {
                         .show();
             }
 
-            AnimationFragment animationFragment =
-                    (AnimationFragment)
+            ResultsFragment resultsFragment =
+                    (ResultsFragment)
                             getSupportFragmentManager().findFragmentById(R.id.fragment);
 
             findViewById(R.id.spinningWheel).setVisibility(View.GONE);
 
-            animationFragment.update("DNS Response = " + results.getAverageDNSResponseTime() + " ms\nLatency = " + results.getLatency() + " ms\nPacket Loss = " + results.getPacketLoss() + " packets");
+            resultsFragment.update("DNS Response = " + results.getAverageDNSResponseTime() + " ms\nLatency = " + results.getLatency() + " ms\nPacket Loss = " + results.getPacketLoss() + " packets");
             //We expect this to always be completed and so we will move to the completed fragment
             checkStatus();
 
