@@ -1,6 +1,6 @@
 package main.Views;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +9,14 @@ import android.widget.TextView;
 
 import com.oplabs.hermes.R;
 
+import tester.TestState;
+
 /**
  * This class controls the animation for the Results Activity
  */
 public class AnimationFragment extends Fragment {
+
+    private TestState stateMachine = TestState.getInstance();
 
     public AnimationFragment() {
     }
@@ -26,6 +30,7 @@ public class AnimationFragment extends Fragment {
 
         textview = (TextView) view.findViewById(R.id.results);
 
+        stateMachine.getLatestResults();
         return view;
     }
 

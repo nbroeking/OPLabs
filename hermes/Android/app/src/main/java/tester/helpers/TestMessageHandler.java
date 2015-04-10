@@ -39,7 +39,7 @@ public class TestMessageHandler extends Handler {
             //Perform the tests
             case TestMsg.START_TEST:
                 //Create the information to return the state of the test
-                TestState.getInstance().setState(TestState.State.COMPLETED, false);
+
                 Intent intent = new Intent();
                 intent.setAction("TestCompleted");
 
@@ -57,7 +57,7 @@ public class TestMessageHandler extends Handler {
                     //We have the state machine hold on to the results in case hermes isn't the main app
                     TestState.getInstance().setLatestResults(results);
                 }
-
+                TestState.getInstance().setState(TestState.State.COMPLETED, false);
                 parent.sendBroadcast(intent);
                 break;
 
