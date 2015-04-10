@@ -8,10 +8,11 @@
     android:gravity="center"
     tools:context="main.Views.ResultsActivity$PlaceholderFragment">
 
-    <ProgressBar
-        android:id="@+id/spinningWheel"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="true" />
-
+        android:id="@+id/theAnimation"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"/>
 </RelativeLayout>

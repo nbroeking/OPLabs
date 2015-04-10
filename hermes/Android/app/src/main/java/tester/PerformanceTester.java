@@ -64,7 +64,11 @@ public class PerformanceTester {
         Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
 
         //TODO: Run a packet jitter response
-
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //TODO: Run a throughput response
 
         return results;

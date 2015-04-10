@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.oplabs.hermes.R;
 
+import tester.TestResults;
 import tester.TestState;
 
 
@@ -27,6 +28,9 @@ public class ResultsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_results, container, false);
 
         textview = (TextView) view.findViewById(R.id.results);
+
+        TestResults results = stateMachine.getLatestResults();
+        update("DNS Response = " + results.getAverageDNSResponseTime() + " ms\nLatency = " + results.getLatency() + " ms\nPacket Loss = " + results.getPacketLoss() + "%");
 
         return view;
     }
