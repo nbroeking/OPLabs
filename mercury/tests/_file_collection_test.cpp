@@ -46,21 +46,23 @@ virtual HasRawFd* getFd() {
 
 int client() {
     LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
+    Inet4Address maddr("0.0.0.0", 0);
+    DatagramSocket sock;
+    sock.bind(maddr);
+    Inet4Address toaddr("127.0.0.1", 5432);
+    sock.bind(maddr);
+
+
     while(true) {
         sleep(1);
         try {
-            UnixAddress addr("/tmp/mynix.sock.cli");
-            addr.unlink();
-            UnixAddress saddr("/tmp/mynix.sock");
-            DatagramSocket sock;
-            sock.bind(addr);
         
             byte data[1024];
             strcpy((char*)data, "Hello, World!");
             log.printfln(INFO, "Write Data: %s", (char*)data);
-            sock.sendTo(data, strlen((char*)data), saddr);
+            sock.sendTo(data, strlen((char*)data), toaddr);
         } catch ( DatagramSocketException& e ) {
-            printf("Error %s", e.getMessage());
+            printf("Error %s\n", e.getMessage());
         }
     
     }
@@ -80,12 +82,11 @@ int main( int argc, char** argv ) {
     }
 
     FileCollection collection;
-    // Inet4Address addr("0.0.0.0", 5432);
-    UnixAddress addr("/tmp/mynix.sock");
-    addr.unlink();
+    Inet4Address addr("0.0.0.0", 5432);
 
     PrintSocketObserver* observer = new PrintSocketObserver();
     DatagramSocket sock;
+    sock.setNonBlocking(true);
     sock.bind(addr);
     observer->sock = &sock;
 

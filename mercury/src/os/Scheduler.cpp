@@ -68,6 +68,7 @@ void Scheduler::run() {
 
             case EXIT:
                 m_log->printfln(DEBUG, "Exiting");
+                return;
                 break;
 
             case CANCEL:

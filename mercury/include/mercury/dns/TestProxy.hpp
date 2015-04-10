@@ -22,6 +22,8 @@ public:
      * Begin the test
      */
     virtual void startTest(const TestConfig& conf, TestObserver* observer) = 0;
+
+    virtual void stop() = 0;
 };
 
 }

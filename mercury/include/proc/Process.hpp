@@ -79,6 +79,7 @@ public:
     virtual os::Thread* start();
 
     virtual void stop();
+    virtual void join();
 
 private:
     io::FileCollection m_file_collection;
@@ -86,6 +87,8 @@ private:
     os::Scheduler m_scheduler;
 
     std::vector<_InternalThread*> m_threads;
+    bool stopping;
+    os::Thread* m_thread;
 
 protected:
     logger::LogContext* m_log;

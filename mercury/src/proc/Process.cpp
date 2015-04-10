@@ -37,6 +37,7 @@ public:
 
 Process::Process(const char* name) : name(name) {
     m_log = &LogManager::instance().getLogContext("Process", name);
+    stopping = false;
 }
 
 FileCollection& Process::getFileCollection() {
@@ -51,19 +52,34 @@ Thread* Process::newThread(ManagedRunnable& runner) {
     return ret;
 }
 
-void Process::stop() {
+void Process::join() {
+    if(stopping) return;
+
+    stopping = true;
     vector<_InternalThread*>::iterator itr;
+
+    m_log->printfln(INFO, "Stopping process %s", getName());
 
     /* Tell all the threads to stop */
     FOR_EACH(itr, m_threads) {
-        (*itr)->getManagedRunnable().stop();
+        ManagedRunnable* mr = &(*itr)->getManagedRunnable();
+        m_log->printfln(DEBUG, "Stopping runnable %p", mr);
+        if(mr != this) mr->stop();
     }
 
     FOR_EACH(itr, m_threads) {
-        delete (*itr);
+        m_log->printfln(DEBUG, "Join thread %p", *itr);
+        ManagedRunnable* mr = &(*itr)->getManagedRunnable();
+        if(mr != this)
+            delete (*itr);
     }
 
     m_threads.clear();
+    m_log->printfln(DEBUG, "Process stopped");
+}
+
+void Process::stop() {
+    join();
 }
 
 Process& Process::getProcess() {
@@ -88,6 +104,7 @@ Thread* Process::start() {
     Thread* sched = this->newThread(getScheduler());
     sched->start();
 
+    m_thread = thr;
     return thr;
 }
 

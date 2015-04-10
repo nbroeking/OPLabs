@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <missing.h>
+#include <unistd.h>
 
 using namespace io;
 using namespace os;
@@ -41,7 +42,6 @@ public:
         m_state_machine->setEdge(PACKET_SENT, PACKET_RECEIEVED, &DnsTestImpl::onPacketReceieved);
         m_state_machine->setEdge(PACKET_SENT, TIMEOUT, &DnsTestImpl::onTimeout);
 
-        getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, &m_socket, this);
     }
     /* wait for observations in the DnsTestImpl */
     void observe(HasRawFd* fd, int events) OVERRIDE {
@@ -64,7 +64,11 @@ public:
     State onBeginTest() {
         Inet4Address bind_addr("0.0.0.0", 0);
         m_log->printfln(DEBUG, "Binding to address: %s", bind_addr.toString().c_str());
+
+        getFileCollection().unsubscribe(&m_socket);
         m_socket.bind(bind_addr);
+        m_socket.setNonBlocking(true);
+        getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, &m_socket, this);
 
         enqueue_request_vector(conf.valid_hostnames);
         packets_sent = 0;
@@ -137,7 +141,7 @@ public:
     }
 
     void stop() {
-        m_state_machine->stop();
+        Process::stop();
     }
 
     void run() {

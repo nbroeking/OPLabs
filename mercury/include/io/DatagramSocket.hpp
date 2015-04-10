@@ -67,6 +67,7 @@ public:
      * @brief Close this socket
      */
     void close();
+    int setNonBlocking(bool yes);
 
     ~DatagramSocket();
     DatagramSocket();

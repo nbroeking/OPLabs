@@ -65,8 +65,8 @@ public:
             size_t index = itr - heap.begin();
             heap[index] = heap.back();
             heap.pop_back();
-            reheap(index);
             m_heap_size --;
+            reheap(index);
             return true;
         }
 

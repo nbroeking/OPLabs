@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <errno.h>
+#include <sys/fcntl.h>
 
 namespace io {
 
@@ -56,6 +57,18 @@ ssize_t DatagramSocket::receive( byte* bytes, size_t len, SocketAddress*& faddr,
 
 DatagramSocket::~DatagramSocket() {
     close();
+}
+
+int DatagramSocket::setNonBlocking(bool yes) {
+    int opts = fcntl(m_fd, F_GETFL);
+
+    if( yes ) {
+        opts |= O_NONBLOCK;
+    } else {
+        opts &= ~O_NONBLOCK;
+    }
+
+    return fcntl(m_fd, F_SETFL, opts);
 }
 
 }

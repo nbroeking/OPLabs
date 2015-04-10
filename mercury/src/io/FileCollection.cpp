@@ -72,8 +72,15 @@ typedef std::map<FileCollectionObserver*, dealloc_T*> dealloc_map_T;
 class FileCollection::Poller: public os::ManagedRunnable {
 public:
     Poller(FileCollection& fc): m_super(fc),
-        m_log(LogManager::instance().getLogContext("FileCollection", "Poller")) {
+        m_log(LogManager::instance().getLogContext("FileCollection", "Poller")),
+        m_stop(false) {
             pipe(m_pipe);
+
+            /* m_pipe[0] */
+            int opts = fcntl(m_pipe[0], F_GETFL);
+            opts |= O_NONBLOCK;
+            fcntl(m_pipe[0], F_SETFL, opts);
+
         }
 
     /**
@@ -92,6 +99,12 @@ public:
      * Override from Runnable
      */
     void run() {
+        /* add for the interrupt */
+        struct pollfd pipe_pfd;
+        pipe_pfd.revents = 0;
+        pipe_pfd.fd = m_pipe[0];
+        pipe_pfd.events = subscriptionTypeToBitmask(SUBSCRIBE_READ);
+
         m_log.printfln(DEBUG, "Start Poller::run()");
         for(;;) {
             handle_commands(); /* Is there something I need to do */
@@ -101,6 +114,7 @@ public:
             /*
              * Setup the poll structure
              */
+            poll_data.push_back(pipe_pfd);
             for(itr = m_map.begin(); itr != m_map.end(); ++ itr) {
                 m_log.printfln(TRACE, "Adding %d for subscription", itr->first);
                 struct pollfd pfd;
@@ -118,13 +132,17 @@ public:
 
             if(rc != 0) {
                 /* there was a file descriptor with an interrupt */
+                m_log.printfln(TRACE, "BEGIN HandlePollResults");
                 if(!handle_poll_results(poll_data)) {
-                    return;
+                    break;
                 }
+                m_log.printfln(TRACE, "END HandlePollResults");
             } else {
                 /* We just timed out */
             }
         }
+
+        m_log.printfln(INFO, "Poller has exited");
     }
 
     void subscribe(HasRawFd* raw_fd,
@@ -167,6 +185,8 @@ public:
      * command.
      */
     void dispatch_command(Command* cmd) {
+        static const char* arr[] = {"Subscribe", "Unsubscribe", "Exit", "Delete"};
+        m_log.printfln(DEBUG, "Dispatching command of type %s", arr[cmd->type]);
         switch(cmd->type) {
             case SUBSCRIBE:
                 subscribe(
