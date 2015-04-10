@@ -43,6 +43,7 @@ class Router(object):
 
         host = self.addr.strNormal()
         sock = socket.socket(sock_type, socket.SOCK_STREAM)
+        sock.settimeout(5.0)
         sock.connect((host, MAGIC_PORT))
 
         sock.sendall(MAGIC_COOKIE + self.req_id)
