@@ -73,8 +73,11 @@ def start_test(test_type=None):
         result.save()
         test_set.save()
 
-        # Send a magic packet to the router
-        router.wakeup()
+        try:
+            # Send a magic packet to the router
+            router.wakeup()
+        except:
+            return JSON_FAILURE()
 
         # Return config + new result_id
         return JSON_SUCCESS(
