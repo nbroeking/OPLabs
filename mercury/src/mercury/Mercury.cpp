@@ -7,7 +7,7 @@ class private_Proxy: public Proxy {
     void start(const Config& cfg, Callback* callback) {
         (void)callback;
 
-        m_merc.setId(cfg.mercury_id);
+        m_merc.setConfig(cfg);
         m_merc.start();
     }
 private:

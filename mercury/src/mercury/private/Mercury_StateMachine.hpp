@@ -17,6 +17,7 @@
 #include "Mercury_JSON.hpp"
 
 #include <mercury/dns/Test.hpp>
+#include <mercury/Mercury.hpp>
 
 
 using namespace logger;
@@ -91,14 +92,16 @@ Mercury_StateMachine(MercuryObserver* observer):
 State onStart() {
     m_log.printfln(INFO, "Starting mercury");
     /* The if of this router */
-    string id_enc = simpleBase64Encode(m_id, ID_SIZE);
+    string id_enc = simpleBase64Encode(m_config.mercury_id, ID_SIZE);
     id_enc = html_escape(id_enc);
     m_log.printfln(DEBUG, "base64 encoded id: %s", id_enc.c_str());
 
     Curl request;
     char post_data[128];
     snprintf(post_data, sizeof(post_data), "id=%s", id_enc.c_str());
-    setup_curl(request, "http://127.0.01:5000/api/router/get_config", post_data);
+
+    m_current_url = m_config.controller_url + "/api/router/get_config";
+    setup_curl(request, m_current_url.c_str(), post_data);
 
     m_log.printfln(INFO, "sending curl request with data %s", post_data);
     m_async_curl.sendRequest(request, m_observer);
@@ -167,13 +170,15 @@ MercuryObserver* m_observer;
 
 /* The log for this state machine */
 LogContext& m_log;
-byte m_id[ID_SIZE];
 
 AsyncCurl m_async_curl;
 
 ssize_t m_response_len;
 byte* m_response;
 StateMachine<Stim, Mercury_StateMachine, State>* m_state_machine;
+
+std::string m_current_url; /* For garbage collection */
+Config m_config;
 };
 
 }

@@ -9,6 +9,8 @@
 
 #include <Prelude>
 
+#include <io/SocketAddress.hpp>
+    
 namespace mercury {
 
 /**
@@ -17,6 +19,7 @@ namespace mercury {
 class Config {
 public:
     byte mercury_id[32];
+    std::string controller_url;
 };
 
 }

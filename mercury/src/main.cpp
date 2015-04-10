@@ -8,6 +8,7 @@
 #include <io/binary/StreamGetter.hpp>
 
 #include <json/Json.hpp>
+#include <json/JsonMercuryTempl.hpp>
 
 #include <log/LogManager.hpp>
 
@@ -36,8 +37,14 @@ byte mercury_magic_cookie[32] = {
 
 class MercuryConfig {
 public:
-    MercuryConfig(): logEverything(false) {}
+    MercuryConfig():
+        logEverything(false),
+        controller_url("http://127.0.0.1:5000/"),
+        bind_ip(new Inet4Address("127.0.0.1", 8639)) {}
+
     bool logEverything;
+    std::string controller_url;
+    SocketAddress* bind_ip;
 };
 
 template<>
@@ -45,6 +52,16 @@ struct JsonBasicConvert<MercuryConfig> {
     static MercuryConfig convert(const json::Json& jsn) {
         MercuryConfig ret;
         ret.logEverything = jsn.hasAttribute("logEverything") && jsn["logEverything"] != 0;
+        SocketAddress* old;
+
+        if(jsn.hasAttribute("controller_url")) {
+            ret.controller_url = jsn["controller_url"].stringValue();
+        }
+        if(jsn.hasAttribute("bind_ip")) {
+            old = ret.bind_ip;
+            ret.bind_ip = jsn["bind_ip"].convert<SocketAddress*>();
+            delete old;
+        }
         return ret;
     }
 };
@@ -52,12 +69,12 @@ struct JsonBasicConvert<MercuryConfig> {
 void sigchld_hdlr(int sig) {
 }
 
-int startMercury(LogContext& m_log) {
+int startMercury(LogContext& m_log, MercuryConfig& config) {
     StreamServerSocket sock;
-    Inet4Address bind_addr("0.0.0.0", 8639);
+    SocketAddress* bind_addr = config.bind_ip;
 
-    m_log.printfln(INFO, "Binding to address: %s", bind_addr.toString().c_str());
-    sock.bind(bind_addr);
+    m_log.printfln(INFO, "Binding to address: %s", bind_addr->toString().c_str());
+    sock.bind(*bind_addr);
     sock.listen(1);
 
     while(true) {
@@ -81,6 +98,7 @@ int startMercury(LogContext& m_log) {
                  * the merucry state machine */
                 mercury::Config conf;
                 std::copy(recieve + 32, recieve + 64, conf.mercury_id);
+                conf.controller_url = config.controller_url;
                 mercury::Proxy& process = mercury::ProxyHolder::instance();
 
                 /* start mercury */
@@ -134,7 +152,7 @@ int main( int argc, char** argv ) {
     LogContext& m_log = LogManager::instance().getLogContext("Main", "Main");
     m_log.printfln(INFO, "Mercury started");
     try {
-        return startMercury(m_log);
+        return startMercury(m_log, conf);
     } catch(Exception& exp) {
         m_log.printfln(FATAL, "Uncaught exception: %s", exp.getMessage());
         return 127;

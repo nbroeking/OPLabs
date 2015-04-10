@@ -41,8 +41,8 @@ public:
         m_response_putter.putBytes(bytes, len);
     }
 
-    void setId(const byte id[32]) {
-        copy(id, id + 32, m_mercury_state_machine.m_id);
+    void setConfig(const Config& conf) {
+        m_mercury_state_machine.m_config = conf;
     }
 
     /* CURL Asyc Observer */

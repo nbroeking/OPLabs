@@ -44,7 +44,7 @@ struct JsonBasicConvert<io::Inet6Address> {
                 throw json::JsonException("Bad format of ipv6 string. No ']' after [");
             }
 
-            std::string sub = str.substr(1, idx);
+            std::string sub = str.substr(1, idx-1);
             idx += 1;
 
             u16_t port = 0;
@@ -54,13 +54,14 @@ struct JsonBasicConvert<io::Inet6Address> {
                     throw json::JsonException("Bad format of ipv6 string. No ':' after []");
                 }
 
-                port = atoi(str.substr(idx+1).c_str());
+                std::string portstr = str.substr(idx+1, -1);
+                port = atoi(portstr.c_str());
             }
 
             ret = io::Inet6Address::fromString(sub.c_str(), port);
+        } else {
+            ret = io::Inet6Address::fromString(str.c_str(), 0);
         }
-
-        ret = io::Inet6Address::fromString(str.c_str(), 0);
         return ret;
     }
 

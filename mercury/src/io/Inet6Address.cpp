@@ -15,13 +15,15 @@ Inet6Address Inet6Address::fromString( const char* ipv6, u16_t port ) {
     if (inet_pton(AF_INET6, ipv6, &ret.m_addr.sin6_addr) == 1)
         return ret;
 
-    throw Inet6ParseException("Failed to parse ipv6 address");  
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "Failed to pares ipv6 address: %s", ipv6);
+    throw Inet6ParseException(buf);  
 }
 
 Inet6Address::Inet6Address(u8_t addr[16], u16_t port) {
     fill( (byte*)&m_addr, (byte*)&m_addr + sizeof(m_addr), 0 );
     m_addr.sin6_family = AF_INET6;
-    m_addr.sin6_port = port;
+    m_addr.sin6_port = htons(port);
     copy( addr, addr + 16, m_addr.sin6_addr.s6_addr );
 }
 
