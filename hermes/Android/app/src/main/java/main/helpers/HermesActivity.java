@@ -1,6 +1,5 @@
 package main.helpers;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -17,9 +16,10 @@ import android.view.View;
 import com.oplabs.hermes.R;
 import communication.Communication;
 import main.Application.SessionData;
+import android.support.v4.app.FragmentActivity;
 
 //All Activities inherit from this one. It allows us to have universal behavior accross all activities
-public abstract class HermesActivity extends Activity{
+public abstract class HermesActivity extends FragmentActivity{
     //Tag
     protected final String TAG = "Hermes Activity";
 
