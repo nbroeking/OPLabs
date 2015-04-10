@@ -24,7 +24,7 @@ public:
 /**
  * @brief SocketAddress for IPv4
  */
-class Inet4Address : public SocketAddressTempl<sockaddr_in, AF_INET> {
+class Inet4Address : public SocketAddressTempl<sockaddr_in, AF_INET>, public HasPort {
 public:
     /**
      * @brief Parse the IP address from a sttring
@@ -52,6 +52,7 @@ public:
     }
 
     virtual void setPort( u16_t port );
+    virtual u16_t getPort();
     virtual void setAddress( u32_t addr );
 
     virtual std::string toString() const OVERRIDE;

@@ -44,4 +44,12 @@ std::string Inet6Address::toString() const {
     return buf;
 }
 
+void Inet6Address::setPort(u16_t port) {
+    m_addr.sin6_port = htons(port);
+}
+
+u16_t Inet6Address::getPort() {
+    return ntohs(m_addr.sin6_port);
+}
+
 }

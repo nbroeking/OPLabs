@@ -21,8 +21,15 @@ public:
     UnknownSocketFamilyException(const char* msg): Exception(msg) {};
 };
 
+class HasPort {
+public:
+    virtual void setPort( u16_t port ) = 0;
+    virtual u16_t getPort() = 0;
+};
+
 class SocketAddress {
 public:
+
     /**
      * @brief Create a socket address from a plain old C socket address
      * 

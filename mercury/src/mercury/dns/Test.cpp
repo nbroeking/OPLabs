@@ -41,7 +41,6 @@ public:
         m_state_machine->setEdge(PACKET_SENT, PACKET_RECEIEVED, &DnsTestImpl::onPacketReceieved);
         m_state_machine->setEdge(PACKET_SENT, TIMEOUT, &DnsTestImpl::onTimeout);
 
-        m_socket.bind(Inet4Address("0.0.0.0", 0));
         getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, &m_socket, this);
     }
     /* wait for observations in the DnsTestImpl */
@@ -63,6 +62,10 @@ public:
     }
 
     State onBeginTest() {
+        Inet4Address bind_addr("0.0.0.0", 0);
+        m_log->printfln(DEBUG, "Binding to address: %s", bind_addr.toString().c_str());
+        m_socket.bind(bind_addr);
+
         enqueue_request_vector(conf.valid_hostnames);
         packets_sent = 0;
         m_testing_invalid = false;
@@ -88,9 +91,9 @@ public:
     State onPacketReceieved() {
         /* Add to the latency times */
         timeout_t to = Time::currentTimeMicros();
-        m_log->printfln(DEBUG, "Packet %d/50. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
+        m_log->printfln(DEBUG, "Packet %d. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
         m_latency_times->push_back(to - sent_time);
-        if(packets_sent < 50) {
+        if(packets_sent < 1) {
             /* we send 50 dns requests for each
              * host to resolve */
             return send_dns();
@@ -204,14 +207,18 @@ private:
     State send_dns() {
         byte* packet;
         size_t packet_size;
+
+
         packet = craft_dns_packet(to_resolve, rand(), packet_size);
 
         m_log->printfln(TRACE, "Crafted DNS packet to send:");
         m_log->printHex(TRACE, packet, packet_size);
 
         packets_sent ++;
+
+        m_log->printfln(DEBUG, "Sending DNS to %s", conf.server_address->toString().c_str());
         m_socket.sendTo(packet, packet_size, *conf.server_address);
-        m_state_machine->setTimeoutStim(5 SECS, TIMEOUT); /* 5 SEC timeout */
+        m_state_machine->setTimeoutStim(conf.timeout_micros, TIMEOUT); /* 5 SEC timeout */
         sent_time = Time::currentTimeMicros();
 
         delete[] packet;

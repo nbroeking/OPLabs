@@ -47,7 +47,7 @@ public:
      * @param to The address of the recipient
      * @param flags Extra C flags (default 0)
      */
-    void sendTo( const byte* bytes, size_t len,
+    ssize_t sendTo( const byte* bytes, size_t len,
                 const SocketAddress& to, int flags=0 );
 
     /**
@@ -69,6 +69,10 @@ public:
     void close();
 
     ~DatagramSocket();
+    DatagramSocket();
+
+private:
+    bool m_closed;
 };
 
 }

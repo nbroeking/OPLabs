@@ -41,10 +41,16 @@ Inet4Address::Inet4Address(u32_t addr, u16_t port) {
 
 Inet4Address::Inet4Address(const char* addr, u16_t port) {
     if( inet_aton(addr, &m_addr.sin_addr) != 1 ) {
-        throw "Error";
+        char buf[1024];
+        snprintf(buf, 1024, "Error parsing Inet4Address %s:%hu", addr, port);
+        throw InetParseException(buf);
     }
     m_addr.sin_family = AF_INET;
     m_addr.sin_port = htons(port);
+}
+
+u16_t Inet4Address::getPort() {
+    return ntohs(m_addr.sin_port);
 }
 
 void Inet4Address::setPort( u16_t port ) {

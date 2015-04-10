@@ -35,6 +35,16 @@ struct JsonBasicConvert<dns::TestConfig> {
         jsn["invalid_names"].toVector(ret.invalid_hostnames);
         ret.server_address = jsn["dns_server"].convert<io::SocketAddress*>();
         ret.timeout_micros = jsn["timeout"].intValue() * 1000;
+
+        if(ret.server_address->linkProtocol() == AF_INET ||
+           ret.server_address->linkProtocol() == AF_INET6 ) {
+
+           io::HasPort* has_port = dynamic_cast<io::HasPort*>(ret.server_address.get());
+           if(has_port->getPort() == 0) {
+               has_port->setPort(53);
+           }
+
+        }
         return ret;
     }
 };
