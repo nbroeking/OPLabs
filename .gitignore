@@ -26,6 +26,7 @@ project.pbxproj
 *.apk
 *.ap_
 
+*workspace.xml
 # Files for the Dalvik VM
 *.dex
 

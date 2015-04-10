@@ -18,7 +18,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b155b86-6ca2-4a48-9458-b7474c9d2bd2" name="Default" comment="Merge branch 'master' of https://github.com/nbroeking/OPLabs&#10;&#10;Conflicts:&#10;&#9;hermes/Android/.idea/workspace.xml&#10;">
-<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/CommMessageHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/CommMessageHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/CommMsg.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Helpers/CommMsg.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/communication/Communication.java" afterPath="$PROJECT_DIR$/app/src/main/java/communication/Communication.java" />
@@ -28,7 +27,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestMessageHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestMessageHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/tester/TestResults.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/TestResults.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestSettings.java" afterPath="$PROJECT_DIR$/app/src/main/java/tester/helpers/TestSettings.java" />
-=======
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ani2_1.png" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ani2_2.png" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ani2_3.png" />
@@ -48,7 +46,6 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ani_8.png" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ani_9.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/loading_animation.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/loading_animation.xml" />
->>>>>>> b9a9a4bdb8ada91b719efdfe5f4f97f2ce174d3b
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Android.iws" />
