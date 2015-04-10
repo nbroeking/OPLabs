@@ -26,7 +26,7 @@ byte mercury_magic_cookie[32] = {
     0xf7, 0x14, 0x17, 0x62, 0x53, 0x4a, 0xa9, 0x7e, 
 };
 
-class Mercury: public MercuryObserver, public Process, public FileCollectionObserver {
+class Mercury: public MercuryObserver, public Process {
 public:
     Mercury():
         Process("Mercury"),
@@ -39,6 +39,10 @@ public:
     /* File collection observer */
     void read(const byte* bytes, size_t len) {
         m_response_putter.putBytes(bytes, len);
+    }
+
+    void setId(const byte id[32]) {
+        copy(id, id + 32, m_mercury_state_machine.m_id);
     }
 
     /* CURL Asyc Observer */
@@ -68,37 +72,6 @@ public:
             res.valid_avg_response_time_mircos/1e6, res.valid_packets_lost);
         m_state_machine->sendStimulus(TEST_FINISHED);
     }
-
-    void observe(HasRawFd* fd, int events) OVERRIDE {
-        (void) events;
-        if(fd == &m_server_sock) {
-            /* This is a server socket event */
-            StreamSocket* client = m_server_sock.accept();
-            m_log.printfln(INFO, "Client socket registered %d->%p", client->getRawFd(), client);
-            getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, client, this);
-        } else {
-            /* this is one of the clients that have done something */
-            m_log.printfln(DEBUG, "Witness observation on fd %d", fd);
-            StreamSocket* sock = dynamic_cast<StreamSocket*>(fd);
-            if(!sock) {
-                m_log.printfln(WARN, "Event from unknown client socket");
-            } else {
-                byte l_bytes[64];
-                size_t bytes_read = sock->read(l_bytes, 64);
-                if(bytes_read != 64) {
-                    m_log.printfln(WARN, "Wrong number of bytes read %lu", bytes_read);
-                    m_state_machine->sendStimulus(BAD_COOKIE_RECEIVED);
-                } else {
-                    handle_input_received(l_bytes);
-                    /* close and delete client */
-                    delete sock;
-
-                    getFileCollection().unsubscribe(fd);
-                }
-            }
-        }
-    }
-
     void run() OVERRIDE {
         ScopedLock __sl(m_mutex);
         _run();
@@ -108,20 +81,8 @@ public:
         m_exit_cond.signal();
     }
 private:
-    void handle_input_received(byte* bytes) {
-        byte* id = bytes + 32;
-        bool eq = equal(bytes, bytes+32, mercury_magic_cookie);
-        if(eq) {
-            copy(id, id+32, m_mercury_state_machine.m_id);
-            m_state_machine->sendStimulus(COOKIE_RECEIVED);
-        } else {
-            m_log.printfln(WARN, "Wrong magic cookie found");
-            m_state_machine->sendStimulus(BAD_COOKIE_RECEIVED);
-        }
-    }
-
     void setup_state_machine() {
-        m_state_machine->setEdge(IDLE, COOKIE_RECEIVED, &Mercury_StateMachine::onMagicCookieReceived);
+        m_state_machine->setEdge(IDLE, START, &Mercury_StateMachine::onStart);
         m_state_machine->setEdge(REQUEST_MADE, GOOD_REQUEST, &Mercury_StateMachine::onGoodRequest);
         m_state_machine->setEdge(REQUEST_MADE, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
         m_state_machine->setEdge(TIMEOUT, WAIT_TIMEOUT, &Mercury_StateMachine::onWaitTimeoutComplete);
@@ -137,18 +98,9 @@ private:
 
         Thread* th = newThread(m_mercury_state_machine.m_async_curl);
         th->start();
-
-        bind_server_sock();
+        m_state_machine->sendStimulus(START);
 
         wait_for_exit();
-    }
-
-    void bind_server_sock() {
-        Inet4Address addr(INADDR_ANY, 8639);
-        m_log.printfln(INFO, "Binding to address %s", addr.toString().c_str());
-        m_server_sock.bind(addr);
-        m_server_sock.listen();
-        getFileCollection().subscribe(FileCollection::SERVER_SOCKET, &m_server_sock, this);
     }
 
     void wait_for_exit() {

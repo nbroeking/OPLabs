@@ -6,8 +6,8 @@ namespace mercury {
 class private_Proxy: public Proxy {
     void start(const Config& cfg, Callback* callback) {
         (void)callback;
-        (void)cfg;
 
+        m_merc.setId(cfg.mercury_id);
         m_merc.start();
     }
 private:

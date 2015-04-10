@@ -1,6 +1,7 @@
 #include <json/Json.hpp>
 
 #include <jansson.h>
+#include <io/FileNotFoundException.hpp>
 
 namespace json {
 
@@ -14,6 +15,11 @@ Json Json::operator[](const std::string& str) const {
     }
 
     throw JsonException("Json not an object in operator[]");
+}
+
+bool Json::hasAttribute(const char* attr) const {
+    if(getType() != JSON_OBJECT) return false;
+    return json_object_get(m_raw, attr) != NULL;
 }
 
 Json Json::operator[](size_t idx) const {
@@ -45,6 +51,26 @@ Json* Json::parse(const std::string& str) {
     if(!root) {
         throw JsonException("Failed to parse json string");
     }
+    Json* ret = new Json(root);
+    ret->m_free = true;
+    return ret;
+}
+
+Json* Json::fromFile(const char* filename) {
+    json_error_t err;
+    FILE* f = fopen(filename, "r");
+    if(!f) {
+        char buf[1024];
+        snprintf(buf, sizeof(buf), "Unable to open file: %s", filename);
+        throw io::FileNotFoundException(buf);
+    }
+
+    json_t* root = json_loadf(f, 0, &err);
+
+    if(!root) {
+        throw JsonException("Failed to parse json string");
+    }
+
     Json* ret = new Json(root);
     ret->m_free = true;
     return ret;

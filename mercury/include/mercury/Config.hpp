@@ -7,12 +7,16 @@
  * Config.hpp: <description>
  */
 
+#include <Prelude>
+
 namespace mercury {
 
 /**
  * @brief Configuration for Mercury
  */
 class Config {
+public:
+    byte mercury_id[32];
 };
 
 }

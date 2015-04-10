@@ -20,7 +20,8 @@ static void* run_thread( void* _thread ) {
     	thread->getRunnable().run();
     } catch(Exception& ex) {
         LogContext& log = LogManager::instance().getLogContext("Thread", "Global");
-        log.printfln(ERROR, "Global uncaught exception %s", ex.getMessage());
+        log.printfln(FATAL, "Global uncaught exception %s", ex.getMessage());
+        exit(127);
     }
 
 	pthread_exit(NULL);

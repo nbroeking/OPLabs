@@ -47,7 +47,7 @@ void StreamServerSocket::bind( const SocketAddress& sockaddr ) {
 void StreamServerSocket::listen( int backlog ) {
     int rc = ::listen( m_fd, backlog );
     if ( rc ) {
-        throw new ListenException("Error on listen", rc);
+        throw ListenException("Error on listen", rc);
     }
 }
 

@@ -53,9 +53,17 @@ public:
     bool operator==(int i) const;
     bool operator==(const std::string& str) const;
 
+    inline bool operator!=(int i) const {
+        return (!this->operator==(i));
+    }
+
+    inline bool operator!=(const std::string& i) const {
+        return (!this->operator==(i));
+    }
     void push_back(const Json& json); /* for the templates */
     inline void append(const Json& json) { push_back(json); };
     void setAttribute(const char* attr, const Json& json);
+    bool hasAttribute(const char* attr) const;
 
     template <class T>
     T convert() const {
@@ -85,6 +93,7 @@ public:
     }
 
     static Json* parse(const std::string& str);
+    static Json* fromFile(const char* filename);
 
 private:
     Json(json_t* raw):

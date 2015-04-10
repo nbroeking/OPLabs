@@ -34,8 +34,7 @@ enum State {
 };
 
 enum Stim {
-    COOKIE_RECEIVED,
-    BAD_COOKIE_RECEIVED,
+    START,
     BAD_REQUEST,
     GOOD_REQUEST,
     WAIT_TIMEOUT,
@@ -46,8 +45,8 @@ ENUM_TO_STRING(State, 4,
     "Idle", "RequestMade",
     "Timeout", "TestStarted")
 
-ENUM_TO_STRING(Stim, 6,
-    "CookieReceived", "BadCookieReceived",
+ENUM_TO_STRING(Stim, 5,
+    "Start",
     "BadRequest", "GoodRequest",
     "WaitTimeout", "PingTestRunning")
 
@@ -89,8 +88,8 @@ Mercury_StateMachine(MercuryObserver* observer):
     m_observer = observer;
 }
 
-State onMagicCookieReceived() {
-    m_log.printfln(INFO, "Magic cookie received");
+State onStart() {
+    m_log.printfln(INFO, "Starting mercury");
     /* The if of this router */
     string id_enc = simpleBase64Encode(m_id, ID_SIZE);
     id_enc = html_escape(id_enc);
@@ -99,7 +98,7 @@ State onMagicCookieReceived() {
     Curl request;
     char post_data[128];
     snprintf(post_data, sizeof(post_data), "id=%s", id_enc.c_str());
-    setup_curl(request, "http://10.201.23.228:5000/api/router/get_config", post_data);
+    setup_curl(request, "http://127.0.01:5000/api/router/get_config", post_data);
 
     m_log.printfln(INFO, "sending curl request with data %s", post_data);
     m_async_curl.sendRequest(request, m_observer);
@@ -139,12 +138,6 @@ State onGoodRequest() {
 
 State onBadRequest() {
     m_log.printfln(WARN, "Bad request made.");
-    m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
-    return TIMEOUT;
-}
-
-State onBadCookie() {
-    m_log.printfln(WARN, "Bad magic cookie found");
     m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
     return TIMEOUT;
 }
