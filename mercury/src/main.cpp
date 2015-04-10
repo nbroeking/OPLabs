@@ -124,7 +124,7 @@ int main( int argc, char** argv ) {
         Json* jsn = Json::fromFile("config.json");
         conf = jsn->convert<MercuryConfig>();
     } catch(Exception& exp) {
-        fprintf(stderr, "Unable to load config file: %s", exp.getMessage());
+        fprintf(stderr, "Unable to load config file: %s\n", exp.getMessage());
     };
 
     if(conf.logEverything) {
