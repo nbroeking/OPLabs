@@ -34,6 +34,9 @@ public class PerformanceTester {
     //Return dns, packet latency, packet jitter, packet loss
     public TestResults runTests()
     {
+        TestState state = TestState.getInstance();
+        state.setState(TestState.State.TESTINGDNS, false);
+
         TestResults results = new TestResults(settings.getResultID());
         results.setValid();
 
@@ -48,6 +51,7 @@ public class PerformanceTester {
         results.setAverageDNSResponseTime(dnsResult);
         Log.d(TAG, "DNS Result = " + dnsResult);
 
+        state.setState(TestState.State.TESTINGLATENCY, false);
         //Run a test packet latency test
         List<Integer> times2 = runDNSTest(settings.getValidDomains());
         int latencyResult = 0;
@@ -63,12 +67,12 @@ public class PerformanceTester {
         results.setPacketLoss((1- (times2.size()/settings.getValidDomains().size())));
         Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
 
-        //TODO: Run a packet jitter response
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        state.setState(TestState.State.TESTINGTHROUGHPUT, false);
         //TODO: Run a throughput response
 
         return results;

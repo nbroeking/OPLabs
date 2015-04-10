@@ -82,9 +82,17 @@ public class CommMessageHandler extends Handler {
 
             case CommMsg.REPORT_TEST:
                 reportTest((TestResults)msg.obj);
+
+                //After we report we want to request results from router
+                Message msgRequest = obtain();
+                msgRequest.what = CommMsg.REQUEST_ROUTER_RESULTS;
+                msgRequest.obj = msg.obj;
+                sendMessage(msgRequest);
                 break;
 
-
+            case CommMsg.REQUEST_ROUTER_RESULTS:
+                requestTest((TestResults)msg.obj);
+                break;
         }
 	}
 
@@ -112,6 +120,60 @@ public class CommMessageHandler extends Handler {
                 sender.sendMessage(msg);
             }
         }
+    }
+
+    //This method gets a report from the server
+    private void requestTest(TestResults results){
+
+        Log.i(TAG, "Get Router Results");
+
+        HttpClient client = this.createHttpClient();
+        //Http post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
+
+       /* try {
+
+            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+            post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8") +"&"+ results.getPost()));
+
+            HttpResponse response = client.execute(post);
+            HttpEntity entity = response.getEntity();
+
+            InputStream inputStream = null;
+
+            try {
+                inputStream = entity.getContent();
+                String result;
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String addline = line + "\n";
+                    sb.append(addline);
+                }
+                result = sb.toString();
+
+                //JSON Parser
+                JSONObject json = new JSONObject(result);
+                if (json.getString("status").equals("success")) {
+                    Log.d(TAG, "Received Status success");
+                } else {
+                    throw new Exception("Status failed reporting Results");
+                }
+
+                Log.i(TAG, "Reported Results");
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing json", e);
+            } finally {
+                try {
+                    if (inputStream != null) inputStream.close();
+                } catch (Exception s) {
+                    Log.e(TAG, "Could not close stream");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating Post", e);
+        }*/
     }
 
     //This method reports our test to the server
@@ -152,6 +214,8 @@ public class CommMessageHandler extends Handler {
                 }
 
                 Log.i(TAG, "Reported Results");
+
+
             } catch (Exception e) {
                 Log.e(TAG, "Error parsing json", e);
             } finally {

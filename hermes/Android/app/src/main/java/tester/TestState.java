@@ -8,14 +8,13 @@ import tester.helpers.TestMsg;
 //Singleton class that allows everyone to know the state of the performance tests
 public class TestState {
     //These are the current states that the testing subsystem can be in
-    public enum State {IDLE, COMPLETED, PREPARING, TESTING}
+    public enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROUGHPUT, TESTING }
 
     //Members
     private State state;
     private final static String TAG = "TESTSTATE";
     private Handler handler;
     private TestResults latestResults;
-
     //Singleton Members
     private static TestState ourInstance = new TestState();
     public static TestState getInstance() {
