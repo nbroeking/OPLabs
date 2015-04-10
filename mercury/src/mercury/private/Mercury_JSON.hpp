@@ -37,5 +37,5 @@ inline MercuryTestConfig parseMercuryTestConfig(const char* jsn_str, bool& fail)
         fail = false;
     }
 
-    return (*jsn)["conifg"].convert<MercuryTestConfig>();
+    return (*jsn)["config"].convert<MercuryTestConfig>();
 }
