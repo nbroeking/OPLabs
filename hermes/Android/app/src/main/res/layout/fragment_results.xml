@@ -16,4 +16,135 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mobileTable"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <TextView
+            android:text="Mobile"
+            android:textSize="50px"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:text="DNS Response"
+                android:textSize="30px"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/dnsResponse"
+                android:text=""
+                android:textSize="30px"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:text="Latency"
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/latency"
+                android:text=""
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:text="Packet Loss"
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/packetLoss"
+                android:text=""
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+        </TableRow>
+
+    </TableLayout>
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/routerTable"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <TextView
+            android:text="Router"
+            android:textSize="50px"
+            android:textColor="@android:color/white"/>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:text="DNS Response"
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/dnsResponse2"
+                android:text=""
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:text="Latency"
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/latency2"
+                android:text=""
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:text="Packet Loss"
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/packetLoss2"
+                android:text=""
+                android:textSize="30px"
+                android:textColor="@android:color/white"/>
+        </TableRow>
+
+    </TableLayout>
+
 </RelativeLayout>
