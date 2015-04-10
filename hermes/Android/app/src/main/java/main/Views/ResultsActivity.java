@@ -32,11 +32,11 @@ public class ResultsActivity extends HermesActivity {
         Log.i(TAG, "OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        /*if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.ResultsFrame, new AnimationFragment())
+                    .add(R.id.FrameLayout, new AnimationFragment())
                     .commit();
-        }*/
+        }
         testBound = false;
         testService = null;
     }
@@ -53,6 +53,9 @@ public class ResultsActivity extends HermesActivity {
         if(stateMachine.getState() == TestState.State.IDLE)
         {
             Log.i(TAG, "We are IDLE");
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.FrameLayout, new AnimationFragment())
+                    .commit();
             //Tell Tester that we have prepared
             testService.startTest();
         }
@@ -60,11 +63,19 @@ public class ResultsActivity extends HermesActivity {
         {
             Log.i(TAG, "We are preparing");
             //We are preparing to Run a Test
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.FrameLayout, new AnimationFragment())
+                    .commit();
+
         }
         else if(stateMachine.getState() == TestState.State.COMPLETED)
         {
             //Get Results and move to results fragment
             Log.i(TAG, "We are completed");
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.FrameLayout, new ResultsFragment())
+                    .commit();
             //The user has seen the results so we can move to idle
             TestState.getInstance().setState(TestState.State.IDLE, false);
         }
@@ -165,17 +176,7 @@ public class ResultsActivity extends HermesActivity {
                         .setIcon(R.drawable.ic_launcher)
                         .show();
             }
-
-            ResultsFragment resultsFragment =
-                    (ResultsFragment)
-                            getSupportFragmentManager().findFragmentById(R.id.fragment);
-
-            findViewById(R.id.spinningWheel).setVisibility(View.GONE);
-
-            resultsFragment.update("DNS Response = " + results.getAverageDNSResponseTime() + " ms\nLatency = " + results.getLatency() + " ms\nPacket Loss = " + results.getPacketLoss() + " packets");
-            //We expect this to always be completed and so we will move to the completed fragment
             checkStatus();
-
             //Set to idle because we can see the results and we want to reset
             TestState.getInstance().setState(TestState.State.IDLE, false);
         }
