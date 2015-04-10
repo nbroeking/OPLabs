@@ -31,6 +31,7 @@ public class TestResults implements Parcelable{
         averageDNSResponseTime = -1;
         latency = -1;
         this.id = id;
+        Log.i("CREATE", "ID = " + id);
     }
 
     public TestResults(Parcel in){
@@ -38,6 +39,7 @@ public class TestResults implements Parcelable{
         averageDNSResponseTime = in.readDouble();
         packetLoss = in.readDouble();
         latency = in.readDouble();
+        this.id = in.readInt();
 
         Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency);
     }
@@ -103,7 +105,7 @@ public class TestResults implements Parcelable{
         dest.writeDouble(averageDNSResponseTime);
         dest.writeDouble(packetLoss);
         dest.writeDouble(latency);
-        dest.writeDouble(jitter);
+        dest.writeInt(id);
     }
 
     //Create a parcel

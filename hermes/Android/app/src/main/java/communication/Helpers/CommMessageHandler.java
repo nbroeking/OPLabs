@@ -52,7 +52,7 @@ public class CommMessageHandler extends Handler {
     private final String StartTestURL = "/api/test_set/create";
     private final String StartMobileURL = "/api/start_test/mobile";
     private final String StartRouterURL = "/api/start_test/router";
-    private final String ReportResultURL = "/api/test_result/%s/edit";
+    private final String ReportResultURL = "/api/test_result/%d/edit";
 
     private SessionData data;
 
@@ -116,8 +116,6 @@ public class CommMessageHandler extends Handler {
 
     //This method reports our test to the server
     private void reportTest(TestResults results){
-        Log.i(TAG, "Report a TEST");
-        Log.i(TAG, "Login to server");
 
         HttpClient client = this.createHttpClient();
         HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
@@ -229,33 +227,6 @@ public class CommMessageHandler extends Handler {
 
         ((Communication)sender).sendBroadcast(intent);
 
-    }
-
-    //Allows us to self sign our own certificates. Should be removed when we get real certs
-    private HttpClient createHttpClient() {
-        try {
-            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
-
-            SSLSocketFactory sf = new HermesSocketFactory(trustStore);
-            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            HttpParams params = new BasicHttpParams();
-            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-            HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
-            HttpProtocolParams.setUseExpectContinue(params, true);
-            HttpConnectionParams.setConnectionTimeout(params, 8000);
-
-            SchemeRegistry schReg = new SchemeRegistry();
-            schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            schReg.register(new Scheme("https", sf, 443));
-            ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
-
-            return new DefaultHttpClient(conMgr, params);
-        } catch (Exception e) {
-            Log.e(TAG, "Error with Setting Key", e);
-        }
-        return null;
     }
 
     private Boolean startRouterTest(Handler sender, TestSettings settings)
@@ -478,5 +449,32 @@ public class CommMessageHandler extends Handler {
             Log.e(TAG, "Error creating Post", e);
         }
         return -1;
+    }
+
+    //Allows us to self sign our own certificates. Should be removed when we get real certs
+    private HttpClient createHttpClient() {
+        try {
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+
+            SSLSocketFactory sf = new HermesSocketFactory(trustStore);
+            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+            HttpParams params = new BasicHttpParams();
+            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+            HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
+            HttpProtocolParams.setUseExpectContinue(params, true);
+            HttpConnectionParams.setConnectionTimeout(params, 8000);
+
+            SchemeRegistry schReg = new SchemeRegistry();
+            schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            schReg.register(new Scheme("https", sf, 443));
+            ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
+
+            return new DefaultHttpClient(conMgr, params);
+        } catch (Exception e) {
+            Log.e(TAG, "Error with Setting Key", e);
+        }
+        return null;
     }
 }
