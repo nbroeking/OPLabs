@@ -15,7 +15,7 @@ public:
 
 DatagramSocket* sock;
 
-virtual void observe( int fd, int events ) {
+virtual void observe(HasRawFd* fd, int events ) {
     (void) fd;
     LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
     log.printfln(DEBUG, "observed called");

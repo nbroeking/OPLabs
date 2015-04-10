@@ -76,7 +76,7 @@ public:
      * @param fd the file descriptor to unsubscribe
      * @return true if the file descriptor was found and unsubscribed
      */
-    bool unsubscribe( HasRawFd* fd ) ;
+    void unsubscribe(HasRawFd* fd) ;
 
 
     /**
