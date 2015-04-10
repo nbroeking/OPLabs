@@ -53,6 +53,7 @@ public class CommMessageHandler extends Handler {
     private final String StartMobileURL = "/api/start_test/mobile";
     private final String StartRouterURL = "/api/start_test/router";
     private final String ReportResultURL = "/api/test_result/%d/edit";
+    private final String RouterResultsURL = "api/test_results/%d";
 
     private SessionData data;
 
