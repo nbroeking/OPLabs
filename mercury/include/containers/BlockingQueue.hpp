@@ -138,6 +138,7 @@ public:
      * @brief test to see if there are no elements in the queue
      */
     inline bool empty() {
+        os::ScopedLock( this->m_mutex ) ;
         return m_queue.empty();
     }
 
