@@ -177,8 +177,6 @@ public class ResultsActivity extends HermesActivity {
                         .show();
             }
             checkStatus();
-            //Set to idle because we can see the results and we want to reset
-            TestState.getInstance().setState(TestState.State.IDLE, false);
         }
     };
 }

@@ -21,6 +21,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
@@ -36,6 +37,7 @@ import java.util.List;
 
 import communication.Communication;
 import main.Application.SessionData;
+import tester.TestResults;
 import tester.TestService;
 import tester.helpers.TestMsg;
 import tester.helpers.TestSettings;
@@ -50,6 +52,7 @@ public class CommMessageHandler extends Handler {
     private final String StartTestURL = "/api/test_set/create";
     private final String StartMobileURL = "/api/start_test/mobile";
     private final String StartRouterURL = "/api/start_test/router";
+    private final String ReportResultURL = "/api/test_result/%s/edit";
 
     private SessionData data;
 
@@ -75,6 +78,13 @@ public class CommMessageHandler extends Handler {
 
             case CommMsg.REQUEST_TEST:
                 serverStartTest((Handler) msg.obj);
+                break;
+
+            case CommMsg.REPORT_TEST:
+                reportTest((TestResults)msg.obj);
+                break;
+
+
         }
 	}
 
@@ -93,19 +103,70 @@ public class CommMessageHandler extends Handler {
 
             if( startMobileTest(sender, settings))
             {
-               // if( startRouterTest(sender, settings))
-                //{
-                    Log.i(TAG, "Successfully told the router to start all tests");
-                    Message msg = obtain();
-                    msg.what = TestMsg.START_TEST;
-                    msg.obj = settings;
-                    sender.sendMessage(msg);
-                //}
+                //If there is an error with Start Router Test then we have null as a routerid
+                startRouterTest(sender, settings);
+                Log.i(TAG, "Successfully told the router to start all tests");
+                Message msg = obtain();
+                msg.what = TestMsg.START_TEST;
+                msg.obj = settings;
+                sender.sendMessage(msg);
             }
-
         }
     }
 
+    //This method reports our test to the server
+    private void reportTest(TestResults results){
+        Log.i(TAG, "Report a TEST");
+        Log.i(TAG, "Login to server");
+
+        HttpClient client = this.createHttpClient();
+        HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
+
+        try {
+
+            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+            post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8") +"&"+ results.getPost()));
+
+            HttpResponse response = client.execute(post);
+            HttpEntity entity = response.getEntity();
+
+            InputStream inputStream = null;
+
+            try {
+                inputStream = entity.getContent();
+                String result;
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String addline = line + "\n";
+                    sb.append(addline);
+                }
+                result = sb.toString();
+
+                //JSON Parser
+                JSONObject json = new JSONObject(result);
+                if (json.getString("status").equals("success")) {
+                    Log.d(TAG, "Received Status success");
+                } else {
+                    throw new Exception("Status failed reporting Results");
+                }
+
+                Log.i(TAG, "Reported Results");
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing json", e);
+            } finally {
+                try {
+                    if (inputStream != null) inputStream.close();
+                } catch (Exception s) {
+                    Log.e(TAG, "Could not close stream");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating Post", e);
+        }
+    }
     //This is the helper method that reaches out to the server and gets login information
     //It is run on the Communication Thread
     private void loginToServer(Service sender)
@@ -183,6 +244,7 @@ public class CommMessageHandler extends Handler {
             HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
             HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
             HttpProtocolParams.setUseExpectContinue(params, true);
+            HttpConnectionParams.setConnectionTimeout(params, 8000);
 
             SchemeRegistry schReg = new SchemeRegistry();
             schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -206,8 +268,6 @@ public class CommMessageHandler extends Handler {
         HttpPost post = new HttpPost(data.getHostname()+StartRouterURL);
 
         try {
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
-
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
             String postString = new String();
             postString += "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8");
@@ -239,12 +299,6 @@ public class CommMessageHandler extends Handler {
                 //JSON Parser
                 JSONObject json = new JSONObject(result);
 
-                //TODO:Create the settings object from the json
-                Message msg = obtain();
-                msg.what = TestMsg.START_TEST;
-                msg.obj = null;
-
-
                 if((json.getString("status").equals("success"))) {
                     Log.i(TAG, "Successful got router");
 
@@ -252,7 +306,6 @@ public class CommMessageHandler extends Handler {
                     return true;
                 }
                 //Send the settings to the tester
-                sender.sendMessage(msg);
             } catch (Exception e) {
                 Log.e(TAG, "Error parsing Router json", e);
             } finally {
@@ -264,7 +317,6 @@ public class CommMessageHandler extends Handler {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
-            data.setSessionId("ERROR");
         }
         return false;
     }
@@ -336,6 +388,9 @@ public class CommMessageHandler extends Handler {
                     //Set the timeout
                     settings.setTimeout(dns_config.getInt("timeout"));
 
+                    //Set the result ID
+                    settings.setResultID(json.getInt("result_id"));
+
                     return true;
                 }
                 else
@@ -359,7 +414,6 @@ public class CommMessageHandler extends Handler {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
-            data.setSessionId("ERROR");
         }
         return false;
     }
@@ -422,7 +476,6 @@ public class CommMessageHandler extends Handler {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
-            data.setSessionId("ERROR");
         }
         return -1;
     }

@@ -1,10 +1,16 @@
 package tester;
 
+import android.nfc.Tag;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by nbroeking on 4/1/15.
@@ -17,12 +23,14 @@ public class TestResults implements Parcelable{
     private double latency;
     private double jitter;
     private boolean valid;
+    private int id;
 
-    public TestResults(){
+    public TestResults(int id){
         valid = false;
         packetLoss = -1;
         averageDNSResponseTime = -1;
         latency = -1;
+        this.id = id;
     }
 
     public TestResults(Parcel in){
@@ -30,8 +38,51 @@ public class TestResults implements Parcelable{
         averageDNSResponseTime = in.readDouble();
         packetLoss = in.readDouble();
         latency = in.readDouble();
-        jitter = in.readDouble();
+
+        Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency);
     }
+
+    public String printValues()
+    {
+        return "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency;
+    }
+    public TestResults(JSONObject json){
+        try {
+            if (json.getString("status").equals("success")) {
+
+                averageDNSResponseTime = json.getDouble("dns_response_avg");
+                packetLoss = json.getDouble("packet_loss");
+                latency = json.getDouble("latency_avg");
+                return;
+            }
+            else
+            {
+                throw new JSONException("Failure");
+            }
+        } catch (JSONException e) {
+            valid = false;
+            packetLoss = -1;
+            averageDNSResponseTime = -1;
+            latency = -1;
+            Log.e("JSON ERROR", "Test Results constructor failed" ,e);
+        }
+
+    }
+    public String getPost(){
+
+        String results = new String();
+
+        try {
+            results += "dns_response_avg=" + URLEncoder.encode(Double.toString(averageDNSResponseTime), "UTF-8") + "&";
+            results += "packet_loss="+ URLEncoder.encode(Double.toString(packetLoss), "UTF-8") + "&";
+            results += "latency_avg=" + URLEncoder.encode(Double.toString(latency), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.e("Results", "Error creating post", e);
+        }
+
+        return results;
+    }
+
     public double getPacketLoss() {
         return packetLoss;
     }
@@ -89,11 +140,11 @@ public class TestResults implements Parcelable{
         this.latency = latency;
     }
 
-    public double getJitter() {
-        return jitter;
+    public int getId() {
+        return id;
     }
 
-    public void setJitter(double jitter) {
-        this.jitter = jitter;
+    public void setId(int id) {
+        this.id = id;
     }
 }

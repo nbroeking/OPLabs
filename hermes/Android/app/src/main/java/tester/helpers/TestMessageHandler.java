@@ -45,7 +45,7 @@ public class TestMessageHandler extends Handler {
 
                 if( msg.obj == null){
                     Log.e(TAG, "Received an error from the comm start test sub system");
-                    intent.putExtra("Results", new TestResults());
+                    intent.putExtra("Results", new TestResults(-1));
                 }
                 else {
                     //a call to start the test suit

@@ -15,6 +15,7 @@ public class TestSettings {
     private int timeout;
     private int setId;
     private int routerResultsID;
+    private int resultID;
 
     public TestSettings(){
         validDomains = new ArrayList<String>();
@@ -55,5 +56,13 @@ public class TestSettings {
     }
     public void setRouterResultsID(int routerResultsID) {
         this.routerResultsID = routerResultsID;
+    }
+
+    public int getResultID() {
+        return resultID;
+    }
+
+    public void setResultID(int resultID) {
+        this.resultID = resultID;
     }
 }

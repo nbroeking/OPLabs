@@ -34,7 +34,7 @@ public class PerformanceTester {
     //Return dns, packet latency, packet jitter, packet loss
     public TestResults runTests()
     {
-        TestResults results = new TestResults();
+        TestResults results = new TestResults(settings.getResultID());
         results.setValid();
 
         //Run a dns response Test
