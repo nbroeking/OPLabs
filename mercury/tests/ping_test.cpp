@@ -10,14 +10,16 @@ using namespace logger;
 class Observer: public ping::TestObserver {
 public:
     void onTestComplete(const ping::TestResults res) OVERRIDE {
+        (void) res;
         LogContext& log = LogManager::instance().getLogContext("Main", "Main");
         log.printfln(INFO, "Testing has completed");
     }
 };
 
 int main(int argc, char** argv) {
+    (void) argc; (void) argv;
     LogManager::instance().logEverything();
-    LogContext& log = LogManager::instance().getLogContext("Main", "Main");
+    // LogContext& log = LogManager::instance().getLogContext("Main", "Main");
 
     ping::TestProxy& test = ping::Test::instance();
     ping::TestConfig conf;

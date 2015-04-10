@@ -20,13 +20,15 @@ virtual void observe(HasRawFd* fd, int events ) {
     LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
     log.printfln(DEBUG, "observed called");
 
+    byte bytes[1024];
+    memset(bytes, 0, 1024);
     if( (events & POLLIN) != 0 ) {
         log.printfln(DEBUG, "Can read from socket");
 
         try {
-            uptr<SocketAddress> addr;
-            byte bytes[1024];
-            ssize_t len = sock->receive(bytes, 1024, addr.cleanref());
+            SocketAddress* addr;
+            ssize_t len = sock->receive(bytes, 1024, addr);
+            delete addr;
             
             log.printHex(DEBUG, bytes, len);
         } catch ( Exception& e ) {
@@ -43,20 +45,25 @@ virtual HasRawFd* getFd() {
 };
 
 int client() {
-    sleep(1);
-    try {
-        UnixAddress addr("/tmp/mynix.sock.cli");
-        addr.unlink();
-        UnixAddress saddr("/tmp/mynix.sock");
-        DatagramSocket sock;
-        sock.bind(addr);
+    LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
+    while(true) {
+        sleep(1);
+        try {
+            UnixAddress addr("/tmp/mynix.sock.cli");
+            addr.unlink();
+            UnixAddress saddr("/tmp/mynix.sock");
+            DatagramSocket sock;
+            sock.bind(addr);
+        
+            byte data[1024];
+            strcpy((char*)data, "Hello, World!");
+            log.printfln(INFO, "Write Data: %s", (char*)data);
+            sock.sendTo(data, strlen((char*)data), saddr);
+        } catch ( DatagramSocketException& e ) {
+            printf("Error %s", e.getMessage());
+        }
     
-        byte data[1024];
-        sock.sendTo(data, 1024, saddr);
-    } catch ( DatagramSocketException& e ) {
-        printf("Error %s", e.getMessage());
     }
-
     return 0;
 }
 
@@ -64,7 +71,7 @@ int main( int argc, char** argv ) {
     (void) argc ; (void) argv ;
     LogContext& log = LogManager::instance().getLogContext("Tests", "FileCollection");
     log.setEnabled(true);
-    LogManager::instance().enableAllForMajor("IO");
+    LogManager::instance().logEverything();
 
     log.printfln(INFO, "Start file collection test");
 

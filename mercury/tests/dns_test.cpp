@@ -11,6 +11,7 @@ using namespace logger;
 class Observer: public dns::TestObserver {
 public:
     void onTestComplete(const dns::TestResults& res) OVERRIDE {
+        (void)res;
         LogContext& log = LogManager::instance().getLogContext("Main", "Main");
         log.printfln(INFO, "Testing has completed");
         exit(0);
@@ -18,6 +19,7 @@ public:
 };
 
 int main(int argc, char** argv) {
+    (void) argc; (void) argv;
     LogManager::instance().logEverything();
     LogContext& log = LogManager::instance().getLogContext("Main", "Main");
 

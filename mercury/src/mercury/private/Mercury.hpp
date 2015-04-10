@@ -69,18 +69,17 @@ public:
         m_state_machine->sendStimulus(TEST_FINISHED);
     }
 
-    void observe(int fd, int events) OVERRIDE {
+    void observe(HasRawFd* fd, int events) OVERRIDE {
         (void) events;
-        if(fd == m_server_sock.getRawFd()) {
+        if(fd == &m_server_sock) {
             /* This is a server socket event */
             StreamSocket* client = m_server_sock.accept();
             m_log.printfln(INFO, "Client socket registered %d->%p", client->getRawFd(), client);
-            (*m_clients.get())[client->getRawFd()] = client;
             getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, client, this);
         } else {
             /* this is one of the clients that have done something */
             m_log.printfln(DEBUG, "Witness observation on fd %d", fd);
-            StreamSocket* sock = getClientSocket(fd);
+            StreamSocket* sock = dynamic_cast<StreamSocket*>(fd);
             if(!sock) {
                 m_log.printfln(WARN, "Event from unknown client socket");
             } else {
@@ -92,7 +91,6 @@ public:
                 } else {
                     handle_input_received(l_bytes);
                     /* close and delete client */
-                    m_clients.get()->erase(fd);
                     delete sock;
 
                     getFileCollection().unsubscribe(fd);
@@ -145,15 +143,6 @@ private:
         wait_for_exit();
     }
 
-    StreamSocket* getClientSocket(int fd) {
-        Atomic<ClientMapT> clients = m_clients.get();
-        ClientMapT::iterator itr = clients->find(fd);
-        if(itr == clients->end()) {
-            return NULL;
-        }
-        return itr->second;
-    }
-
     void bind_server_sock() {
         Inet4Address addr(INADDR_ANY, 8639);
         m_log.printfln(INFO, "Binding to address %s", addr.toString().c_str());
@@ -173,8 +162,6 @@ private:
     StreamServerSocket m_server_sock;
     LogContext m_log;
 
-    typedef map<int, StreamSocket*> ClientMapT;
-    AtomicHolder<ClientMapT> m_clients;
 
     GlobPutter m_response_putter;
     byte* m_response;

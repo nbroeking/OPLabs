@@ -72,7 +72,9 @@ typedef std::map<FileCollectionObserver*, dealloc_T*> dealloc_map_T;
 class FileCollection::Poller: public os::ManagedRunnable {
 public:
     Poller(FileCollection& fc): m_super(fc),
-        m_log(LogManager::instance().getLogContext("FileCollection", "Poller")) {}
+        m_log(LogManager::instance().getLogContext("FileCollection", "Poller")) {
+            pipe(m_pipe);
+        }
 
     /**
      *  Fires an event for the file descriptor
@@ -92,6 +94,7 @@ public:
     void run() {
         m_log.printfln(DEBUG, "Start Poller::run()");
         for(;;) {
+            handle_commands(); /* Is there something I need to do */
             vector<struct pollfd> poll_data;
             map_T::iterator itr;
 
@@ -99,6 +102,7 @@ public:
              * Setup the poll structure
              */
             for(itr = m_map.begin(); itr != m_map.end(); ++ itr) {
+                m_log.printfln(TRACE, "Adding %d for subscription", itr->first);
                 struct pollfd pfd;
                 pfd.revents = 0;
                 pfd.fd = itr->first;
@@ -344,11 +348,13 @@ void FileCollection::stop() {
 void FileCollection::subscribe(SubscriptionType typ, HasRawFd* fd,
                                 FileCollectionObserver* observer,
                                 dealloc_T* dealloc) {
+    m_log.printfln(TRACE, "FileCollection::subscribe");
     m_poller->enqueue_subscribe(fd, typ, observer, dealloc);
     m_poller->interrupt();
 }
 
 void FileCollection::unsubscribe(HasRawFd* fd) {
+    m_log.printfln(TRACE, "FileCollection::unsubscribe");
     m_poller->enqueue_unsubscribe(fd);
     m_poller->interrupt();
 }

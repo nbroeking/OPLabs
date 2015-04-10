@@ -42,7 +42,7 @@ public:
     }
 
     /* Begin implementation of non-state machine related {{{ */
-    virtual void observe(int fd, int events) OVERRIDE {
+    virtual void observe(HasRawFd* fd, int events) OVERRIDE {
         (void) fd; (void) events;
         m_log->printfln(TRACE, "Observation on ICMP socket");
         ICMPPacket packet;

@@ -44,7 +44,7 @@ public:
         getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ, &m_socket, this);
     }
     /* wait for observations in the DnsTestImpl */
-    void observe(int fd, int events) OVERRIDE {
+    void observe(HasRawFd* fd, int events) OVERRIDE {
         (void) fd; (void) events;
         m_log->printfln(TRACE, "Observation in udp socket");
 
