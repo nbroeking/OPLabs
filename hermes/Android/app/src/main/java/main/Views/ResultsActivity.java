@@ -32,11 +32,11 @@ public class ResultsActivity extends HermesActivity {
         Log.i(TAG, "OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.ResultsFrame, new AnimationFragment())
                     .commit();
-        }
+        }*/
         testBound = false;
         testService = null;
     }
@@ -165,6 +165,14 @@ public class ResultsActivity extends HermesActivity {
                         .setIcon(R.drawable.ic_launcher)
                         .show();
             }
+
+            AnimationFragment animationFragment =
+                    (AnimationFragment)
+                            getSupportFragmentManager().findFragmentById(R.id.fragment);
+
+            findViewById(R.id.spinningWheel).setVisibility(View.GONE);
+
+            animationFragment.update("DNS Response = " + results.getAverageDNSResponseTime() + " ms\nLatency = " + results.getLatency() + " ms\nPacket Loss = " + results.getPacketLoss() + " packets");
             //We expect this to always be completed and so we will move to the completed fragment
             checkStatus();
 

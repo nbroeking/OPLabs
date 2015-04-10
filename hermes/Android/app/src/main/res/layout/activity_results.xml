@@ -7,6 +7,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
+    android:gravity="center"
     tools:context="main.Views.MainActivity" >
 
 
@@ -15,5 +16,20 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true" >
+
+        <ProgressBar
+            android:id="@+id/spinningWheel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <fragment
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:name="main.Views.AnimationFragment"
+            android:id="@+id/fragment"
+            android:layout_gravity="center_horizontal|top"
+            tools:layout="@layout/fragment_results" />
+    </FrameLayout>
 </RelativeLayout>
