@@ -49,13 +49,15 @@ public:
     /* CURL Asyc Observer */
     void onOK(http_response_code_t status_code) {
         m_log.printfln(INFO, "Curl returned status %d", status_code);
+
+        delete[] m_response;
+        m_response_putter.putByte(0);
+        m_response = m_response_putter.serialize(m_response_len);
+        m_response_putter.clear();
+        m_mercury_state_machine.m_response = m_response;
+        m_mercury_state_machine.m_response_len = m_response_len;
+
         if(status_code == 200) {
-            delete[] m_response;
-            m_response_putter.putByte(0);
-            m_response = m_response_putter.serialize(m_response_len);
-            m_response_putter.clear();
-            m_mercury_state_machine.m_response = m_response;
-            m_mercury_state_machine.m_response_len = m_response_len;
             m_state_machine->sendStimulus(GOOD_REQUEST);
         } else {
             m_state_machine->sendStimulus(BAD_REQUEST);
@@ -92,6 +94,7 @@ private:
         m_state_machine->setEdge(DNS_TEST_RUNNING, DNS_TEST_FINISHED, &Mercury_StateMachine::onDnsComplete);
 
         m_state_machine->setEdge(POSTING_DNS_RESULTS, GOOD_REQUEST, &Mercury_StateMachine::onDnsResultsPosted);
+        m_state_machine->setEdge(POSTING_DNS_RESULTS, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
         newThread(*m_state_machine)->start();
     }
 

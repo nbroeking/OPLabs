@@ -115,9 +115,7 @@ public:
 
 private:
     Json(json_t* raw):
-        m_raw(raw){
-            printf("m_raw created %p\n", m_raw);
-        }
+        m_raw(raw){}
     
     json_t* m_raw;
 };

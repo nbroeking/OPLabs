@@ -1,5 +1,6 @@
 #include <cstdio>
 
+#include <io/FilePointer.hpp>
 #include <io/Inet4Address.hpp>
 #include <io/Resolv.hpp>
 #include <io/ServerSocket.hpp>
@@ -43,11 +44,15 @@ public:
     MercuryConfig():
         logEverything(false),
         controller_url("http://127.0.0.1:5000/"),
-        bind_ip(new Inet4Address("127.0.0.1", 8639)) {}
+        bind_ip(new Inet4Address("127.0.0.1", 8639)),
+        log_out(NULL),
+        colors(true) {}
 
     bool logEverything;
     std::string controller_url;
     SocketAddress* bind_ip;
+    BaseIO* log_out;
+    bool colors;
 };
 
 template<>
@@ -65,6 +70,23 @@ struct JsonBasicConvert<MercuryConfig> {
             ret.bind_ip = jsn["bind_ip"].convert<SocketAddress*>();
             delete old;
         }
+        if(jsn.hasAttribute("logFile")) {
+            FILE* f = fopen(jsn["logFile"].stringValue().c_str(), "w");
+            if(f) {
+                io::FilePointer* fp = new io::FilePointer(f);
+                ret.log_out = fp;
+            } else {
+                fprintf(stderr, "Unable to open log file. Logging to stdout\n");
+                ret.log_out = new io::FilePointer(stdout);
+            }
+        } else {
+            ret.log_out = new io::FilePointer(stdout);
+        }
+
+        if(jsn.hasAttribute("colors")) {
+            ret.colors = jsn["colors"] != 0;
+        }
+
         return ret;
     }
 };
@@ -171,6 +193,10 @@ int main( int argc, char** argv ) {
     } catch(Exception& exp) {
         fprintf(stderr, "Unable to load config file: %s\n", exp.getMessage());
     };
+
+    if(conf.log_out) {
+        LogManager::instance().sendToIO(conf.log_out, conf.colors);
+    }
 
     if(conf.logEverything) {
         LogManager::instance().logEverything();

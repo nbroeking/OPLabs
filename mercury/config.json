@@ -1,5 +1,7 @@
 {
     "logEverything": 1,
     "controller_url": "http://10.201.23.228:5000",
-    "bind_ip": "0.0.0.0:8639"
+    "bind_ip": "0.0.0.0:8639",
+    "logFile": "mercury.log",
+    "logColor": 1
 }

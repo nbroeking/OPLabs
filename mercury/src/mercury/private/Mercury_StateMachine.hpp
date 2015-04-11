@@ -96,7 +96,9 @@ void sendDnsResults(const dns::TestResults& res) {
     Json to_send = Json::from(res);
     char post_chars[4096];
 
-    snprintf(post_chars, sizeof(post_chars), "data=%s\nrouter_token=%s\n",
+    Json tmp = Json::fromString("finished");
+    to_send.setAttribute("status", tmp);
+    snprintf(post_chars, sizeof(post_chars), "data=%s&router_token=%s",
         to_send.toString().c_str(), m_id_b64.c_str());
 
     Curl request;
@@ -166,8 +168,19 @@ State onGoodRequest() {
 
 State onBadRequest() {
     m_log.printfln(WARN, "Bad request made.");
+    m_log.printHex(DEBUG, m_response, m_response_len);
     m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
     return TIMEOUT;
+}
+
+State exitSoftly() {
+    exit(0);
+}
+
+State exitHard() {
+    m_log.printfln(DEBUG, "Bad response:");
+    m_log.printHex(DEBUG, m_response, m_response_len);
+    exit(1);
 }
 
 State onDnsResultsPosted() {
@@ -177,7 +190,9 @@ State onDnsResultsPosted() {
 
 State onWaitTimeoutComplete() {
     m_log.printfln(INFO, "Timeout complete");
-    return POSTING_DNS_RESULTS;
+    exit(1);
+
+    return IDLE; /* shouldn't return */
 }
 
 State onPingTestFinished() {

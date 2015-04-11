@@ -29,12 +29,13 @@ public:
 };
 
 
-inline json::Json cov_float(float f) {
+inline bool cov_float(float f, json::Json& out) {
     using namespace json;
     if(std::isnan(f)) {
-        return Json::fromFloat(-1.0);
+        return false;
     } else {
-        return Json::fromFloat(f);
+        out = Json::fromFloat(f);
+        return true;
     }
 }
 
@@ -48,20 +49,20 @@ struct JsonBasicConvert<dns::TestResults> {
 
         Json tmp;
 
-        tmp = dns::cov_float(str.valid_avg_response_time_mircos / 1000.0);
-        ret.setAttribute("latency_avg", tmp);
+        if(dns::cov_float(str.valid_avg_response_time_mircos / 1000.0, tmp))
+            ret.setAttribute("latency_avg", tmp);
 
-        tmp = dns::cov_float(str.valid_response_time_stdev / 1000.0);
-        ret.setAttribute("latency_sdev", tmp);
+        if(dns::cov_float(str.valid_response_time_stdev / 1000.0, tmp))
+            ret.setAttribute("latency_sdev", tmp);
 
-        tmp = dns::cov_float(str.invalid_avg_response_time_mircos / 1000.0);
-        ret.setAttribute("dns_response_avg", tmp);
+        if(dns::cov_float(str.invalid_avg_response_time_mircos / 1000.0, tmp))
+            ret.setAttribute("dns_response_avg", tmp);
 
-        tmp = dns::cov_float(str.invalid_response_time_stdev / 1000.0);
-        ret.setAttribute("dns_response_sdev", tmp);
+        if(dns::cov_float(str.invalid_response_time_stdev / 1000.0, tmp))
+            ret.setAttribute("dns_response_sdev", tmp);
 
-        tmp = dns::cov_float(str.packets_lost_ratio / 1000.0);
-        ret.setAttribute("packet_loss", tmp);
+        if(dns::cov_float(str.packets_lost_ratio, tmp))
+            ret.setAttribute("packet_loss", tmp);
 
         return ret;
     }

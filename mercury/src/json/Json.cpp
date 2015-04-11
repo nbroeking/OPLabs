@@ -177,7 +177,6 @@ void Json::setAttribute(const char* attr, const Json& json) {
     if(getType() != JSON_OBJECT) {
         throw JsonException("Not an object in setAttribute");
     }
-    printf("JSON ATTR RAW: %p", json.m_raw);
     json_object_set_new(m_raw, attr, json_copy(json.m_raw));
 }
 

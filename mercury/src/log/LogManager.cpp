@@ -19,13 +19,16 @@ LogContext& LogManager::_getLogContext(const std::string& maj, const std::string
         if ( enabled_majors.find(maj) != enabled_majors.end() ) {
             ctx->setEnabled(true);
         }
+
+        if(m_out != NULL) {
+            ctx->redirect(m_out, m_color);
+        }
     }
 
     return * m_db[maj][min];
 }
 
 void LogManager::_getLogsForMajor(const std::string& maj, iterator& begin, iterator& end) {
-
     std::map< std::string, LogContext* >& m = m_db[maj];
     begin = m.begin();
     end = m.end();
@@ -56,6 +59,11 @@ void LogManager::_logEverything() {
             cur->second->setMinimumLevel( defaultLevel );
         }
     }
+}
+
+void LogManager::sendToIO(io::BaseIO* next, bool color) {
+    m_out = next;
+    m_color = color;
 }
 
 }

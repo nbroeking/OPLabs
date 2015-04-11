@@ -85,6 +85,8 @@ public:
         _logEverything();
     }
 
+    void sendToIO(io::BaseIO* next, bool color);
+
     void setDefaultLevel( const LogLevel& lev ) {
         this->defaultLevel = lev;
     }
@@ -107,6 +109,9 @@ private:
     LogLevel defaultLevel;
     map_type m_db;
     os::Mutex m_mutex;
+
+    io::BaseIO* m_out;
+    bool m_color;
 };
 
 }
