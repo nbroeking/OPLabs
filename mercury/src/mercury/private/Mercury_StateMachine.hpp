@@ -31,7 +31,7 @@ enum State {
     IDLE,
     REQUEST_MADE,
     TIMEOUT,
-    PING_TEST_RUNNING
+    DNS_TEST_RUNNING
 };
 
 enum Stim {
@@ -39,17 +39,17 @@ enum Stim {
     BAD_REQUEST,
     GOOD_REQUEST,
     WAIT_TIMEOUT,
-    TEST_FINISHED
+    DNS_TEST_FINISHED
 };
 
 ENUM_TO_STRING(State, 4,
     "Idle", "RequestMade",
-    "Timeout", "TestStarted")
+    "Timeout", "DnsTestStarted")
 
 ENUM_TO_STRING(Stim, 5,
     "Start",
     "BadRequest", "GoodRequest",
-    "WaitTimeout", "PingTestRunning")
+    "WaitTimeout", "DnsTestFinished")
 
 #define ID_SIZE 32
 
@@ -97,16 +97,20 @@ State onStart() {
     m_log.printfln(DEBUG, "base64 encoded id: %s", id_enc.c_str());
 
     Curl request;
-    char post_data[128];
-    snprintf(post_data, sizeof(post_data), "id=%s", id_enc.c_str());
 
+    m_post_fields = string("router_token=") + id_enc;
     m_current_url = m_config.controller_url + "/api/router/get_config";
-    setup_curl(request, m_current_url.c_str(), post_data);
+    setup_curl(request, m_current_url.c_str(), m_post_fields.c_str());
 
-    m_log.printfln(INFO, "sending curl request with data %s", post_data);
+    m_log.printfln(INFO, "sending curl request with data %s", m_post_fields.c_str());
     m_async_curl.sendRequest(request, m_observer);
 
     return REQUEST_MADE;
+}
+
+State onDnsComplete() {
+    exit(0);
+    return IDLE;
 }
 
 State onGoodRequest() {
@@ -136,7 +140,7 @@ State onGoodRequest() {
     dns::Test::instance().startTest(conf.dns_test_config, m_observer);
 
     /* Start the ping test */
-    return PING_TEST_RUNNING;
+    return DNS_TEST_RUNNING;
 }
 
 State onBadRequest() {
@@ -147,6 +151,7 @@ State onBadRequest() {
 
 State onWaitTimeoutComplete() {
     m_log.printfln(INFO, "Timeout complete");
+    exit(1);
     return IDLE;
 }
 
@@ -178,6 +183,7 @@ byte* m_response;
 StateMachine<Stim, Mercury_StateMachine, State>* m_state_machine;
 
 std::string m_current_url; /* For garbage collection */
+std::string m_post_fields;
 Config m_config;
 };
 

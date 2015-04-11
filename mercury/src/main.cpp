@@ -35,6 +35,9 @@ byte mercury_magic_cookie[32] = {
     0xf7, 0x14, 0x17, 0x62, 0x53, 0x4a, 0xa9, 0x7e, 
 };
 
+Mutex g_mutex;
+Condition g_cond;
+
 class MercuryConfig {
 public:
     MercuryConfig():
@@ -67,6 +70,8 @@ struct JsonBasicConvert<MercuryConfig> {
 };
 
 void sigchld_hdlr(int sig) {
+    ScopedLock __sl(g_mutex);
+    g_cond.signal();
 }
 
 int startMercury(LogContext& m_log, MercuryConfig& config) {
@@ -109,8 +114,22 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
                 int res = 0;
                 pid_t pid;
 
-                /* Wait for the child to exit */
-                if((pid = waitpid(child, &res, 0))) {
+                /* Wait for the child to exit. this
+                 * condition will be signaled by the
+                 * sigchld handler */
+                if(!g_cond.timedwait(g_mutex, 30 SECS)) {
+                    /* The child is taking too long to return
+                     * kill it */
+                    m_log.printfln(WARN, "Child timeout, sending SIGTERM");
+                    kill(child, SIGTERM);
+                    if(!g_cond.timedwait(g_mutex, 30 SECS)) {
+                        /* The child still isn't dead */
+                        m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
+                        kill(child, SIGKILL);
+                    }
+                }
+
+                if((pid = waitpid(child, &res, WNOHANG))) {
                     if(pid == -1) {
                         m_log.printfln(ERROR, "Error in waitpid %s", strerror(errno));
                     } else {
@@ -118,8 +137,12 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
                     }
                 }
 
-                if( WEXITSTATUS(res) ) {
+                if(WEXITSTATUS(res)) {
                     m_log.printfln(WARN, "Child returned abnormal status: %d", WEXITSTATUS(res));
+                }
+
+                if(WIFSTOPPED(res)) {
+                    m_log.printfln(WARN, "Child timedout and was killed by parent");
                 }
             }
         } else {
@@ -135,12 +158,16 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
 int main( int argc, char** argv ) {
     (void) argc ; (void) argv ;
 
+    ScopedLock __sl(g_mutex);
+
     MercuryConfig conf;
+    SocketAddress* old = conf.bind_ip;
     signal(SIGCHLD, sigchld_hdlr);
 
     try {
         Json* jsn = Json::fromFile("config.json");
         conf = jsn->convert<MercuryConfig>();
+        delete old;
     } catch(Exception& exp) {
         fprintf(stderr, "Unable to load config file: %s\n", exp.getMessage());
     };

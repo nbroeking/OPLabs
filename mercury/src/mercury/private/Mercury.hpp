@@ -70,7 +70,7 @@ public:
     void onTestComplete(const dns::TestResults& res) {
         m_log.printfln(DEBUG, "Test results in avg_latency=%fs; packets_lost=%d",
             res.valid_avg_response_time_mircos/1e6, res.valid_packets_lost);
-        m_state_machine->sendStimulus(TEST_FINISHED);
+        m_state_machine->sendStimulus(DNS_TEST_FINISHED);
     }
     void run() OVERRIDE {
         ScopedLock __sl(m_mutex);
@@ -86,6 +86,7 @@ private:
         m_state_machine->setEdge(REQUEST_MADE, GOOD_REQUEST, &Mercury_StateMachine::onGoodRequest);
         m_state_machine->setEdge(REQUEST_MADE, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
         m_state_machine->setEdge(TIMEOUT, WAIT_TIMEOUT, &Mercury_StateMachine::onWaitTimeoutComplete);
+        m_state_machine->setEdge(DNS_TEST_RUNNING, DNS_TEST_FINISHED, &Mercury_StateMachine::onDnsComplete);
         newThread(*m_state_machine)->start();
     }
 

@@ -87,22 +87,13 @@ public:
         }
     }
 
-    State onTimeout() {
-        m_latency_times->push_back(-1);
-        return send_dns();
-    }
-
-    State onPacketReceieved() {
-        /* Add to the latency times */
-        timeout_t to = Time::currentTimeMicros();
-        m_log->printfln(DEBUG, "Packet %d. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
-        m_latency_times->push_back(to - sent_time);
+    State move_along() {
         if(packets_sent < 1) {
             /* we send 50 dns requests for each
              * host to resolve */
             return send_dns();
         } else {
-            m_log->printfln(DEBUG, "All 50 packets have been sent");
+            m_log->printfln(DEBUG, "All packets have been sent");
             /* We either move on to the next set
              * of dns hosts, or resolve the next host */
             packets_sent = 0;
@@ -130,6 +121,19 @@ public:
                 }
             }
         }
+    }
+
+    State onTimeout() {
+        m_latency_times->push_back(-1);
+        return move_along();
+    }
+
+    State onPacketReceieved() {
+        /* Add to the latency times */
+        timeout_t to = Time::currentTimeMicros();
+        m_log->printfln(DEBUG, "Packet %d. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
+        m_latency_times->push_back(to - sent_time);
+        return move_along();
     }
 
     virtual void startTest(const TestConfig& conf, TestObserver* obs) {
