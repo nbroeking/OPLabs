@@ -87,24 +87,3 @@ def start_test(test_type=None):
     return JSON_FAILURE(
             reason="Invalid test type!"
             )
-
-@rest_blueprint.route("/router/get_config", methods=['POST'])
-@requires_router_token()
-def get_config():
-    ip = request.remote_addr
-    token = request.form['id'].strip()
-
-    rec = TestResult.get_result_by_token_ip(token, ip)
-
-    if not rec:
-        return JSON_FAILURE()
-
-    rec.state = 'running'
-    db.session.commit()
-    rec.save()
-
-    config = TestConfiguration()
-
-    return JSON_SUCCESS(
-            config=config.get_config()
-        )

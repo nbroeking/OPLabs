@@ -64,7 +64,7 @@ def get_result(result_id=None):
         return invalid_res
 
     columns = TestResult.get_public_columns()
-    print result.state
+
     return_vals = {}
     for col in columns:
         return_vals[col] = getattr(result, col)
