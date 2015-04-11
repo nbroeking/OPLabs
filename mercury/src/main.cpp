@@ -12,6 +12,7 @@
 #include <json/JsonMercuryTempl.hpp>
 
 #include <log/LogManager.hpp>
+#include <log/LogServer.hpp>
 
 #include <mercury/Mercury.hpp>
 
@@ -46,13 +47,19 @@ public:
         controller_url("http://127.0.0.1:5000/"),
         bind_ip(new Inet4Address("127.0.0.1", 8639)),
         log_out(NULL),
-        colors(true) {}
+        colors(true),
+        default_level(NULL),
+        log_server(NULL)
+        {}
 
     bool logEverything;
     std::string controller_url;
     SocketAddress* bind_ip;
     BaseIO* log_out;
     bool colors;
+    LogLevel* default_level;
+    
+    SocketAddress* log_server;
 };
 
 template<>
@@ -70,6 +77,7 @@ struct JsonBasicConvert<MercuryConfig> {
             ret.bind_ip = jsn["bind_ip"].convert<SocketAddress*>();
             delete old;
         }
+
         if(jsn.hasAttribute("logFile")) {
             FILE* f = fopen(jsn["logFile"].stringValue().c_str(), "w");
             if(f) {
@@ -77,14 +85,22 @@ struct JsonBasicConvert<MercuryConfig> {
                 ret.log_out = fp;
             } else {
                 fprintf(stderr, "Unable to open log file. Logging to stdout\n");
-                ret.log_out = new io::FilePointer(stdout);
             }
-        } else {
-            ret.log_out = new io::FilePointer(stdout);
         }
 
-        if(jsn.hasAttribute("colors")) {
-            ret.colors = jsn["colors"] != 0;
+        if(jsn.hasAttribute("defaultLogLevel")) {
+            ret.default_level = LogLevel::getLogLevelByName(jsn["defaultLogLevel"].stringValue().c_str());
+        }
+
+        if(jsn.hasAttribute("logColors")) {
+            ret.colors = jsn["logColors"] != 0;
+        }
+
+        if(jsn.hasAttribute("logServerBindAddress")) {
+            ret.log_server = jsn["logServerBindAddress"].convert<SocketAddress*>();
+            if(ret.log_server->linkProtocol() == AF_UNIX) {
+                dynamic_cast<UnixAddress*>(ret.log_server)->unlink();
+            }
         }
 
         return ret;
@@ -164,7 +180,7 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
                 }
 
                 if(WIFSTOPPED(res)) {
-                    m_log.printfln(WARN, "Child timedout and was killed by parent");
+                    m_log.printfln(WARN, "Child timed out and was killed by parent");
                 }
             }
         } else {
@@ -195,18 +211,30 @@ int main( int argc, char** argv ) {
     };
 
     if(conf.log_out) {
-        LogManager::instance().sendToIO(conf.log_out, conf.colors);
+        LogManager::instance().addLogOutput(conf.log_out, conf.colors);
     }
 
     if(conf.logEverything) {
         LogManager::instance().logEverything();
     }
 
-    LogContext& m_log = LogManager::instance().getLogContext("Main", "Main");
-    m_log.printfln(INFO, "Mercury started");
+    if(conf.default_level) {
+        LogManager::instance().setDefaultLevel(*conf.default_level);
+    }
+
     try {
+        if(conf.log_server) {
+            LogServer* log_server = new LogServer(*conf.log_server);
+            Thread* __th = new Thread(*log_server);
+            __th->start();
+        }
+    
+    
+        LogContext& m_log = LogManager::instance().getLogContext("Main", "Main");
+        m_log.printfln(INFO, "Mercury started");
         return startMercury(m_log, conf);
     } catch(Exception& exp) {
+        LogContext& m_log = LogManager::instance().getLogContext("Main", "Main");
         m_log.printfln(FATAL, "Uncaught exception: %s", exp.getMessage());
         return 127;
     }

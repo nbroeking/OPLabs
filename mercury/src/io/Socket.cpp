@@ -20,7 +20,7 @@ ssize_t StreamSocket::read( byte* out, size_t len ) {
 }
 
 ssize_t StreamSocket::write( const byte* in, size_t len ) {
-    ssize_t ret = ::write( m_fd, in, len );
+    ssize_t ret = ::send( m_fd, in, len, m_options );
     if ( ret < 0 ) {
         throw CException("Unable to write", ret);
     }

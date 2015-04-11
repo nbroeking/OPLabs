@@ -1,6 +1,9 @@
 #include <log/LogContext.hpp>
 #include <io/FilePointer.hpp>
 
+#include <os/Atomic.hpp>
+#include <stdio.h>
+
 const logger::LogLevel TRACE(34, "TRACE", 1, true);
 const logger::LogLevel DEBUG(35, "DEBUG", 5, true);
 
@@ -12,9 +15,26 @@ const logger::LogLevel ERROR(31, "ERROR", 20, true);
 const logger::LogLevel FATAL(31, "FATAL", 15, false);
 
 using namespace std;
+using namespace os;
 
+#include <map>
 
 namespace logger {
+
+AtomicHolder<map<std::string, LogLevel*> >& get_g_log_level_db() {
+    static AtomicHolder<map<std::string, LogLevel*> > ret;
+    return ret;
+}
+
+void LogLevel::register_self() {
+    Atomic<map<string, LogLevel*> > m_atomic = get_g_log_level_db().get();
+    (*m_atomic)[this->text] = this;
+}
+
+LogLevel* LogLevel::getLogLevelByName(const char* name) {
+    Atomic<map<string, LogLevel*> > m_atomic = get_g_log_level_db().get();
+    return (*m_atomic)[name];
+}
 
 io::FilePointer p_stdout(stdout);
 

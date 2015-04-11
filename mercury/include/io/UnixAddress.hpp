@@ -48,6 +48,8 @@ public:
      * @brief Deletes the named socket from the filesystem.
      */
     void unlink();
+
+    virtual ~UnixAddress();
 };
 
 }

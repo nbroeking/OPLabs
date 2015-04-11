@@ -20,7 +20,7 @@
     }
 
 #define FOR_EACH(itr, vec)\
-    for( itr = vec.begin() ; itr != vec.end() ; ++ itr )
+    for( itr = (vec).begin() ; itr != (vec).end() ; ++ itr )
 
 /**
  * @brief A simple class that acts like a pointer, but deletes itself after going out of scope

@@ -98,7 +98,6 @@ public:
     }
 
     ~Json() {
-        printf("m_raw=%p\n", m_raw);
         json_delete(m_raw);
     };
 

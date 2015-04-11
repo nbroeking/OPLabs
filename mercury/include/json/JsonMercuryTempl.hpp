@@ -8,8 +8,10 @@
  */
 
 #include <json/Json.hpp>
+
 #include <io/Inet4Address.hpp>
 #include <io/Inet6Address.hpp>
+#include <io/UnixAddress.hpp>
 
 template <>
 struct JsonBasicConvert<io::Inet4Address> {
@@ -75,7 +77,12 @@ struct JsonBasicConvert<io::SocketAddress*> {
     static io::SocketAddress* convert(const json::Json& jsn) {
         std::string str = jsn.stringValue();
         size_t idx;
-        if((idx = str.find(':')) != std::string::npos &&
+        if(str.compare(0, 6, "unix:/") == 0) {
+            if(str.size() < 7 || str[6] != '/') {
+                throw json::JsonException("Parse error in UnixAddress");
+            }
+            return new io::UnixAddress(str.substr(6).c_str());
+        } else if((idx = str.find(':')) != std::string::npos &&
             (str.rfind(':') != idx)) { /* If there are 2 ':' in the address */
             io::Inet6Address* ret = new io::Inet6Address(
                 JsonBasicConvert<io::Inet6Address>::convert(jsn)

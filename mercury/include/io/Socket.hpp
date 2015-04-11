@@ -31,7 +31,7 @@ public:
     /**
      * @brief Construct a new socket
      */
-    inline StreamSocket() : m_is_closed( true ) { m_fd = -1; } ;
+    inline StreamSocket() : m_is_closed(true), m_options(0) { m_fd = -1; } ;
 
     /**
      * @brief Contstruct a new socket from a c style berekly socket
@@ -44,7 +44,7 @@ public:
      * destroyed
      */
     inline StreamSocket(int fd, bool is_closed) :
-        m_is_closed( is_closed ) {m_fd = fd;}
+        m_is_closed( is_closed ), m_options(0) {m_fd = fd;}
 
     
     /**
@@ -78,8 +78,13 @@ public:
         return m_is_closed;
     }
 
+    inline void setOption(int option) {
+        m_options |= option;
+    }
+
 private:
     bool m_is_closed;
+    int m_options;
 };
 
 

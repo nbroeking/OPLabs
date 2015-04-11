@@ -121,7 +121,7 @@ private:
     Mercury_StateMachine m_mercury_state_machine;
     StateMachine<Stim, Mercury_StateMachine, State>* m_state_machine; /* Construct this when we run */
     StreamServerSocket m_server_sock;
-    LogContext m_log;
+    LogContext& m_log;
 
 
     GlobPutter m_response_putter;

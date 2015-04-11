@@ -10,6 +10,7 @@
 class HasRawFd {
 public:
     virtual int getRawFd() = 0;
+    virtual inline ~HasRawFd(){};
 };
 
 class HasFdTmpl: public HasRawFd {

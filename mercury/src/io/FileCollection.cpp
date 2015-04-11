@@ -12,6 +12,7 @@
 #endif
 
 #include <io/FileCollection.hpp>
+#include <io/FilePointer.hpp>
 
 using namespace std;
 using namespace logger;
@@ -75,6 +76,10 @@ public:
         m_log(LogManager::instance().getLogContext("FileCollection", "Poller")),
         m_stop(false) {
             pipe(m_pipe);
+            /* Have to be _very_ careful with the Poller log as
+             * the log system itself uses the poller and odd stuff
+             * may break */
+            m_log.redirect(FilePointer::getStandardOut(), true);
 
             /* m_pipe[0] */
             int opts = fcntl(m_pipe[0], F_GETFL);
@@ -340,7 +345,7 @@ public:
     ptr_map_T m_reverse_lookup; /* ptr -> int */
 
     FileCollection& m_super; /* The owner of this Poller */
-    LogContext m_log;
+    LogContext& m_log;
 
     int m_pipe[2]; /* Pipeline used to clear */
     bool m_stop; /* true if should stop */

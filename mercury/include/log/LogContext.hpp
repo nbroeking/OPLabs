@@ -40,6 +40,8 @@ public:
             bold?1:0, color);
         this->esc = txt;
         this->text = name;
+
+        register_self();
     }
 
     /**
@@ -53,6 +55,8 @@ public:
         this->esc = std::string(esc);
         text = name;
         level = lev;
+
+        register_self();
     }
 
     std::string esc;
@@ -72,6 +76,11 @@ public:
             out.printf("%s",  text.c_str());
         }
     }
+
+    static LogLevel* getLogLevelByName(const char* name);
+
+private:
+    void register_self();
 };
 
 class HollowLock {
@@ -152,13 +161,16 @@ public:
      */
     inline void redirect(io::BaseIO* next, bool color) {
         out.setBaseIO(next);
-        color = color;
+        this->color = color;
     }
 
 private:
     void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) ;
     friend class LogManager;
+
     LogContext(const std::string& maj, const std::string& minor) ;
+    LogContext(const LogContext&) ;
+    void operator=(const LogContext&) ;
 
     int min_lev;
     io::StringWriter out;
