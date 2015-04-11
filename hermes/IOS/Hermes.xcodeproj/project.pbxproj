@@ -11,6 +11,8 @@
 		56572C7C1A8D6A3D00EF6582 /* SessionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 56572C7B1A8D6A3D00EF6582 /* SessionData.m */; };
 		56572C7F1A8D6E2000EF6582 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 56572C7E1A8D6E2000EF6582 /* Settings.bundle */; };
 		566ABD471A6B9D6100B114C1 /* Communication.m in Sources */ = {isa = PBXBuildFile; fileRef = 566ABD461A6B9D6100B114C1 /* Communication.m */; };
+		5674088F1AD8F545008FAE7E /* HermesHttpPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 5674088E1AD8F545008FAE7E /* HermesHttpPost.m */; };
+		567408921AD9B271008FAE7E /* ResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 567408911AD9B271008FAE7E /* ResponseHandler.m */; };
 		56A717C81A6B6576006E1198 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717C71A6B6576006E1198 /* main.m */; };
 		56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CA1A6B6576006E1198 /* AppDelegate.m */; };
 		56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */; };
@@ -47,7 +49,11 @@
 		56572C7E1A8D6E2000EF6582 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		56572C811A8D7D8B00EF6582 /* CommunicationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommunicationDelegate.h; sourceTree = "<group>"; };
 		566ABD451A6B9D6100B114C1 /* Communication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Communication.h; sourceTree = "<group>"; };
-		566ABD461A6B9D6100B114C1 /* Communication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Communication.m; sourceTree = "<group>"; };
+		566ABD461A6B9D6100B114C1 /* Communication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Communication.m; sourceTree = "<group>"; usesTabs = 0; };
+		5674088D1AD8F545008FAE7E /* HermesHttpPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HermesHttpPost.h; sourceTree = "<group>"; };
+		5674088E1AD8F545008FAE7E /* HermesHttpPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HermesHttpPost.m; sourceTree = "<group>"; };
+		567408901AD9B271008FAE7E /* ResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseHandler.h; sourceTree = "<group>"; };
+		567408911AD9B271008FAE7E /* ResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseHandler.m; sourceTree = "<group>"; };
 		56A717C21A6B6576006E1198 /* Hermes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hermes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A717C61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56A717C71A6B6576006E1198 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -124,6 +130,10 @@
 			children = (
 				566ABD451A6B9D6100B114C1 /* Communication.h */,
 				566ABD461A6B9D6100B114C1 /* Communication.m */,
+				5674088D1AD8F545008FAE7E /* HermesHttpPost.h */,
+				5674088E1AD8F545008FAE7E /* HermesHttpPost.m */,
+				567408901AD9B271008FAE7E /* ResponseHandler.h */,
+				567408911AD9B271008FAE7E /* ResponseHandler.m */,
 			);
 			name = Communication;
 			sourceTree = "<group>";
@@ -330,9 +340,11 @@
 				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
 				56572C7C1A8D6A3D00EF6582 /* SessionData.m in Sources */,
+				567408921AD9B271008FAE7E /* ResponseHandler.m in Sources */,
 				56A717C81A6B6576006E1198 /* main.m in Sources */,
 				56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */,
 				DBE3C4F01A81609C00CB504A /* HomeViewController.m in Sources */,
+				5674088F1AD8F545008FAE7E /* HermesHttpPost.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

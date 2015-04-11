@@ -30,6 +30,7 @@
     //Ask the notification center to message us when we the app becomes active
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:@"LOGIN" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyLogin:) name:@"NotifyLogin" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -88,16 +89,19 @@
     return true;
 }
 #pragma mark -Communication
--(void)notifyLogin
+-(void)notifyLogin:(NSString*)result
 {
     if ([data sessionId] != nil)
     {
+        NSLog(@"Successful Login: token = %@", [[SessionData getData] sessionId]);
+    }
+    else
+    {
         if([[data sessionId] isEqualToString:@"ERROR"])
         {
-            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error connecting to the server." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alert setType:nothing];
+            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert setType:login];
             [alert show];
-            [data setSessionId:nil];
         }
         else if([[data sessionId] isEqualToString:@"DOMAIN"])
         {
@@ -106,16 +110,6 @@
             [alert show];
             [data setSessionId:nil];
         }
-        else
-        {
-             NSLog(@"Successful Login");
-        }
-    }
-    else
-    {
-        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert setType:login];
-        [alert show];
     }
     [self performSelector:@selector(endLogin) withObject:nil afterDelay:1];
 }
@@ -175,10 +169,7 @@
 }
 - (IBAction)goToSettings:(id)sender {
     NSLog(@"Go to Settings");
-    
-    if (&UIApplicationOpenSettingsURLString != NULL) {
-        NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-        [[UIApplication sharedApplication] openURL:appSettings];
-    }
+    NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    [[UIApplication sharedApplication] openURL:appSettings];
 }
 @end

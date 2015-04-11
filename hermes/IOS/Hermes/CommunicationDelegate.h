@@ -11,6 +11,6 @@
 @protocol CommunicationDelegate <NSObject>
 
 @required
-- (void) notifyLogin;
+- (void) notifyLogin: (NSString*)error;
 
 @end
