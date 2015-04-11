@@ -50,7 +50,7 @@ void runtester() {
 
     TEST_BOOL("TestObject", (*jsn)["testobj"]["obj2"] == 4);
 
-    (*jsn).setAttribute("teh_root", Json(3));
+    (*jsn).setAttribute("teh_root", Json::fromInt(3));
     TEST_BOOL("Set", (*jsn)["teh_root"] == 3);
 
     (*jsn).setAttribute("ipaddr", Json::from(Inet4Address("8.8.8.8", 0)));

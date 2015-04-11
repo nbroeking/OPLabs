@@ -16,6 +16,7 @@
 #include <os/Atomic.hpp>
 
 using namespace proc;
+using namespace json;
 using namespace os;
 
 namespace mercury {
@@ -68,8 +69,10 @@ public:
     
     /* Implement ping test observer */
     void onTestComplete(const dns::TestResults& res) {
-        m_log.printfln(DEBUG, "Test results in avg_latency=%fs; packets_lost=%d",
-            res.valid_avg_response_time_mircos/1e6, res.valid_packets_lost);
+        m_log.printfln(DEBUG, "Test results in avg_latency=%fs; packets_lost=%f",
+            res.valid_avg_response_time_mircos/1e6, res.packets_lost_ratio);
+
+        m_mercury_state_machine.sendDnsResults(res);
         m_state_machine->sendStimulus(DNS_TEST_FINISHED);
     }
     void run() OVERRIDE {
@@ -87,6 +90,8 @@ private:
         m_state_machine->setEdge(REQUEST_MADE, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
         m_state_machine->setEdge(TIMEOUT, WAIT_TIMEOUT, &Mercury_StateMachine::onWaitTimeoutComplete);
         m_state_machine->setEdge(DNS_TEST_RUNNING, DNS_TEST_FINISHED, &Mercury_StateMachine::onDnsComplete);
+
+        m_state_machine->setEdge(POSTING_DNS_RESULTS, GOOD_REQUEST, &Mercury_StateMachine::onDnsResultsPosted);
         newThread(*m_state_machine)->start();
     }
 

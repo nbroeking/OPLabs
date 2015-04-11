@@ -31,7 +31,8 @@ enum State {
     IDLE,
     REQUEST_MADE,
     TIMEOUT,
-    DNS_TEST_RUNNING
+    DNS_TEST_RUNNING,
+    POSTING_DNS_RESULTS
 };
 
 enum Stim {
@@ -89,16 +90,37 @@ Mercury_StateMachine(MercuryObserver* observer):
     m_observer = observer;
 }
 
+void sendDnsResults(const dns::TestResults& res) {
+    using namespace json;
+
+    Json to_send = Json::from(res);
+    char post_chars[4096];
+
+    snprintf(post_chars, sizeof(post_chars), "data=%s\nrouter_token=%s\n",
+        to_send.toString().c_str(), m_id_b64.c_str());
+
+    Curl request;
+    m_post_fields = post_chars;
+    m_current_url = m_config.controller_url + "/api/router/edit";
+
+    m_log.printfln(DEBUG, "Sending DNS results as %s", post_chars);
+    setup_curl(request, m_current_url.c_str(), m_post_fields.c_str());
+
+    m_async_curl.sendRequest(request, m_observer);
+}
+
 State onStart() {
+    /* On the start, we have to get the configuration from the
+     * state machine */
     m_log.printfln(INFO, "Starting mercury");
     /* The if of this router */
-    string id_enc = simpleBase64Encode(m_config.mercury_id, ID_SIZE);
-    id_enc = html_escape(id_enc);
-    m_log.printfln(DEBUG, "base64 encoded id: %s", id_enc.c_str());
+    m_id_b64 = simpleBase64Encode(m_config.mercury_id, ID_SIZE);
+    m_id_b64 = html_escape(m_id_b64);
+    m_log.printfln(DEBUG, "base64 encoded id: %s", m_id_b64.c_str());
 
     Curl request;
 
-    m_post_fields = string("router_token=") + id_enc;
+    m_post_fields = string("router_token=") + m_id_b64;
     m_current_url = m_config.controller_url + "/api/router/get_config";
     setup_curl(request, m_current_url.c_str(), m_post_fields.c_str());
 
@@ -109,8 +131,7 @@ State onStart() {
 }
 
 State onDnsComplete() {
-    exit(0);
-    return IDLE;
+    return POSTING_DNS_RESULTS;
 }
 
 State onGoodRequest() {
@@ -149,10 +170,14 @@ State onBadRequest() {
     return TIMEOUT;
 }
 
+State onDnsResultsPosted() {
+    exit(0);
+    return IDLE;
+}
+
 State onWaitTimeoutComplete() {
     m_log.printfln(INFO, "Timeout complete");
-    exit(1);
-    return IDLE;
+    return POSTING_DNS_RESULTS;
 }
 
 State onPingTestFinished() {
@@ -184,6 +209,7 @@ StateMachine<Stim, Mercury_StateMachine, State>* m_state_machine;
 
 std::string m_current_url; /* For garbage collection */
 std::string m_post_fields;
+std::string m_id_b64;
 Config m_config;
 };
 

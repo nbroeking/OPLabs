@@ -11,7 +11,7 @@ Json Json::operator[](const std::string& str) const {
     if(typ == JSON_OBJECT) {
         json_t* ret = json_object_get(m_raw, str.c_str());
         if(!ret) throw JsonException((std::string("No such attribute ") + str.c_str()).c_str());
-        return ret;
+        return Json( json_copy(ret) );
     }
 
     throw JsonException("Json not an object in operator[]");
@@ -25,7 +25,7 @@ bool Json::hasAttribute(const char* attr) const {
 Json Json::operator[](size_t idx) const {
     json_type typ = getType();
     if(typ == JSON_ARRAY) {
-        return json_array_get(m_raw, idx);
+        return Json( json_copy(json_array_get(m_raw, idx)) );
     }
     
     throw JsonException("Json not a list in operator[]");
@@ -52,7 +52,6 @@ Json* Json::parse(const std::string& str) {
         throw JsonException("Failed to parse json string");
     }
     Json* ret = new Json(root);
-    ret->m_free = true;
     return ret;
 }
 
@@ -72,11 +71,23 @@ Json* Json::fromFile(const char* filename) {
     }
 
     Json* ret = new Json(root);
-    ret->m_free = true;
     return ret;
 }
 
 bool Json::operator==(int i) const {
+    json_type typ = getType();
+
+    if(typ == JSON_REAL) {
+        return i == json_real_value(m_raw);
+    }
+
+    if(typ != JSON_INTEGER) {
+        return false;
+    }
+    return i == json_integer_value(m_raw);
+}
+
+bool Json::operator==(f64_t i) const {
     json_type typ = getType();
 
     if(typ == JSON_REAL) {
@@ -118,24 +129,41 @@ Json::Json() {
     m_raw = json_object();
 }
 
-Json::Json(const std::string& str) {
-    m_raw = json_string(str.c_str());
-    m_free = true;
+Json Json::fromString(const char* str) {
+    json_t* raw = json_string(str);
+    return Json(raw);
 }
 
-Json::Json(s64_t i) {
-    m_raw = json_integer(i);
-    m_free = true;
+Json Json::fromInt(s64_t f) {
+    json_t* raw = json_integer(f);
+    return Json(raw);
 }
 
-Json::Json(const std::vector<Json>& vec) {
-    m_raw = json_array();
-    m_free = true;
+Json Json::fromFloat(f64_t f) {
+    json_t* raw = json_real(f);
+    return Json(raw);
+}
+
+Json Json::fromVector(const std::vector<Json>& vec) {
+    json_t* raw = json_array();
+    Json ret(raw);
 
     std::vector<Json>::const_iterator itr;
     FOR_EACH(itr, vec) {
-        push_back(*itr);
+        ret.push_back(*itr);
     }
+
+    return ret;
+}
+
+f64_t Json::floatValue() const {
+    if(getType() == JSON_REAL) {
+        return (f64_t) json_real_value(m_raw);
+    }
+    if(getType() != JSON_INTEGER) {
+        throw JsonException("Type not real or float in intValue()");
+    }
+    return (f64_t)json_integer_value(m_raw);
 }
 
 void Json::push_back(const Json& jsn) {
@@ -143,15 +171,14 @@ void Json::push_back(const Json& jsn) {
         throw JsonException("Not an array in push_back");
     }
     json_array_append_new(m_raw, jsn.m_raw);
-    jsn.m_free = false;
 }
 
 void Json::setAttribute(const char* attr, const Json& json) {
     if(getType() != JSON_OBJECT) {
         throw JsonException("Not an object in setAttribute");
     }
-    json_object_set_new(m_raw, attr, json.m_raw);
-    json.m_free = false;
+    printf("JSON ATTR RAW: %p", json.m_raw);
+    json_object_set_new(m_raw, attr, json_copy(json.m_raw));
 }
 
 

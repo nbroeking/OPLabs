@@ -161,7 +161,6 @@ private:
         timeout_t sum = 0;
         timeout_t sumsq = 0;
         size_t n = 0;
-        lost = 0;
 
         vector<timeout_t>::const_iterator itr;
         FOR_EACH(itr, vec) {
@@ -181,24 +180,26 @@ private:
     }
     State send_results() {
         TestResults to_send;
+        s64_t lost = 0;
         calc_half_results(m_valid_latency_times,
             to_send.valid_avg_response_time_mircos,
             to_send.valid_response_time_stdev,
-            to_send.valid_packets_lost);
+            lost);
 
         calc_half_results(m_invalid_latency_times,
             to_send.invalid_avg_response_time_mircos,
             to_send.invalid_response_time_stdev,
-            to_send.invalid_packets_lost);
+            lost);
 
-        m_log->printfln(DEBUG, "Results: %f %f %lu | %f %f %lu",
+        to_send.packets_lost_ratio = ((f64_t)lost) / (m_valid_latency_times.size() + m_invalid_latency_times.size());
+
+        m_log->printfln(DEBUG, "Results: %f %f | %f %f | %f",
             to_send.valid_avg_response_time_mircos,
             to_send.valid_response_time_stdev,
-            to_send.valid_packets_lost,
 
             to_send.invalid_avg_response_time_mircos,
             to_send.invalid_response_time_stdev,
-            to_send.invalid_packets_lost);
+            to_send.packets_lost_ratio);
 
         if(m_observer) {
             m_observer->onTestComplete(to_send);

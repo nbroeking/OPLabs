@@ -26,7 +26,7 @@ struct JsonBasicConvert<io::Inet4Address> {
     }
 
     static json::Json convert_from(const io::Inet4Address& addr) {
-        return json::Json(addr.toString());
+        return json::Json::fromString(addr.toString().c_str());
     }
 };
 
@@ -66,7 +66,7 @@ struct JsonBasicConvert<io::Inet6Address> {
     }
 
     static json::Json convert_from(const io::Inet6Address& addr) {
-        return json::Json(addr.toString());
+        return json::Json::fromString(addr.toString().c_str());
     }
 };
 

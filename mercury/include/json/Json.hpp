@@ -32,9 +32,18 @@ public:
 class Json {
 public:
     Json();
-    Json(const std::string& stnr);
-    Json(s64_t i);
-    Json(const std::vector<Json>& vec);
+    Json(const Json& jsn) {
+        m_raw = json_copy(jsn.m_raw);
+    }
+    // Json(const std::string& stnr);
+    // Json(s64_t i);
+    // Json(f64_t f);
+    // Json(const std::vector<Json>& vec);
+    
+    static Json fromInt(s64_t f);
+    static Json fromFloat(f64_t f);
+    static Json fromString(const char* str);
+    static Json fromVector(const std::vector<Json>& vec);
     
     template <class T>
     static Json from(const T& thing) {
@@ -46,11 +55,14 @@ public:
 
     size_t arraySize() const;
     std::string stringValue() const;
+
     s64_t intValue() const;
+    f64_t floatValue() const;
 
     json_type getType() const;
 
     bool operator==(int i) const;
+    bool operator==(f64_t i) const;
     bool operator==(const std::string& str) const;
 
     inline bool operator!=(int i) const {
@@ -80,8 +92,14 @@ public:
         }
     }
 
+    Json& operator=(const Json& oth) {
+        m_raw = json_copy(oth.m_raw);
+        return *this;
+    }
+
     ~Json() {
-        if(m_free) json_delete(m_raw);
+        printf("m_raw=%p\n", m_raw);
+        json_delete(m_raw);
     };
 
     inline std::string toString() {
@@ -97,10 +115,11 @@ public:
 
 private:
     Json(json_t* raw):
-        m_raw(raw), m_free(false){}
+        m_raw(raw){
+            printf("m_raw created %p\n", m_raw);
+        }
     
     json_t* m_raw;
-    mutable bool m_free; /* Used for bookeepnig */
 };
 
 }
@@ -112,7 +131,7 @@ struct JsonBasicConvert<s64_t> {
     }
 
     static json::Json convert_from(const s64_t& i) {
-        return json::Json(i);
+        return json::Json::fromInt(i);
     }
 };
 
@@ -123,7 +142,8 @@ struct JsonBasicConvert<std::string> {
     }
 
     static json::Json convert_from(const std::string& str) {
-        return json::Json(str);
+        json::Json ret = json::Json::fromString(str.c_str());
+        return ret;
     }
 };
 
