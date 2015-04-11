@@ -75,7 +75,7 @@ class User(db.Model):
     @staticmethod
     def from_router_token():
         ip = request.remote_addr
-        token = request.form['id'].strip()
+        token = request.form['router_token'].strip()
 
         rec = TestResult.get_result_by_token_ip(token, ip)
         

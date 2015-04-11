@@ -41,7 +41,11 @@ class base_requirement(object):
     def __call__(self, route_handler):
         @wraps(route_handler)
         def on_request(*args, **kwargs):
-            if self.validator():
+            try:
+                is_request_valid = self.validator()
+            except:
+                pass
+            if is_request_valid:
                 return route_handler(*args, **kwargs)
             return self.invalid_handler()
         return on_request
