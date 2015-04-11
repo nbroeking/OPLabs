@@ -12,8 +12,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.util.Pair;
 
 import com.oplabs.hermes.R;
+
+import java.util.ArrayList;
 
 import communication.Helpers.CommMsg;
 import tester.TestResults;
@@ -102,14 +105,7 @@ public class Communication extends Service {
     public void reportResults(TestResults results){
         Message msg = obtain();
         msg.what = CommMsg.REPORT_TEST;
-        msg.obj = results;
-        commThread.mHandler.sendMessage(msg);
-    }
-
-    public void requestRouterResults(){
-        Message msg = obtain();
-        msg.what = CommMsg.REQUEST_ROUTER_RESULTS;
-        msg.obj = null;
+        msg.obj = new Pair<>(results, this);
         commThread.mHandler.sendMessage(msg);
     }
     //The class that represents our binder

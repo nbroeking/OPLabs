@@ -24,6 +24,7 @@ public class TestResults implements Parcelable{
     private double jitter;
     private boolean valid;
     private int id;
+    private int router_id;
 
     public TestResults(int id){
         valid = false;
@@ -40,6 +41,7 @@ public class TestResults implements Parcelable{
         packetLoss = in.readDouble();
         latency = in.readDouble();
         this.id = in.readInt();
+        this.router_id = in.readInt();
 
         Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency);
     }
@@ -106,6 +108,7 @@ public class TestResults implements Parcelable{
         dest.writeDouble(packetLoss);
         dest.writeDouble(latency);
         dest.writeInt(id);
+        dest.writeInt(router_id);
     }
 
     //Create a parcel
@@ -148,5 +151,13 @@ public class TestResults implements Parcelable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getRouter_id() {
+        return router_id;
+    }
+
+    public void setRouter_id(int router_id) {
+        this.router_id = router_id;
     }
 }

@@ -6,11 +6,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.util.Pair;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -53,13 +55,16 @@ public class CommMessageHandler extends Handler {
     private final String StartMobileURL = "/api/start_test/mobile";
     private final String StartRouterURL = "/api/start_test/router";
     private final String ReportResultURL = "/api/test_result/%d/edit";
-    private final String RouterResultsURL = "api/test_results/%d";
+    private final String RouterResultsURL = "/api/test_results/%d";
 
     private SessionData data;
+
+    private Boolean ShouldCheck;
 
     public CommMessageHandler()
     {
         data = SessionData.getInstance();
+        ShouldCheck = false;
     }
 
     //This handles all messages sent from the service
@@ -82,17 +87,26 @@ public class CommMessageHandler extends Handler {
                 break;
 
             case CommMsg.REPORT_TEST:
-                reportTest((TestResults)msg.obj);
+                Pair<Object, Object> obj = ((Pair <Object, Object> )msg.obj); //Tuple
+                reportTest((TestResults)obj.first);
 
-                //After we report we want to request results from router
-                Message msgRequest = obtain();
-                msgRequest.what = CommMsg.REQUEST_ROUTER_RESULTS;
-                msgRequest.obj = msg.obj;
-                sendMessage(msgRequest);
+                TestResults results = (TestResults)obj.first;
+
+                //If we had a router
+                if( results.getRouter_id() >= 0) {
+                    //After we report we want to request results from router
+                    Message msgRequest = obtain();
+                    msgRequest.what = CommMsg.REQUEST_ROUTER_RESULTS;
+                    msgRequest.obj = msg.obj;
+                    sendMessage(msgRequest);
+                }
+                else{
+                    Log.d(TAG, "No valid router to request results from");
+                }
                 break;
 
             case CommMsg.REQUEST_ROUTER_RESULTS:
-                requestTestResults((TestResults)msg.obj);
+                requestTestResults((Pair<Object, Object>)msg.obj);
                 break;
         }
 	}
@@ -129,12 +143,53 @@ public class CommMessageHandler extends Handler {
     }
 
     //This method gets a report from the server
-    private void requestTestResults(TestResults results){
+    private void requestTestResults(Pair<Object, Object> pairResults){
 
+        TestResults results = (TestResults) pairResults.first;
         Log.i(TAG, "Get Router Results");
 
-        HttpClient client = this.createHttpClient();
-        //Http post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
+        HttpPost post = new HttpPost(String.format(data.getHostname()+RouterResultsURL, results.getId()));
+        try {
+
+            post.setHeader("Content-type", "application/x-www-form-urlencoded");
+            post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8")));
+
+            //JSON Parser
+            JSONObject json = sendPost(post);
+            if (json.getString("status").equals("success")) {
+                Log.d(TAG, "Received Status success");
+                switch (json.getString("state")){
+                    case "finished":
+                        Log.d(TAG, "We have router results");
+                        TestResults routerResults = new TestResults(json);
+
+                            Intent intent = new Intent();
+                            intent.setAction("LoginComplete");
+                            intent.putExtra(("Results"), routerResults);
+                            ((Communication) pairResults.second).sendBroadcast(intent);
+                            Log.d(TAG, "We sent the router results to whoever needs it");
+
+                        break;
+                    default:
+                        Log.d(TAG, "Will try again in 15 seconds");
+                        Message msg = Message.obtain();
+                        msg.what = CommMsg.REQUEST_ROUTER_RESULTS;
+                        msg.obj = results;
+
+                        if (shouldCheck()) {
+                            sendMessageDelayed(msg, 15000);
+                        }
+
+                        break;
+                }
+            } else {
+                throw new Exception("Status failed reporting Results");
+            }
+
+            Log.i(TAG, "Reported Results");
+        } catch (Exception e) {
+            Log.e(TAG, "Error reporting results", e);
+        }
     }
 
     //This method reports our test to the controller
@@ -209,8 +264,11 @@ public class CommMessageHandler extends Handler {
 
             if((json.getString("status").equals("success"))) {
                 Log.i(TAG, "Successful got router");
-                //TODO: Set the settings values
+                settings.setRouterResultsID(json.getInt("result_id"));
                 return true;
+            }
+            else{
+                settings.setRouterResultsID(-1);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating Post", e);
@@ -311,11 +369,54 @@ public class CommMessageHandler extends Handler {
         return -1;
     }
 
+    //This method will send a http get request and return the json object that is returned from the get request
+    private JSONObject sendGet(HttpGet get){
+        HttpClient client = this.createHttpClient();
+        try {
+            get.setHeader("Content-type", "application/x-www-form-urlencoded");
+            HttpResponse response = client.execute(get);
+
+            HttpEntity entity = response.getEntity();
+
+            InputStream inputStream = null;
+            try {
+                inputStream = entity.getContent();
+                String result;
+
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String addline = line + "\n";
+                    sb.append(addline);
+                }
+                result = sb.toString();
+
+                //JSON Parser
+                JSONObject json = new JSONObject(result);
+                return json;
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing json", e);
+            } finally {
+                try {
+                    if (inputStream != null) inputStream.close();
+                } catch (Exception s) {
+                    Log.e(TAG, "Could not close stream");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating Get Request", e);
+        }
+        return null;
+    }
+
     //This method will send a http post and return the json object that is returned from that post
     private JSONObject sendPost(HttpPost post){
         HttpClient client = this.createHttpClient();
         try {
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
             HttpResponse response = client.execute(post);
 
             HttpEntity entity = response.getEntity();
@@ -379,5 +480,17 @@ public class CommMessageHandler extends Handler {
             Log.e(TAG, "Error with Setting Key", e);
         }
         return null;
+    }
+
+    public Boolean shouldCheck() {
+        synchronized (this) {
+            return ShouldCheck;
+        }
+    }
+
+    public void setShouldCheck(Boolean shouldCheck) {
+        synchronized (this) {
+            ShouldCheck = shouldCheck;
+        }
     }
 }

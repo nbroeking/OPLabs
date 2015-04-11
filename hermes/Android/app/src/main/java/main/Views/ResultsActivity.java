@@ -99,6 +99,8 @@ public class ResultsActivity extends HermesActivity {
 
         //Set up broadcast receiver
         IntentFilter filter = new IntentFilter("TestCompleted");
+        filter.addAction("TestCompleted");
+        filter.addAction("ReportRouter");
         registerReceiver(receiver, filter);
     }
     //On stop we clean up our broadcast requests and our states

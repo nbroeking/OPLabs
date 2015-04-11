@@ -37,14 +37,15 @@ public class PerformanceTester {
         TestState state = TestState.getInstance();
         state.setState(TestState.State.TESTINGDNS, false);
 
+        //Init the results object
         TestResults results = new TestResults(settings.getResultID());
+        results.setRouter_id(settings.getRouterResultsID());
         results.setValid();
 
         //Run a dns response Test
         List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
         int dnsResult = 0;
-        for (Integer x : times1)
-        {
+        for (Integer x : times1){
             dnsResult += x;
         }
         dnsResult /= times1.size();
