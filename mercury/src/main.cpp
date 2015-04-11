@@ -37,8 +37,8 @@ byte mercury_magic_cookie[32] = {
     0xf7, 0x14, 0x17, 0x62, 0x53, 0x4a, 0xa9, 0x7e, 
 };
 
-Mutex g_mutex;
-Condition g_cond;
+Mutex* g_mutex;
+Condition* g_cond;
 
 class MercuryConfig {
 public:
@@ -108,8 +108,8 @@ struct JsonBasicConvert<MercuryConfig> {
 };
 
 void sigchld_hdlr(int sig) {
-    ScopedLock __sl(g_mutex);
-    g_cond.signal();
+    ScopedLock __sl(*g_mutex);
+    g_cond->signal();
 }
 
 int startMercury(LogContext& m_log, MercuryConfig& config) {
@@ -155,17 +155,17 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
                 /* Wait for the child to exit. this
                  * condition will be signaled by the
                  * sigchld handler */
-                // if(!g_cond.timedwait(g_mutex, 300 SECS)) {
-                //     /* The child is taking too long to return
-                //      * kill it */
-                //     m_log.printfln(WARN, "Child timeout, sending SIGTERM");
-                //     kill(child, SIGTERM);
-                //     if(!g_cond.timedwait(g_mutex, 10 SECS)) {
-                //         /* The child still isn't dead */
-                //         m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
-                //         kill(child, SIGKILL);
-                //     }
-                // }
+                if(!g_cond->timedwait(*g_mutex, 300 SECS)) {
+                    /* The child is taking too long to return
+                     * kill it */
+                    m_log.printfln(WARN, "Child timeout, sending SIGTERM");
+                    kill(child, SIGTERM);
+                    if(!g_cond->timedwait(*g_mutex, 10 SECS)) {
+                        /* The child still isn't dead */
+                        m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
+                        kill(child, SIGKILL);
+                    }
+                }
 
                 if((pid = waitpid(child, &res, WNOHANG))) {
                     if(pid == -1) {
@@ -196,7 +196,10 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
 int main( int argc, char** argv ) {
     (void) argc ; (void) argv ;
 
-    ScopedLock __sl(g_mutex);
+    g_mutex = new Mutex();
+    g_cond = new Condition();
+
+    ScopedLock __sl(*g_mutex);
 
     MercuryConfig conf;
     SocketAddress* old = conf.bind_ip;
