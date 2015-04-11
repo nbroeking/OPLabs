@@ -87,14 +87,14 @@ void test_dns_packet() {
 
     TEST_STR_EQ("VALID_HOSTS", conf.valid_hostnames[0], "google.com");
     TEST_STR_EQ("INVALID_HOSTS", conf.invalid_hostnames[0], "potato.xyz");
-    TEST_STR_EQ("SERVER", conf.server_address->toString(), "8.8.4.4:0");
+    TEST_STR_EQ("SERVER", conf.server_address->toString(), "8.8.4.4:53");
 
     uptr<Json> jsn2(Json::parse(jsn_str2));
     conf = jsn2->convert<dns::TestConfig>();
 
     TEST_STR_EQ("VALID_HOSTS", conf.valid_hostnames[0], "google.com");
     TEST_STR_EQ("INVALID_HOSTS", conf.invalid_hostnames[0], "potato.xyz");
-    TEST_STR_EQ("SERVER", conf.server_address->toString(), "[0000:0000:0000:0000:0000:0000:0000:0100]:0");
+    TEST_STR_EQ("SERVER", conf.server_address->toString(), "[0000:0000:0000:0000:0000:0000:0000:0100]:53");
 }
 
 

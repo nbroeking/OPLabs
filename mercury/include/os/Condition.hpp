@@ -6,6 +6,13 @@
 #include <os/Mutex.hpp>
 
 namespace os { 
+
+class ConditionException: public CException {
+public:
+    ConditionException(const char* message, int rc):
+        CException(message, rc){}
+};
+
 /**
  * @brief Class defining a condition variable from the pthreads library
  * @author jrahm

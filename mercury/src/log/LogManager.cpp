@@ -7,7 +7,7 @@ LogManager* me;
 LogManager& LogManager::instance() {
     if( ! me ) {
         me = new LogManager();
-        me->m_out.addBaseIO(new io::FilePointer(stdout));
+        me->addLogOutput(new io::FilePointer(stdout), true);
     }
     return * me;
 }

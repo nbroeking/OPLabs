@@ -155,17 +155,17 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
                 /* Wait for the child to exit. this
                  * condition will be signaled by the
                  * sigchld handler */
-                if(!g_cond.timedwait(g_mutex, 300 SECS)) {
-                    /* The child is taking too long to return
-                     * kill it */
-                    m_log.printfln(WARN, "Child timeout, sending SIGTERM");
-                    kill(child, SIGTERM);
-                    if(!g_cond.timedwait(g_mutex, 10 SECS)) {
-                        /* The child still isn't dead */
-                        m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
-                        kill(child, SIGKILL);
-                    }
-                }
+                // if(!g_cond.timedwait(g_mutex, 300 SECS)) {
+                //     /* The child is taking too long to return
+                //      * kill it */
+                //     m_log.printfln(WARN, "Child timeout, sending SIGTERM");
+                //     kill(child, SIGTERM);
+                //     if(!g_cond.timedwait(g_mutex, 10 SECS)) {
+                //         /* The child still isn't dead */
+                //         m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
+                //         kill(child, SIGKILL);
+                //     }
+                // }
 
                 if((pid = waitpid(child, &res, WNOHANG))) {
                     if(pid == -1) {
