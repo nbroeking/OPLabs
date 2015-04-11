@@ -82,6 +82,13 @@ public class Communication extends Service {
         return myBinder;
     }
 
+    //Reset the variables
+    public void clear(){
+        Message msg = obtain();
+        msg.what = CommMsg.CLEAR;
+        msg.obj = this;
+        commThread.mHandler.sendMessage(msg);
+    }
     //Anything can call this in its respective thread and we will put a request to login on our
     //message queue
     public void login() {

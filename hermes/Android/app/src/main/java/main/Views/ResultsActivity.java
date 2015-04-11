@@ -117,6 +117,8 @@ public class ResultsActivity extends HermesActivity {
             }
         }
 
+        //Tell the communication system to stop all loops
+        commService.clear();
         //Stop listening for broadcasts
         unregisterReceiver(receiver);
     }

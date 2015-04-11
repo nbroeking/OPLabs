@@ -55,7 +55,7 @@ public class CommMessageHandler extends Handler {
     private final String StartMobileURL = "/api/start_test/mobile";
     private final String StartRouterURL = "/api/start_test/router";
     private final String ReportResultURL = "/api/test_result/%d/edit";
-    private final String RouterResultsURL = "/api/test_results/%d";
+    private final String RouterResultsURL = "/api/test_result/%d";
 
     private SessionData data;
 
@@ -98,6 +98,9 @@ public class CommMessageHandler extends Handler {
                     Message msgRequest = obtain();
                     msgRequest.what = CommMsg.REQUEST_ROUTER_RESULTS;
                     msgRequest.obj = msg.obj;
+
+                    //Set the check to true so we keep trying
+                    setShouldCheck(Boolean.TRUE);
                     sendMessage(msgRequest);
                 }
                 else{
@@ -106,7 +109,12 @@ public class CommMessageHandler extends Handler {
                 break;
 
             case CommMsg.REQUEST_ROUTER_RESULTS:
+                Log.i(TAG, "REQUESTING_ROUTER_RESULTS");
                 requestTestResults((Pair<Object, Object>)msg.obj);
+                break;
+
+            case CommMsg.CLEAR:
+                setShouldCheck(Boolean.FALSE);
                 break;
         }
 	}
@@ -148,7 +156,7 @@ public class CommMessageHandler extends Handler {
         TestResults results = (TestResults) pairResults.first;
         Log.i(TAG, "Get Router Results");
 
-        HttpPost post = new HttpPost(String.format(data.getHostname()+RouterResultsURL, results.getId()));
+        HttpPost post = new HttpPost(String.format(data.getHostname()+RouterResultsURL, results.getRouter_id()));
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -174,10 +182,10 @@ public class CommMessageHandler extends Handler {
                         Log.d(TAG, "Will try again in 15 seconds");
                         Message msg = Message.obtain();
                         msg.what = CommMsg.REQUEST_ROUTER_RESULTS;
-                        msg.obj = results;
+                        msg.obj = pairResults;
 
                         if (shouldCheck()) {
-                            sendMessageDelayed(msg, 15000);
+                            sendMessageDelayed(msg, 5000);
                         }
 
                         break;
@@ -188,7 +196,7 @@ public class CommMessageHandler extends Handler {
 
             Log.i(TAG, "Reported Results");
         } catch (Exception e) {
-            Log.e(TAG, "Error reporting results", e);
+            Log.e(TAG, "Error getting router results", e);
         }
     }
 

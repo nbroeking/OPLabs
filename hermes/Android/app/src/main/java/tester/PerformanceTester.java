@@ -35,39 +35,45 @@ public class PerformanceTester {
     public TestResults runTests()
     {
         TestState state = TestState.getInstance();
-        state.setState(TestState.State.TESTINGDNS, false);
-
-        //Init the results object
         TestResults results = new TestResults(settings.getResultID());
-        results.setRouter_id(settings.getRouterResultsID());
-        results.setValid();
+        try {
 
-        //Run a dns response Test
-        List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
-        int dnsResult = 0;
-        for (Integer x : times1){
-            dnsResult += x;
+            state.setState(TestState.State.TESTINGDNS, false);
+
+            //Init the results object
+
+            results.setRouter_id(settings.getRouterResultsID());
+            results.setValid();
+
+            //Run a dns response Test
+            List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
+            int dnsResult = 0;
+            for (Integer x : times1) {
+                dnsResult += x;
+            }
+            dnsResult /= times1.size();
+            results.setAverageDNSResponseTime(dnsResult);
+            Log.d(TAG, "DNS Result = " + dnsResult);
+
+            state.setState(TestState.State.TESTINGLATENCY, false);
+            //Run a test packet latency test
+            List<Integer> times2 = runDNSTest(settings.getValidDomains());
+            int latencyResult = 0;
+            for (Integer x : times2) {
+                latencyResult += x;
+            }
+            latencyResult /= times2.size();
+            results.setLatency(latencyResult);
+            Log.d(TAG, "Latency Result = " + latencyResult);
+
+            //Packet Loss is just 1 - times we have / times we should have
+            results.setPacketLoss((1 - (times2.size() / settings.getValidDomains().size())));
+            Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
         }
-        dnsResult /= times1.size();
-        results.setAverageDNSResponseTime(dnsResult);
-        Log.d(TAG, "DNS Result = " + dnsResult);
-
-        state.setState(TestState.State.TESTINGLATENCY, false);
-        //Run a test packet latency test
-        List<Integer> times2 = runDNSTest(settings.getValidDomains());
-        int latencyResult = 0;
-        for (Integer x: times2)
-        {
-            latencyResult+=x;
+        catch(Exception e){
+            Log.e(TAG, "Error running test", e);
+            //TODO: We should should send an error code
         }
-        latencyResult/= times2.size();
-        results.setLatency(latencyResult);
-        Log.d(TAG, "Latency Result = " + latencyResult);
-
-        //Packet Loss is just 1 - times we have / times we should have
-        results.setPacketLoss((1- (times2.size()/settings.getValidDomains().size())));
-        Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
-
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {

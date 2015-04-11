@@ -8,5 +8,6 @@ public final class CommMsg {
     public static final int REQUEST_TEST = 2;
     public static final int REPORT_TEST = 3;
     public static final int REQUEST_ROUTER_RESULTS = 4;
+    public static final int CLEAR = 5;
 
 }
