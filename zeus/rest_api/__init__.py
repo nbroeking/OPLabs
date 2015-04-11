@@ -21,3 +21,4 @@ from .auth_api import *
 from .test_mgmt import *
 from .test_result import *
 from .test_set import *
+from .router import *
