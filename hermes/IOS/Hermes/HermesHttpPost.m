@@ -11,19 +11,33 @@
 @interface HermesHttpPost()
 
 @property (strong, nonatomic) NSMutableData *responseData;
-@property (weak, nonatomic) HermesHttpPost *delegate;
+@property (weak, nonatomic) NSObject *delegate;
 @property (strong, nonatomic) NSString *type;
+@property (strong, nonatomic) NSMutableArray *requests;
+@property (strong, nonatomic) NSMutableDictionary *answer;
 @end
 
 @implementation HermesHttpPost
 @synthesize responseData;
 @synthesize delegate;
 @synthesize type;
+@synthesize requests;
+@synthesize answer;
 
--(instancetype)init{
+-(instancetype)init {
     if( self = [super init])
     {
-        delegate = self;
+        delegate = NULL;
+        answer = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+-(instancetype) init: (NSObject*)sender
+{
+    if( self = [super init])
+    {
+        delegate = sender;
+        answer = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -33,6 +47,15 @@
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
+-(void) posts:(NSMutableArray*)requestst : (NSString*)postType
+{
+    self.requests = requestst;
+    type = postType;
+    
+    NSMutableURLRequest *request = [self.requests objectAtIndex:0];
+    [self.requests removeObjectAtIndex:0];
+    [NSURLConnection connectionWithRequest:request delegate:self];
+}
 #pragma mark NSURLConnection Delegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -73,8 +96,7 @@
         NSLog(@"Caught Exception %@", e);
     }
     
-    
-    [delegate reportData: json];
+    [self reportData: json];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -85,7 +107,7 @@
     NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
     [json setValue:@"ERROR" forKey:@"status"];
     [json setValue:type forKey:@"POST_TYPE"];
-    [delegate reportData:json];
+    [self reportData:json];
 }
 
 //Overloading the Authentication challenge to accept self signed certs
@@ -112,10 +134,14 @@
 -(void) reportData: (NSMutableDictionary*)json
 {
     NSLog(@"Data Received");
-    
-    ResponseHandler *handler = [[ResponseHandler alloc] init];
-    
-    [handler handle:json];
+    if(delegate){
+        NSLog(@"Needs Delegate");
+        [(Communication*)delegate reportData:json withType:type];
+    }
+    else {
+        ResponseHandler *handler = [[ResponseHandler alloc] init];
+        [handler handle:json];
+    }
 }
 
 @end

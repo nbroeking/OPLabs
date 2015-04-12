@@ -13,6 +13,9 @@
 		566ABD471A6B9D6100B114C1 /* Communication.m in Sources */ = {isa = PBXBuildFile; fileRef = 566ABD461A6B9D6100B114C1 /* Communication.m */; };
 		5674088F1AD8F545008FAE7E /* HermesHttpPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 5674088E1AD8F545008FAE7E /* HermesHttpPost.m */; };
 		567408921AD9B271008FAE7E /* ResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 567408911AD9B271008FAE7E /* ResponseHandler.m */; };
+		567408951AD9BBBF008FAE7E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 567408941AD9BBBF008FAE7E /* ResultsViewController.m */; };
+		567408981AD9C688008FAE7E /* AnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 567408971AD9C688008FAE7E /* AnimationViewController.m */; };
+		5674089B1AD9F1EE008FAE7E /* TestSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 5674089A1AD9F1EE008FAE7E /* TestSettings.m */; };
 		56A717C81A6B6576006E1198 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717C71A6B6576006E1198 /* main.m */; };
 		56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CA1A6B6576006E1198 /* AppDelegate.m */; };
 		56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 56A717CC1A6B6576006E1198 /* Hermes.xcdatamodeld */; };
@@ -54,6 +57,12 @@
 		5674088E1AD8F545008FAE7E /* HermesHttpPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HermesHttpPost.m; sourceTree = "<group>"; };
 		567408901AD9B271008FAE7E /* ResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseHandler.h; sourceTree = "<group>"; };
 		567408911AD9B271008FAE7E /* ResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseHandler.m; sourceTree = "<group>"; };
+		567408931AD9BBBF008FAE7E /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
+		567408941AD9BBBF008FAE7E /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
+		567408961AD9C688008FAE7E /* AnimationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationViewController.h; sourceTree = "<group>"; };
+		567408971AD9C688008FAE7E /* AnimationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationViewController.m; sourceTree = "<group>"; };
+		567408991AD9F1EE008FAE7E /* TestSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSettings.h; sourceTree = "<group>"; };
+		5674089A1AD9F1EE008FAE7E /* TestSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSettings.m; sourceTree = "<group>"; };
 		56A717C21A6B6576006E1198 /* Hermes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hermes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A717C61A6B6576006E1198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56A717C71A6B6576006E1198 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -121,6 +130,10 @@
 				DB34B7BA1A78309500E169AA /* SignupViewController.m */,
 				DBE3C4EE1A81609C00CB504A /* HomeViewController.h */,
 				DBE3C4EF1A81609C00CB504A /* HomeViewController.m */,
+				567408931AD9BBBF008FAE7E /* ResultsViewController.h */,
+				567408941AD9BBBF008FAE7E /* ResultsViewController.m */,
+				567408961AD9C688008FAE7E /* AnimationViewController.h */,
+				567408971AD9C688008FAE7E /* AnimationViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -145,6 +158,8 @@
 				562737021A71BB0D00F05935 /* Tester.m */,
 				56FF827D1AB5285300C2FC01 /* TestState.h */,
 				56FF827E1AB5285300C2FC01 /* TestState.m */,
+				567408991AD9F1EE008FAE7E /* TestSettings.h */,
+				5674089A1AD9F1EE008FAE7E /* TestSettings.m */,
 			);
 			name = Tester;
 			sourceTree = "<group>";
@@ -330,14 +345,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5674089B1AD9F1EE008FAE7E /* TestSettings.m in Sources */,
 				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
 				562737031A71BB0D00F05935 /* Tester.m in Sources */,
 				DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */,
+				567408951AD9BBBF008FAE7E /* ResultsViewController.m in Sources */,
 				56FF827F1AB5285300C2FC01 /* TestState.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
 				56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */,
 				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
 				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
+				567408981AD9C688008FAE7E /* AnimationViewController.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,
 				56572C7C1A8D6A3D00EF6582 /* SessionData.m in Sources */,
 				567408921AD9B271008FAE7E /* ResponseHandler.m in Sources */,

@@ -12,5 +12,10 @@
 @interface HermesHttpPost : NSObject <NSURLConnectionDelegate>
 
 -(void) post:(NSMutableURLRequest*)request :(NSString*)postType;
+-(void) posts:(NSMutableArray*)requestst : (NSString*)postType;
+
+-(void) reportData: (NSMutableDictionary*)json;
+
 -(instancetype) init;
+-(instancetype) init: (NSObject*)sender;
 @end

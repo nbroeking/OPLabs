@@ -10,8 +10,14 @@
 #import "CommunicationDelegate.h"
 #import "HomeViewController.h"
 #import "HermesHttpPost.h"
+#import "TestSettings.h"
 
 NSString * const LoginURL = @"/api/auth/login";
+NSString * const StartTestURL = @"/api/test_set/create";
+NSString * const StartMobileURL = @"/api/start_test/mobile";
+NSString * const StartRouterURL = @"/api/start_test/router";
+NSString * const ReportResultURL = @"/api/test_result/%d/edit";
+NSString * const RouterResultsURL = @"/api/test_result/%d";
 
 @interface Communication ()
 
@@ -19,12 +25,24 @@ NSString * const LoginURL = @"/api/auth/login";
 @property(strong, nonatomic) NSURLConnection* webConnection;
 
 -(void) loginToServer: (id) sender;
+-(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type needsResponse:(BOOL)needsResponse;
 
 @end
 
 @implementation Communication
 @synthesize thread;
 @synthesize webConnection;
+
+//Get The singleton
++(Communication*) getComm
+{
+    static Communication *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[Communication alloc] init];
+    });
+    return sharedInstance;
+}
 
 //Initlizes the Communication subsystem to 0
 -(instancetype)init{
@@ -43,15 +61,7 @@ NSString * const LoginURL = @"/api/auth/login";
  *
  *****************************************/
 //Requests
--(void)requestTest:(id)sender
-{
-    NSLog(@"Comm received a request to start the test");
-    if( !sender)
-    {
-        NSLog(@"SUPER BIG ERROR: Nic made a huge mistake with his logic and should go fix it now");
-    }
-   
-}
+
 -(void)login:(id)sender
 {
     NSLog(@"Comm received a login request");
@@ -62,11 +72,47 @@ NSString * const LoginURL = @"/api/auth/login";
     [self performSelector:@selector(loginToServer:) onThread:thread withObject:sender waitUntilDone:NO];
 }
 
--(void)requestTestFromServer:(id)sender
-{
-    NSLog(@"Requesting a test");
+-(void)startTest{
     
-    //
+    [self performSelector:@selector(requestTestFromServer) onThread:thread withObject:NULL waitUntilDone:NO];
+    
+}
+/*********************************************
+ *These are the helper methods that get run on the
+ *comm thread;
+ ********************************************/
+
+-(void) requestTestFromServer{
+    
+    NSLog(@"Request a test from the server");
+    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartTestURL]]];
+    
+    request.HTTPMethod = @"POST";
+    
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    
+    NSString *postString = [NSString stringWithFormat:@"user_token=%@", [[SessionData getData] sessionId]];
+    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody:data];
+    
+    [self sendRequest:request :@"GetSetId" needsResponse:YES];
+    
+}
+-(void) reportData: (NSMutableDictionary*)json withType:(NSString*)type{
+    NSLog(@"Received Data in Communication");
+    
+    if( [type isEqualToString:@"GetSetId"] )
+    {
+        if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
+            NSLog(@"Get Id is successful");
+            //TODO: Keep gathering data
+            return;
+        }
+    }
+
+    NSLog(@"We got an error reporting data in communication");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:nil];
 }
 //The method that gets called on the comm thread
 -(void)loginToServer:(id)sender
@@ -85,14 +131,22 @@ NSString * const LoginURL = @"/api/auth/login";
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:data];
     
-    [self sendRequest:request :@"Login"];
+    [self sendRequest:request :@"Login" needsResponse:false];
     
 }
 
--(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type{
+-(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type needsResponse:(BOOL)needsResponse{
     //We are creating a new Hermes HTtpPost and will receive the answer in report
     
-    HermesHttpPost *post = [[HermesHttpPost alloc] init];
+    HermesHttpPost *post = nil;
+    
+    if( !needsResponse)
+    {
+        post = [[HermesHttpPost alloc] init];
+    }
+    else{
+        post = [[HermesHttpPost alloc] init:self];
+    }
     [post post:request :type];
 }
 

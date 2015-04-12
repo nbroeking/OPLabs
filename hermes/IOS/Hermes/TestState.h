@@ -10,7 +10,9 @@
 
 @interface TestState : NSObject
 
-enum State {IDLE, COMPLETED, PREPARING, TESTINGPING};
+enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROUGHPUT};
+
++(TestState*) getStateMachine;
 
 -(enum State)getState;
 -(void)setState:(enum State)arg;

@@ -14,6 +14,7 @@
 
 @implementation MainNavigationController
 @synthesize communicator;
+@synthesize tester;
 
 - (void)viewDidLoad {
     [super viewDidLoad];

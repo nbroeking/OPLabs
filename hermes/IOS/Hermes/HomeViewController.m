@@ -10,6 +10,7 @@
 #import "SessionData.h"
 #import "MainNavigationController.h"
 #import "HermesAlert.h"
+#import "TestState.h"
 
 @interface HomeViewController ()
 @property (nonatomic, strong) UIAlertView *loading;
@@ -36,6 +37,22 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (IBAction)MoveToTesting:(id)sender {
+    NSLog(@"Run Test was pressed");
+    
+    if (![self checkLogin]) {
+        
+        TestState *stateMahine = [TestState getStateMachine];
+        if([stateMahine getState] != COMPLETED)
+        {
+            //Go to animation
+            [self performSegueWithIdentifier:@"Testing" sender:self];
+        }
+        else{
+            [self performSegueWithIdentifier:@"Results" sender:self];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -147,7 +164,7 @@
     NSLog(@"End Login");
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:2];
-    [UIView setAnimationDelay:1.0];
+    [UIView setAnimationDelay:.25];
     [loading dismissWithClickedButtonIndex:0 animated:YES];
     [UIView commitAnimations];
     loading = nil;

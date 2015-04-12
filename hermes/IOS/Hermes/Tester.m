@@ -7,7 +7,12 @@
 //
 
 #import "Tester.h"
+#import "TestState.h"
+#import "Communication.h"
+#import "TestSettings.h"
+
 @interface Tester()
+@property(strong, nonatomic) TestState *stateMachine;
 
 -(void) tearDownRunLoop;
 @end
@@ -15,6 +20,17 @@
 @implementation Tester
 @synthesize thread;
 @synthesize timer;
+@synthesize stateMachine;
+
++(Tester*) getTester
+{
+    static Tester *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[Tester alloc] init];
+    });
+    return sharedInstance;
+}
 
 -(instancetype)init
 {
@@ -24,12 +40,17 @@
         shouldRun = false;
         thread = nil;
         timer = nil;
+        stateMachine = [TestState getStateMachine];
     }
     return self;
 }
 
+//Request to start a test
 -(void)startTest
 {
+    [stateMachine setState:PREPARING];
+    
+    [[Communication getComm] startTest];
     
 }
 //Main Thread Run Loop

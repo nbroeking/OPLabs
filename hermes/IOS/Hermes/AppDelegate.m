@@ -23,9 +23,11 @@
     // Override point for customization after application launch.
     
     NSLog(@"Application did Launch");
-    comm = [[Communication alloc] init];
-    tester = [[Tester alloc] init];
+    comm = [Communication getComm];
+    tester = [Tester getTester];
+    
     [(MainNavigationController*)self.window.rootViewController setCommunicator:comm];
+    [(MainNavigationController*)self.window.rootViewController setTester:tester];
     [tester start];
     [comm start];
     
