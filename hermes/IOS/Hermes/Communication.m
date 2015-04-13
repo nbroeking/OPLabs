@@ -22,6 +22,7 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
 
 @property(strong, atomic) NSThread *thread;
 @property(strong, nonatomic) NSURLConnection* webConnection;
+@property(strong, nonatomic) HermesHttpPost *post;
 
 -(void) loginToServer: (id) sender;
 -(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type needsResponse:(BOOL)needsResponse;
@@ -31,6 +32,7 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
 @implementation Communication
 @synthesize thread;
 @synthesize webConnection;
+@synthesize post;
 
 //Get The singleton
 +(Communication*) getComm
@@ -124,8 +126,8 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
 
 -(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type needsResponse:(BOOL)needsResponse{
     //We are creating a new Hermes HTtpPost and will receive the answer in report
-    
-    HermesHttpPost *post = [[HermesHttpPost alloc] init];
+    NSLog(@"Communication is making a web request");
+    post = [[HermesHttpPost alloc] init];
 
     [post post:request :type :NULL];
 }

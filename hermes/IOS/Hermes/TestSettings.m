@@ -11,5 +11,12 @@
 @implementation TestSettings
 @synthesize validDomains, invalidDomains, DNSServer, mobileResultID, setId, routerTesultID, timeout;
 
-
+-(void) addInvalidDomain: (NSString*) string
+{
+    [invalidDomains addObject:string];
+}
+-(void) addValidDomain: (NSString*)string
+{
+    [validDomains addObject:string];
+}
 @end

@@ -33,7 +33,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
 }
 
 -(void)handle:(NSMutableDictionary *)json from:(HermesHttpPost*)owner{
-    NSLog(@"Handling");
     //Handle
     if( json)
     {
@@ -42,10 +41,8 @@ NSString * const StartRouterURL = @"/api/start_test/router";
             [self handleLogin:json];
         }
         else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"GetSetId"]) {
-            NSLog(@"Received a handle for a Set Id");
 
             if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
-                
                 settings = [[TestSettings alloc] init];
                 [self handleSetId:json :owner];
                 return;
@@ -55,14 +52,18 @@ NSString * const StartRouterURL = @"/api/start_test/router";
             
         }
         else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"StartMobileTest"]) {
-            NSLog(@"Handling Start Mobile Test");
             if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
                 
                 [self handleStartMobileTest:json :owner];
                 return;
             }
-            NSLog(@"We got an error reporting data in communication");
+            else {
+                NSLog(@"We got an error reporting data in communication");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:nil];
+            }
+        }
+        else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"StartRouterTest"]) {
+            [self handleStartRouterTest:json];
         }
         else{
             NSLog(@"ERROR: Unknown request type");
@@ -71,12 +72,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     else{
         NSLog(@"Error: We should have never had a null json dictionary in the handler");
     }
-}
-
--(void) reportData: (NSMutableDictionary*)json withType:(NSString*)type{
-    NSLog(@"Received Data in Communication");
-    
-
 }
 
 -(void) handleLogin: (NSMutableDictionary*)json{
@@ -92,7 +87,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
 
 -(void) handleSetId: (NSMutableDictionary*)json :(HermesHttpPost*)owner {
     
-    NSLog(@"Set id = %d",(int)((NSInteger)[[json valueForKey:@"set_id"]intValue]));
     [settings setSetId:((NSInteger)[[json valueForKey:@"set_id"] intValue])];
     
     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartMobileURL]]];
@@ -109,9 +103,66 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:data];
     
+    NSLog(@"Requesting a start Mobile test");
     [ owner post:request :@"StartMobileTest" :self];
 }
+    
 -(void) handleStartMobileTest: (NSMutableDictionary*)json :(HermesHttpPost*)owner {
     NSLog(@"Handle Start Mobile Test");
+    
+    NSDictionary *config = (NSDictionary*)[json objectForKey:@"config"];
+    NSDictionary *dns_config = (NSDictionary*)[config objectForKey:@"dns_config"];
+    
+    //Parse the json to get the settings
+    NSArray *jArray = [dns_config objectForKey:@"invalid_name"];
+    
+    if (jArray != NULL) {
+        [[settings invalidDomains] addObjectsFromArray:jArray];
+    }
+    
+    //Get Valid Names
+    jArray = [dns_config objectForKey:@"valid_name"];
+    if (jArray != NULL) {
+        [[settings validDomains] addObjectsFromArray:jArray];
+    }
+    
+    //Set Resolver
+    [settings setDNSServer:[dns_config valueForKey:@"dns_server"]];
+    
+    //Set the timeout
+    [settings setTimeout: [[dns_config valueForKey:@"timeout"] intValue]];
+    
+    //Set the result ID
+     [settings setMobileResultID:[[dns_config valueForKey:@"result_id"] intValue]];
+     
+    //Request a router start test
+     
+     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartRouterURL]]];
+     
+     request.HTTPMethod = @"POST";
+     
+     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+     
+     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionId], (int)[settings setId]];
+     
+     NSLog(@"Sending Post = %@", postString);
+     NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+     
+     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+     [request setHTTPBody:data];
+     
+     [ owner post:request :@"StartRouterTest" :self];
+}
+-(void) handleStartRouterTest: (NSMutableDictionary*)json{
+    NSLog(@"Handle Start Router Test");
+    if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
+        
+        [settings setRouterTesultID:[[json valueForKey:@"result_id"]intValue]];
+    }
+    else {
+        [settings setRouterTesultID:-1];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
+
 }
 @end

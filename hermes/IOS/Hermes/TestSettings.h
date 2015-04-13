@@ -18,4 +18,6 @@
 @property (assign, atomic) NSInteger mobileResultID;
 @property (assign, atomic) NSInteger routerTesultID;
 
+-(void) addInvalidDomain: (NSString*) string;
+-(void) addValidDomain: (NSString*)string;
 @end

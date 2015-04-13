@@ -24,12 +24,14 @@
 @synthesize type;
 @synthesize requests;
 @synthesize answer;
+@synthesize handler;
 
 -(instancetype)init {
     if( self = [super init])
     {
         delegate = NULL;
         answer = [[NSMutableDictionary alloc] init];
+        handler = NULL;
     }
     return self;
 }
@@ -37,15 +39,17 @@
 {
     if( self = [super init])
     {
+        handler = NULL;
         delegate = sender;
         answer = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
--(void) post:(NSMutableURLRequest*)request :(NSString*)postType :(ResponseHandler*)handler
+-(void) post:(NSMutableURLRequest*)request :(NSString*)postType :(ResponseHandler*)handlert
 {
-    if( handler){
-        self.handler = handler;
+    if( handlert != NULL){
+        NSLog(@"Posted with a response");
+        self.handler  = handlert;
     }
     type = [[NSString alloc] initWithString:postType];
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -68,14 +72,15 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     // Append the new data to the instance variable you declared
-    NSLog(@"Comm: Did Receive Data");
+    NSLog(@"Did Receive Data");
+    
     [responseData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     // The request is complete and data has been received
     // You can parse the stuff in your instance variable now
-    
+
     NSLog(@"Comm: Connection did complete");
     NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
     
@@ -137,14 +142,10 @@
 //Need to add a type to our dictionary
 -(void) reportData: (NSMutableDictionary*)json
 {
-    NSLog(@"Data Received");
-    if( !self.handler){
-        self.handler = [[ResponseHandler alloc]init];
+    if( self.handler == NULL){
+        handler = [[ResponseHandler alloc]init];
     }
-     _handler = [[ResponseHandler alloc] init];
-    [_handler handle:json from: self];
-    
-    _handler = NULL;
+    [handler handle:json from: self];
 }
 
 @end
