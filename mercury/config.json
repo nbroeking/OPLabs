@@ -1,12 +1,12 @@
 {
     "*comment*": "Remove undersocore(s) to enable an option",
 
-    "_logEverything": 1,
-    "_controller_url": "http://127.0.0.1:5000",
-    "_bind_ip": "0.0.0.0:8639",
-    "_logFile": "/tmp/mercury.log",
-    "_logColors": 1,
-    "_defaultLogLevel": "TRACE",
-    "_logServerBindAddress": "[::1]:5432",
-    "__logServerBindAddress": "unix://tmp/mercury_log.sock"
+    "logEverything": 1,
+    "controller_url": "http://127.0.0.1:5000",
+    "bind_ip": "0.0.0.0:8639",
+    "logFile": "/tmp/mercury.log",
+    "logColors": 1,
+    "defaultLogLevel": "TRACE",
+    "logServerBindAddress": "[::1]:5432",
+    "_logServerBindAddress": "unix://tmp/mercury_log.sock"
 }

@@ -21,6 +21,8 @@ static void* run_thread( void* _thread ) {
     } catch(Exception& ex) {
         LogContext& log = LogManager::instance().getLogContext("Thread", "Global");
         log.printfln(FATAL, "Global uncaught exception %s", ex.getMessage());
+        pthread_exit(NULL);
+        printf("%c", *(char*)0);
         exit(127);
     }
 

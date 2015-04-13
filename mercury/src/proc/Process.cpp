@@ -62,16 +62,22 @@ void Process::join() {
 
     /* Tell all the threads to stop */
     FOR_EACH(itr, m_threads) {
-        ManagedRunnable* mr = &(*itr)->getManagedRunnable();
-        m_log->printfln(DEBUG, "Stopping runnable %p", mr);
-        if(mr != this) mr->stop();
+        if(*itr) {
+            ManagedRunnable* mr = &(*itr)->getManagedRunnable();
+            m_log->printfln(DEBUG, "Stopping runnable %p", mr);
+            if(mr != this) mr->stop();
+        }
     }
 
     FOR_EACH(itr, m_threads) {
-        m_log->printfln(DEBUG, "Join thread %p", *itr);
-        ManagedRunnable* mr = &(*itr)->getManagedRunnable();
-        if(mr != this)
-            delete (*itr);
+        if(*itr) {
+            m_log->printfln(DEBUG, "Join thread %p", *itr);
+            ManagedRunnable* mr = &(*itr)->getManagedRunnable();
+            if(mr != this) {
+                delete (*itr);
+                *itr = NULL;
+            }
+        }
     }
 
     m_threads.clear();
@@ -101,8 +107,8 @@ Thread* Process::start() {
     thr->start();
     Thread* fc = this->newThread(getFileCollection());
     fc->start();
-    Thread* sched = this->newThread(getScheduler());
-    sched->start();
+    m_sched = this->newThread(getScheduler());
+    m_sched->start();
 
     m_thread = thr;
     return thr;

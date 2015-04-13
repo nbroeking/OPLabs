@@ -77,6 +77,9 @@ public:
      * @return The new thread created by the process
      */
     virtual os::Thread* start();
+    virtual inline os::Thread* getSchedulingThread() {
+        return m_sched;
+    }
 
     virtual void stop();
     virtual void join();
@@ -89,6 +92,8 @@ private:
     std::vector<_InternalThread*> m_threads;
     bool stopping;
     os::Thread* m_thread;
+
+    os::Thread* m_sched;
 
 protected:
     logger::LogContext* m_log;

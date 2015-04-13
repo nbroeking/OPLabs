@@ -105,7 +105,7 @@ public:
         std::string ret;
         char* tmp = json_dumps(m_raw, 0);
         ret = tmp;
-        delete[] tmp;
+        free(tmp);
         return ret;
     }
 

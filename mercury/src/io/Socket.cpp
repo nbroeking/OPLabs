@@ -8,6 +8,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <cerrno>
+
 #include <unistd.h>
 
 using namespace std;
@@ -44,13 +46,18 @@ int StreamSocket::close() {
 int StreamSocket::connect( const SocketAddress& addr ) {
     m_fd = socket(addr.linkProtocol(), SOCK_STREAM, 0);
 
+    char buf[4096];
 	int rc;
     if( m_fd < 0 ) {
-		throw ConnectException("Unable to connect", m_fd);
+        snprintf(buf, sizeof(buf), "StreamSocketException: unable to create socket for %s", 
+            addr.toString().c_str());
+		throw ConnectException(buf, errno);
 	}
 
     if( (rc = ::connect( m_fd, addr.raw(), addr.rawlen() )) ) {
-		throw ConnectException("Unable to connect", rc);
+        snprintf(buf, sizeof(buf), "StreamSocketException: unable to connect to address %s", 
+            addr.toString().c_str());
+		throw ConnectException(buf, errno);
     }
 
     m_is_closed = false;

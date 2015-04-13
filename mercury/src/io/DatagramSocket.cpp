@@ -16,11 +16,11 @@ void DatagramSocket::bind( const SocketAddress& addr ) {
     m_fd = socket(addr.linkProtocol(), SOCK_DGRAM, 0);
 
     if( m_fd < 0 ) {
-        throw DatagramSocketException("Unable to create socket", m_fd);
+        throw DatagramSocketException("DatagramSocketException: Unable to create socket", m_fd);
     }
 
     if( ::bind(m_fd, addr.raw(), addr.rawlen()) ) {
-        throw DatagramSocketException("Unable to bind to address", m_fd);
+        throw DatagramSocketException("DatagramSocketException: Unable to bind to address", m_fd);
     }
 
     m_closed = false;
@@ -29,7 +29,7 @@ void DatagramSocket::bind( const SocketAddress& addr ) {
 void DatagramSocket::close() {
     int rc;
     if( (rc = ::close(m_fd)) ) {
-        throw DatagramSocketException("Error on close", rc);
+        throw DatagramSocketException("DatagramSocketException: Error on close", rc);
     }
 
     m_closed = true;
@@ -40,7 +40,7 @@ ssize_t DatagramSocket::sendTo( const byte* bytes, size_t len, const SocketAddre
     ret = ::sendto( m_fd, bytes, len, flags, to.raw(), to.rawlen() );
     if(ret < 0) {
         char err[1024];
-        snprintf(err, sizeof(err), "sendTo error %s", strerror(errno));
+        snprintf(err, sizeof(err), "DatagramSocketException: sendTo error %s", strerror(errno));
         throw DatagramSocketException(err, ret);
     }
     return ret;
