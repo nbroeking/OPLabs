@@ -15,6 +15,7 @@
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSMutableArray *requests;
 @property (strong, nonatomic) NSMutableDictionary *answer;
+@property (strong, nonatomic) ResponseHandler *handler;
 @end
 
 @implementation HermesHttpPost
@@ -41,8 +42,11 @@
     }
     return self;
 }
--(void) post:(NSMutableURLRequest*)request :(NSString*)postType
+-(void) post:(NSMutableURLRequest*)request :(NSString*)postType :(ResponseHandler*)handler
 {
+    if( handler){
+        self.handler = handler;
+    }
     type = [[NSString alloc] initWithString:postType];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
@@ -134,14 +138,13 @@
 -(void) reportData: (NSMutableDictionary*)json
 {
     NSLog(@"Data Received");
-    if(delegate){
-        NSLog(@"Needs Delegate");
-        [(Communication*)delegate reportData:json withType:type];
+    if( !self.handler){
+        self.handler = [[ResponseHandler alloc]init];
     }
-    else {
-        ResponseHandler *handler = [[ResponseHandler alloc] init];
-        [handler handle:json];
-    }
+     _handler = [[ResponseHandler alloc] init];
+    [_handler handle:json from: self];
+    
+    _handler = NULL;
 }
 
 @end

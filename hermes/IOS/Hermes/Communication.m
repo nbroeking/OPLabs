@@ -11,11 +11,10 @@
 #import "HomeViewController.h"
 #import "HermesHttpPost.h"
 #import "TestSettings.h"
+#import "ResponseHandler.h"
 
 NSString * const LoginURL = @"/api/auth/login";
 NSString * const StartTestURL = @"/api/test_set/create";
-NSString * const StartMobileURL = @"/api/start_test/mobile";
-NSString * const StartRouterURL = @"/api/start_test/router";
 NSString * const ReportResultURL = @"/api/test_result/%d/edit";
 NSString * const RouterResultsURL = @"/api/test_result/%d";
 
@@ -92,28 +91,16 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     
     NSString *postString = [NSString stringWithFormat:@"user_token=%@", [[SessionData getData] sessionId]];
-    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSData *data = [postString dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:data];
     
     [self sendRequest:request :@"GetSetId" needsResponse:YES];
     
 }
--(void) reportData: (NSMutableDictionary*)json withType:(NSString*)type{
-    NSLog(@"Received Data in Communication");
-    
-    if( [type isEqualToString:@"GetSetId"] )
-    {
-        if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
-            NSLog(@"Get Id is successful");
-            //TODO: Keep gathering data
-            return;
-        }
-    }
 
-    NSLog(@"We got an error reporting data in communication");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:nil];
-}
 //The method that gets called on the comm thread
 -(void)loginToServer:(id)sender
 {
@@ -127,7 +114,7 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
 
     NSString *postString = [NSString stringWithFormat:@"password=%@&email=%@", [[SessionData getData] password], [[SessionData getData] email]];
-    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [postString dataUsingEncoding:NSASCIIStringEncoding];
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:data];
     
@@ -138,16 +125,9 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
 -(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type needsResponse:(BOOL)needsResponse{
     //We are creating a new Hermes HTtpPost and will receive the answer in report
     
-    HermesHttpPost *post = nil;
-    
-    if( !needsResponse)
-    {
-        post = [[HermesHttpPost alloc] init];
-    }
-    else{
-        post = [[HermesHttpPost alloc] init:self];
-    }
-    [post post:request :type];
+    HermesHttpPost *post = [[HermesHttpPost alloc] init];
+
+    [post post:request :type :NULL];
 }
 
 /****************************************

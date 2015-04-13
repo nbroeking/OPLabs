@@ -65,8 +65,7 @@
 -(void) startTestNotified: (NSNotification *)notification{
     NSLog(@"Notified about a Start Test");
     
-    NSDictionary *dict = (NSDictionary *)notification.object;
-    TestSettings *settings = [dict valueForKey:@"settings"];
+    TestSettings *settings = (TestSettings*)[notification object];
     
     if( settings == nil ){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an error running a test. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];

@@ -10,4 +10,12 @@
 
 @interface TestSettings : UIViewController
 
+@property (strong, atomic) NSMutableArray *validDomains;
+@property (strong, atomic) NSMutableArray *invalidDomains;
+@property (strong, atomic) NSString * DNSServer;
+@property (assign, atomic) NSInteger timeout;
+@property (assign, atomic) NSInteger setId;
+@property (assign, atomic) NSInteger mobileResultID;
+@property (assign, atomic) NSInteger routerTesultID;
+
 @end

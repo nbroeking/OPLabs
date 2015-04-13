@@ -9,5 +9,7 @@
 #import "TestSettings.h"
 
 @implementation TestSettings
+@synthesize validDomains, invalidDomains, DNSServer, mobileResultID, setId, routerTesultID, timeout;
+
 
 @end

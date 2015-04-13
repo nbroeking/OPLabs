@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "Communication.h"
 
+@class ResponseHandler;
+
 @interface HermesHttpPost : NSObject <NSURLConnectionDelegate>
 
--(void) post:(NSMutableURLRequest*)request :(NSString*)postType;
+-(void) post:(NSMutableURLRequest*)request :(NSString*)postType :(ResponseHandler*)handler;
 -(void) posts:(NSMutableArray*)requestst : (NSString*)postType;
 
 -(void) reportData: (NSMutableDictionary*)json;

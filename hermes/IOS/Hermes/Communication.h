@@ -37,7 +37,5 @@
 -(void) login:(id) sender;
 -(void) startTest;
 
-//Data gets reported if we request it
--(void) reportData: (NSMutableDictionary*)json withType:(NSString*)type;
 
 @end

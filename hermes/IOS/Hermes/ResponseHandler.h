@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class HermesHttpPost;
+
 @interface ResponseHandler : NSObject
 - (instancetype)init;
--(void) handle:(NSMutableDictionary*) json;
+-(void) handle:(NSMutableDictionary*)json from:(HermesHttpPost*)parent;
 @end
