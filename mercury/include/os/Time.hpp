@@ -87,6 +87,8 @@ public:
      */
     static timeout_t currentTimeMicros();
 
+    static timeout_t uptime();
+
     static inline struct timeval toTimeval( micros_t mics ) {
         struct timeval tv;
         tv.tv_sec = mics / 1000000;

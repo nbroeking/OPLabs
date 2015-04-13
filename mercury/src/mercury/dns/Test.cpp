@@ -1,5 +1,8 @@
 #include <mercury/dns/Test.hpp>
 #include <io/DatagramSocket.hpp>
+#include <io/DnsPacket.hpp>
+#include <io/binary/GlobPutter.hpp>
+
 
 #include <proc/StateMachine.hpp>
 #include <proc/Process.hpp>
@@ -215,7 +218,7 @@ private:
     }
     State send_dns() {
         byte* packet;
-        size_t packet_size;
+        ssize_t packet_size;
 
 
         packet = craft_dns_packet(to_resolve, rand(), packet_size);
@@ -235,39 +238,12 @@ private:
         return PACKET_SENT;
     }
 
-    byte* craft_dns_packet(const std::string& hostname, short dnsid, size_t& sizeout) {
-        vector<string> splitted;
-        split(hostname, '.', splitted);
-        byte* packet = new byte[18 + hostname.size() + splitted.size() + 1];
+    byte* craft_dns_packet(const std::string& hostname, short dnsid, ssize_t& sizeout) {
+        DnsPacket packet(hostname.c_str(), dnsid);
+        GlobPutter putter;
+        putObject(putter, packet);
 
-        packet[0] = (dnsid >> 8) & 0xFF;
-        packet[1] = dnsid & 0xFF;
-
-        packet[2] = 0x01;
-        packet[3] = packet[4] = 0x00;
-        packet[5] = 0x01;
-
-        for(size_t i = 0; i < 6; ++ i) {
-            packet[i + 6] = 0x00;
-        }
-
-        size_t i = 12;
-        vector<string>::iterator itr;
-        FOR_EACH(itr, splitted) {
-            packet[i ++] = (byte) itr->size();
-            std::copy(itr->begin(), itr->end(), packet + i);
-            i += itr->size();
-        }
-
-        packet[i ++] = 0x00;
-
-        packet[i++] = 0x00;
-        packet[i++] = 0x01;
-        packet[i++] = 0x00;
-        packet[i++] = 0x01;
-
-        sizeout = i;
-        return packet;
+        return putter.serialize(sizeout);
     }
     /* The callback observer for the results of
      * the test */

@@ -3,6 +3,9 @@
 #include <signal.h>
 #include <sstream>
 
+#include <io/FilePointer.hpp>
+#include <io/FileDescriptor.hpp>
+
 namespace logger {
 
 using namespace io;
@@ -25,8 +28,8 @@ public:
             m_outer.addConnection(client);
         } else {
             byte cmdline[4096];
-            StreamSocket* client;
-            client = dynamic_cast<StreamSocket*>(raw_fd);
+            BaseIO* client;
+            client = dynamic_cast<BaseIO*>(raw_fd);
             ssize_t l = client->read(cmdline, 4095);
             cmdline[l] = 0;
             m_outer.handleCmdLine(client, (char*)cmdline);
@@ -40,7 +43,8 @@ public:
     LogServer& m_outer; 
 };
 
-LogServer::LogServer(const io::SocketAddress& addr) {
+LogServer::LogServer(const io::SocketAddress& addr)
+    {
     m_sock.bind(addr);
     m_sock.listen(5);
 
@@ -48,6 +52,10 @@ LogServer::LogServer(const io::SocketAddress& addr) {
     m_file_collection.subscribe(
         FileCollection::SERVER_SOCKET,
         &m_sock, m_observer);
+
+    m_file_collection.subscribe(FileCollection::SUBSCRIBE_READ,
+        new FileDescriptor(0),
+        m_observer);
 }
 
 void LogServer::addConnection(StreamSocket* sock) {
@@ -79,7 +87,7 @@ void print_help(LogContext& log) {
     log.printfln(ECHO, "    enable_group  [GROUP]  -- enable a log group");
     log.printfln(ECHO, "    help                   -- print this help");
 }
-void LogServer::handleCmdLine(io::StreamSocket* init, const char* cmdline) {
+void LogServer::handleCmdLine(io::BaseIO* init, const char* cmdline) {
     string str(cmdline);
     stringstream stream(str);
 

@@ -17,6 +17,7 @@
 #include "Mercury_JSON.hpp"
 
 #include <mercury/dns/Test.hpp>
+#include <mercury/throughput/Test.hpp>
 #include <mercury/Mercury.hpp>
 
 
@@ -32,7 +33,8 @@ enum State {
     REQUEST_MADE,
     TIMEOUT,
     DNS_TEST_RUNNING,
-    POSTING_DNS_RESULTS
+    POSTING_DNS_RESULTS,
+    THROUGHPUT_RUNNING
 };
 
 enum Stim {
@@ -40,7 +42,8 @@ enum Stim {
     BAD_REQUEST,
     GOOD_REQUEST,
     WAIT_TIMEOUT,
-    DNS_TEST_FINISHED
+    DNS_TEST_FINISHED,
+    THROUGHPUT_FINISHED
 };
 
 ENUM_TO_STRING(State, 4,
@@ -140,14 +143,12 @@ State onGoodRequest() {
     m_log.printfln(SUCCESS, "Good request made. Returned string %s", m_response);
     /* do the json stuff */
 
-    MercuryTestConfig conf;
     bool fail;
 
     try {
-        conf = parseMercuryTestConfig((char*)m_response, fail);
+        m_test_conf = parseMercuryTestConfig((char*)m_response, fail);
     } catch(json::JsonException& ex) {
-        m_log.printfln(ERROR, "Error parsing JSON request: %s", ex.getMessage());
-        return IDLE;
+        m_log.printfln(ERROR, "Error parsing JSON request: %s", ex.getMessage()); return IDLE;
     }
 
     if(fail) {
@@ -160,7 +161,7 @@ State onGoodRequest() {
 
     /* build the configuration and start the
      * test */
-    dns::Test::instance().startTest(conf.dns_test_config, m_observer);
+    dns::Test::instance().startTest(m_test_conf.dns_test_config, m_observer);
 
     /* Start the ping test */
     return DNS_TEST_RUNNING;
@@ -184,8 +185,12 @@ State exitHard() {
 }
 
 State onDnsResultsPosted() {
-    exit(0);
-    return IDLE;
+    throughput::TestProxy* proxy;
+    proxy = throughput::Test::createInstance();
+
+    m_log.printfln(INFO, "Running throughput test");
+    proxy->startTest(m_test_conf.throughput_test_config, NULL); /* TODO NOT NULL */
+    return THROUGHPUT_RUNNING;
 }
 
 State onWaitTimeoutComplete() {
@@ -226,6 +231,7 @@ std::string m_current_url; /* For garbage collection */
 std::string m_post_fields;
 std::string m_id_b64;
 Config m_config;
+MercuryTestConfig m_test_conf;
 };
 
 }

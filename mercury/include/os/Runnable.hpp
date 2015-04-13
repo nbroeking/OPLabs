@@ -43,6 +43,21 @@ private:
 	void (*m_function)(T& arg);
 };
 
+template <typename T>
+class MemberFunctionRunner: public Runnable {
+public:
+    MemberFunctionRunner(void(T::*fn)(), T& obj):
+        m_fn(fn),
+        m_obj(obj){}
+
+    void run() OVERRIDE {
+        (m_obj.*m_fn)();
+    }
+private:
+    void (T::*m_fn)();
+    T& m_obj;
+};
+
 /**
  * A runnable that may be signaled to be stopped.
  */

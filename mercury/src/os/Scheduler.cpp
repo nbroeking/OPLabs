@@ -52,8 +52,10 @@ void Scheduler::run() {
             wait = wait < 0 ? 0 : wait;
 
             m_log->printfln(TRACE, "Waiting for %f seconds", wait / 1000000.0);
+            timeout_t before = Time::currentTimeMicros();
             rc = m_request_queue.front_timed(request, wait);
-            m_log->printfln(TRACE, "wait over");
+            timeout_t after = Time::currentTimeMicros();
+            m_log->printfln(TRACE, "wait over %f", (after - before) / 1000000.0);
 
         }
 

@@ -24,11 +24,14 @@ void Time::microsInFuture( struct timespec* ts, timeout_t micros ) {
 	#endif
 
 
-    u64_t nsec = micros * 1000;
-    u64_t nsec_mod = nsec % billion;
+    // u64_t nsec = micros * 1000;
+    // u64_t nsec_mod = nsec % billion;
 
-	ts->tv_sec += nsec / billion;
-	ts->tv_nsec = nsec_mod;
+	// ts->tv_sec += nsec / billion;
+	// ts->tv_nsec = nsec_mod;
+    ts->tv_nsec = micros * 1000;
+    ts->tv_sec += ts->tv_nsec / billion;
+    ts->tv_nsec %= billion;
 }
 
 void Time::fromMicros( struct timespec& ts, timeout_t timeout ) {
@@ -73,6 +76,11 @@ timeout_t Time::currentTimeMicros() {
 	#endif
 
     return mts.tv_nsec/ 1000 + mts.tv_sec * 1000000;
+}
+
+timeout_t Time::uptime() {
+    static timeout_t time = currentTimeMicros();
+    return currentTimeMicros() - time;
 }
 
 }

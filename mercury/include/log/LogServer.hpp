@@ -11,6 +11,7 @@
 
 #include <io/SocketAddress.hpp>
 #include <io/FileCollection.hpp>
+#include <io/RingBuffer.hpp>
 
 namespace logger {
 
@@ -25,7 +26,7 @@ private:
     void addConnection(io::StreamSocket* sock);
     void removeConnection(io::StreamSocket* sock);
 
-    void handleCmdLine(io::StreamSocket* init, const char* cmdline);
+    void handleCmdLine(io::BaseIO* init, const char* cmdline);
 
     class Observer;
     friend class Observer;

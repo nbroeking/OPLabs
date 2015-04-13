@@ -95,6 +95,7 @@ private:
 
         m_state_machine->setEdge(POSTING_DNS_RESULTS, GOOD_REQUEST, &Mercury_StateMachine::onDnsResultsPosted);
         m_state_machine->setEdge(POSTING_DNS_RESULTS, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
+
         newThread(*m_state_machine)->start();
     }
 

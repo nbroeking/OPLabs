@@ -17,11 +17,7 @@ public:
     /**
      * Return the instance of this test proxy
      */
-    static TestProxy& instance();
-
-private:
-    /* The singleton */
-    static TestProxy* m_instance;
+    static TestProxy* createInstance();
 };
 
 }

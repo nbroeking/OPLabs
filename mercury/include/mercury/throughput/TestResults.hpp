@@ -9,11 +9,21 @@
 
 #include <Prelude>
 
+#include <vector>
+
+#include <os/Time.hpp>
+
 namespace throughput {
 
 class TestResults {
 public:
-    /* Implement test results */
+    /* list of number of bytes recieved each
+     * second */
+    std::vector<u64_t> throughput_per_sec;
+
+    /* List of the latency of the UDP latency
+     * test during the load time */
+    std::vector<os::timeout_t> latency_micros;
 };
 
 }
