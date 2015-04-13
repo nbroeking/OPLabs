@@ -17,9 +17,12 @@ int main() {
     m_thread->start();
 
     void* arg = NULL;
+
+    Runnable* fn;
     for(int i = 0; i < 10; ++ i) {
-        printf("Scheduling\n");
-        sched.schedule(new FunctionRunner<void*>(fn_runner, arg), (i+1) SECS);
+        fn = new FunctionRunner<void*>(fn_runner, arg);
+        printf("Scheduling %p\n", fn);
+        sched.schedule(fn, (i+1) SECS);
     }
 
     sched.setStopOnEmpty(true);

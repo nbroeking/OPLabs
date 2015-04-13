@@ -8,8 +8,6 @@
 
 namespace os {
 
-static const u64_t billion = 1000000000;
-
 void Time::microsInFuture( struct timespec* ts, timeout_t micros ) {
 	#ifdef __MACH__
 		clock_serv_t cclock;
@@ -23,24 +21,17 @@ void Time::microsInFuture( struct timespec* ts, timeout_t micros ) {
 		clock_gettime(CLOCK_REALTIME, ts);
 	#endif
 
-
-    // u64_t nsec = micros * 1000;
-    // u64_t nsec_mod = nsec % billion;
-
-	// ts->tv_sec += nsec / billion;
-	// ts->tv_nsec = nsec_mod;
-    ts->tv_nsec = micros * 1000;
-    ts->tv_sec += ts->tv_nsec / billion;
-    ts->tv_nsec %= billion;
+    timeout_t nsec = ts->tv_nsec + micros * 1000;
+    timeout_t nsec_mod = nsec % 1000000000;
+	ts->tv_nsec = nsec;
+	ts->tv_sec += nsec / 1000000000;
+	ts->tv_nsec = nsec_mod;
 }
 
 void Time::fromMicros( struct timespec& ts, timeout_t timeout ) {
-    u64_t nsec = timeout * 1000;
-    u64_t nsec_mod = nsec % billion;
-    u64_t sec = nsec / billion;
-
-	ts.tv_sec = sec ;
-	ts.tv_nsec = nsec_mod ;
+	lldiv_t ret = lldiv( timeout * 1000, 1000000000) ;
+	ts.tv_sec = ret.quot ;
+	ts.tv_nsec = ret.rem ;
 }
 
 timeout_t Time::toMicros( struct timespec& ts ) {
@@ -79,8 +70,8 @@ timeout_t Time::currentTimeMicros() {
 }
 
 timeout_t Time::uptime() {
-    static timeout_t time = currentTimeMicros();
-    return currentTimeMicros() - time;
+    static timeout_t start = currentTimeMicros();
+    return currentTimeMicros() - start ;
 }
 
 }
