@@ -10,6 +10,7 @@
 #import "SessionData.h"
 #import "MainNavigationController.h"
 #import "HermesAlert.h"
+#import "TestState.h"
 
 @interface HomeViewController ()
 @property (nonatomic, strong) UIAlertView *loading;
@@ -30,11 +31,28 @@
     //Ask the notification center to message us when we the app becomes active
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:@"LOGIN" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyLogin:) name:@"NotifyLogin" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (IBAction)MoveToTesting:(id)sender {
+    NSLog(@"Run Test was pressed");
+    
+    if (![self checkLogin]) {
+        
+        TestState *stateMahine = [TestState getStateMachine];
+        if([stateMahine getState] != COMPLETED)
+        {
+            //Go to animation
+            [self performSegueWithIdentifier:@"Testing" sender:self];
+        }
+        else{
+            [self performSegueWithIdentifier:@"Results" sender:self];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -88,16 +106,19 @@
     return true;
 }
 #pragma mark -Communication
--(void)notifyLogin
+-(void)notifyLogin:(NSString*)result
 {
     if ([data sessionId] != nil)
     {
+        NSLog(@"Successful Login: token = %@", [[SessionData getData] sessionId]);
+    }
+    else
+    {
         if([[data sessionId] isEqualToString:@"ERROR"])
         {
-            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error connecting to the server." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alert setType:nothing];
+            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert setType:login];
             [alert show];
-            [data setSessionId:nil];
         }
         else if([[data sessionId] isEqualToString:@"DOMAIN"])
         {
@@ -106,16 +127,6 @@
             [alert show];
             [data setSessionId:nil];
         }
-        else
-        {
-             NSLog(@"Successful Login");
-        }
-    }
-    else
-    {
-        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert setType:login];
-        [alert show];
     }
     [self performSelector:@selector(endLogin) withObject:nil afterDelay:1];
 }
@@ -153,7 +164,7 @@
     NSLog(@"End Login");
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:2];
-    [UIView setAnimationDelay:1.0];
+    [UIView setAnimationDelay:.25];
     [loading dismissWithClickedButtonIndex:0 animated:YES];
     [UIView commitAnimations];
     loading = nil;
@@ -175,10 +186,7 @@
 }
 - (IBAction)goToSettings:(id)sender {
     NSLog(@"Go to Settings");
-    
-    if (&UIApplicationOpenSettingsURLString != NULL) {
-        NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-        [[UIApplication sharedApplication] openURL:appSettings];
-    }
+    NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    [[UIApplication sharedApplication] openURL:appSettings];
 }
 @end

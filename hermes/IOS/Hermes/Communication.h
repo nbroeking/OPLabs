@@ -14,6 +14,10 @@
     bool shouldRun;
     
 }
+
+//Singleton
++(Communication*) getComm;
+
 //Initilizer for the communication thread
 -(instancetype)init;
 
@@ -31,5 +35,7 @@
 
 //Methods for Communicating with the server
 -(void) login:(id) sender;
+-(void) startTest;
+
 
 @end

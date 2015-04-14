@@ -48,7 +48,7 @@ public class TestService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    //On creation we start the threads and initilize the subsystem
+    //On creation we start the threads and initialize the subsystem
     @Override
     public void onCreate() {
         super.onCreate();

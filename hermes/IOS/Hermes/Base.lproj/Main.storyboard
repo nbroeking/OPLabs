@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="u5W-wt-aO6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="u5W-wt-aO6">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <scenes>
         <!--Home-->
@@ -30,7 +30,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="whj-mR-dGq" kind="show" id="Jr8-7y-HAR"/>
+                                    <action selector="MoveToTesting:" destination="9Ls-CO-OvT" eventType="touchUpInside" id="RCd-0H-ZGT"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G7A-QM-PDY">
@@ -96,6 +96,8 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="bey-In-emy" kind="show" identifier="LoginSegue" id="iID-D1-ShE"/>
+                        <segue destination="CN9-Dd-hfT" kind="show" identifier="Testing" id="5j9-yE-F0s"/>
+                        <segue destination="whj-mR-dGq" kind="show" identifier="Results" id="irD-Ya-hgH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yJ6-xv-WrE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -197,7 +199,7 @@
         <!--Results-->
         <scene sceneID="u34-Xf-s50">
             <objects>
-                <viewController title="Results" id="whj-mR-dGq" sceneMemberID="viewController">
+                <viewController title="Results" id="whj-mR-dGq" customClass="ResultsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8jp-G1-Kxu"/>
                         <viewControllerLayoutGuide type="bottom" id="B2p-GJ-J2j"/>
@@ -249,7 +251,39 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpX-Kb-KLh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1985" y="300"/>
+            <point key="canvasLocation" x="2009" y="-54"/>
+        </scene>
+        <!--Animation View Controller-->
+        <scene sceneID="5Kd-3K-o68">
+            <objects>
+                <viewController id="CN9-Dd-hfT" customClass="AnimationViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Qkp-Yq-vyE"/>
+                        <viewControllerLayoutGuide type="bottom" id="V7Q-vX-Ec9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="SXY-nt-6gr">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wAZ-Eb-INx">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leading" id="Ccb-Uq-gIU"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="aqh-3H-fTa"/>
+                            <constraint firstAttribute="trailing" secondItem="wAZ-Eb-INx" secondAttribute="trailing" id="e9a-ke-lYS"/>
+                            <constraint firstAttribute="bottom" secondItem="wAZ-Eb-INx" secondAttribute="bottom" id="r93-dH-aqx"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="AnimationImage" destination="wAZ-Eb-INx" id="GPf-E3-bO3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NqK-a6-ywR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2012" y="654"/>
         </scene>
         <!--Main Navigation Controller-->
         <scene sceneID="Tzs-Bh-ial">

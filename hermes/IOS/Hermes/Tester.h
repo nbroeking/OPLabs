@@ -16,6 +16,9 @@
 @property(strong, atomic) NSThread *thread;
 @property(strong, atomic) NSTimer *timer;
 
+//Singleton
++(Tester*) getTester;
+
 //Testing Methods
 -(void)startTest;
 
@@ -33,4 +36,6 @@
 
 //Checks if the subsystem is running
 -(BOOL) isRunning;
+
+
 @end

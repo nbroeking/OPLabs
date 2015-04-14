@@ -1,13 +1,26 @@
 package communication;
 
+import android.app.AlertDialog;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.util.Pair;
+
+import com.oplabs.hermes.R;
+
+import java.util.ArrayList;
+
 import communication.Helpers.CommMsg;
+import tester.TestResults;
+
 import static android.os.Message.obtain;
 
 //The communication service. This service handles all communication of the network.
@@ -24,6 +37,7 @@ public class Communication extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received an Intent to start");
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -34,6 +48,10 @@ public class Communication extends Service {
         Log.i(TAG, "Comm Service Created and Threads Started");
         commThread = new CommThread("Communication");
         commThread.start();
+
+        //Register for broadcasts
+        IntentFilter filter = new IntentFilter("TestCompleted");
+        registerReceiver(receiver, filter);
     }
 
     //When we are destroyed we nicely clean up our threads and close everything down
@@ -43,6 +61,9 @@ public class Communication extends Service {
         msg.what = CommMsg.QUIT;
         msg.obj = null;
         commThread.mHandler.sendMessage(msg);
+
+        //Unregister
+        unregisterReceiver(receiver);
 
         super.onDestroy();
         try {
@@ -61,6 +82,13 @@ public class Communication extends Service {
         return myBinder;
     }
 
+    //Reset the variables
+    public void clear(){
+        Message msg = obtain();
+        msg.what = CommMsg.CLEAR;
+        msg.obj = this;
+        commThread.mHandler.sendMessage(msg);
+    }
     //Anything can call this in its respective thread and we will put a request to login on our
     //message queue
     public void login() {
@@ -81,10 +109,31 @@ public class Communication extends Service {
         commThread.mHandler.sendMessage(msg);
     }
 
+    public void reportResults(TestResults results){
+        Message msg = obtain();
+        msg.what = CommMsg.REPORT_TEST;
+        msg.obj = new Pair<>(results, this);
+        commThread.mHandler.sendMessage(msg);
+    }
     //The class that represents our binder
     public class MyLocalBinder extends Binder {
         public Communication getService() {
             return Communication.this;
         }
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Implement code here to be performed when
+            // broadcast is detected
+            Log.i(TAG, "Received Intent in the Communication sub system");
+
+            TestResults results = intent.getParcelableExtra("Results");
+            if( results.isValid()) {
+                reportResults(results);
+            }
+        }
+    };
 }

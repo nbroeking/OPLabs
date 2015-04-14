@@ -9,8 +9,7 @@
 #import "SessionData.h"
 
 @implementation SessionData
-@synthesize sessionId;
-@synthesize email, password, hostname;
+@synthesize email, password, hostname, sessionId;
 
 +(SessionData*) getData
 {
@@ -33,6 +32,23 @@
     return self;
 }
 
+-(NSString*)sessionId
+{
+    @synchronized(self){
+        NSString * encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
+                                                                                       NULL,
+                                                                                       (CFStringRef)sessionId,
+                                                                                       NULL,
+                                                                                       (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                                                                       kCFStringEncodingUTF8 ));
+        return encodedString;
+    }
+}
+-(void)setSessionId:(NSString *)theSessionId{
+    @synchronized(self){
+        sessionId = [[NSString alloc] initWithString:theSessionId];
+    }
+}
 //This method pulls the settings from the settings bundle
 -(void)sync
 {
