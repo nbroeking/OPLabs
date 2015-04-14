@@ -21,8 +21,11 @@ public class TestResults implements Parcelable{
     private double averageDNSResponseTime;
     private double packetLoss;
     private double latency;
-    private double jitter;
+    private double load;
+    private double throughput;
+
     private boolean valid;
+
     private int id;
     private int router_id;
 
@@ -31,6 +34,9 @@ public class TestResults implements Parcelable{
         packetLoss = -1;
         averageDNSResponseTime = -1;
         latency = -1;
+        load = 0;
+        latency = 0;
+
         this.id = id;
         Log.i("CREATE", "ID = " + id);
     }
@@ -159,5 +165,21 @@ public class TestResults implements Parcelable{
 
     public void setRouter_id(int router_id) {
         this.router_id = router_id;
+    }
+
+    public double getLoad() {
+        return load;
+    }
+
+    public void setLoad(double load) {
+        this.load = load;
+    }
+
+    public double getThroughput() {
+        return throughput;
+    }
+
+    public void setThroughput(double throughput) {
+        this.throughput = throughput;
     }
 }

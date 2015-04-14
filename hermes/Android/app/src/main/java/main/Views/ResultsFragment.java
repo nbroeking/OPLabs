@@ -1,7 +1,13 @@
 package main.Views;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +20,8 @@ import tester.TestState;
 
 
 public class ResultsFragment extends Fragment {
+
+    private static final String TAG = "Results Fragment";
 
     private TestState stateMachine = TestState.getInstance();
 
@@ -47,8 +55,25 @@ public class ResultsFragment extends Fragment {
         mobileLoad = (TextView) view.findViewById(R.id.load);
         mobileThrough = (TextView) view.findViewById(R.id.throughput);
 
+        //Get the router textfields
+        routerDNS = (TextView) view.findViewById(R.id.dnsResponse2);
+        routerLatency = (TextView) view.findViewById(R.id.latency2);
+        routerPackets = (TextView) view.findViewById(R.id.packetLoss2);
+        routerLoad = (TextView) view.findViewById(R.id.load2);
+        routerThrough = (TextView) view.findViewById(R.id.throughput2);
+
+        // Set TextView IDs for diff table
+        diffDNS = (TextView) view.findViewById(R.id.dnsResponse3);
+        diffLatency = (TextView) view.findViewById(R.id.latency3);
+        diffPackets = (TextView) view.findViewById(R.id.packetLoss3);
+        diffLoad = (TextView) view.findViewById(R.id.load3);
+        diffThrough = (TextView) view.findViewById(R.id.throughput3);
+
+
         // Get latest results for mobile from TestResults
         TestResults results = stateMachine.getLatestResults();
+
+
         // Change TextView for mobile results
         updateMobile(String.format("%s ms", results.getAverageDNSResponseTime()),
                 String.format("%s ms", results.getLatency()),
@@ -62,33 +87,14 @@ public class ResultsFragment extends Fragment {
         return view;
     }
 
-    public View onRouterResults(LayoutInflater inflater, ViewGroup container,
-                                Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_results, container, false);
-
-        // Set TextView IDs for router test results
-        routerDNS = (TextView) view.findViewById(R.id.dnsResponse2);
-        routerLatency = (TextView) view.findViewById(R.id.latency2);
-        routerPackets = (TextView) view.findViewById(R.id.packetLoss2);
-        routerLoad = (TextView) view.findViewById(R.id.load2);
-        routerThrough = (TextView) view.findViewById(R.id.throughput2);
-
-        // Get latest results for router
+    public void onRouterResults(TestResults results) {
 
         // Change TextView for router results
-        updateRouter("0", "0", "0", "0", "0");
-                //String.format("%s ms", results.getAverageDNSResponseTime()),
-                //String.format("%s ms", results.getLatency()),
-                //String.format("%s", (results.getPacketLoss() * 100) + "%"),
-                //String.format("%s", (results.getLoad())),
-                //String.format("%s", (results.getThroughput())));
-
-        // Set TextView IDs for diff table
-        diffDNS = (TextView) view.findViewById(R.id.dnsResponse3);
-        diffLatency = (TextView) view.findViewById(R.id.latency3);
-        diffPackets = (TextView) view.findViewById(R.id.packetLoss3);
-        diffLoad = (TextView) view.findViewById(R.id.load3);
-        diffThrough = (TextView) view.findViewById(R.id.throughput3);
+        updateRouter(String.format("%s ms", results.getAverageDNSResponseTime()),
+                String.format("%s ms", results.getLatency()),
+                String.format("%s", (results.getPacketLoss() * 100) + "%"),
+                String.format("%s", (results.getLoad())),
+                String.format("%s", (results.getThroughput())));
 
         updateDiffTable(String.format("%s ms", (subtractResults(routerDNS, mobileDNS))),
                 String.format("%s ms", (subtractResults(routerLatency, mobileLatency))),
@@ -99,7 +105,6 @@ public class ResultsFragment extends Fragment {
         // Hide spinning wheel animation
         // Show Router and Difference Tables
 
-        return view;
     }
 
     public void updateMobile(String dns, String lat, String pkl, String ld, String thp) {

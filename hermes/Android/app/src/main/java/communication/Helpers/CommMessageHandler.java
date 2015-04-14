@@ -172,7 +172,7 @@ public class CommMessageHandler extends Handler {
                         TestResults routerResults = new TestResults(json);
 
                             Intent intent = new Intent();
-                            intent.setAction("LoginComplete");
+                            intent.setAction("ReportRouter");
                             intent.putExtra(("Results"), routerResults);
                             ((Communication) pairResults.second).sendBroadcast(intent);
                             Log.d(TAG, "We sent the router results to whoever needs it");
