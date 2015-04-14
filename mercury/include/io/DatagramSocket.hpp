@@ -61,7 +61,7 @@ public:
      * @return Number of bytes read
      */
     ssize_t receive( byte* bytes, size_t len,
-                SocketAddress*& addr, int flags=0 );
+                SocketAddress** addr, int flags=0 );
 
     /**
      * @brief Close this socket

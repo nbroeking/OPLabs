@@ -46,12 +46,16 @@ ssize_t DatagramSocket::sendTo( const byte* bytes, size_t len, const SocketAddre
     return ret;
 }
 
-ssize_t DatagramSocket::receive( byte* bytes, size_t len, SocketAddress*& faddr, int flags ) {
+ssize_t DatagramSocket::receive( byte* bytes, size_t len, SocketAddress** faddr, int flags ) {
     byte address_bytes[4096];
     struct sockaddr* addr = (struct sockaddr*)address_bytes;
+
     socklen_t slen = 0;
     ssize_t ret = ::recvfrom( m_fd, bytes, len, flags, addr, &slen );
-    faddr = SocketAddress::toSocketAddress(addr, slen);
+
+    if(faddr) {
+        *faddr = SocketAddress::toSocketAddress(addr, slen);
+    }
     return ret;
 }
 

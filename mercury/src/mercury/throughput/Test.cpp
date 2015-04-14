@@ -34,7 +34,7 @@ public:
         byte buffer[1024 * 1024];
         ssize_t bytes_read = m_stream_sock.read(buffer, sizeof(buffer));
         this->bytes_received = this->bytes_received + bytes_read;
-        m_log->printfln(TRACE, "[%p] Read %u bytes: %lu\n", (ssize_t)bytes_read, this->bytes_received);
+        m_log->printfln(TRACE, "[%p] Read %d bytes: %d\n", this, (int)bytes_read, (int)this->bytes_received);
     }
 
     class DnsSender: public Runnable, public FileCollectionObserver {
@@ -51,8 +51,7 @@ public:
             ScopedLock __sl(m_mutex);
 
             byte resp_id[2];
-            uptr<SocketAddress> from;
-            m_sock.receive(resp_id, 2, from.get());
+            m_sock.receive(resp_id, 2, NULL);
             u16_t rid = (resp_id[0] << 8) + resp_id[1];
             timeout_t sent_time = m_sent_times[rid];
             timeout_t recv_time = Time::currentTimeMicros();
@@ -149,10 +148,12 @@ public:
                                         &m_stream_sock, this);
         sched.setStopOnEmpty(true);
         Time::sleep(10 SECS);
+
         getFileCollection().unsubscribe(&m_stream_sock);
 
         m_log->printfln(INFO, "Waiting for all jobs to finish");
         getSchedulingThread()->join();
+        exit(2);
     }
 
 private:

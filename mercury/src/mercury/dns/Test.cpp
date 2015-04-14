@@ -52,15 +52,13 @@ public:
         m_log->printfln(TRACE, "Observation in udp socket");
 
         byte bytes[1024];
-        SocketAddress* addr;
         ssize_t bytes_read;
 
-        bytes_read = m_socket.receive(bytes, sizeof(bytes), addr);
+        bytes_read = m_socket.receive(bytes, sizeof(bytes), NULL);
 
         m_log->printfln(TRACE, "Packet receieved:");
         m_log->printHex(TRACE, bytes, bytes_read);
 
-        delete addr;
         m_state_machine->sendStimulus(PACKET_RECEIEVED);
     }
 

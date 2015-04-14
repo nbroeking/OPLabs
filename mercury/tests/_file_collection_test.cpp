@@ -27,7 +27,7 @@ virtual void observe(HasRawFd* fd, int events ) {
 
         try {
             SocketAddress* addr;
-            ssize_t len = sock->receive(bytes, 1024, addr);
+            ssize_t len = sock->receive(bytes, 1024, &addr);
             delete addr;
             
             log.printHex(DEBUG, bytes, len);
