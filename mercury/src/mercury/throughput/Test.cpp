@@ -66,7 +66,7 @@ public:
 
         ~DnsSender() {
             m_log.printfln(DEBUG, "Unsubscribing Self");
-            m_file_collection.unsubscribe(&m_sock);
+            m_file_collection.unsubscribe(&m_sock, false);
         }
 
         void run() {
@@ -149,11 +149,11 @@ public:
         sched.setStopOnEmpty(true);
         Time::sleep(10 SECS);
 
-        getFileCollection().unsubscribe(&m_stream_sock);
+        /* unsubscribe and do not notify the callback mechanism */
+        getFileCollection().unsubscribe(&m_stream_sock, false);
 
         m_log->printfln(INFO, "Waiting for all jobs to finish");
-        getSchedulingThread()->join();
-        exit(2);
+        join(); /* join all active threads in this process */
     }
 
 private:

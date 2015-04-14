@@ -43,17 +43,23 @@ enum Stim {
     GOOD_REQUEST,
     WAIT_TIMEOUT,
     DNS_TEST_FINISHED,
-    THROUGHPUT_FINISHED
+    THROUGHPUT_FINISHED,
+    TIMEOUT_STIM
 };
 
-ENUM_TO_STRING(State, 4,
+ENUM_TO_STRING(State, 6,
     "Idle", "RequestMade",
-    "Timeout", "DnsTestStarted")
+    "Timeout", "DnsTestStarted",
+    "PostingDnsResults", "ThroughputRinning"
+    )
 
-ENUM_TO_STRING(Stim, 5,
+ENUM_TO_STRING(Stim, 7,
     "Start",
     "BadRequest", "GoodRequest",
-    "WaitTimeout", "DnsTestFinished")
+    "WaitTimeout", "DnsTestFinished",
+    "DnsTestFinished", "ThroughputFinished",
+    "Timeout"
+    )
 
 #define ID_SIZE 32
 
@@ -132,6 +138,7 @@ State onStart() {
     m_log.printfln(INFO, "sending curl request with data %s", m_post_fields.c_str());
     m_async_curl.sendRequest(request, m_observer);
 
+    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
     return REQUEST_MADE;
 }
 
@@ -172,6 +179,11 @@ State onBadRequest() {
     m_log.printHex(DEBUG, m_response, m_response_len);
     m_state_machine->setTimeoutStim(5 SECS, WAIT_TIMEOUT);
     return TIMEOUT;
+}
+
+State onTimeout() {
+    m_log.printfln(WARN, "Timeout in %s", toString(m_state_machine->getCurrentState()).c_str());
+    exit(3);
 }
 
 State exitSoftly() {

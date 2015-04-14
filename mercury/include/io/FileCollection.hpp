@@ -74,9 +74,11 @@ public:
     /**
      * @brief unsubscribe from a socket collection
      * @param fd the file descriptor to unsubscribe
+     * @param callback set to true if the observer for the file descriptor should
+     *                 be called. Useful to set to false in destructors.
      * @return true if the file descriptor was found and unsubscribed
      */
-    void unsubscribe(HasRawFd* fd) ;
+    void unsubscribe(HasRawFd* fd, bool callback=true) ;
 
 
     /**

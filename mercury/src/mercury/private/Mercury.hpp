@@ -88,8 +88,11 @@ public:
 private:
     void setup_state_machine() {
         m_state_machine->setEdge(IDLE, START, &Mercury_StateMachine::onStart);
+
         m_state_machine->setEdge(REQUEST_MADE, GOOD_REQUEST, &Mercury_StateMachine::onGoodRequest);
         m_state_machine->setEdge(REQUEST_MADE, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
+        m_state_machine->setEdge(REQUEST_MADE, TIMEOUT_STIM, &Mercury_StateMachine::onTimeout);
+
         m_state_machine->setEdge(TIMEOUT, WAIT_TIMEOUT, &Mercury_StateMachine::onWaitTimeoutComplete);
         m_state_machine->setEdge(DNS_TEST_RUNNING, DNS_TEST_FINISHED, &Mercury_StateMachine::onDnsComplete);
 

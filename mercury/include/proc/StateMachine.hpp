@@ -19,6 +19,7 @@
 #include <os/Time.hpp>
 
 #include <proc/Process.hpp>
+#include <typeinfo>
 
 /**
  * @brief A class to handle access for an internal state machine
@@ -138,12 +139,13 @@ private:
     }
 
     void process_stim(Stim_T stim) {
-        m_log->printfln(DEBUG, "Processing stim %s", toString(stim).c_str());
+        m_log->printfln(DEBUG, "<%s> - Processing stim %s", typeid(Internal_T).name(), toString(stim).c_str());
         typename StateMapT::iterator itr = m_state_map.find(std::make_pair(m_current_state, stim));
 
         if(itr == m_state_map.end()) {
             /* state undefined, return */
-            m_log->printfln(WARN, "Stim %s undefined in state %s",
+            m_log->printfln(WARN, "<%s> - Stim %s undefined in state %s",
+                typeid(Internal_T).name(),
                 toString(stim).c_str(), toString(m_current_state).c_str());
             return;
         }
@@ -154,7 +156,8 @@ private:
     }
 
     void transitionState( State_T new_state ) {
-        m_log->printfln(DEBUG, "Transitioning from state %s to state %s",
+        m_log->printfln(DEBUG, "<%s> - Transitioning from state %s to state %s",
+            typeid(Internal_T).name(),
             toString(m_current_state).c_str(), toString(new_state).c_str());
         m_current_state = new_state;
     }

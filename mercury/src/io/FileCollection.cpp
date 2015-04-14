@@ -57,6 +57,7 @@ struct FileCollection::Command {
             FileCollection::SubscriptionType subscr_typ;
             FileCollectionObserver* observer;
             Deallocator<FileCollectionObserver>* dealloc;
+            bool callback; /* for unsubscribe */
         } str;
     } un;
 };
@@ -163,7 +164,7 @@ public:
         m_deallocators[observer] = deallocator;
    }
 
-   void unsubscribe(HasRawFd* raw_fd) {
+   void unsubscribe(HasRawFd* raw_fd, bool callback) {
         int rfd_int = raw_fd->getRawFd();
         m_reverse_lookup.erase(rfd_int);
         m_log.printfln(DEBUG, "Unsubscribing %p from file collection", raw_fd);
@@ -173,7 +174,9 @@ public:
         if(obs) {
             /* Tell the observer the file descriptor
              * was unsubscribed from the collection */
-            obs->onUnsubscribe(raw_fd);
+            if(callback) {
+                obs->onUnsubscribe(raw_fd);
+            }
 
             /* Deallocate the observer if we can */
             dealloc_T* dealloc;
@@ -203,7 +206,7 @@ public:
                 break;
 
             case UNSUBSCRIBE:
-                unsubscribe(cmd->un.str.raw_fd);
+                unsubscribe(cmd->un.str.raw_fd, cmd->un.str.callback);
                 break;
 
             case EXIT:
@@ -219,10 +222,11 @@ public:
         delete cmd;
     }
 
-    void enqueue_unsubscribe(HasRawFd* raw_fd) {
+    void enqueue_unsubscribe(HasRawFd* raw_fd, bool callback) {
         Command* cmd = new Command();
         cmd->type = UNSUBSCRIBE;
         cmd->un.str.raw_fd = raw_fd;
+        cmd->un.str.callback = callback;
         m_command_queue.push(cmd);
     }
 
@@ -292,7 +296,7 @@ public:
                         /* There was a hangup, we need to remove the
                          * file descriptor */
                         m_log.printfln(DEBUG, "Unsubscribing hungup file descriptor %d", vitr->fd);
-                        enqueue_unsubscribe(m_reverse_lookup[vitr->fd]);
+                        enqueue_unsubscribe(m_reverse_lookup[vitr->fd], true);
                     } else {
                         /* There _might_ be data to read */
 #ifdef  HAS_FIONREAD
@@ -313,7 +317,7 @@ public:
 #ifdef  HAS_FIONREAD
                         } else {
                             m_log.printfln(DEBUG, "Unsubscrbing %d due to EOF", vitr->fd);
-                            enqueue_unsubscribe(m_reverse_lookup[vitr->fd]);
+                            enqueue_unsubscribe(m_reverse_lookup[vitr->fd], true);
                         }
 #endif
                     }
@@ -379,9 +383,9 @@ void FileCollection::subscribe(SubscriptionType typ, HasRawFd* fd,
     m_poller->interrupt();
 }
 
-void FileCollection::unsubscribe(HasRawFd* fd) {
+void FileCollection::unsubscribe(HasRawFd* fd, bool callback) {
     m_log.printfln(TRACE, "FileCollection::unsubscribe");
-    m_poller->enqueue_unsubscribe(fd);
+    m_poller->enqueue_unsubscribe(fd, callback);
     m_poller->interrupt();
 }
 
