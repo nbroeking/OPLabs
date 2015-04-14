@@ -83,6 +83,7 @@ public class TestResults implements Parcelable{
         String results = new String();
 
         try {
+            results += "state=finished&";
             results += "dns_response_avg=" + URLEncoder.encode(Double.toString(averageDNSResponseTime), "UTF-8") + "&";
             results += "packet_loss="+ URLEncoder.encode(Double.toString(packetLoss), "UTF-8") + "&";
             results += "latency_avg=" + URLEncoder.encode(Double.toString(latency), "UTF-8");

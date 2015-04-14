@@ -14,25 +14,30 @@ public class TestState {
     private State state;
     private final static String TAG = "TESTSTATE";
     private Handler handler;
-    private TestResults latestResults;
+    private TestResults phoneResults;
+    private TestResults routerResults;
+
     //Singleton Members
     private static TestState ourInstance = new TestState();
     public static TestState getInstance() {
         return ourInstance;
     }
-    private TestState(){
-        state = State.IDLE;
-    }
 
+    private TestState() {
+        state = State.IDLE;
+        handler = null;
+        phoneResults = null;
+        routerResults = null;
+    }
     //Results
-    public TestResults getLatestResults() {
+    public TestResults getPhoneResults() {
         synchronized (this) {
-            return latestResults;
+            return phoneResults;
         }
     }
 
-    public void setLatestResults(TestResults latestResults) {
-        this.latestResults = latestResults;
+    public void setPhoneResults(TestResults latestResults) {
+        this.phoneResults = latestResults;
     }
 
     //Returns the state of the tests
@@ -76,6 +81,17 @@ public class TestState {
         }
     }
 
+    public TestResults getRouterResults() {
+        synchronized (this) {
+            return routerResults;
+        }
+    }
+
+    public void setRouterResults(TestResults routerResults) {
+        synchronized (this) {
+            this.routerResults = routerResults;
+        }
+    }
     //We need explicily tell the statemachine that the handler is the test subsystem
     public void setHandler(Handler handler1)
     {

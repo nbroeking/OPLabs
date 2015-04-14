@@ -50,7 +50,7 @@ public class ResultsActivity extends HermesActivity {
     public void checkStatus()
     {
         TestState stateMachine = TestState.getInstance();
-        TestResults latestResults = stateMachine.getLatestResults();
+        TestResults latestResults = stateMachine.getPhoneResults();
 
 
         //Start Testing Process if IDLE
@@ -120,7 +120,10 @@ public class ResultsActivity extends HermesActivity {
         }
 
         //Tell the communication system to stop all loops
-        commService.clear();
+
+        if(commService != null) {
+            commService.clear();
+        }
         //Stop listening for broadcasts
         unregisterReceiver(receiver);
     }
@@ -188,6 +191,7 @@ public class ResultsActivity extends HermesActivity {
 
             if( !results.isValid())
             {
+                TestState.getInstance().setState(TestState.State.IDLE, false);
                 //Display Error
                 new AlertDialog.Builder(ResultsActivity.this)
                         .setTitle("Testing Error")
@@ -201,6 +205,8 @@ public class ResultsActivity extends HermesActivity {
                         })
                         .setIcon(R.drawable.ic_launcher)
                         .show();
+
+
             }
             else{
                 if( intent.getAction().equals("TestCompleted"))

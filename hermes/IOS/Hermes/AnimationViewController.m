@@ -14,6 +14,7 @@
 @interface AnimationViewController()
 @property (strong, nonatomic) TestState *stateMachine;
 
+-(void) goToResults: (NSNotification*)notification;
 @end
 
 @implementation AnimationViewController
@@ -50,6 +51,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startTestNotified:) name:@"NotifyStartTest" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goToResults:) name:@"TestComplete" object:nil];
+    
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -68,12 +71,30 @@
     TestSettings *settings = (TestSettings*)[notification object];
     
     if( settings == nil ){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an error running a test. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an starting a performance test. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
         
         [alert show];
     }
 }
 
+-(void) goToResults: (NSNotification*)notification{
+    
+    if( [notification object] == NULL)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an error running a performance test. We are sorry for the inconvience. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
+
+#warning DONT GIVE THIS TO CABLE LABS
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(220, 10, 40, 40)];
+        [imageView setImage: [UIImage imageNamed:@"josh"]];
+        [alert addSubview:imageView];
+        
+        [alert show];
+    }
+    else{
+        [self.navigationController popViewControllerAnimated:NO];
+        [(MainNavigationController*)self.navigationController performSegueWithIdentifier:@"GotoResults" sender:self];
+    }
+}
 #pragma mark - Alert View
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     [self.navigationController popViewControllerAnimated:YES];

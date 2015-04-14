@@ -55,7 +55,7 @@ public class TestMessageHandler extends Handler {
                     intent.putExtra(("Results"), results);
 
                     //We have the state machine hold on to the results in case hermes isn't the main app
-                    TestState.getInstance().setLatestResults(results);
+                    TestState.getInstance().setPhoneResults(results);
                 }
                 TestState.getInstance().setState(TestState.State.COMPLETED, false);
                 parent.sendBroadcast(intent);
