@@ -117,7 +117,7 @@ class User(db.Model):
 
     def new_token(self):
         """ Generate a new token for this user and return it. """
-        self.raw_token = base64.b64encode(os.urandom(64))
+        self.raw_token = base64.urlsafe_b64encode(os.urandom(64))
         db.session.commit()
 
         return self.get_token()

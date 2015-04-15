@@ -45,12 +45,18 @@ def edit():
         return JSON_FAILURE(
                 reason="Invalid token or IP."
                 )
+    if 'data' not in request.form:
+        return JSON_FAILURE(
+                reason="Missing 'data' parameter"
+                )
 
     # Columns allowed to be updated and their types
     columns = TestResult.get_public_columns()
 
+    data = request.form['data']
+
     for col in columns:
-        if col in request.form:
+        if col in data:
             col_type = columns[col]
             datum = col_type(request.form[col])
             setattr(rec, col, datum)

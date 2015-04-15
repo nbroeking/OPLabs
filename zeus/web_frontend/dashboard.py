@@ -87,13 +87,17 @@ def start_router_test():
 
     new_set = TestSet(user)
 
-    # This manages the actual work
-    router = Router(ip)
+    try:
+        # This manages the actual work
+        router = Router(ip)
 
-    router_record = new_set.new_result(device_type="router")
-    router_record.test_token = base64.b64encode(router.req_id)
-    router_record.device_ip = ip
-    router_record.save()
+        router_record = new_set.new_result(device_type="router")
+        router_record.test_token = base64.b64encode(router.req_id)
+        router_record.device_ip = ip
+        router_record.save()
+    except:
+        flash('Invalid router address!', 'error')
+        return redirect(url_for("WebInterface.showtests"))
     
     new_set.save()
 
