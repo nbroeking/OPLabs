@@ -80,7 +80,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     }
     else{
         
-        [[SessionData getData] setSessionId:NULL];
+        [[SessionData getData] setSessionId:@"DOMAIN"];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyLogin" object:(NSString*)[json objectForKey:@"status"]];
 }
@@ -95,7 +95,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     
-    NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionId], (int)[settings setId]];
+    NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
     
     NSLog(@"Sending Post = %@", postString);
     NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
@@ -143,7 +143,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
      
      [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
      
-     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionId], (int)[settings setId]];
+     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
      
      NSLog(@"Sending Post = %@", postString);
      NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];

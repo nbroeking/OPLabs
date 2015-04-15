@@ -15,7 +15,7 @@
 @end
 
 @implementation TestState
-
+@synthesize latestResults;
 +(TestState*) getStateMachine
 {
     @synchronized(self){
@@ -32,6 +32,7 @@
 {
     if (self = [super init]) {
         state = IDLE;
+        latestResults = NULL;
     }
     return self;
 }

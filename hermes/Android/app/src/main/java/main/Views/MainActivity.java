@@ -1,7 +1,9 @@
 package main.Views;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +16,8 @@ import tester.TestState;
 public class MainActivity extends HermesActivity {
 
     private final String TAG = "HermesMainActivity";
+
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class MainActivity extends HermesActivity {
         {
             Button button = (Button)findViewById(R.id.command);
             button.setText("Run Test");
+
+            TestState.getInstance().setRouterResults(null);
+            TestState.getInstance().setPhoneResults(null);
         }
         else
         {
@@ -39,6 +46,31 @@ public class MainActivity extends HermesActivity {
         }
     }
 
+    //Used to do animations
+    @Override
+    public void startLogin()
+    {
+        Log.e(TAG, "Start Login: Showing spinner");
+        dialog = new ProgressDialog(this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Logging On .......");
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    //Used to do animations
+    @Override
+    public void endLogin()
+    {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                dialog.dismiss();
+            }}, 1000);
+
+        Log.e(TAG, "Trying to dismiss");
+    }
     //Called by button press to initiate a test
     public void runTest(View view) {
         Log.i(TAG, "RunTest");

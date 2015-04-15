@@ -10,6 +10,7 @@
 #import "TestState.h"
 #import "Communication.h"
 #import "TestSettings.h"
+#import "PerformanceTester.h"
 
 @interface Tester()
 @property(strong, nonatomic) TestState *stateMachine;
@@ -41,6 +42,8 @@
         thread = nil;
         timer = nil;
         stateMachine = [TestState getStateMachine];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(runTest:) name:@"NotifyStartTest" object:nil];
     }
     return self;
 }
@@ -53,6 +56,8 @@
     [[Communication getComm] startTest];
     
 }
+
+
 //Main Thread Run Loop
 -(void)threadMain
 {
@@ -109,6 +114,33 @@
         shouldRun = false;
         [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
     }
+}
+
+-(void) runTest :(NSNotification*) notification{
+    [self performSelector:@selector(runTestHelper:) onThread:thread withObject:notification waitUntilDone:NO];
+}
+-(void) runTestHelper :(NSNotification*) notification
+{
+    NSLog(@"Received a start test notification");
+    TestSettings *settings = (TestSettings*)[notification object];
+    [self performSelector:@selector(runTestOnSubsystem:) onThread:thread withObject:settings waitUntilDone:NO];
+    
+    
+}
+
+-(void) runTestOnSubsystem :(TestSettings*)settings{
+    NSLog(@"Preparing to run a test");
+    
+    PerformanceTester *tester = [[PerformanceTester alloc] init:settings];
+    
+    TestResults* results = [tester runTests];
+    
+    //Once we have the reslts we need to report them
+
+    [stateMachine setLatestResults:results];
+    
+    NSLog(@"Completed a Performance test");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results];
 }
 
 //This method is used to add something to the run loops queue.

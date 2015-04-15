@@ -41,6 +41,7 @@ import communication.Communication;
 import main.Application.SessionData;
 import tester.TestResults;
 import tester.TestService;
+import tester.TestState;
 import tester.helpers.TestMsg;
 import tester.helpers.TestSettings;
 
@@ -163,20 +164,23 @@ public class CommMessageHandler extends Handler {
             post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8")));
 
             //JSON Parser
+
             JSONObject json = sendPost(post);
+
+            Log.d(TAG, "Response = " + json );
             if (json.getString("status").equals("success")) {
                 Log.d(TAG, "Received Status success");
                 switch (json.getString("state")){
                     case "finished":
                         Log.d(TAG, "We have router results");
                         TestResults routerResults = new TestResults(json);
-
-                            Intent intent = new Intent();
-                            intent.setAction("ReportRouter");
-                            intent.putExtra(("Results"), routerResults);
-                            ((Communication) pairResults.second).sendBroadcast(intent);
-                            Log.d(TAG, "We sent the router results to whoever needs it");
-
+                        routerResults.setValid();
+                        TestState.getInstance().setRouterResults(routerResults);
+                        Intent intent = new Intent();
+                        intent.setAction("ReportRouter");
+                        intent.putExtra(("Results"), routerResults);
+                        ((Communication) pairResults.second).sendBroadcast(intent);
+                        Log.d(TAG, "We sent the router results to whoever needs it");
                         break;
                     default:
                         Log.d(TAG, "Will try again in 15 seconds");

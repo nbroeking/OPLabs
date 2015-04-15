@@ -58,6 +58,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    if( [data shouldTransfer]){
+        [data setShouldTransfer:false];
+        [self performSegueWithIdentifier:@"Results" sender:self];
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -106,27 +111,36 @@
     return true;
 }
 #pragma mark -Communication
--(void)notifyLogin:(NSString*)result
+
+-(void)notifyLogin:(NSString *)error{
+    [self performSelectorOnMainThread:@selector(notifyLoginHelper:) withObject:error waitUntilDone:NO];
+}
+-(void)notifyLoginHelper:(NSString*)result
 {
-    if ([data sessionId] != nil)
+    NSLog(@"Notify Login Helper");
+    if([[data sessionId] isEqualToString:@"ERROR"])
     {
-        NSLog(@"Successful Login: token = %@", [[SessionData getData] sessionId]);
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert setType:login];
+        [alert show];
     }
-    else
+    else if([[data sessionId] isEqualToString:@"DOMAIN"])
     {
-        if([[data sessionId] isEqualToString:@"ERROR"])
-        {
-            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alert setType:login];
-            [alert show];
-        }
-        else if([[data sessionId] isEqualToString:@"DOMAIN"])
-        {
-            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
-            [alert setType: settings];
-            [alert show];
-            [data setSessionId:nil];
-        }
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
+        [alert setType: settings];
+        
+        
+#warning DONT GIVE THIS TO CABLE LABS
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(220, 10, 40, 40)];
+        [imageView setImage: [UIImage imageNamed:@"josh"]];
+        [alert setValue:imageView forKey:@"accessoryView"];
+#warning TO HERE
+        
+        [alert show];
+        [data setSessionId:@""];
+    }
+    else{
+        NSLog(@"Successful Login");
     }
     [self performSelector:@selector(endLogin) withObject:nil afterDelay:1];
 }

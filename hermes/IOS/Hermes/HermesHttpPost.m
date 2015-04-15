@@ -111,7 +111,8 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // The request has failed for some reason!
     // Check the error var
-    NSLog(@"Comm: Connection failed with error %@", error);
+    NSLog(@"Comm: Connection failed with error %@\n\n", error);
+    
     
     NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
     [json setValue:@"ERROR" forKey:@"status"];

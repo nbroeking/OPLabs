@@ -7,11 +7,11 @@
 //
 
 #import "Communication.h"
-#import "CommunicationDelegate.h"
 #import "HomeViewController.h"
 #import "HermesHttpPost.h"
 #import "TestSettings.h"
 #import "ResponseHandler.h"
+#import "TestResults.h"
 
 NSString * const LoginURL = @"/api/auth/login";
 NSString * const StartTestURL = @"/api/test_set/create";
@@ -52,6 +52,7 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
     {
         started = false;
         shouldRun = false;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportTest:) name:@"TestComplete" object:nil];
     }
     return self;
 }
@@ -78,6 +79,10 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
     [self performSelector:@selector(requestTestFromServer) onThread:thread withObject:NULL waitUntilDone:NO];
     
 }
+-(void)reportTest:(NSNotification*)notification{
+    TestResults *results = (TestResults*)[notification object];
+    NSLog(@"Comm: Preparing to Report Test Complete");
+}
 /*********************************************
  *These are the helper methods that get run on the
  *comm thread;
@@ -92,7 +97,7 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
     
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     
-    NSString *postString = [NSString stringWithFormat:@"user_token=%@", [[SessionData getData] sessionId]];
+    NSString *postString = [NSString stringWithFormat:@"user_token=%@", [[SessionData getData] sessionIdEncoded]];
     
     NSData *data = [postString dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
     

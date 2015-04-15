@@ -71,15 +71,24 @@ public class ResultsFragment extends Fragment {
 
 
         // Get latest results for mobile from TestResults
-        TestResults results = stateMachine.getLatestResults();
+        TestResults results = stateMachine.getPhoneResults();
+        TestResults routerResults = stateMachine.getRouterResults();
+
+        if( results != null){
+            updateMobile(String.format("%s ms", results.getAverageDNSResponseTime()),
+                    String.format("%s ms", results.getLatency()),
+                    String.format("%s", (results.getPacketLoss() * 100) + "%"), "0", "0");
+            //String.format("%s", (results.getLoad())),
+            //String.format("%s", (results.getThroughput())));
+        }
+        if( routerResults !=null){
+
+            onRouterResults(routerResults);
+        }
 
 
         // Change TextView for mobile results
-        updateMobile(String.format("%s ms", results.getAverageDNSResponseTime()),
-                String.format("%s ms", results.getLatency()),
-                String.format("%s", (results.getPacketLoss() * 100) + "%"), "0", "0");
-                //String.format("%s", (results.getLoad())),
-                //String.format("%s", (results.getThroughput())));
+
 
         // Hide Router and Difference tables
         // Show spinning wheel animation
@@ -96,11 +105,11 @@ public class ResultsFragment extends Fragment {
                 String.format("%s", (results.getLoad())),
                 String.format("%s", (results.getThroughput())));
 
-        updateDiffTable(String.format("%s ms", (subtractResults(routerDNS, mobileDNS))),
-                String.format("%s ms", (subtractResults(routerLatency, mobileLatency))),
-                String.format("%s", (subtractResults(routerPackets, mobilePackets)) + "%"),
-                String.format("%s", (subtractResults(routerLoad, mobileLoad))),
-                String.format("%s", (subtractResults(routerThrough, mobileThrough))));
+       // updateDiffTable(String.format("%s ms", (subtractResults(routerDNS, mobileDNS))),
+         //       String.format("%s ms", (subtractResults(routerLatency, mobileLatency))),
+           //     String.format("%s", (subtractResults(routerPackets, mobilePackets)) + "%"),
+             //   String.format("%s", (subtractResults(routerLoad, mobileLoad))),
+               // String.format("%s", (subtractResults(routerThrough, mobileThrough))));
 
         // Hide spinning wheel animation
         // Show Router and Difference Tables

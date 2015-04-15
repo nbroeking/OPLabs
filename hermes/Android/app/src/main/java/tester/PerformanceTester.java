@@ -75,7 +75,7 @@ public class PerformanceTester {
             //TODO: We should should send an error code
         }
         try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
