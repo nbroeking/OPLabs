@@ -10,4 +10,11 @@
 
 @interface TestResults : NSObject
 
+@property(assign, nonatomic) double dns;
+@property(assign, nonatomic) double packetloss;
+@property(assign, nonatomic) double latency;
+@property(assign, nonatomic) double load;
+@property(assign, nonatomic) double throughput;
+
+
 @end

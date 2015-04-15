@@ -199,7 +199,7 @@
         <!--Results-->
         <scene sceneID="u34-Xf-s50">
             <objects>
-                <viewController title="Results" id="whj-mR-dGq" customClass="ResultsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ResultsViewController" title="Results" useStoryboardIdentifierAsRestorationIdentifier="YES" id="whj-mR-dGq" customClass="ResultsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8jp-G1-Kxu"/>
                         <viewControllerLayoutGuide type="bottom" id="B2p-GJ-J2j"/>

@@ -9,7 +9,7 @@
 #import "SessionData.h"
 
 @implementation SessionData
-@synthesize email, password, hostname, sessionId;
+@synthesize email, password, hostname, sessionId, shouldTransfer;
 
 +(SessionData*) getData
 {
@@ -28,6 +28,7 @@
         hostname = nil;
         email = nil;
         password = nil;
+        shouldTransfer = false;
     }
     return self;
 }

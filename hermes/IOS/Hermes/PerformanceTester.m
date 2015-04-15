@@ -38,7 +38,7 @@
 }
 
 -(TestResults *)runTests{
-    return NULL;
+    return [[TestResults alloc] init];
 }
 -(NSMutableArray *)runDNSTest:(NSMutableArray *)domains{
     return NULL;

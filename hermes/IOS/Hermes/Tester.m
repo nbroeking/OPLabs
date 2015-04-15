@@ -114,7 +114,10 @@
     }
 }
 
--(void) runTest :(NSNotification*) notification
+-(void) runTest :(NSNotification*) notification{
+    [self performSelector:@selector(runTestHelper:) onThread:thread withObject:notification waitUntilDone:NO];
+}
+-(void) runTestHelper :(NSNotification*) notification
 {
     NSLog(@"Received a start test notification");
     TestSettings *settings = (TestSettings*)[notification object];

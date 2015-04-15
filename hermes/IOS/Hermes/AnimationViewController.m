@@ -10,6 +10,8 @@
 #import "TestState.h"
 #import "MainNavigationController.h"
 #import "TestSettings.h"
+#import "SessionData.h"
+#import "ResultsViewController.h"
 
 @interface AnimationViewController()
 @property (strong, nonatomic) TestState *stateMachine;
@@ -65,7 +67,10 @@
     [AnimationImage stopAnimating];
 }
 
--(void) startTestNotified: (NSNotification *)notification{
+-(void) startTestNotified:(NSNotification*) notification{
+    [self performSelectorOnMainThread:@selector(startTestNotifiedHelper:) withObject:notification waitUntilDone:NO];
+}
+-(void) startTestNotifiedHelper: (NSNotification *)notification{
     NSLog(@"Notified about a Start Test");
     
     TestSettings *settings = (TestSettings*)[notification object];
@@ -76,8 +81,11 @@
         [alert show];
     }
 }
-
--(void) goToResults: (NSNotification*)notification{
+-(void) goToResults:(NSNotification *)notification
+{
+    [self performSelectorOnMainThread:@selector(goToResultsHelper:) withObject:notification waitUntilDone:NO];
+}
+-(void) goToResultsHelper: (NSNotification*)notification{
     
     if( [notification object] == NULL)
     {
@@ -86,13 +94,20 @@
 #warning DONT GIVE THIS TO CABLE LABS
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(220, 10, 40, 40)];
         [imageView setImage: [UIImage imageNamed:@"josh"]];
-        [alert addSubview:imageView];
-        
+        [alert setValue:imageView forKey:@"accessoryView"];
+#warning TO HERE
         [alert show];
     }
     else{
-        [self.navigationController popViewControllerAnimated:NO];
-        [(MainNavigationController*)self.navigationController performSegueWithIdentifier:@"GotoResults" sender:self];
+        
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ResultsViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultsViewController"];
+        
+        NSMutableArray *controllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+        [controllers removeLastObject];
+        [controllers addObject:vc];
+        
+        [self.navigationController setViewControllers:controllers animated:YES];
     }
 }
 #pragma mark - Alert View

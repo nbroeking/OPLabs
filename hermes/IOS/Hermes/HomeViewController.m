@@ -58,6 +58,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    if( [data shouldTransfer]){
+        [data setShouldTransfer:false];
+        [self performSegueWithIdentifier:@"Results" sender:self];
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

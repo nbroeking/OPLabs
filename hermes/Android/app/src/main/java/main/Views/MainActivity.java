@@ -67,9 +67,8 @@ public class MainActivity extends HermesActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 dialog.dismiss();
-            }}, 2000);
+            }}, 1000);
 
-        //dialog.dismiss();
         Log.e(TAG, "Trying to dismiss");
     }
     //Called by button press to initiate a test
