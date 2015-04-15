@@ -116,7 +116,6 @@ void start_logging_service(int fd) {
     /* start a logging service which will read on
      * fd and wait for input */
     pid_t child;
-    printf("Forking child\n");
     if(!(child = fork())) {
         LogContext::unlock();
 
@@ -145,6 +144,9 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
         perror("Error on pipe()\n");
         return 1;
     }
+
+    /* Redirect stderr to the error_pipe. This will make it
+     * so we can still see stderr messages in the log */
     dup2(error_pipe[1], STDERR_FILENO);
 
     /* Start the service that is only resposible for
