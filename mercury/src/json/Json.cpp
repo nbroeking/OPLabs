@@ -170,7 +170,7 @@ void Json::push_back(const Json& jsn) {
     if(getType() != JSON_ARRAY) {
         throw JsonException("Not an array in push_back");
     }
-    json_array_append_new(m_raw, jsn.m_raw);
+    json_array_append_new(m_raw, json_copy(jsn.m_raw));
 }
 
 void Json::setAttribute(const char* attr, const Json& json) {

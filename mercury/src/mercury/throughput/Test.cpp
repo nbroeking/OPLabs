@@ -90,6 +90,19 @@ public:
             m_current_id = m_current_id + 1;
         }
 
+        void getLatencyMicros(vector<timeout_t>& vec) const {
+            map<u16_t,timeout_t>::const_iterator itr;
+            vec.clear();
+            for(u16_t i = 0; i < m_current_id; ++ i) {
+                itr = m_latency.find(i);
+                if(itr != m_latency.end()) {
+                    vec.push_back(itr->second);
+                } else {
+                    vec.push_back(-1);
+                }
+            }
+        }
+
     private:
         map<u16_t, timeout_t> m_sent_times;
         map<u16_t, timeout_t> m_latency;
@@ -122,6 +135,8 @@ public:
     };
 
     void run() {
+        TestResults results;
+
         m_stream_sock.connect(*m_config.server_ip);
         m_stream_sock.setOption(O_NONBLOCK);
 
@@ -146,14 +161,18 @@ public:
 
         getFileCollection().subscribe(FileCollection::SUBSCRIBE_READ,
                                         &m_stream_sock, this);
-        sched.setStopOnEmpty(true);
         Time::sleep(10 SECS);
 
         /* unsubscribe and do not notify the callback mechanism */
         getFileCollection().unsubscribe(&m_stream_sock, false);
+        results.throughput_per_sec = download_rate;
+        send_runner.getLatencyMicros(results.latency_micros);
 
         m_log->printfln(INFO, "Waiting for all jobs to finish");
+        sched.setStopOnEmpty(true);
         join(); /* join all active threads in this process */
+
+        m_observer->onTestComplete(results);
     }
 
 private:
@@ -173,9 +192,12 @@ private:
     TestObserver* m_observer;
 };
 
-TestProxy* Test::createInstance() {
-    ThroughputTest* ret = new ThroughputTest();
-    return ret;
+TestProxy* g_th_instance;
+TestProxy& Test::instance() {
+    if(!g_th_instance) {
+        g_th_instance = new ThroughputTest();
+    }
+    return *g_th_instance;
 }
 
 }

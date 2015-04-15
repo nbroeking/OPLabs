@@ -10,6 +10,10 @@ class private_Proxy: public Proxy {
         m_merc.setConfig(cfg);
         m_merc.start();
     }
+
+    void waitForExit() {
+        m_merc.waitForExit();
+    }
 private:
     Mercury m_merc;
 };

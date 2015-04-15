@@ -152,6 +152,12 @@ void LogContext::log16hex( const LogLevel& lev, const byte* bytes, size_t len ) 
 }
 
 
+void LogContext::unlock() {
+    shared_lock.try_lock();
+    shared_lock.unlock();
+}
+
+
 }
 
 

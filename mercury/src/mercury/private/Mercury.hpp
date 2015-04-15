@@ -68,6 +68,10 @@ public:
         m_log.printfln(ERROR, "Error with curl request: %s", expt.getMessage());
         m_state_machine->sendStimulus(BAD_REQUEST);
     }
+
+    virtual void stop() OVERRIDE {
+        Process::stop();
+    }
     
     /* Implement ping test observer */
     void onTestComplete(const dns::TestResults& res) {
@@ -77,6 +81,13 @@ public:
         m_mercury_state_machine.sendDnsResults(res);
         m_state_machine->sendStimulus(DNS_TEST_FINISHED);
     }
+
+    void onTestComplete(const throughput::TestResults& res) {
+        m_log.printfln(INFO, "Throughput test complete");
+        m_mercury_state_machine.m_throughput_test_results = res;
+        m_state_machine->sendStimulus(THROUGHPUT_FINISHED);
+    }
+
     void run() OVERRIDE {
         ScopedLock __sl(m_mutex);
         _run();
@@ -96,8 +107,16 @@ private:
         m_state_machine->setEdge(TIMEOUT, WAIT_TIMEOUT, &Mercury_StateMachine::onWaitTimeoutComplete);
         m_state_machine->setEdge(DNS_TEST_RUNNING, DNS_TEST_FINISHED, &Mercury_StateMachine::onDnsComplete);
 
+        m_state_machine->setEdge(POSTING_DNS_RESULTS, TIMEOUT_STIM, &Mercury_StateMachine::onTimeout);
         m_state_machine->setEdge(POSTING_DNS_RESULTS, GOOD_REQUEST, &Mercury_StateMachine::onDnsResultsPosted);
         m_state_machine->setEdge(POSTING_DNS_RESULTS, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
+
+        m_state_machine->setEdge(THROUGHPUT_RUNNING, THROUGHPUT_FINISHED, &Mercury_StateMachine::onThroughputTestFinished);
+        m_state_machine->setEdge(THROUGHPUT_RUNNING, TIMEOUT_STIM, &Mercury_StateMachine::onTimeout);
+
+        m_state_machine->setEdge(POSTING_THROUGHPUT_RESULTS, TIMEOUT_STIM, &Mercury_StateMachine::onTimeout);
+        m_state_machine->setEdge(POSTING_THROUGHPUT_RESULTS, GOOD_REQUEST, &Mercury_StateMachine::onThroughputResultsPosted);
+        m_state_machine->setEdge(POSTING_THROUGHPUT_RESULTS, BAD_REQUEST, &Mercury_StateMachine::onBadRequest);
 
         newThread(*m_state_machine)->start();
     }

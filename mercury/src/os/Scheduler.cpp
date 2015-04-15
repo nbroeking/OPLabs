@@ -40,7 +40,7 @@ void Scheduler::setStopOnEmpty(bool stop) {
 
 void Scheduler::run() {
     Request request;
-    while ( !(m_empty_stop && m_queue.empty()) ) {
+    while ( !(m_empty_stop && m_queue.empty() && m_request_queue.empty()) ) {
         bool rc = true;
         if( m_queue.empty() ) {
             m_log->printfln(TRACE, "Queue is empty, waiting for request");

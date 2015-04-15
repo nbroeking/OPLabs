@@ -85,7 +85,7 @@ public:
     template <class T>
     void toVector(std::vector<T>& vec,
                   T(*convert)(const Json&) =
-                    JsonBasicConvert<T>::convert) {
+                    JsonBasicConvert<T>::convert) const {
         size_t size = arraySize();
         for(size_t i = 0; i < size; ++ i) {
             vec.push_back(convert((*this)[i]));
@@ -129,6 +129,45 @@ struct JsonBasicConvert<s64_t> {
 
     static json::Json convert_from(const s64_t& i) {
         return json::Json::fromInt(i);
+    }
+};
+
+template <>
+struct JsonBasicConvert<u64_t> {
+    static inline u64_t convert(const json::Json& jsn) {
+        return jsn.intValue();
+    }
+
+    static inline json::Json convert_from(const u64_t& i) {
+        return json::Json::from((s64_t)i);
+    }
+};
+
+template <class T>
+struct JsonBasicConvert<std::vector<T> > {
+    static inline std::vector<T> convert(const json::Json& jsn) {
+        using namespace json;
+        std::vector<Json> vec;
+        jsn.toVector(vec);
+
+        std::vector<T> ret;
+        std::vector<Json>::iterator itr;
+        FOR_EACH(itr, vec) {
+            ret.push_back(itr->convert<T>());
+        }
+        return ret;
+    };
+
+    static inline json::Json convert_from(const std::vector<T>& vec) {
+        using namespace json;
+        using namespace std;
+
+        vector<Json> tmpvec;
+        typename vector<T>::const_iterator itr;
+        FOR_EACH(itr, vec) {
+            tmpvec.push_back(Json::from(*itr));
+        }
+        return Json::fromVector(tmpvec);
     }
 };
 

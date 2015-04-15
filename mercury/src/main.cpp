@@ -112,9 +112,45 @@ void sigchld_hdlr(int sig) {
     g_cond->signal();
 }
 
+void start_logging_service(int fd) {
+    /* start a logging service which will read on
+     * fd and wait for input */
+    pid_t child;
+    printf("Forking child\n");
+    if(!(child = fork())) {
+        LogContext::unlock();
+
+        LogContext& log = LogManager::instance().getLogContext("Child", "StdErr");
+        log.printfln(DEBUG, "Error logger started");
+        FILE* f = fdopen(fd, "r");
+        char read[1024];
+        read[1023] = 0;
+        while(true) {
+            fgets(read, sizeof(read)-1, f);
+            log.printfln(ERROR, read);
+        }
+    }
+
+    if(child < 0) {
+        perror("fork() failed");
+    }
+}
+
 int startMercury(LogContext& m_log, MercuryConfig& config) {
     StreamServerSocket sock;
     SocketAddress* bind_addr = config.bind_ip;
+
+    int error_pipe[2];
+    if(pipe(error_pipe)) {
+        perror("Error on pipe()\n");
+        return 1;
+    }
+    dup2(error_pipe[1], STDERR_FILENO);
+
+    /* Start the service that is only resposible for
+     * logging the stderr of the this process and
+     * its other children */
+    start_logging_service(error_pipe[0]);
 
     m_log.printfln(INFO, "Binding to address: %s", bind_addr->toString().c_str());
     sock.bind(*bind_addr);
@@ -136,7 +172,13 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
              * so continue with the fork() */
             m_log.printfln(INFO, "Magic cookie accepted, forking new process");
             pid_t child;
+
             if(!(child = fork())) {
+                LogContext::unlock();
+
+                /* report all stderr to the error pipe */
+                fprintf(stderr, "Test stderr\n");
+                fflush(stderr);
                 /* Child process. Setup the config and boot
                  * the merucry state machine */
                 mercury::Config conf;
@@ -146,7 +188,11 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
 
                 /* start mercury */
                 process.start(conf, NULL);
+                process.waitForExit();
+
+                exit(0);
             } else {
+
                 /* parent */
                 m_log.printfln(INFO, "Child started pid=%d", child);
                 int res = 0;
@@ -173,6 +219,10 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
                     } else {
                         m_log.printfln(INFO, "Reap child (%d)\n", (int)pid);
                     }
+                }
+
+                if(WIFSIGNALED(res)) {
+                    m_log.printfln(WARN, "Child was signaled with %d", WTERMSIG(res));
                 }
 
                 if(WEXITSTATUS(res)) {

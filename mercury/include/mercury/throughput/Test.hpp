@@ -17,7 +17,7 @@ public:
     /**
      * Return the instance of this test proxy
      */
-    static TestProxy* createInstance();
+    static TestProxy& instance();
 };
 
 }

@@ -23,6 +23,7 @@ public:
      * Start mercury
      */
     virtual void start(const Config& conf, Callback* callback) = 0;
+    virtual void waitForExit() = 0;
 };
 
 /**
