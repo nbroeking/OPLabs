@@ -126,7 +126,7 @@ void start_logging_service(int fd) {
         read[1023] = 0;
         while(true) {
             fgets(read, sizeof(read)-1, f);
-            log.printfln(ERROR, read);
+            log.printfln(ERROR, "%s", read);
         }
     }
 
