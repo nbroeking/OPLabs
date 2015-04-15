@@ -13,7 +13,7 @@
 //Singleton
 +(SessionData*) getData;
 
-@property (strong, atomic, setter=setSessionId:, getter=sessionId) NSString *sessionId;
+@property (strong, atomic) NSString *sessionId;
 
 @property (strong, atomic) NSString *hostname;
 @property (strong, atomic) NSString *email;
@@ -28,5 +28,6 @@
 - (void)registerDefaultsFromSettingsBundle;
 -(void)setSessionId:(NSString *)theSessionId;
 -(NSString*)sessionId;
+-(NSString*)sessionIdEncoded;
 
 @end

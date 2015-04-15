@@ -56,6 +56,8 @@
     [[Communication getComm] startTest];
     
 }
+
+
 //Main Thread Run Loop
 -(void)threadMain
 {

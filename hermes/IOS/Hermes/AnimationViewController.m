@@ -90,12 +90,6 @@
     if( [notification object] == NULL)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an error running a performance test. We are sorry for the inconvience. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
-
-#warning DONT GIVE THIS TO CABLE LABS
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(220, 10, 40, 40)];
-        [imageView setImage: [UIImage imageNamed:@"josh"]];
-        [alert setValue:imageView forKey:@"accessoryView"];
-#warning TO HERE
         [alert show];
     }
     else{

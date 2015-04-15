@@ -33,7 +33,7 @@
     return self;
 }
 
--(NSString*)sessionId
+-(NSString*)sessionIdEncoded
 {
     @synchronized(self){
         NSString * encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
@@ -43,11 +43,6 @@
                                                                                        (CFStringRef)@"!*'();:@&=+$,/?%#[]",
                                                                                        kCFStringEncodingUTF8 ));
         return encodedString;
-    }
-}
--(void)setSessionId:(NSString *)theSessionId{
-    @synchronized(self){
-        sessionId = [[NSString alloc] initWithString:theSessionId];
     }
 }
 //This method pulls the settings from the settings bundle

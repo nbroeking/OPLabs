@@ -47,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		560247151ADE225B006B11B6 /* CommunicationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommunicationDelegate.h; sourceTree = "<group>"; };
 		5606D3E81ADD714C00C45E1E /* PerformanceTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerformanceTester.h; sourceTree = "<group>"; };
 		5606D3E91ADD714C00C45E1E /* PerformanceTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PerformanceTester.m; sourceTree = "<group>"; };
 		5606D3EB1ADD764200C45E1E /* TestResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestResults.h; sourceTree = "<group>"; };
@@ -56,7 +57,6 @@
 		56572C7A1A8D6A3D00EF6582 /* SessionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionData.h; sourceTree = "<group>"; };
 		56572C7B1A8D6A3D00EF6582 /* SessionData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionData.m; sourceTree = "<group>"; };
 		56572C7E1A8D6E2000EF6582 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
-		56572C811A8D7D8B00EF6582 /* CommunicationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommunicationDelegate.h; sourceTree = "<group>"; };
 		566ABD451A6B9D6100B114C1 /* Communication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Communication.h; sourceTree = "<group>"; };
 		566ABD461A6B9D6100B114C1 /* Communication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Communication.m; sourceTree = "<group>"; usesTabs = 0; };
 		5674088D1AD8F545008FAE7E /* HermesHttpPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HermesHttpPost.h; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 		56572C801A8D7D3100EF6582 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				56572C811A8D7D8B00EF6582 /* CommunicationDelegate.h */,
+				560247151ADE225B006B11B6 /* CommunicationDelegate.h */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
