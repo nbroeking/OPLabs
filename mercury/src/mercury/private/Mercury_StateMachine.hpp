@@ -21,6 +21,7 @@
 #include <mercury/Mercury.hpp>
 
 
+using namespace json;
 using namespace logger;
 using namespace curl;
 using namespace std;
@@ -34,7 +35,8 @@ enum State {
     TIMEOUT,
     DNS_TEST_RUNNING,
     POSTING_DNS_RESULTS,
-    THROUGHPUT_RUNNING
+    THROUGHPUT_RUNNING,
+    POSTING_THROUGHPUT_RESULTS,
 };
 
 enum Stim {
@@ -43,17 +45,23 @@ enum Stim {
     GOOD_REQUEST,
     WAIT_TIMEOUT,
     DNS_TEST_FINISHED,
-    THROUGHPUT_FINISHED
+    THROUGHPUT_FINISHED,
+    TIMEOUT_STIM
 };
 
-ENUM_TO_STRING(State, 4,
+ENUM_TO_STRING(State, 6,
     "Idle", "RequestMade",
-    "Timeout", "DnsTestStarted")
+    "Timeout", "DnsTestStarted",
+    "PostingDnsResults", "ThroughputRinning",
+    "PostingThroughputResults"
+    )
 
-ENUM_TO_STRING(Stim, 5,
+ENUM_TO_STRING(Stim, 7,
     "Start",
     "BadRequest", "GoodRequest",
-    "WaitTimeout", "DnsTestFinished")
+    "WaitTimeout", "DnsTestFinished",
+    "ThroughputFinished", "Timeout"
+    )
 
 #define ID_SIZE 32
 
@@ -73,7 +81,10 @@ inline string html_escape(const string& in) {
 }
 
 class Mercury;
-class MercuryObserver: public CurlObserver, public dns::TestObserver {
+class MercuryObserver: public CurlObserver,
+                       public dns::TestObserver,
+                       public throughput::TestObserver,
+                       public os::ManagedRunnable {
     /* Interface */
 };
 
@@ -93,25 +104,26 @@ Mercury_StateMachine(MercuryObserver* observer):
     m_observer = observer;
 }
 
-void sendDnsResults(const dns::TestResults& res) {
-    using namespace json;
-
-    Json to_send = Json::from(res);
+void curlSendJson(Json to_send) {
     char post_chars[4096];
-
     Json tmp = Json::fromString("finished");
     to_send.setAttribute("status", tmp);
     snprintf(post_chars, sizeof(post_chars), "data=%s&router_token=%s",
         to_send.toString().c_str(), m_id_b64.c_str());
-
     Curl request;
     m_post_fields = post_chars;
     m_current_url = m_config.controller_url + "/api/router/edit";
 
-    m_log.printfln(DEBUG, "Sending DNS results as %s", post_chars);
+    m_log.printfln(DEBUG, "Sending results %s", post_chars);
     setup_curl(request, m_current_url.c_str(), m_post_fields.c_str());
-
     m_async_curl.sendRequest(request, m_observer);
+}
+
+void sendDnsResults(const dns::TestResults& res) {
+    using namespace json;
+
+    Json to_send = Json::from(res);
+    curlSendJson(to_send);
 }
 
 State onStart() {
@@ -132,10 +144,12 @@ State onStart() {
     m_log.printfln(INFO, "sending curl request with data %s", m_post_fields.c_str());
     m_async_curl.sendRequest(request, m_observer);
 
+    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
     return REQUEST_MADE;
 }
 
 State onDnsComplete() {
+    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
     return POSTING_DNS_RESULTS;
 }
 
@@ -174,6 +188,11 @@ State onBadRequest() {
     return TIMEOUT;
 }
 
+State onTimeout() {
+    m_log.printfln(WARN, "Timeout in %s", toString(m_state_machine->getCurrentState()).c_str());
+    exit(3);
+}
+
 State exitSoftly() {
     exit(0);
 }
@@ -184,13 +203,29 @@ State exitHard() {
     exit(1);
 }
 
+
+State onThroughputTestFinished() {
+    using namespace json;
+    Json to_send = Json::from(m_throughput_test_results);
+    curlSendJson(to_send);
+
+    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
+    return POSTING_THROUGHPUT_RESULTS;
+}
+
 State onDnsResultsPosted() {
-    throughput::TestProxy* proxy;
-    proxy = throughput::Test::createInstance();
+    throughput::TestProxy& proxy =
+            throughput::Test::instance();
 
     m_log.printfln(INFO, "Running throughput test");
-    proxy->startTest(m_test_conf.throughput_test_config, NULL); /* TODO NOT NULL */
+    proxy.startTest(m_test_conf.throughput_test_config, m_observer); /* TODO NOT NULL */
+    m_state_machine->setTimeoutStim(20 SECS, TIMEOUT_STIM);
     return THROUGHPUT_RUNNING;
+}
+
+State onThroughputResultsPosted() {
+    m_log.printfln(INFO, "No more tests to run. Teardown");
+    m_observer->stop();
 }
 
 State onWaitTimeoutComplete() {
@@ -232,6 +267,8 @@ std::string m_post_fields;
 std::string m_id_b64;
 Config m_config;
 MercuryTestConfig m_test_conf;
+
+throughput::TestResults m_throughput_test_results;
 };
 
 }

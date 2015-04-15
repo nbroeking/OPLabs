@@ -87,6 +87,7 @@ class HollowLock {
 public:
     inline void lock() {};
     inline void unlock() {};
+    inline int try_lock() {return 1;}
 };
 
 /**
@@ -164,6 +165,7 @@ public:
         this->color = color;
     }
 
+    static void unlock();
 private:
     void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) ;
     friend class LogManager;

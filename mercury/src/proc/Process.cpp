@@ -38,6 +38,7 @@ public:
 Process::Process(const char* name) : name(name) {
     m_log = &LogManager::instance().getLogContext("Process", name);
     stopping = false;
+    m_wait_mutex.lock();
 }
 
 FileCollection& Process::getFileCollection() {
@@ -86,6 +87,7 @@ void Process::join() {
 
 void Process::stop() {
     join();
+    m_wait_mutex.unlock();
 }
 
 Process& Process::getProcess() {
@@ -100,6 +102,10 @@ Process& Process::getProcess() {
         return* main;
     }
     return* itr->second;
+}
+
+void Process::waitForExit() {
+    ScopedLock __sl(m_wait_mutex);
 }
 
 Thread* Process::start() {

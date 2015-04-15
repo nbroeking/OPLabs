@@ -84,6 +84,8 @@ public:
     virtual void stop();
     virtual void join();
 
+    virtual void waitForExit();
+
 private:
     io::FileCollection m_file_collection;
     std::string name;
@@ -97,6 +99,8 @@ private:
 
 protected:
     logger::LogContext* m_log;
+
+    os::Mutex m_wait_mutex;
 };
 
 /* A process that starts with a mutex locked
