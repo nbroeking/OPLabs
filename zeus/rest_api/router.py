@@ -11,6 +11,7 @@ from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
 from util.rest.rest_auth import requires_router_token
 from . import rest_blueprint
 from models.config import TestConfiguration
+import json
 
 @rest_blueprint.route("/router/get_config", methods=['POST'])
 @requires_router_token()
@@ -49,16 +50,15 @@ def edit():
         return JSON_FAILURE(
                 reason="Missing 'data' parameter"
                 )
-
     # Columns allowed to be updated and their types
     columns = TestResult.get_public_columns()
 
-    data = request.form['data']
+    data = json.loads(request.form['data'])
 
     for col in columns:
         if col in data:
             col_type = columns[col]
-            datum = col_type(request.form[col])
+            datum = col_type(data[col])
             setattr(rec, col, datum)
             
     rec.save()
