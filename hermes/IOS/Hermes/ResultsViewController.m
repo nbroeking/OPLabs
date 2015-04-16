@@ -11,6 +11,6 @@
 @implementation ResultsViewController
 
 -(void)viewDidLoad{
-    NSLog(@"Check the state");
+    NSLog(@"Check the state in Results");
 }
 @end

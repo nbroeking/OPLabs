@@ -8,6 +8,7 @@
 
 #import "PerformanceTester.h"
 #import "TestSettings.h"
+#import "TestState.h"
 
 @interface PerformanceTester()
 
@@ -16,7 +17,7 @@
 @property (assign, nonatomic) NSInteger timeEnd;
 
 -(Boolean) sendDNSRequest :(NSString*)string withId:(NSInteger)identifier;
-
+-(NSArray*) runDNSTest: (NSMutableArray*)domains;
 -(Boolean) getDNSResponse:(NSInteger)identifier;
 
 -(NSMutableArray*) getContent:(NSString*) name :(NSInteger) identifier;
@@ -38,9 +39,55 @@
 }
 
 -(TestResults *)runTests{
-    return [[TestResults alloc] init];
+    TestResults *results = [[TestResults alloc] init];
+    [results setMobileIdentifier:(int)[settings mobileResultID]];
+    
+    TestState *state = [TestState getStateMachine];
+    
+    [state setState:TESTINGDNS];
+    
+    [results setRouterIdentifier:[settings routerTesultID]];
+    
+    
+    //Run a DNS Response Test
+    NSArray *times1 = [self runDNSTest:[settings invalidDomains]];
+    double dnsResult = 0;
+    for (NSNumber *x in times1) {
+        dnsResult += [x doubleValue];
+    }
+
+    dnsResult /= [times1 count];
+    [results setDns:dnsResult];
+    NSLog(@"DNS Result = %f", dnsResult);
+    
+    [state setState:TESTINGLATENCY];
+    
+
+    //Run a test packet latency test
+    NSArray *times2 = [self runDNSTest:[settings validDomains]];
+    double latencyResult = 0;
+    for (NSNumber *x in times2) {
+        latencyResult += [x doubleValue];
+    }
+    
+    latencyResult /= [times2 count];
+    
+    [results setLatency:latencyResult];
+    NSLog(@"Latency Result = %f", latencyResult);
+
+        
+    //Packet Loss is just 1 - times we have / times we should have
+    [results setPacketloss:(1-([times2 count] / [[settings validDomains] count]))];
+    
+    NSLog(@"Packet loss = %f percent", [results packetloss]);
+
+    [state setState:TESTINGTHROUGHPUT];
+    //TODO: Run a throughput response
+    [NSThread sleepForTimeInterval:4000];
+    
+    return results;
 }
--(NSMutableArray *)runDNSTest:(NSMutableArray *)domains{
+-(NSArray *)runDNSTest:(NSMutableArray *)domains{
     return NULL;
 }
 

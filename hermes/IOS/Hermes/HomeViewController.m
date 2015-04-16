@@ -128,14 +128,6 @@
     {
         HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
         [alert setType: settings];
-        
-        
-#warning DONT GIVE THIS TO CABLE LABS
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(220, 10, 40, 40)];
-        [imageView setImage: [UIImage imageNamed:@"josh"]];
-        [alert setValue:imageView forKey:@"accessoryView"];
-#warning TO HERE
-        
         [alert show];
         [data setSessionId:@""];
     }

@@ -122,7 +122,11 @@
 -(void) runTestHelper :(NSNotification*) notification
 {
     NSLog(@"Received a start test notification");
+    
+   
     TestSettings *settings = (TestSettings*)[notification object];
+    NSLog(@"Results ID = %d", (int)[settings mobileResultID]);
+    
     [self performSelector:@selector(runTestOnSubsystem:) onThread:thread withObject:settings waitUntilDone:NO];
     
     

@@ -65,6 +65,9 @@ NSString * const StartRouterURL = @"/api/start_test/router";
         else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"StartRouterTest"]) {
             [self handleStartRouterTest:json];
         }
+        else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"ReportResults"]) {
+            [self handleStartReportResults:json];
+        }
         else{
             NSLog(@"ERROR: Unknown request type");
         }
@@ -133,8 +136,8 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     [settings setTimeout: [[dns_config valueForKey:@"timeout"] intValue]];
     
     //Set the result ID
-     [settings setMobileResultID:[[dns_config valueForKey:@"result_id"] intValue]];
-     
+     [settings setMobileResultID:[[json valueForKey:@"result_id"] intValue]];
+    
     //Request a router start test
      
      NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartRouterURL]]];
@@ -144,8 +147,8 @@ NSString * const StartRouterURL = @"/api/start_test/router";
      [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
      
      NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
-     
-     NSLog(@"Sending Post = %@", postString);
+    
+    
      NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
      
      [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
@@ -162,7 +165,18 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     else {
         [settings setRouterTesultID:-1];
     }
+ 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
 
+}
+-(void) handleStartReportResults: (NSMutableDictionary*)json{
+    NSLog(@"Handle Start Report Tests");
+    if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
+        
+        NSLog(@"Phone successfully reported its Test results to the controller");
+    }
+    else {
+        NSLog(@"Phone failed to upload results");
+    }    
 }
 @end

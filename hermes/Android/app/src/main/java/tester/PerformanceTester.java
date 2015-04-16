@@ -47,7 +47,7 @@ public class PerformanceTester {
 
             //Run a dns response Test
             List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
-            int dnsResult = 0;
+            double dnsResult = 0;
             for (Integer x : times1) {
                 dnsResult += x;
             }
@@ -58,7 +58,7 @@ public class PerformanceTester {
             state.setState(TestState.State.TESTINGLATENCY, false);
             //Run a test packet latency test
             List<Integer> times2 = runDNSTest(settings.getValidDomains());
-            int latencyResult = 0;
+            double latencyResult = 0;
             for (Integer x : times2) {
                 latencyResult += x;
             }

@@ -10,11 +10,16 @@
 
 @interface TestResults : NSObject
 
-@property(assign, nonatomic) double dns;
-@property(assign, nonatomic) double packetloss;
-@property(assign, nonatomic) double latency;
-@property(assign, nonatomic) double load;
-@property(assign, nonatomic) double throughput;
+@property(assign, atomic) double dns;
+@property(assign, atomic) double packetloss;
+@property(assign, atomic) double latency;
+@property(assign, atomic) double load;
+@property(assign, atomic) double throughput;
+@property(assign, atomic) NSInteger routerIdentifier;
+@property(assign, atomic) bool valid;
 
+@property(assign, atomic) NSInteger mobileIdentifier;
+
+-(NSString*) getPost;
 
 @end
