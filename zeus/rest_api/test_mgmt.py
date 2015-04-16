@@ -40,9 +40,11 @@ def start_test(test_type=None):
     test_set = TestSet.get_set_by_id(set_id)
 
     if not test_set:
-        return JSON_FAILURE(reason='Invalid set_id')
+        return JSON_FAILURE(reason='Invalid set_id',
+                            bad_id=str(set_id))
     if not test_type:
-        return JSON_FAILURE(reason='Invalid test type')
+        return JSON_FAILURE(reason='Invalid test type',
+                            test_type=str(test_type))
 
     config = TestConfiguration()
     conf_json = config.get_config()
