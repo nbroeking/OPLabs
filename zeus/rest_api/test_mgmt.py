@@ -66,8 +66,13 @@ def start_test(test_type=None):
         # Create a new Router TestResult
         result = test_set.new_result(device_type="router")
 
-        # Get IP of connected client. This should be the address for the router
-        ip = request.remote_addr
+        if 'address' in request.form:
+            # If the client specified a router address, use that
+            ip = request.form['address']
+        else:
+            # Get IP of connected client. This should be the address for the router
+            ip = request.remote_addr
+
         router = Router(ip)
         result.test_token = base64.b64encode(router.req_id)
         result.device_ip = ip
