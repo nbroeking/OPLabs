@@ -37,7 +37,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
 def start_server():
     # Port 0 means to select an arbitrary unused port
-    HOST, PORT = "localhost", 0
+    HOST, PORT = "0.0.0.0", 0
 
     server = ThreadedTCPServer((HOST, PORT), ThroughputTestHandler)
     server_thread = threading.Thread(target=server.serve_forever)
