@@ -87,6 +87,10 @@ public:
      */
     static timeout_t currentTimeMicros();
 
+    /**
+     * @brief Returns the the number of micros the system has been up
+     * @return the number of micros the system has been up.
+     */
     static timeout_t uptime();
 
     static inline struct timeval toTimeval( micros_t mics ) {
