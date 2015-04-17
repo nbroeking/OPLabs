@@ -1,6 +1,5 @@
 package tester;
 
-import android.nfc.Tag;
 import android.util.Log;
 
 import java.net.DatagramPacket;
@@ -35,7 +34,7 @@ public class PerformanceTester {
     public TestResults runTests()
     {
         TestState state = TestState.getInstance();
-        TestResults results = new TestResults(settings.getResultID());
+        TestResults results = new TestResults(settings.getMobileResultsID());
         try {
 
             state.setState(TestState.State.TESTINGDNS, false);

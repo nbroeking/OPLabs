@@ -34,13 +34,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.List;
 
 import communication.Communication;
 import main.Application.SessionData;
 import tester.TestResults;
-import tester.TestService;
 import tester.TestState;
 import tester.helpers.TestMsg;
 import tester.helpers.TestSettings;
@@ -334,7 +331,7 @@ public class CommMessageHandler extends Handler {
                 settings.setTimeout(dns_config.getInt("timeout"));
 
                 //Set the result ID
-                settings.setResultID(json.getInt("result_id"));
+                settings.setMobileResultsID(json.getInt("result_id"));
 
                 return true;
             }

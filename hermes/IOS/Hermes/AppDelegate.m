@@ -10,6 +10,7 @@
 #import "HomeViewController.h"
 #import "MainNavigationController.h"
 #import "SessionData.h"
+#import "TestState.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 

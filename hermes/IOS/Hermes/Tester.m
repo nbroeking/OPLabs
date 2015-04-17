@@ -93,7 +93,7 @@
         
         if( started)
         {
-            NSLog(@"Tester already started: try again");
+            NSLog(@"Tester already started");
             return;
         }
         shouldRun = true;
@@ -111,6 +111,11 @@
         if(!started)
         {
             NSLog(@"Thread is already stopped");
+            return;
+        }
+        
+        if( [stateMachine getState] != IDLE){
+            NSLog(@"We cant shut down the tester because we are running a test");
             return;
         }
         shouldRun = false;
