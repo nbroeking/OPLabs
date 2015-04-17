@@ -132,7 +132,7 @@ public:
     State onPacketReceieved() {
         /* Add to the latency times */
         timeout_t to = Time::currentTimeMicros();
-        m_log->printfln(DEBUG, "Packet %d. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
+        m_log->printfln(INFO, "Packet %d. Latency %f ms", packets_sent, (to - sent_time)/1000.0);
         m_latency_times->push_back(to - sent_time);
         return move_along();
     }
@@ -226,7 +226,7 @@ private:
 
         packets_sent ++;
 
-        m_log->printfln(DEBUG, "Sending DNS to %s", conf.server_address->toString().c_str());
+        m_log->printfln(INFO, "Sending DNS to %s for %s", conf.server_address->toString().c_str(), to_resolve.c_str());
         m_socket.sendTo(packet, packet_size, *conf.server_address);
         m_state_machine->setTimeoutStim(conf.timeout_micros, TIMEOUT); /* 5 SEC timeout */
         sent_time = Time::currentTimeMicros();

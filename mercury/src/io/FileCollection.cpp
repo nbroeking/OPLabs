@@ -34,7 +34,7 @@ int subscriptionTypeToBitmask( FileCollection::SubscriptionType typ ) {
     case FileCollection::SUBSCRIBE_READ:
         return POLLIN;
     case FileCollection::SUBSCRIBE_WRITE:
-        return POLLOUT;
+        return POLLOUT | POLLWRBAND;
     default:
         throw InvalidArgumentException("Enum out of range");
     }
@@ -81,7 +81,7 @@ public:
             /* Have to be _very_ careful with the Poller log as
              * the log system itself uses the poller and odd stuff
              * may break */
-            m_log.redirect(&NullIO::instance(), true);
+            // m_log.redirect(&NullIO::instance(), true);
 
             /* m_pipe[0] */
             int opts = fcntl(m_pipe[0], F_GETFL);
@@ -157,7 +157,7 @@ public:
                    FileCollectionObserver* observer,
                    dealloc_T* deallocator) {
         int rfd_int = raw_fd->getRawFd();
-        m_log.printfln(DEBUG, "Subscribing %p in file collection", raw_fd);
+        m_log.printfln(DEBUG, "Subscribing %p (%d) in file collection", raw_fd, raw_fd->getRawFd());
         rfd_int = raw_fd->getRawFd();
         m_reverse_lookup[rfd_int] = raw_fd;
         m_map[rfd_int] = make_pair(subscr, observer);
@@ -290,6 +290,7 @@ public:
 
                     if(m_stop) return false;
                 } else {
+                    m_log.printfln(TRACE, "revents: %04x", vitr->revents);
                     /* Fire the event for the correct file descriptor */
                     if( vitr->revents & POLLHUP ) {
     
@@ -297,6 +298,9 @@ public:
                          * file descriptor */
                         m_log.printfln(DEBUG, "Unsubscribing hungup file descriptor %d", vitr->fd);
                         enqueue_unsubscribe(m_reverse_lookup[vitr->fd], true);
+                    } else if(vitr->revents & POLLOUT || vitr->revents & POLLWRBAND) {
+                        /* There is a write event */
+                        events.push_back( make_pair(vitr->fd, vitr->revents) );
                     } else {
                         /* There _might_ be data to read */
 #ifdef  HAS_FIONREAD
@@ -308,7 +312,7 @@ public:
                             m_log.printfln(WARN, "ioctl failed: %s", strerror(err));
                         }
     
-                        if( n_read > 0 ) {
+                        if(n_read > 0) {
 #endif
                             /* This file descriptor had an event.
                              * Fire that event */

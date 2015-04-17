@@ -2,4 +2,4 @@
 DEBUG = True
 
 # Specifies how to connect to the database
-DATABASE_URI = "mysql://root:mysql@localhost/oplabs"
+DATABASE_URI = "mysql://root:7EjHVeF8JC8@localhost/oplabs"

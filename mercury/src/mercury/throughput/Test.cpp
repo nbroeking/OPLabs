@@ -27,14 +27,22 @@ public:
         Process("ThroughputTest"),
         bytes_received(0),
         last_bytes_received(0),
+        upload(false),
+        m_continue_write(true),
         current_id(0){}
 
 
     void observe(HasRawFd* fd, int events) {
-        byte buffer[1024 * 1024];
-        ssize_t bytes_read = m_stream_sock.read(buffer, sizeof(buffer));
-        this->bytes_received = this->bytes_received + bytes_read;
-        m_log->printfln(TRACE, "[%p] Read %d bytes: %d\n", this, (int)bytes_read, (int)this->bytes_received);
+        (void)fd; (void)events;
+        if(upload) {
+            ssize_t bytes_written = m_stream_sock.write(m_buffer, sizeof(m_buffer));
+            this->bytes_received += bytes_written;
+            m_log->printfln(TRACE, "[%p] Wrote %d bytes: %d\n", this, (int)bytes_written, (int)this->bytes_received);
+        } else {
+            ssize_t bytes_read = m_stream_sock.read(m_buffer, sizeof(m_buffer));
+            this->bytes_received = this->bytes_received + bytes_read;
+            m_log->printfln(TRACE, "[%p] Read %d bytes: %d\n", this, (int)bytes_read, (int)this->bytes_received);
+        }
     }
 
     class DnsSender: public Runnable, public FileCollectionObserver {
@@ -48,6 +56,8 @@ public:
             }
 
         void observe(HasRawFd* sock, int events) {
+            (void) sock; (void) events;
+
             ScopedLock __sl(m_mutex);
 
             byte resp_id[2];
@@ -103,6 +113,12 @@ public:
             }
         }
 
+        void clear() {
+            m_sent_times.clear();
+            m_latency.clear();
+            m_current_id = 0;
+        }
+
     private:
         map<u16_t, timeout_t> m_sent_times;
         map<u16_t, timeout_t> m_latency;
@@ -131,19 +147,31 @@ public:
         this->m_config = conf;
         this->m_observer = observer;
 
+        m_log->printfln(TRACE, "ThroughputTest - START");
         this->start();
     };
 
+    void reset() {
+        bytes_received = 0;
+        last_bytes_received = 0;
+        download_rate.clear();
+        upload = false;
+    }
+
     void run() {
+        reset();
         TestResults results;
 
+        m_log->printfln(DEBUG, "Connecting to server address: %s", m_config.server_ip->toString().c_str());
         m_stream_sock.connect(*m_config.server_ip);
         m_stream_sock.setOption(O_NONBLOCK);
 
         Scheduler& sched = getScheduler();
+
         MemberFunctionRunner<ThroughputTest> poll_runner
             = MemberFunctionRunner<ThroughputTest>
                 (&ThroughputTest::periodicPoll, *this);
+
         Inet4Address bind_addr("0.0.0.0", 0);
         DnsSender send_runner(bind_addr, *m_log, getFileCollection());
 
@@ -165,8 +193,36 @@ public:
 
         /* unsubscribe and do not notify the callback mechanism */
         getFileCollection().unsubscribe(&m_stream_sock, false);
-        results.throughput_per_sec = download_rate;
-        send_runner.getLatencyMicros(results.latency_micros);
+        results.download_throughput_per_sec = download_rate;
+        send_runner.getLatencyMicros(results.download_latency_micros);
+
+        /* reset and get ready to do the upload */
+        send_runner.clear();
+        bytes_received = 0;
+        last_bytes_received = 0;
+        download_rate.clear();
+        upload = true;
+        fill(m_buffer, m_buffer + sizeof(m_buffer), 0x41);
+
+        /* start the upload test */
+        Time::sleep(1 SECS);
+        poll_time = 1 SECS ;
+        for(; poll_time < 10 SECS; poll_time += 1 SECS) {
+            sched.schedule(&poll_runner, poll_time);
+        }
+
+        for(poll_time = 200 MILLIS; poll_time < 10 SECS; poll_time += 200 MILLIS) {
+            sched.schedule(&send_runner, poll_time);
+        }
+        m_log->printfln(INFO, "Start upload");
+        getFileCollection().subscribe(
+                                FileCollection::SUBSCRIBE_WRITE,
+                                &m_stream_sock, this);
+
+        Time::sleep(10 SECS);
+
+        results.upload_throughput_per_sec = download_rate;
+        send_runner.getLatencyMicros(results.upload_latency_micros);
 
         m_log->printfln(INFO, "Waiting for all jobs to finish");
         sched.setStopOnEmpty(true);
@@ -180,16 +236,18 @@ private:
 
     u64_t bytes_received;
     u64_t last_bytes_received;
+    bool upload;
+
+    bool m_continue_write;
     u64_t current_id;
 
 
-    bool upload;
-
     std::vector<u64_t> download_rate;
-    std::vector<u64_t> upload_rate;
 
     TestConfig m_config;
     TestObserver* m_observer;
+
+    byte m_buffer[1024 * 1024];
 };
 
 TestProxy* g_th_instance;

@@ -80,14 +80,6 @@ inline string html_escape(const string& in) {
     return out;
 }
 
-class Mercury;
-class MercuryObserver: public CurlObserver,
-                       public dns::TestObserver,
-                       public throughput::TestObserver,
-                       public os::ManagedRunnable {
-    /* Interface */
-};
-
 void setup_curl(Curl& c, const char* url, const char* post_data) {
     c.setURL(url);
     c.setPostFields(post_data);
@@ -95,6 +87,64 @@ void setup_curl(Curl& c, const char* url, const char* post_data) {
     c.setSSLHostVerifyEnabled(false);
     c.setSSLPeerVerifyEnabled(false);
 }
+
+class CurlExceptionHandler: public ExceptionHandler, private CurlObserver {
+public:
+    CurlExceptionHandler(const string& url, AsyncCurl* curler, string router_token):
+        m_log(LogManager::instance().getLogContext("Global", "Exception")){
+        m_url = url;
+        m_async_curl = curler;
+        m_router_token = router_token;
+    }
+
+    void onException(CurlException& expt) {
+        m_log.printfln(ERROR, "Error sending error %s", expt.getMessage());
+        exit(127);
+    }
+
+    virtual void read(const byte* b, size_t s) {
+        (void) b; (void) s;
+    }
+
+    virtual void onException(Exception& ex) {
+        Json toSend;
+        char buf[4096];
+        snprintf(buf, sizeof(buf), "Uncaught Exception: %s", ex.getMessage());
+        toSend.setAttribute("state", Json::fromString("failure"));
+        toSend.setAttribute("reason", Json::fromString(buf));
+        m_log.printfln(FATAL, "Unhandled Exception: %s", ex.getMessage());
+
+        snprintf(buf, sizeof(buf), "data=%s&router_token=%s",
+            toSend.toString().c_str(), m_router_token.c_str());
+        m_post_fields = buf;
+        Curl request;
+
+        m_log.printfln(DEBUG, "Sending request %s", buf);
+        setup_curl(request, m_url.c_str(), m_post_fields.c_str());
+        m_async_curl->sendRequest(request, this);
+    }
+
+    void onOK(http_response_code_t c) {
+        (void) c;
+        exit(127);
+    }
+
+private:
+    LogContext& m_log;
+    AsyncCurl* m_async_curl;
+    string m_url;
+    string m_router_token;
+    string m_post_fields;
+};
+
+
+class Mercury;
+class MercuryObserver: public CurlObserver,
+                       public dns::TestObserver,
+                       public throughput::TestObserver,
+                       public os::ManagedRunnable {
+    /* Interface */
+};
 
 class Mercury_StateMachine {
 public:
@@ -107,7 +157,7 @@ Mercury_StateMachine(MercuryObserver* observer):
 void curlSendJson(Json to_send) {
     char post_chars[4096];
     Json tmp = Json::fromString("finished");
-    to_send.setAttribute("status", tmp);
+    to_send.setAttribute("state", tmp);
     snprintf(post_chars, sizeof(post_chars), "data=%s&router_token=%s",
         to_send.toString().c_str(), m_id_b64.c_str());
     Curl request;
@@ -134,6 +184,10 @@ State onStart() {
     m_id_b64 = simpleBase64Encode(m_config.mercury_id, ID_SIZE);
     m_id_b64 = html_escape(m_id_b64);
     m_log.printfln(DEBUG, "base64 encoded id: %s", m_id_b64.c_str());
+    ExceptionHandler::
+        setGlobalUncaughtExceptionHandler(
+            new CurlExceptionHandler(m_config.controller_url + "/api/router/edit", &m_async_curl, m_id_b64)
+        );
 
     Curl request;
 
@@ -219,13 +273,17 @@ State onDnsResultsPosted() {
 
     m_log.printfln(INFO, "Running throughput test");
     proxy.startTest(m_test_conf.throughput_test_config, m_observer); /* TODO NOT NULL */
-    m_state_machine->setTimeoutStim(20 SECS, TIMEOUT_STIM);
+    m_state_machine->setTimeoutStim(40 SECS, TIMEOUT_STIM);
     return THROUGHPUT_RUNNING;
 }
 
 State onThroughputResultsPosted() {
     m_log.printfln(INFO, "No more tests to run. Teardown");
+    ExceptionHandler::setGlobalUncaughtExceptionHandler(
+       ExceptionHandler::getDefaultGlobalUncaughtExceptionHandler()
+    );
     m_observer->stop();
+    return IDLE;
 }
 
 State onWaitTimeoutComplete() {

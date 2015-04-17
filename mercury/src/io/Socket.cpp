@@ -11,6 +11,7 @@
 #include <cerrno>
 
 #include <unistd.h>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -22,9 +23,15 @@ ssize_t StreamSocket::read( byte* out, size_t len ) {
 }
 
 ssize_t StreamSocket::write( const byte* in, size_t len ) {
-    ssize_t ret = ::send( m_fd, in, len, m_options );
+    ssize_t ret = ::write( m_fd, in, len );
+
     if ( ret < 0 ) {
-        throw CException("Unable to write", ret);
+        if(errno == EWOULDBLOCK) {
+            /* If we would have blocked, then
+             * we wrote 0 bytes */
+            return 0;
+        }
+        throw CException("Unable to write", errno);
     }
     return ret;
 }
@@ -45,6 +52,7 @@ int StreamSocket::close() {
 
 int StreamSocket::connect( const SocketAddress& addr ) {
     m_fd = socket(addr.linkProtocol(), SOCK_STREAM, 0);
+    m_options = fcntl(m_fd, F_GETFL, 0);
 
     char buf[4096];
 	int rc;
@@ -62,6 +70,16 @@ int StreamSocket::connect( const SocketAddress& addr ) {
 
     m_is_closed = false;
     return 0;
+}
+
+void StreamSocket::setOption(int option) {
+    m_options |= option;   
+    fcntl(m_fd, F_SETFL, m_options);
+}
+
+void StreamSocket::unsetOption(int option) {
+    m_options &= ~option;
+    fcntl(m_fd, F_SETFL, m_options);
 }
 
 StreamSocket::~StreamSocket() {
