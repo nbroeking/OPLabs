@@ -17,6 +17,8 @@
 @property (assign, atomic) NSTimeInterval timeStart;
 @property (assign, atomic) NSTimeInterval timeEnd;
 @property (strong, atomic) UDPSocket * socket;
+@property (strong, atomic) NSCondition *lock;
+@property (assign, atomic) Boolean throughputComplete;
 
 -(Boolean) sendDNSRequest :(NSString*)string withId:(NSInteger)identifier;
 -(NSArray*) runDNSTest: (NSMutableArray*)domains;
@@ -24,11 +26,11 @@
 
 -(NSData*) getContent:(NSString*) name :(NSInteger) identifier;
 
-
 @end
 
 @implementation PerformanceTester
 @synthesize settings, timeEnd, timeStart, socket;
+@synthesize lock, throughputComplete;
 
 -(instancetype)init:(TestSettings *)settingst
 {
@@ -104,15 +106,72 @@
     [state setState:TESTINGTHROUGHPUT];
     //TODO: Run a throughput response
     
+    lock = [[NSCondition alloc] init];
     
+    throughputComplete = false;
     
+    //[self performSelectorInBackground:@selector(runThroughputTest:) withObject:results];
+    [self runThroughputTest:results];
+    //Throughput test should be running now
+    
+    //Run Latency Test for 20 seconds
+    [lock lock];
+    
+    while (!throughputComplete) {
+        NSLog(@"Waiting for a signal");
+        [lock wait];
+    }
+    NSLog(@"Throughput is done");
+    [lock unlock];
     [results setValid:YES];
     return results;
 }
 
--(NSDictionary*) runThroughputTest {
+-(void) runThroughputTest: (TestResults*)results {
     
-    return NULL;
+    NSLog(@"Server = %@, port = %ld", [settings throughputServer], (long)[settings port]);
+    NSString *urlStr = [settings throughputServer];
+    if (![urlStr isEqualToString:@""]) {
+        NSURL *website = [NSURL URLWithString:urlStr];
+        if (!website) {
+            NSLog(@"%@ is not a valid URL", website);
+            return;
+        }
+        
+        CFReadStreamRef readStream;
+        CFWriteStreamRef writeStream;
+        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)[website host], (unsigned int)[settings port] , &readStream, &writeStream);
+        
+        NSInputStream *inputStream = (__bridge_transfer NSInputStream *)readStream;
+        NSOutputStream *outputStream = (__bridge_transfer NSOutputStream *)writeStream;
+
+        [inputStream open];
+        [outputStream open];
+        
+        //The connection is set up
+        
+        NSTimeInterval start = [[NSDate date] timeIntervalSince1970 ];
+        
+        double download = 0.0;
+        
+        //For 10 seconds we download
+        while( [[NSDate alloc] timeIntervalSince1970] - start <= 10){
+            //Read data and collect total
+           /* Byte buffer[1024*1024]; // 1MB
+            
+            //long bytes = [inputStream read:buffer maxLength:(int)1024*1024];
+            long bytes = [inputStream read:buffer maxLength:(int)1024];
+            download += bytes;*/
+        }
+        
+        //download /= ([[NSDate alloc] timeIntervalSince1970] - start <= 10);
+        
+        [lock lock];
+        throughputComplete = true;
+        NSLog(@"Download = %f", download);
+        [lock signal];
+        [lock unlock];
+    }
 }
 -(NSArray *)runDNSTest:(NSMutableArray *)domains{
     

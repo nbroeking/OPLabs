@@ -10,6 +10,7 @@
 
 @implementation TestSettings
 @synthesize validDomains, invalidDomains, DNSServer, mobileResultID, setId, routerResultID, timeout;
+@synthesize throughputServer, port;
 
 -(instancetype)init{
     self = [super init];

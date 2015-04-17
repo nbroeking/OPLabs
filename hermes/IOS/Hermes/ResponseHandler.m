@@ -121,6 +121,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     
     NSDictionary *config = (NSDictionary*)[json objectForKey:@"config"];
     NSDictionary *dns_config = (NSDictionary*)[config objectForKey:@"dns_config"];
+    NSDictionary *throughput_config = (NSDictionary*)[config objectForKey:@"throughput_config"];
     
     //Parse the json to get the settings
     NSArray *jArray = [dns_config objectForKey:@"invalid_names"];
@@ -142,7 +143,16 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     [settings setTimeout: [[dns_config valueForKey:@"timeout"] intValue]];
     
     //Set the result ID
-     [settings setMobileResultID:[[json valueForKey:@"result_id"] intValue]];
+    [settings setMobileResultID:[[json valueForKey:@"result_id"] intValue]];
+    
+    
+    //Get the throughput config
+    
+    NSString* server = [throughput_config valueForKey:@"server_ip"] ;
+    NSArray *serverParts = [server componentsSeparatedByString:@":"];
+    
+    [settings setThroughputServer:[serverParts objectAtIndex:0]];
+    [settings setPort:[(NSString*)[serverParts objectAtIndex:1] intValue]];
     
     //Request a router start test
      
