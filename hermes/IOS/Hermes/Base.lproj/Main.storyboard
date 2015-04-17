@@ -209,32 +209,16 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1bM-yc-JsR">
-                                <rect key="frame" x="150" y="114" width="300" height="202"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="B2p-GJ-J2j" firstAttribute="top" secondItem="5rV-Qc-ITo" secondAttribute="bottom" constant="95" id="2TX-UJ-v2i"/>
-                            <constraint firstAttribute="bottom" secondItem="1bM-yc-JsR" secondAttribute="bottom" constant="284" id="8JA-Q8-Wxk"/>
-                            <constraint firstItem="1bM-yc-JsR" firstAttribute="leading" secondItem="yaB-24-HT6" secondAttribute="leading" constant="150" id="HaB-mH-cai"/>
                             <constraint firstItem="5rV-Qc-ITo" firstAttribute="centerX" secondItem="6fb-OQ-bra" secondAttribute="centerX" id="OwN-Os-KpW"/>
-                            <constraint firstItem="6fb-OQ-bra" firstAttribute="top" secondItem="1bM-yc-JsR" secondAttribute="top" constant="-114" id="YEg-0a-SWo"/>
                             <constraint firstAttribute="height" secondItem="6fb-OQ-bra" secondAttribute="height" id="ZJp-qV-yo9"/>
                             <constraint firstAttribute="width" secondItem="6fb-OQ-bra" secondAttribute="width" id="aPN-q0-jN5"/>
-                            <constraint firstItem="5rV-Qc-ITo" firstAttribute="top" secondItem="1bM-yc-JsR" secondAttribute="bottom" constant="17" id="fOS-N9-CPa"/>
-                            <constraint firstItem="6fb-OQ-bra" firstAttribute="centerX" secondItem="1bM-yc-JsR" secondAttribute="centerX" id="l7g-fI-ANq"/>
                             <constraint firstItem="6fb-OQ-bra" firstAttribute="leading" secondItem="yaB-24-HT6" secondAttribute="leading" id="msm-oG-LKR"/>
                             <constraint firstItem="6fb-OQ-bra" firstAttribute="top" secondItem="yaB-24-HT6" secondAttribute="top" id="rbe-sz-vct"/>
-                            <constraint firstItem="1bM-yc-JsR" firstAttribute="leading" secondItem="5rV-Qc-ITo" secondAttribute="leading" id="xVK-Eg-jgw"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="8JA-Q8-Wxk"/>
-                                <exclude reference="HaB-mH-cai"/>
-                            </mask>
-                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpX-Kb-KLh" userLabel="First Responder" sceneMemberID="firstResponder"/>

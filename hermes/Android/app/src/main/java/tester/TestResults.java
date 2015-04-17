@@ -41,14 +41,17 @@ public class TestResults implements Parcelable{
     }
 
     public TestResults(Parcel in){
-        valid = in.readByte() != 0; //Resets the bool
         dns = in.readDouble();
         packetLoss = in.readDouble();
         latency = in.readDouble();
-        this.mobileId = in.readInt();
-        this.router_id = in.readInt();
+        latencyUnderLoad = in.readDouble();
+        throughputUpload = in.readDouble();
+        throughputDownload = in.readDouble();
+        packetLossUnderLoad = in.readDouble();
+        valid = in.readByte() != 0; //Resets the bool
 
-        Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + dns + " packetLoss " + packetLoss+  " latency " + latency);
+        mobileId = in.readInt();
+        router_id = in.readInt();
     }
 
     public String printValues()
@@ -78,7 +81,6 @@ public class TestResults implements Parcelable{
 
     }
     public String getPost(){
-
 
         if( !valid){
             return "state=error";
@@ -113,10 +115,22 @@ public class TestResults implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (valid ? 1 : 0));
+
         dest.writeDouble(dns);
         dest.writeDouble(packetLoss);
         dest.writeDouble(latency);
+        dest.writeInt(mobileId);
+        dest.writeInt(router_id);
+
+        dest.writeDouble(dns);
+        dest.writeDouble(packetLoss);
+        dest.writeDouble(latency);
+        dest.writeDouble(latencyUnderLoad);
+        dest.writeDouble(throughputUpload);
+        dest.writeDouble(throughputDownload);
+        dest.writeDouble(packetLossUnderLoad);
+        dest.writeByte((byte) (valid ? 1 : 0));
+
         dest.writeInt(mobileId);
         dest.writeInt(router_id);
     }
