@@ -96,8 +96,10 @@ function delete_rec(row_id) {
                             <td> Message Pending </td>
                             {% elif result.state == "ack" %}
                             <td> Message Acknowledged </td>
+                            {% elif result.state == "finished" %}
+                            <td> Finished </td>
                             {% else %}
-                            <td> Unknown </td>
+                            <td> {{result.state}}</td>
                             {% endif %}
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="delete_rec({{result.test_id}})"> Delete </button>
