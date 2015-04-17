@@ -33,6 +33,7 @@ public:
      * @return A new address representing the string
      */
     static Inet4Address fromString(const char * str, u16_t port); /* Throws InetParseException */
+    static Inet4Address fromString(const char * str); /* Throws InetParseException */
 
     /**
      * @brief Create an Inet4Address from a 4-byte address and port

@@ -16,15 +16,7 @@
 template <>
 struct JsonBasicConvert<io::Inet4Address> {
     static io::Inet4Address convert(const json::Json& jsn) {
-        std::string str = jsn.stringValue();
-        size_t itr = str.find(':');
-        if(itr == std::string::npos) {
-            return io::Inet4Address(str.c_str(), 0);
-        } else {
-            std::string addr = str.substr(0, itr);
-            std::string port = str.substr(itr + 1);
-            return io::Inet4Address(addr.c_str(), atoi(port.c_str()));
-        }
+        return io::Inet4Address::fromString(jsn.stringValue().c_str());
     }
 
     static json::Json convert_from(const io::Inet4Address& addr) {
@@ -35,36 +27,7 @@ struct JsonBasicConvert<io::Inet4Address> {
 template <>
 struct JsonBasicConvert<io::Inet6Address> {
     static io::Inet6Address convert(const json::Json& jsn) {
-        std::string str = jsn.stringValue();
-        io::Inet6Address ret;
-        
-        if(str.size() == 0) { throw json::JsonException("Expected string of length at least 1"); }
-
-        if(str[0] == '[') { // [x:y:z::x]:port
-            size_t idx = str.find(']');
-            if(idx == std::string::npos) {
-                throw json::JsonException("Bad format of ipv6 string. No ']' after [");
-            }
-
-            std::string sub = str.substr(1, idx-1);
-            idx += 1;
-
-            u16_t port = 0;
-
-            if(idx != str.length()) {
-                if(str[idx] != ':') {
-                    throw json::JsonException("Bad format of ipv6 string. No ':' after []");
-                }
-
-                std::string portstr = str.substr(idx+1, -1);
-                port = atoi(portstr.c_str());
-            }
-
-            ret = io::Inet6Address::fromString(sub.c_str(), port);
-        } else {
-            ret = io::Inet6Address::fromString(str.c_str(), 0);
-        }
-        return ret;
+        return io::Inet6Address::fromString(jsn.stringValue().c_str());
     }
 
     static json::Json convert_from(const io::Inet6Address& addr) {

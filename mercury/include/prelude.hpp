@@ -4,7 +4,9 @@
 /*
  * Author: jrahm
  * created: 2015/01/18
- * prelude.hpp: <description>
+ * prelude.hpp: 
+ *  This header contains basic classes, macros and routines
+ *  that should be included by default.
  */
 
 #include <types.h>
@@ -143,9 +145,10 @@ class CException : public Exception {
 public:
     inline CException(const char* message, int rc) :
         Exception(message) {
-        this->rc = rc;
-        this->message += ": ";
-        this->message += strerror(rc);
+        char buf[4096];
+        snprintf(buf, sizeof(buf), "%s (%d): %s",
+            message, rc, strerror(rc));
+        this->message = buf;
     }
 
     inline CException( int rc ) {
@@ -158,6 +161,15 @@ public:
     }
 private:
     int rc;
+};
+
+class ExceptionHandler {
+public:
+    virtual void onException(Exception& exp) = 0;
+
+    static void setGlobalUncaughtExceptionHandler(ExceptionHandler* handler);
+    static ExceptionHandler* getGlobalUncaughtExceptionHandler();
+    static ExceptionHandler* getDefaultGlobalUncaughtExceptionHandler();
 };
 
     

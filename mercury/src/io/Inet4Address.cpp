@@ -1,9 +1,27 @@
-#include <io/Inet4Address.hpp>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <cstdio>
 
+#include <missing.h>
+
+#include <io/Inet4Address.hpp>
+#include <io/Inet6Address.hpp>
+#include <io/UnixAddress.hpp>
+
 namespace io {
+
+
+Inet4Address Inet4Address::fromString(const char* ip) {
+    std::string str = ip;
+    size_t itr = str.find(':');
+    if(itr == std::string::npos) {
+        return io::Inet4Address(str.c_str(), 0);
+    } else {
+        std::string addr = str.substr(0, itr);
+        std::string port = str.substr(itr + 1);
+        return io::Inet4Address(addr.c_str(), atoi(port.c_str()));
+    }
+}
 
 Inet4Address Inet4Address::fromString(const char *str, u16_t port) {
     u32_t addr;
@@ -69,6 +87,29 @@ std::string Inet4Address::toString() const {
         a >> 24, (a >> 16) & 0xFF,
         (a >> 8) & 0xFF, a & 0xFF, ntohs(m_addr.sin_port) );
     return buf;
+}
+
+using namespace std;
+SocketAddress* SocketAddress::parse(const char* str_) {
+    string str = str_;
+    size_t idx;
+    if(str.compare(0, 6, "unix:/") == 0) {
+        if(str.size() < 7 || str[6] != '/') {
+            throw SocketAddressParseException(strprintf("Unable to parse UnixAddress (%s)", 4096, str_).c_str());
+        }
+        return new io::UnixAddress(str.substr(6).c_str());
+    } else if((idx = str.find(':')) != std::string::npos &&
+        (str.rfind(':') != idx)) { /* If there are 2 ':' in the address */
+        io::Inet6Address* ret = new io::Inet6Address(
+            io::Inet6Address::fromString(str_)
+        );
+        return ret;
+    } else {
+        io::Inet4Address* ret = new io::Inet4Address(
+            io::Inet4Address::fromString(str_)
+        );
+        return ret;
+    }
 }
 
 }

@@ -21,11 +21,14 @@ class TestResults {
 public:
     /* list of number of bytes recieved each
      * second */
-    std::vector<u64_t> throughput_per_sec;
+    std::vector<u64_t> download_throughput_per_sec;
 
     /* List of the latency of the UDP latency
      * test during the load time */
-    std::vector<os::timeout_t> latency_micros;
+    std::vector<os::timeout_t> download_latency_micros;
+
+    std::vector<u64_t> upload_throughput_per_sec;
+    std::vector<os::timeout_t> upload_latency_micros;
 };
 
 }
@@ -36,19 +39,28 @@ struct JsonBasicConvert<throughput::TestResults> {
         using namespace json;
         using namespace std;
 
-        Json throughputs = Json::from(results.throughput_per_sec);
+        Json down_throughputs = Json::from(results.download_throughput_per_sec);
 
         vector<Json> vec;
-        Json latencies = Json::fromVector(vec);
+        Json down_latencies = Json::fromVector(vec);
 
         vector<os::timeout_t>::const_iterator itr;
-        FOR_EACH(itr, results.latency_micros) {
-            latencies.push_back(Json::fromFloat(*itr / 1000.0));
+        FOR_EACH(itr, results.download_latency_micros) {
+            down_latencies.push_back(Json::fromFloat(*itr / 1000.0));
+        }
+
+        Json up_throughputs = Json::from(results.upload_throughput_per_sec);
+        Json up_latencies = Json::fromVector(vec);
+
+        FOR_EACH(itr, results.upload_latency_micros) {
+            up_latencies.push_back(Json::fromFloat(*itr / 1000.0));
         }
 
         Json ret;
-        ret.setAttribute("throughputs", throughputs);
-        ret.setAttribute("latencies", latencies);
+        ret.setAttribute("download_throughputs", down_throughputs);
+        ret.setAttribute("download_latencies", down_latencies);
+        ret.setAttribute("upload_throughputs", up_throughputs);
+        ret.setAttribute("upload_latencies", up_latencies);
         return ret;
     }
 };

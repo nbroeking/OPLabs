@@ -15,11 +15,27 @@
 
 namespace logger {
 
+/**
+ * @brief class that creates a server to allow a user to
+ * view logs in real time on a socket.
+ */
 class LogServer: public os::ManagedRunnable {
 public:
+    /**
+     * @brief Construct log server
+     * 
+     * @param bind_addr the address to bind to
+     */
     LogServer(const io::SocketAddress& bind_addr);
 
+    /**
+     * @brief Main loop
+     */
     void run();
+
+    /**
+     * @brief Instruct the log server to stop
+     */
     void stop();
 private:
 

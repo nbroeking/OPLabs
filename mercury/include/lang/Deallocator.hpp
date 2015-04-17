@@ -9,10 +9,20 @@
 
 namespace lang {
 
+/**
+ * @brief Abstract class that deallocates an object of type T
+ * @param T the object type to deallocate
+ *
+ * This object is useful in a listnener pattern when the observer
+ * may need to have a destructor called.
+ */
 template<class T>
 /* abstract */ class Deallocator {
 public:
-    /* Called when something wants to be deleted */
+    /**
+     * @brief Called when `value` needs to be deallocated
+     * @param value the value to deallocate
+     */
     virtual void deallocate(T* value) = 0;
 };
 

@@ -78,9 +78,8 @@ public:
         return m_is_closed;
     }
 
-    inline void setOption(int option) {
-        m_options |= option;
-    }
+    void setOption(int option);
+    void unsetOption(int option);
 
 private:
     bool m_is_closed;

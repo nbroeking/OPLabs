@@ -18,6 +18,9 @@ namespace test {
 #define TEST_STR_EQ(name, a, b) \
     test::Tester::instance().testStr(name, a, b, __FUNCTION__, __FILE__, __LINE__)
 
+/**
+ * @brief Class use for unit testing
+ */
 class Tester {
 public:
     static Tester& instance();

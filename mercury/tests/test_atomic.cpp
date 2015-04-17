@@ -48,6 +48,8 @@ public:
 };
 
 int main(int argc, char** argv) {
+    (void)argc; (void) argv;
+
     LogManager::instance().logEverything();
     AtomicHolder< list<int> > lst;
 

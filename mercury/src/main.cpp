@@ -108,6 +108,7 @@ struct JsonBasicConvert<MercuryConfig> {
 };
 
 void sigchld_hdlr(int sig) {
+    (void)sig;
     ScopedLock __sl(*g_mutex);
     g_cond->signal();
 }
@@ -133,6 +134,32 @@ void start_logging_service(int fd) {
     if(child < 0) {
         perror("fork() failed");
     }
+}
+
+pid_t start_child(byte* recieve, MercuryConfig& config) {
+    pid_t ret;
+
+    if(!(ret = fork())) {
+        LogContext::unlock();
+    
+        /* report all stderr to the error pipe */
+        fprintf(stderr, "Test stderr\n");
+        fflush(stderr);
+        /* Child process. Setup the config and boot
+         * the merucry state machine */
+        mercury::Config conf;
+        std::copy(recieve + 32, recieve + 64, conf.mercury_id);
+        conf.controller_url = config.controller_url;
+        mercury::Proxy& process = mercury::ProxyHolder::instance();
+    
+        /* start mercury */
+        process.start(conf, NULL);
+        process.waitForExit();
+    
+        exit(0);
+    }
+
+    return ret;
 }
 
 int startMercury(LogContext& m_log, MercuryConfig& config) {
@@ -175,65 +202,46 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
             m_log.printfln(INFO, "Magic cookie accepted, forking new process");
             pid_t child;
 
-            if(!(child = fork())) {
-                LogContext::unlock();
+            child = start_child(recieve, config);
 
-                /* report all stderr to the error pipe */
-                fprintf(stderr, "Test stderr\n");
-                fflush(stderr);
-                /* Child process. Setup the config and boot
-                 * the merucry state machine */
-                mercury::Config conf;
-                std::copy(recieve + 32, recieve + 64, conf.mercury_id);
-                conf.controller_url = config.controller_url;
-                mercury::Proxy& process = mercury::ProxyHolder::instance();
+            /* parent */
+            m_log.printfln(INFO, "Child started pid=%d", child);
+            int res = 0;
+            pid_t pid;
 
-                /* start mercury */
-                process.start(conf, NULL);
-                process.waitForExit();
-
-                exit(0);
-            } else {
-
-                /* parent */
-                m_log.printfln(INFO, "Child started pid=%d", child);
-                int res = 0;
-                pid_t pid;
-
-                /* Wait for the child to exit. this
-                 * condition will be signaled by the
-                 * sigchld handler */
-                if(!g_cond->timedwait(*g_mutex, 300 SECS)) {
-                    /* The child is taking too long to return
-                     * kill it */
-                    m_log.printfln(WARN, "Child timeout, sending SIGTERM");
-                    kill(child, SIGTERM);
-                    if(!g_cond->timedwait(*g_mutex, 10 SECS)) {
-                        /* The child still isn't dead */
-                        m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
-                        kill(child, SIGKILL);
-                    }
+            /* Wait for the child to exit. this
+             * condition will be signaled by the
+             * sigchld handler */
+            if(!g_cond->timedwait(*g_mutex, 300 SECS)) {
+                /* The child is taking too long to return
+                 * kill it */
+                m_log.printfln(WARN, "Child timeout, sending SIGTERM");
+                kill(child, SIGTERM);
+                if(!g_cond->timedwait(*g_mutex, 10 SECS)) {
+                    /* The child still isn't dead */
+                    m_log.printfln(WARN, "Child hard timeout, sending SIGKILL");
+                    kill(child, SIGKILL);
                 }
+            }
 
-                if((pid = waitpid(child, &res, WNOHANG))) {
-                    if(pid == -1) {
-                        m_log.printfln(ERROR, "Error in waitpid %s", strerror(errno));
-                    } else {
-                        m_log.printfln(INFO, "Reap child (%d)\n", (int)pid);
-                    }
+            if((pid = waitpid(child, &res, WNOHANG))) {
+                if(pid == -1) {
+                    m_log.printfln(ERROR, "Error in waitpid %s", strerror(errno));
+                } else {
+                    m_log.printfln(INFO, "Reap child (%d)\n", (int)pid);
                 }
+            }
 
-                if(WIFSIGNALED(res)) {
-                    m_log.printfln(WARN, "Child was signaled with %d", WTERMSIG(res));
-                }
+            if(WIFSIGNALED(res)) {
+                m_log.printfln(WARN, "Child was signaled with %d", WTERMSIG(res));
+            }
 
-                if(WEXITSTATUS(res)) {
-                    m_log.printfln(WARN, "Child returned abnormal status: %d", WEXITSTATUS(res));
-                }
+            if(WEXITSTATUS(res)) {
+                m_log.printfln(WARN, "Child returned abnormal status: %d", WEXITSTATUS(res));
+            }
 
-                if(WIFSTOPPED(res)) {
-                    m_log.printfln(WARN, "Child timed out and was killed by parent");
-                }
+            if(WIFSTOPPED(res)) {
+                m_log.printfln(WARN, "Child timed out and was killed by parent");
             }
         } else {
             m_log.printfln(ERROR, "Bad magic cookie received. Timeout for 5 seconds");

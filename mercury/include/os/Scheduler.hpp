@@ -19,21 +19,41 @@
 namespace os {
 
 /**
- * Class that may schedule runnables at specific times
- * in the future.
+ * @brief A class that schedules things to run at a 
+ * time in the future
  */
 class Scheduler: public ManagedRunnable {
 public:
     Scheduler();
 
+    /**
+     * @brief Schedule a runnable to run at `when` microseconds in the future
+     * 
+     * @param r The runnable to run
+     * @param when Number of mircos in the future to run
+     */
     void schedule(Runnable* r, timeout_t when) ;
 
+    /**
+     * @brief Stop a runnable from running
+     * @param r The runnable to cancel
+     */
     void cancel(Runnable* r) ;
 
+    /**
+     * @brief Stop the scheduler. Cancels all scheduled jobs and returns
+     */
     void stop() ;
 
+    /**
+     * @brief Set whether this scheduler should stop once all jobs have completed
+     * @param stop True if the scheduler should stop, false otherwise
+     */
     void setStopOnEmpty(bool stop) ;
 
+    /**
+     * @brief Scheduler main loop
+     */
     void run() ;
 
     /* For debugging */
