@@ -171,7 +171,7 @@ public class CommMessageHandler extends Handler {
                     case "finished":
                         Log.d(TAG, "We have router results");
                         TestResults routerResults = new TestResults(json);
-                        routerResults.setValid();
+                        routerResults.setValid(true);
                         TestState.getInstance().setRouterResults(routerResults);
                         Intent intent = new Intent();
                         intent.setAction("ReportRouter");
@@ -203,7 +203,7 @@ public class CommMessageHandler extends Handler {
 
     //This method reports our test to the controller
     private void reportTest(TestResults results){
-        HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
+        HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getMobileId()));
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -309,6 +309,8 @@ public class CommMessageHandler extends Handler {
 
                 JSONObject dns_config = json.getJSONObject("config").getJSONObject("dns_config");
 
+                JSONObject throughput_config = json.getJSONObject("config").getJSONObject("throughput_config");
+
                 JSONArray jArray = dns_config.getJSONArray("invalid_names");
                 if (jArray != null) {
                     for (int i=0;i<jArray.length();i++){
@@ -332,6 +334,12 @@ public class CommMessageHandler extends Handler {
 
                 //Set the result ID
                 settings.setMobileResultsID(json.getInt("result_id"));
+
+                String server = throughput_config.getString("server_ip");
+                String[] lists = server.split("\\:");
+
+                settings.setThroughputServer(lists[0]);
+                settings.setPort(Integer.parseInt(lists[1]));
 
                 return true;
             }

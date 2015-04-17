@@ -1,13 +1,7 @@
 package main.Views;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,21 +46,21 @@ public class ResultsFragment extends Fragment {
         mobileDNS = (TextView) view.findViewById(R.id.dnsResponse);
         mobileLatency = (TextView) view.findViewById(R.id.latency);
         mobilePackets = (TextView) view.findViewById(R.id.packetLoss);
-        mobileLoad = (TextView) view.findViewById(R.id.load);
-        mobileThrough = (TextView) view.findViewById(R.id.throughput);
+        mobileLoad = (TextView) view.findViewById(R.id.latencyUnderload);
+        mobileThrough = (TextView) view.findViewById(R.id.throughputUpload);
 
         //Get the router textfields
         routerDNS = (TextView) view.findViewById(R.id.dnsResponse2);
         routerLatency = (TextView) view.findViewById(R.id.latency2);
         routerPackets = (TextView) view.findViewById(R.id.packetLoss2);
-        routerLoad = (TextView) view.findViewById(R.id.load2);
+        routerLoad = (TextView) view.findViewById(R.id.latencyUnderload);
         routerThrough = (TextView) view.findViewById(R.id.throughput2);
 
         // Set TextView IDs for diff table
         diffDNS = (TextView) view.findViewById(R.id.dnsResponse3);
         diffLatency = (TextView) view.findViewById(R.id.latency3);
         diffPackets = (TextView) view.findViewById(R.id.packetLoss3);
-        diffLoad = (TextView) view.findViewById(R.id.load3);
+        diffLoad = (TextView) view.findViewById(R.id.latencyUnderload);
         diffThrough = (TextView) view.findViewById(R.id.throughput3);
 
 
@@ -75,11 +69,9 @@ public class ResultsFragment extends Fragment {
         TestResults routerResults = stateMachine.getRouterResults();
 
         if( results != null){
-            updateMobile(String.format("%s ms", results.getAverageDNSResponseTime()),
+            updateMobile(String.format("%s ms", results.getDns()),
                     String.format("%s ms", results.getLatency()),
                     String.format("%s", (results.getPacketLoss() * 100) + "%"), "0", "0");
-            //String.format("%s", (results.getLoad())),
-            //String.format("%s", (results.getThroughput())));
         }
         if( routerResults !=null){
 
@@ -99,11 +91,11 @@ public class ResultsFragment extends Fragment {
     public void onRouterResults(TestResults results) {
 
         // Change TextView for router results
-        updateRouter(String.format("%s ms", results.getAverageDNSResponseTime()),
+        updateRouter(String.format("%s ms", results.getDns()),
                 String.format("%s ms", results.getLatency()),
                 String.format("%s", (results.getPacketLoss() * 100) + "%"),
-                String.format("%s", (results.getLoad())),
-                String.format("%s", (results.getThroughput())));
+                String.format("%s", (results.getLatencyUnderLoad())),
+                String.format("%s", (results.getThroughputUpload())));
 
        // updateDiffTable(String.format("%s ms", (subtractResults(routerDNS, mobileDNS))),
          //       String.format("%s ms", (subtractResults(routerLatency, mobileLatency))),

@@ -1,6 +1,5 @@
 package tester;
 
-import android.nfc.Tag;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -8,7 +7,6 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -17,50 +15,51 @@ import java.net.URLEncoder;
  * This class specifies what we contain in a test Result
  */
 public class TestResults implements Parcelable{
-
-    private double averageDNSResponseTime;
+    private double dns;
     private double packetLoss;
     private double latency;
-    private double load;
-    private double throughput;
+    private double latencyUnderLoad;
+    private double throughputUpload;
+    private double throughputDownload;
+    private double packetLossUnderLoad;
 
     private boolean valid;
 
-    private int id;
+    private int mobileId;
     private int router_id;
 
     public TestResults(int id){
         valid = false;
         packetLoss = -1;
-        averageDNSResponseTime = -1;
+        dns = -1;
         latency = -1;
-        load = 0;
+        latencyUnderLoad = 0;
         latency = 0;
 
-        this.id = id;
+        this.mobileId = id;
         Log.i("CREATE", "ID = " + id);
     }
 
     public TestResults(Parcel in){
         valid = in.readByte() != 0; //Resets the bool
-        averageDNSResponseTime = in.readDouble();
+        dns = in.readDouble();
         packetLoss = in.readDouble();
         latency = in.readDouble();
-        this.id = in.readInt();
+        this.mobileId = in.readInt();
         this.router_id = in.readInt();
 
-        Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency);
+        Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + dns + " packetLoss " + packetLoss+  " latency " + latency);
     }
 
     public String printValues()
     {
-        return "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency;
+        return "VALID = " + valid + " dns = " + dns + " packetLoss " + packetLoss+  " latency " + latency;
     }
     public TestResults(JSONObject json){
         try {
             if (json.getString("status").equals("success")) {
 
-                averageDNSResponseTime = json.getDouble("dns_response_avg");
+                dns = json.getDouble("dns_response_avg");
                 packetLoss = json.getDouble("packet_loss");
                 latency = json.getDouble("latency_avg");
                 return;
@@ -72,7 +71,7 @@ public class TestResults implements Parcelable{
         } catch (JSONException e) {
             valid = false;
             packetLoss = -1;
-            averageDNSResponseTime = -1;
+            dns = -1;
             latency = -1;
             Log.e("JSON ERROR", "Test Results constructor failed" ,e);
         }
@@ -88,7 +87,7 @@ public class TestResults implements Parcelable{
 
         try {
             results += "state=finished&";
-            results += "dns_response_avg=" + URLEncoder.encode(Double.toString(averageDNSResponseTime), "UTF-8") + "&";
+            results += "dns_response_avg=" + URLEncoder.encode(Double.toString(dns), "UTF-8") + "&";
             results += "packet_loss="+ URLEncoder.encode(Double.toString(packetLoss), "UTF-8") + "&";
             results += "latency_avg=" + URLEncoder.encode(Double.toString(latency), "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -115,10 +114,10 @@ public class TestResults implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (valid ? 1 : 0));
-        dest.writeDouble(averageDNSResponseTime);
+        dest.writeDouble(dns);
         dest.writeDouble(packetLoss);
         dest.writeDouble(latency);
-        dest.writeInt(id);
+        dest.writeInt(mobileId);
         dest.writeInt(router_id);
     }
 
@@ -133,58 +132,111 @@ public class TestResults implements Parcelable{
         }
     };
 
-    public double getAverageDNSResponseTime() {
-        return averageDNSResponseTime;
+    public double getDns() {
+        synchronized (this) {
+            return dns;
+        }
     }
 
-    public void setAverageDNSResponseTime(double averageDNSResponseTime) {
-        this.averageDNSResponseTime = averageDNSResponseTime;
+    public void setDns(double dns) {
+        synchronized (this) {
+            this.dns = dns;
+        }
     }
 
     public boolean isValid() {
-        return valid;
+        synchronized (this){
+            return valid;
+        }
     }
-    public void setValid() {
-        this.valid = true;
+    public void setValid(Boolean val) {
+        synchronized (this) {
+            this.valid = val;
+        }
     }
 
     public double getLatency() {
-        return latency;
+
+        synchronized (this) {
+            return latency;
+        }
     }
 
     public void setLatency(double latency) {
-        this.latency = latency;
+        synchronized (this) {
+            this.latency = latency;
+        }
     }
 
-    public int getId() {
-        return id;
+    public int getMobileId() {
+        synchronized (this) {
+            return mobileId;
+        }
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMobileId(int id) {
+        synchronized (this) {
+            this.mobileId = id;
+        }
     }
 
     public int getRouter_id() {
-        return router_id;
+        synchronized (this) {
+            return router_id;
+        }
     }
 
     public void setRouter_id(int router_id) {
-        this.router_id = router_id;
+        synchronized (this) {
+            this.router_id = router_id;
+        }
     }
 
-    public double getLoad() {
-        return load;
+    public double getLatencyUnderLoad() {
+        synchronized (this) {
+            return latencyUnderLoad;
+        }
     }
 
-    public void setLoad(double load) {
-        this.load = load;
+    public void setLatencyUnderLoad(double latencyUnderLoad) {
+        synchronized (this) {
+            this.latencyUnderLoad = latencyUnderLoad;
+        }
     }
 
-    public double getThroughput() {
-        return throughput;
+    public double getThroughputUpload() {
+        synchronized (this) {
+            return throughputUpload;
+        }
     }
 
-    public void setThroughput(double throughput) {
-        this.throughput = throughput;
+    public void setThroughputUpload(double throughputUpload) {
+        synchronized (this) {
+            this.throughputUpload = throughputUpload;
+        }
+    }
+
+    public double getThroughputDownload() {
+        synchronized (this) {
+            return throughputDownload;
+        }
+    }
+
+    public void setThroughputDownload(double throughputDownload) {
+        synchronized (this) {
+            this.throughputDownload = throughputDownload;
+        }
+    }
+
+    public double getPacketLossUnderLoad() {
+        synchronized (this) {
+            return packetLossUnderLoad;
+        }
+    }
+
+    public void setPacketLossUnderLoad(double packetLossUnderLoad) {
+        synchronized (this) {
+            this.packetLossUnderLoad = packetLossUnderLoad;
+        }
     }
 }

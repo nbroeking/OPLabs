@@ -18,7 +18,6 @@ public class TestSettings {
     private int mobileResultsID;
 
     //Throughput settings
-    //Throughput settings
     private String throughputServer;
     private int port;
 
