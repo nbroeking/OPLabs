@@ -47,27 +47,41 @@ public class PerformanceTester {
 
             //Run a dns response Test
             List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
-            int dnsResult = 0;
+            double dnsResult = 0;
             for (Integer x : times1) {
                 dnsResult += x;
             }
-            dnsResult /= times1.size();
-            results.setAverageDNSResponseTime(dnsResult);
+
+            if( times1.size() == 0)
+            {
+                results.setAverageDNSResponseTime(0.0);
+            }
+            else {
+                dnsResult /= times1.size();
+                results.setAverageDNSResponseTime(dnsResult);
+            }
             Log.d(TAG, "DNS Result = " + dnsResult);
 
             state.setState(TestState.State.TESTINGLATENCY, false);
             //Run a test packet latency test
             List<Integer> times2 = runDNSTest(settings.getValidDomains());
-            int latencyResult = 0;
+            double latencyResult = 0;
             for (Integer x : times2) {
                 latencyResult += x;
             }
-            latencyResult /= times2.size();
-            results.setLatency(latencyResult);
+
+            if( times2.size() == 0)
+            {
+                results.setLatency(0.0);
+            }
+            else {
+                latencyResult /= times2.size();
+                results.setLatency(latencyResult);
+            }
             Log.d(TAG, "Latency Result = " + latencyResult);
 
             //Packet Loss is just 1 - times we have / times we should have
-            results.setPacketLoss((1 - (times2.size() / settings.getValidDomains().size())));
+            results.setPacketLoss((1 - ((times2.size() + times1.size()) / (settings.getValidDomains().size() + settings.getInvalidDomains().size()))));
             Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
         }
         catch(Exception e){
@@ -157,7 +171,7 @@ public class PerformanceTester {
             short valid = (short)(receivePacket.getData()[3]);
             valid = (short)((int)valid & 0x000F);
 
-            if( valid != 0 && valid != 3)
+            if(valid != 0 && valid != 3)
             {
                 Log.e(TAG, "DNS error"+ valid);
                 return false;
@@ -182,9 +196,7 @@ public class PerformanceTester {
     private byte[] getContent(String name, short id)
     {
         String[] lists = name.split("\\.");
-
-
-        byte[] bytes = new byte[18 + name.length() + lists.length + 1 ];
+        byte[] bytes = new byte[16 + name.length() +2 ];
 
         //Set the id
         bytes[0] = (byte)((id>>8)&0xFF);
@@ -202,7 +214,6 @@ public class PerformanceTester {
 
         //Add the sections
         int index = 12;
-
         for( String section: lists)
         {
             bytes[index] = (byte)section.length();
@@ -224,6 +235,7 @@ public class PerformanceTester {
         bytes[index+1] = 0x01;
         bytes[index+2] = 0x00;
         bytes[index+3] = 0x01;
+
         return bytes;
     }
 }

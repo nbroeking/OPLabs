@@ -13,7 +13,8 @@
 
 enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROUGHPUT};
 
-@property(strong, atomic) TestResults *latestResults;
+@property(strong, atomic) TestResults *mobileResults;
+@property(strong, atomic) TestResults *routerResults;
 
 +(TestState*) getStateMachine;
 

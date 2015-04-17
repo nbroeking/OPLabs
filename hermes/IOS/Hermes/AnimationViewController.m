@@ -43,7 +43,7 @@
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (int i = 0; i < imageNames.count; i++) {
-        [images addObject:[UIImage imageNamed:[imageNames objectAtIndex:i]]];
+        [images addObject:[UIImage imageNamed:[imageNames objectAtIndex:imageNames.count - 1 -i]]];
     }
     
     // Normal Animation
@@ -87,7 +87,7 @@
 }
 -(void) goToResultsHelper: (NSNotification*)notification{
     
-    if( [notification object] == NULL)
+    if( [notification object] == NULL || [(TestResults*)[notification object] valid] == false)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an error running a performance test. We are sorry for the inconvience. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
         [alert show];

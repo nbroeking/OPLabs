@@ -16,5 +16,4 @@
  
 -(TestResults*) runTests;
 
--(NSMutableArray*) runDNSTest: (NSMutableArray*)domains;
 @end

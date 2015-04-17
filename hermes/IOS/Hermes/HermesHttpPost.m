@@ -51,6 +51,7 @@
         NSLog(@"Posted with a response");
         self.handler  = handlert;
     }
+    [request setTimeoutInterval:6];
     type = [[NSString alloc] initWithString:postType];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }

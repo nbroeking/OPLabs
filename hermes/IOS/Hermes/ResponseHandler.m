@@ -10,6 +10,8 @@
 #import "SessionData.h"
 #import "HermesHttpPost.h"
 #import "TestSettings.h"
+#import "TestState.h"
+#import "TestResults.h"
 
 NSString * const StartMobileURL = @"/api/start_test/mobile";
 NSString * const StartRouterURL = @"/api/start_test/router";
@@ -65,6 +67,13 @@ NSString * const StartRouterURL = @"/api/start_test/router";
         else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"StartRouterTest"]) {
             [self handleStartRouterTest:json];
         }
+        else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"ReportResults"]) {
+            [self handleStartReportResults:json];
+        }
+        else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"RouterResults"]){
+            [self handleRouterResults:json];
+            
+        }
         else{
             NSLog(@"ERROR: Unknown request type");
         }
@@ -112,16 +121,17 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     
     NSDictionary *config = (NSDictionary*)[json objectForKey:@"config"];
     NSDictionary *dns_config = (NSDictionary*)[config objectForKey:@"dns_config"];
+    NSDictionary *throughput_config = (NSDictionary*)[config objectForKey:@"throughput_config"];
     
     //Parse the json to get the settings
-    NSArray *jArray = [dns_config objectForKey:@"invalid_name"];
+    NSArray *jArray = [dns_config objectForKey:@"invalid_names"];
     
     if (jArray != NULL) {
         [[settings invalidDomains] addObjectsFromArray:jArray];
     }
     
     //Get Valid Names
-    jArray = [dns_config objectForKey:@"valid_name"];
+    jArray = [dns_config objectForKey:@"valid_names"];
     if (jArray != NULL) {
         [[settings validDomains] addObjectsFromArray:jArray];
     }
@@ -133,8 +143,17 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     [settings setTimeout: [[dns_config valueForKey:@"timeout"] intValue]];
     
     //Set the result ID
-     [settings setMobileResultID:[[dns_config valueForKey:@"result_id"] intValue]];
-     
+    [settings setMobileResultID:[[json valueForKey:@"result_id"] intValue]];
+    
+    
+    //Get the throughput config
+    
+    NSString* server = [throughput_config valueForKey:@"server_ip"] ;
+    NSArray *serverParts = [server componentsSeparatedByString:@":"];
+    
+    [settings setThroughputServer:[serverParts objectAtIndex:0]];
+    [settings setPort:[(NSString*)[serverParts objectAtIndex:1] intValue]];
+    
     //Request a router start test
      
      NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartRouterURL]]];
@@ -143,9 +162,9 @@ NSString * const StartRouterURL = @"/api/start_test/router";
      
      [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
      
-     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
-     
-     NSLog(@"Sending Post = %@", postString);
+     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d&address=127.0.0.1", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
+    
+    
      NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
      
      [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
@@ -157,12 +176,41 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     NSLog(@"Handle Start Router Test");
     if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
         
-        [settings setRouterTesultID:[[json valueForKey:@"result_id"]intValue]];
+        [settings setRouterResultID:[[json valueForKey:@"result_id"]intValue]];
     }
     else {
-        [settings setRouterTesultID:-1];
+        [settings setRouterResultID:-1];
     }
+ 
+    [settings logValues];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
 
+}
+-(void) handleStartReportResults: (NSMutableDictionary*)json{
+    NSLog(@"Handle Start Report Tests");
+    if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
+        
+        NSLog(@"Phone successfully reported its Test results to the controller");
+    }
+    else {
+        NSLog(@"Phone failed to upload results");
+    }    
+}
+-(void) handleRouterResults: (NSMutableDictionary*)json {
+    NSLog(@"Handle Start Router Tests");
+    TestResults *routerResults = NULL;
+    
+    if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
+        NSLog(@"Received Router Results");
+        routerResults = [[TestResults alloc] init:json];
+    }
+    else {
+        routerResults = [[TestResults alloc] init];
+        NSLog(@"Could not get router results because of an error");
+    }
+    
+    [[TestState getStateMachine] setRouterResults:routerResults];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivedRouterResults" object:routerResults];
+    NSLog(@"Sent Router Results");
 }
 @end

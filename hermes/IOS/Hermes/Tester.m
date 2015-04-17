@@ -122,7 +122,11 @@
 -(void) runTestHelper :(NSNotification*) notification
 {
     NSLog(@"Received a start test notification");
+    
+   
     TestSettings *settings = (TestSettings*)[notification object];
+    NSLog(@"Results ID = %d", (int)[settings mobileResultID]);
+    
     [self performSelector:@selector(runTestOnSubsystem:) onThread:thread withObject:settings waitUntilDone:NO];
     
     
@@ -137,10 +141,15 @@
     
     //Once we have the reslts we need to report them
 
-    [stateMachine setLatestResults:results];
+    [stateMachine setMobileResults:results];
+    
+    NSMutableDictionary *allInfo = [[NSMutableDictionary alloc] init];
+    
+    [allInfo setValue:results forKey:@"results"];
+    [allInfo setValue:settings forKey:@"settings"];
     
     NSLog(@"Completed a Performance test");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results userInfo:allInfo];
 }
 
 //This method is used to add something to the run loops queue.
