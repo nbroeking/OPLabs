@@ -10,6 +10,8 @@
 #import "TestSettings.h"
 #import "TestState.h"
 #import "UDPSocket.h"
+#import "Tester.h"
+#import "Throughput.h"
 
 @interface PerformanceTester()
 
@@ -19,6 +21,9 @@
 @property (strong, atomic) UDPSocket * socket;
 @property (strong, atomic) NSCondition *lock;
 @property (assign, atomic) Boolean throughputComplete;
+@property (weak, atomic) Tester *delegate;
+@property (strong, atomic) TestResults *results;
+@property (strong, nonatomic) Throughput *throughputHandler;
 
 -(Boolean) sendDNSRequest :(NSString*)string withId:(NSInteger)identifier;
 -(NSArray*) runDNSTest: (NSMutableArray*)domains;
@@ -31,6 +36,9 @@
 @implementation PerformanceTester
 @synthesize settings, timeEnd, timeStart, socket;
 @synthesize lock, throughputComplete;
+@synthesize delegate;
+@synthesize results;
+@synthesize throughputHandler;
 
 -(instancetype)init:(TestSettings *)settingst
 {
@@ -43,16 +51,18 @@
     return self;
 }
 
--(TestResults *)runTests{
-    TestResults *results = [[TestResults alloc] init];
+-(void)runTests:(Tester *)owner{
+    delegate = owner;
+    
+    results = [[TestResults alloc] init];
     [results setMobileIdentifier:(int)[settings mobileResultID]];
     
+    [results setValid:YES];
     TestState *state = [TestState getStateMachine];
     
     [state setState:TESTINGDNS];
     
     [results setRouterIdentifier:[settings routerResultID]];
-    
     
     //Run a DNS Response Test
     NSArray *times1 = [self runDNSTest:[settings invalidDomains]];
@@ -97,7 +107,6 @@
     {
         NSLog(@"Error with packet loss");
         [results setValid:false];
-        return results;
     }
     [results setPacketloss:(1-(([times2 count] + [times1 count]) / ([[settings validDomains] count] + [[settings invalidDomains] count])))];
     
@@ -106,73 +115,26 @@
     [state setState:TESTINGTHROUGHPUT];
     //TODO: Run a throughput response
     
-    lock = [[NSCondition alloc] init];
     
-    throughputComplete = false;
+    //Start another latency test
+    throughputHandler = [[Throughput alloc] init:self withSettings:settings withResults:results];
     
-    //[self performSelectorInBackground:@selector(runThroughputTest:) withObject:results];
-    [self runThroughputTest:results];
-    //Throughput test should be running now
-    
-    //Run Latency Test for 20 seconds
-    [lock lock];
-    
-    while (!throughputComplete) {
-        NSLog(@"Waiting for a signal");
-        [lock wait];
-    }
-    NSLog(@"Throughput is done");
-    [lock unlock];
-    [results setValid:YES];
-    return results;
+    [throughputHandler runDownloadTest];
 }
 
--(void) runThroughputTest: (TestResults*)results {
+-(void)completedDownload{
+    NSLog(@"Performance test completed a download");
     
-    NSLog(@"Server = %@, port = %ld", [settings throughputServer], (long)[settings port]);
-    NSString *urlStr = [settings throughputServer];
-    if (![urlStr isEqualToString:@""]) {
-        NSURL *website = [NSURL URLWithString:urlStr];
-        if (!website) {
-            NSLog(@"%@ is not a valid URL", website);
-            return;
-        }
-        
-        CFReadStreamRef readStream;
-        CFWriteStreamRef writeStream;
-        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)[website host], (unsigned int)[settings port] , &readStream, &writeStream);
-        
-        NSInputStream *inputStream = (__bridge_transfer NSInputStream *)readStream;
-        NSOutputStream *outputStream = (__bridge_transfer NSOutputStream *)writeStream;
-
-        [inputStream open];
-        [outputStream open];
-        
-        //The connection is set up
-        
-        NSTimeInterval start = [[NSDate date] timeIntervalSince1970 ];
-        
-        double download = 0.0;
-        
-        //For 10 seconds we download
-        while( [[NSDate alloc] timeIntervalSince1970] - start <= 10){
-            //Read data and collect total
-           /* Byte buffer[1024*1024]; // 1MB
-            
-            //long bytes = [inputStream read:buffer maxLength:(int)1024*1024];
-            long bytes = [inputStream read:buffer maxLength:(int)1024];
-            download += bytes;*/
-        }
-        
-        //download /= ([[NSDate alloc] timeIntervalSince1970] - start <= 10);
-        
-        [lock lock];
-        throughputComplete = true;
-        NSLog(@"Download = %f", download);
-        [lock signal];
-        [lock unlock];
-    }
+    //TODO: RUn an upload test
+    
+    NSLog(@"Setting testComplete");
+    [delegate testComplete:results :settings];
 }
+-(void)sendResults{
+    NSLog(@"Performance tester is done with the settings");
+    [delegate testComplete:results :settings ];
+}
+
 -(NSArray *)runDNSTest:(NSMutableArray *)domains{
     
     NSMutableArray *resultTimes = [[NSMutableArray alloc] init];

@@ -10,10 +10,15 @@
 #import "TestResults.h"
 #import "TestSettings.h"
 
+@class Tester;
+
 @interface PerformanceTester : NSObject
 
 -(instancetype)init :(TestSettings*) settingst;
  
--(TestResults*) runTests;
+-(void) runTests: (Tester*)owner;
 
+-(void) completedDownload;
+
+-(void) sendResults;
 @end
