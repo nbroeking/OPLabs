@@ -26,6 +26,10 @@ public:
     virtual void deallocate(T* value) = 0;
 };
 
+/**
+ * @brief A deallocator that just calls the destructor of the type T and frees the pointer
+ * This is a singleton as there is no state that needs to be kept when using this object.
+ */
 template<class T>
 class StandardDeallocator: public Deallocator<T> {
 public:
@@ -52,6 +56,11 @@ StandardDeallocator<T>* std_deallocator() {
     return &StandardDeallocator<T>::instance();
 }
 
+/**
+ * @brief A dealloctator that does nothing to the value.
+ * This is also a singleton since there is no internal state
+ * to this class.
+ */
 template <class T>
 class NullDeallocator: public Deallocator<T> {
 public:

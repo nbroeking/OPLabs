@@ -76,7 +76,7 @@ void LogServer::stop() {
     m_file_collection.stop();
 }
 
-LogLevel ECHO(30, "Echo", 20, true);
+LogLevel ECHO("\e[38;5;244m", "Echo", 20);
 LogLevel ECHO_W(33, "Echo", 20, true);
 
 void print_help(LogContext& log) {
