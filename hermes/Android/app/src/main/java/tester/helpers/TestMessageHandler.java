@@ -39,13 +39,13 @@ public class TestMessageHandler extends Handler {
             //Perform the tests
             case TestMsg.START_TEST:
                 //Create the information to return the state of the test
-                TestState.getInstance().setState(TestState.State.COMPLETED, false);
+
                 Intent intent = new Intent();
                 intent.setAction("TestCompleted");
 
                 if( msg.obj == null){
                     Log.e(TAG, "Received an error from the comm start test sub system");
-                    intent.putExtra("Results", new TestResults());
+                    intent.putExtra("Results", new TestResults(-1));
                 }
                 else {
                     //a call to start the test suit
@@ -55,9 +55,9 @@ public class TestMessageHandler extends Handler {
                     intent.putExtra(("Results"), results);
 
                     //We have the state machine hold on to the results in case hermes isn't the main app
-                    TestState.getInstance().setLatestResults(results);
+                    TestState.getInstance().setPhoneResults(results);
                 }
-
+                TestState.getInstance().setState(TestState.State.COMPLETED, false);
                 parent.sendBroadcast(intent);
                 break;
 

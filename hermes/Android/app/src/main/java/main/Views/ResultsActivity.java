@@ -8,10 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.oplabs.hermes.R;
 
@@ -34,7 +38,7 @@ public class ResultsActivity extends HermesActivity {
         setContentView(R.layout.activity_results);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.ResultsFrame, new AnimationFragment())
+                    .add(R.id.FrameLayout, new AnimationFragment())
                     .commit();
         }
         testBound = false;
@@ -46,13 +50,16 @@ public class ResultsActivity extends HermesActivity {
     public void checkStatus()
     {
         TestState stateMachine = TestState.getInstance();
-        TestResults latestResults = stateMachine.getLatestResults();
+        TestResults latestResults = stateMachine.getPhoneResults();
 
 
         //Start Testing Process if IDLE
         if(stateMachine.getState() == TestState.State.IDLE)
         {
             Log.i(TAG, "We are IDLE");
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.FrameLayout, new AnimationFragment())
+                    .commit();
             //Tell Tester that we have prepared
             testService.startTest();
         }
@@ -60,13 +67,19 @@ public class ResultsActivity extends HermesActivity {
         {
             Log.i(TAG, "We are preparing");
             //We are preparing to Run a Test
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.FrameLayout, new AnimationFragment())
+                    .commit();
+
         }
         else if(stateMachine.getState() == TestState.State.COMPLETED)
         {
             //Get Results and move to results fragment
             Log.i(TAG, "We are completed");
-            //The user has seen the results so we can move to idle
-            TestState.getInstance().setState(TestState.State.IDLE, false);
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.FrameLayout, new ResultsFragment(), "ResultsFrag")
+                    .commit();
         }
         else
         {
@@ -87,7 +100,9 @@ public class ResultsActivity extends HermesActivity {
         bindService(intent, testConnection, Context.BIND_AUTO_CREATE);
 
         //Set up broadcast receiver
-        IntentFilter filter = new IntentFilter("TestCompleted");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("TestCompleted");
+        filter.addAction("ReportRouter");
         registerReceiver(receiver, filter);
     }
     //On stop we clean up our broadcast requests and our states
@@ -104,8 +119,23 @@ public class ResultsActivity extends HermesActivity {
             }
         }
 
+        //Tell the communication system to stop all loops
+
+        if(commService != null) {
+            commService.clear();
+        }
         //Stop listening for broadcasts
         unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "On back pressed");
+        if(TestState.getInstance().getState() == TestState.State.COMPLETED){
+            TestState.getInstance().setState(TestState.State.IDLE,false);
+
+        }
+        super.onBackPressed();
     }
 
     //We want to go straight to settings if this is ever called in this view.
@@ -138,6 +168,16 @@ public class ResultsActivity extends HermesActivity {
         }
     };
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
     //Used to receive broadcasts from the testing subsystem
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -151,6 +191,7 @@ public class ResultsActivity extends HermesActivity {
 
             if( !results.isValid())
             {
+                TestState.getInstance().setState(TestState.State.IDLE, false);
                 //Display Error
                 new AlertDialog.Builder(ResultsActivity.this)
                         .setTitle("Testing Error")
@@ -164,12 +205,27 @@ public class ResultsActivity extends HermesActivity {
                         })
                         .setIcon(R.drawable.ic_launcher)
                         .show();
-            }
-            //We expect this to always be completed and so we will move to the completed fragment
-            checkStatus();
 
-            //Set to idle because we can see the results and we want to reset
-            TestState.getInstance().setState(TestState.State.IDLE, false);
+
+            }
+            else{
+                if( intent.getAction().equals("TestCompleted"))
+                {
+                    checkStatus();
+                }
+                else if (intent.getAction().equals("ReportRouter"))
+                {
+                    ResultsFragment myFragment = (ResultsFragment)getFragmentManager().findFragmentByTag("ResultsFrag");
+                    if (myFragment.isVisible()) {
+                        Log.d(TAG, "Informing the frag that a router test completed");
+                        myFragment.onRouterResults(results);
+                    }
+                }
+                else{
+                    Log.e(TAG, "Unknown Broadcast type");
+                }
+            }
+
         }
     };
 }

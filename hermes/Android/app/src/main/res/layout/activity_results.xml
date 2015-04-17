@@ -7,13 +7,17 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
-    tools:context="main.Views.MainActivity" >
+    android:gravity="center"
+    tools:context="main.Views.ResultsActivity" >
 
 
     <FrameLayout
-        android:id="@+id/ResultsFrame"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/FrameLayout"
+        android:scaleType="fitCenter" />
 </RelativeLayout>

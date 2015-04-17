@@ -1,10 +1,16 @@
 package tester;
 
+import android.nfc.Tag;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by nbroeking on 4/1/15.
@@ -15,14 +21,24 @@ public class TestResults implements Parcelable{
     private double averageDNSResponseTime;
     private double packetLoss;
     private double latency;
-    private double jitter;
+    private double load;
+    private double throughput;
+
     private boolean valid;
 
-    public TestResults(){
+    private int id;
+    private int router_id;
+
+    public TestResults(int id){
         valid = false;
         packetLoss = -1;
         averageDNSResponseTime = -1;
         latency = -1;
+        load = 0;
+        latency = 0;
+
+        this.id = id;
+        Log.i("CREATE", "ID = " + id);
     }
 
     public TestResults(Parcel in){
@@ -30,8 +46,54 @@ public class TestResults implements Parcelable{
         averageDNSResponseTime = in.readDouble();
         packetLoss = in.readDouble();
         latency = in.readDouble();
-        jitter = in.readDouble();
+        this.id = in.readInt();
+        this.router_id = in.readInt();
+
+        Log.w("PARCEL CREATE", "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency);
     }
+
+    public String printValues()
+    {
+        return "VALID = " + valid + " dns = " + averageDNSResponseTime + " packetLoss " + packetLoss+  " latency " + latency;
+    }
+    public TestResults(JSONObject json){
+        try {
+            if (json.getString("status").equals("success")) {
+
+                averageDNSResponseTime = json.getDouble("dns_response_avg");
+                packetLoss = json.getDouble("packet_loss");
+                latency = json.getDouble("latency_avg");
+                return;
+            }
+            else
+            {
+                throw new JSONException("Failure");
+            }
+        } catch (JSONException e) {
+            valid = false;
+            packetLoss = -1;
+            averageDNSResponseTime = -1;
+            latency = -1;
+            Log.e("JSON ERROR", "Test Results constructor failed" ,e);
+        }
+
+    }
+    public String getPost(){
+
+        String results = new String();
+
+        try {
+            results += "state=finished&";
+            results += "dns_response_avg=" + URLEncoder.encode(Double.toString(averageDNSResponseTime), "UTF-8") + "&";
+            results += "packet_loss="+ URLEncoder.encode(Double.toString(packetLoss), "UTF-8") + "&";
+            results += "latency_avg=" + URLEncoder.encode(Double.toString(latency), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.e("Results", "Error creating post", e);
+        }
+
+        return results;
+    }
+
     public double getPacketLoss() {
         return packetLoss;
     }
@@ -52,7 +114,8 @@ public class TestResults implements Parcelable{
         dest.writeDouble(averageDNSResponseTime);
         dest.writeDouble(packetLoss);
         dest.writeDouble(latency);
-        dest.writeDouble(jitter);
+        dest.writeInt(id);
+        dest.writeInt(router_id);
     }
 
     //Create a parcel
@@ -89,11 +152,35 @@ public class TestResults implements Parcelable{
         this.latency = latency;
     }
 
-    public double getJitter() {
-        return jitter;
+    public int getId() {
+        return id;
     }
 
-    public void setJitter(double jitter) {
-        this.jitter = jitter;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getRouter_id() {
+        return router_id;
+    }
+
+    public void setRouter_id(int router_id) {
+        this.router_id = router_id;
+    }
+
+    public double getLoad() {
+        return load;
+    }
+
+    public void setLoad(double load) {
+        this.load = load;
+    }
+
+    public double getThroughput() {
+        return throughput;
+    }
+
+    public void setThroughput(double throughput) {
+        this.throughput = throughput;
     }
 }

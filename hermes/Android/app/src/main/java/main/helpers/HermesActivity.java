@@ -19,7 +19,7 @@ import communication.Communication;
 import main.Application.SessionData;
 
 //All Activities inherit from this one. It allows us to have universal behavior accross all activities
-public abstract class HermesActivity extends Activity{
+public abstract class HermesActivity extends Activity {
     //Tag
     protected final String TAG = "Hermes Activity";
 
@@ -92,10 +92,10 @@ public abstract class HermesActivity extends Activity{
             {
                 new AlertDialog.Builder(this)
                         .setTitle("Login Error")
-                        .setMessage("There was an error connecting to the server.")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        .setMessage("There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!")
+                        .setPositiveButton("Ok Ill check!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
+                                goToSettings(null);
                             }
                         })
                         .setIcon(R.drawable.ic_launcher)

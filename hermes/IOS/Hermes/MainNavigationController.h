@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "Communication.h"
+#import "Tester.h"
 
 @interface MainNavigationController : UINavigationController
 
 @property (strong, atomic) Communication* communicator;
+@property (strong, atomic) Tester* tester;
 
 @end

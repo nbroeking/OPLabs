@@ -15,11 +15,24 @@
 @end
 
 @implementation TestState
+@synthesize latestResults;
++(TestState*) getStateMachine
+{
+    @synchronized(self){
+    static TestState *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[TestState alloc] init];
+    });
+    return sharedInstance;
+    }
+}
 
 -(instancetype)init
 {
     if (self = [super init]) {
         state = IDLE;
+        latestResults = NULL;
     }
     return self;
 }

@@ -10,6 +10,7 @@
 #import "SessionData.h"
 #import "MainNavigationController.h"
 #import "HermesAlert.h"
+#import "TestState.h"
 
 @interface HomeViewController ()
 @property (nonatomic, strong) UIAlertView *loading;
@@ -30,16 +31,38 @@
     //Ask the notification center to message us when we the app becomes active
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:@"LOGIN" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyLogin:) name:@"NotifyLogin" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (IBAction)MoveToTesting:(id)sender {
+    NSLog(@"Run Test was pressed");
+    
+    if (![self checkLogin]) {
+        
+        TestState *stateMahine = [TestState getStateMachine];
+        if([stateMahine getState] != COMPLETED)
+        {
+            //Go to animation
+            [self performSegueWithIdentifier:@"Testing" sender:self];
+        }
+        else{
+            [self performSegueWithIdentifier:@"Results" sender:self];
+        }
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    if( [data shouldTransfer]){
+        [data setShouldTransfer:false];
+        [self performSegueWithIdentifier:@"Results" sender:self];
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -88,34 +111,36 @@
     return true;
 }
 #pragma mark -Communication
--(void)notifyLogin
+
+-(void)notifyLogin:(NSString *)error{
+    [self performSelectorOnMainThread:@selector(notifyLoginHelper:) withObject:error waitUntilDone:NO];
+}
+-(void)notifyLoginHelper:(NSString*)result
 {
-    if ([data sessionId] != nil)
-    {
-        if([[data sessionId] isEqualToString:@"ERROR"])
-        {
-            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error connecting to the server." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alert setType:nothing];
-            [alert show];
-            [data setSessionId:nil];
-        }
-        else if([[data sessionId] isEqualToString:@"DOMAIN"])
-        {
-            HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
-            [alert setType: settings];
-            [alert show];
-            [data setSessionId:nil];
-        }
-        else
-        {
-             NSLog(@"Successful Login");
-        }
-    }
-    else
+    NSLog(@"Notify Login Helper");
+    if([[data sessionId] isEqualToString:@"ERROR"])
     {
         HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert setType:login];
         [alert show];
+    }
+    else if([[data sessionId] isEqualToString:@"DOMAIN"])
+    {
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
+        [alert setType: settings];
+        
+        
+#warning DONT GIVE THIS TO CABLE LABS
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(220, 10, 40, 40)];
+        [imageView setImage: [UIImage imageNamed:@"josh"]];
+        [alert setValue:imageView forKey:@"accessoryView"];
+#warning TO HERE
+        
+        [alert show];
+        [data setSessionId:@""];
+    }
+    else{
+        NSLog(@"Successful Login");
     }
     [self performSelector:@selector(endLogin) withObject:nil afterDelay:1];
 }
@@ -153,7 +178,7 @@
     NSLog(@"End Login");
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:2];
-    [UIView setAnimationDelay:1.0];
+    [UIView setAnimationDelay:.25];
     [loading dismissWithClickedButtonIndex:0 animated:YES];
     [UIView commitAnimations];
     loading = nil;
@@ -175,10 +200,7 @@
 }
 - (IBAction)goToSettings:(id)sender {
     NSLog(@"Go to Settings");
-    
-    if (&UIApplicationOpenSettingsURLString != NULL) {
-        NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-        [[UIApplication sharedApplication] openURL:appSettings];
-    }
+    NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    [[UIApplication sharedApplication] openURL:appSettings];
 }
 @end

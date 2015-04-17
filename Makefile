@@ -1,6 +1,6 @@
 # make the whole project
 all:
-	cd mercury && ./genmake.py > Makefile && make
+	cd mercury && ./genmake.py > Makefile && make -j 4
 	cd ..
 
 # clean the whole project
