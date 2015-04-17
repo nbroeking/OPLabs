@@ -141,10 +141,15 @@
     
     //Once we have the reslts we need to report them
 
-    [stateMachine setLatestResults:results];
+    [stateMachine setMobileResults:results];
+    
+    NSMutableDictionary *allInfo = [[NSMutableDictionary alloc] init];
+    
+    [allInfo setValue:results forKey:@"results"];
+    [allInfo setValue:settings forKey:@"settings"];
     
     NSLog(@"Completed a Performance test");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results userInfo:allInfo];
 }
 
 //This method is used to add something to the run loops queue.

@@ -16,7 +16,7 @@
 @property (assign, atomic) NSInteger timeout;
 @property (assign, atomic) NSInteger setId;
 @property (assign, atomic) NSInteger mobileResultID;
-@property (assign, atomic) NSInteger routerTesultID;
+@property (assign, atomic) NSInteger routerResultID;
 
 -(void) addInvalidDomain: (NSString*) string;
 -(void) addValidDomain: (NSString*)string;

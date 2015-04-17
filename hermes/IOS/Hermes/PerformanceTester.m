@@ -24,6 +24,7 @@
 
 -(NSData*) getContent:(NSString*) name :(NSInteger) identifier;
 
+
 @end
 
 @implementation PerformanceTester
@@ -48,7 +49,7 @@
     
     [state setState:TESTINGDNS];
     
-    [results setRouterIdentifier:[settings routerTesultID]];
+    [results setRouterIdentifier:[settings routerResultID]];
     
     
     //Run a DNS Response Test
@@ -102,9 +103,16 @@
 
     [state setState:TESTINGTHROUGHPUT];
     //TODO: Run a throughput response
-
+    
+    
+    
     [results setValid:YES];
     return results;
+}
+
+-(NSDictionary*) runThroughputTest {
+    
+    return NULL;
 }
 -(NSArray *)runDNSTest:(NSMutableArray *)domains{
     

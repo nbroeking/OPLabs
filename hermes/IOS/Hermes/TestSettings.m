@@ -9,7 +9,7 @@
 #import "TestSettings.h"
 
 @implementation TestSettings
-@synthesize validDomains, invalidDomains, DNSServer, mobileResultID, setId, routerTesultID, timeout;
+@synthesize validDomains, invalidDomains, DNSServer, mobileResultID, setId, routerResultID, timeout;
 
 -(instancetype)init{
     self = [super init];
@@ -31,6 +31,6 @@
 }
 
 -(void) logValues{
-    NSLog(@"%@ %@ %@ %ld %ld %ld %ld", validDomains, invalidDomains, DNSServer, (long)mobileResultID, (long)setId, (long)routerTesultID, (long)timeout);
+    NSLog(@"%@ %@ %@ %ld %ld %ld %ld", validDomains, invalidDomains, DNSServer, (long)mobileResultID, (long)setId, (long)routerResultID, (long)timeout);
 }
 @end
