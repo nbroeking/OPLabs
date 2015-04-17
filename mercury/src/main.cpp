@@ -1,34 +1,4 @@
-#include <cstdio>
-
-#include <io/FilePointer.hpp>
-#include <io/Inet4Address.hpp>
-#include <io/Resolv.hpp>
-#include <io/ServerSocket.hpp>
-#include <io/Socket.hpp>
-#include <io/StringWriter.hpp>
-#include <io/binary/StreamGetter.hpp>
-
-#include <json/Json.hpp>
-#include <json/JsonMercuryTempl.hpp>
-
-#include <log/LogManager.hpp>
-#include <log/LogServer.hpp>
-
-#include <mercury/Mercury.hpp>
-
-#include <os/Condition.hpp>
-
-#include <sys/wait.h>
-
-#include <errno.h>
-#include <signal.h>
-#include <unistd.h>
-
-using namespace logger ;
-using namespace std ;
-using namespace io ;
-using namespace os ;
-using namespace json ;
+#include "MercuryConfig.hpp"
 
 byte mercury_magic_cookie[32] = {
     0xe2, 0x1a, 0x14, 0xc8, 0xa2, 0x35, 0x0a, 0x92,
@@ -40,76 +10,18 @@ byte mercury_magic_cookie[32] = {
 Mutex* g_mutex;
 Condition* g_cond;
 
-class MercuryConfig {
-public:
-    MercuryConfig():
-        logEverything(false),
-        controller_url("http://127.0.0.1:5000/"),
-        bind_ip(new Inet4Address("127.0.0.1", 8639)),
-        log_out(NULL),
-        colors(true),
-        default_level(NULL),
-        log_server(NULL)
-        {}
-
-    bool logEverything;
-    std::string controller_url;
-    SocketAddress* bind_ip;
-    BaseIO* log_out;
-    bool colors;
-    LogLevel* default_level;
-    
-    SocketAddress* log_server;
-};
-
-template<>
-struct JsonBasicConvert<MercuryConfig> {
-    static MercuryConfig convert(const json::Json& jsn) {
-        MercuryConfig ret;
-        ret.logEverything = jsn.hasAttribute("logEverything") && jsn["logEverything"] != 0;
-        SocketAddress* old;
-
-        if(jsn.hasAttribute("controller_url")) {
-            ret.controller_url = jsn["controller_url"].stringValue();
-        }
-        if(jsn.hasAttribute("bind_ip")) {
-            old = ret.bind_ip;
-            ret.bind_ip = jsn["bind_ip"].convert<SocketAddress*>();
-            delete old;
-        }
-
-        if(jsn.hasAttribute("logFile")) {
-            FILE* f = fopen(jsn["logFile"].stringValue().c_str(), "w");
-            if(f) {
-                io::FilePointer* fp = new io::FilePointer(f);
-                ret.log_out = fp;
-            } else {
-                fprintf(stderr, "Unable to open log file. Logging to stdout\n");
-            }
-        }
-
-        if(jsn.hasAttribute("defaultLogLevel")) {
-            ret.default_level = LogLevel::getLogLevelByName(jsn["defaultLogLevel"].stringValue().c_str());
-        }
-
-        if(jsn.hasAttribute("logColors")) {
-            ret.colors = jsn["logColors"] != 0;
-        }
-
-        if(jsn.hasAttribute("logServerBindAddress")) {
-            ret.log_server = jsn["logServerBindAddress"].convert<SocketAddress*>();
-            if(ret.log_server->linkProtocol() == AF_UNIX) {
-                dynamic_cast<UnixAddress*>(ret.log_server)->unlink();
-            }
-        }
-
-        return ret;
-    }
-};
 
 void sigchld_hdlr(int sig) {
     (void)sig;
-    ScopedLock __sl(*g_mutex);
+    // TODO race condition taken over deadlock. The
+    // possible race condition, while very unlikely
+    // may cause execution delay for up to 5 mins
+    //
+    // Consider using a BlockingQueue to signal when
+    // children need to be reaped. Or creating a higher
+    // layer'd system to handle sigchld events in an
+    // observer pattern.
+    // ScopedLock __sl(*g_mutex);
     g_cond->signal();
 }
 
@@ -136,7 +48,11 @@ void start_logging_service(int fd) {
     }
 }
 
-pid_t start_child(byte* recieve, MercuryConfig& config) {
+MonitorProxy* start_monitor(MercuryConfig& conf) {
+    return MonitorProxy::startMonitor(conf.monitor_datapoints, conf.monitor_interval);
+}
+
+pid_t start_child(byte* recieve, MercuryConfig& config, MonitorProxy* monitor) {
     pid_t ret;
 
     if(!(ret = fork())) {
@@ -148,6 +64,7 @@ pid_t start_child(byte* recieve, MercuryConfig& config) {
         /* Child process. Setup the config and boot
          * the merucry state machine */
         mercury::Config conf;
+        monitor->readData(conf.monitor_data);
         std::copy(recieve + 32, recieve + 64, conf.mercury_id);
         conf.controller_url = config.controller_url;
         mercury::Proxy& process = mercury::ProxyHolder::instance();
@@ -181,6 +98,14 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
      * its other children */
     start_logging_service(error_pipe[0]);
 
+    /*
+     * Start the monitor. This will be used
+     * to retrieve statistics about all the
+     * network interfaces.
+     */
+    MonitorProxy* monitor_proxy;
+    monitor_proxy = start_monitor(config);
+
     m_log.printfln(INFO, "Binding to address: %s", bind_addr->toString().c_str());
     sock.bind(*bind_addr);
     sock.listen(1);
@@ -197,12 +122,13 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
 
         /* make sure the cookie is equal to what we expect */
         if(std::equal(recieve, recieve + 32, mercury_magic_cookie)) {
+            ScopedLock __sl(*g_mutex);
             /* the cookie is equal to what we expect
              * so continue with the fork() */
             m_log.printfln(INFO, "Magic cookie accepted, forking new process");
             pid_t child;
 
-            child = start_child(recieve, config);
+            child = start_child(recieve, config, monitor_proxy);
 
             /* parent */
             m_log.printfln(INFO, "Child started pid=%d", child);
@@ -259,14 +185,18 @@ int main( int argc, char** argv ) {
     g_mutex = new Mutex();
     g_cond = new Condition();
 
-    ScopedLock __sl(*g_mutex);
 
     MercuryConfig conf;
     SocketAddress* old = conf.bind_ip;
     signal(SIGCHLD, sigchld_hdlr);
 
     try {
-        Json* jsn = Json::fromFile("config.json");
+        Json* jsn;
+        if(argc > 1) {
+            jsn = Json::fromFile(argv[1]);
+        } else {
+            jsn = Json::fromFile("config.json");
+        }
         conf = jsn->convert<MercuryConfig>();
         delete old;
     } catch(Exception& exp) {

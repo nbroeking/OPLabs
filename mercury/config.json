@@ -8,5 +8,7 @@
     "logColors": 1,
     "defaultLogLevel": "TRACE",
     "logServerBindAddress": "[::1]:5432",
-    "_logServerBindAddress": "unix://tmp/mercury_log.sock"
+    "_logServerBindAddress": "unix://tmp/mercury_log.sock",
+    "monitorNumberOfDatapoints": 2000,
+    "monitorInterval": 1000
 }
