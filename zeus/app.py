@@ -21,7 +21,7 @@ app.debug = config.DEBUG
 db = SQLAlchemy(app)
 
 THROUGHPUT_IP, THROUGHPUT_PORT = start_server()
-print THROUGHPUT_PORT
+print "Starting throughput server on %s:%s" % (THROUGHPUT_IP, THROUGHPUT_PORT)
 
 if app.debug:
     # This makes debugging a lot easier. Otherwise the current session gets

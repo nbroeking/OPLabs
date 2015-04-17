@@ -8,7 +8,6 @@ DATA = "a"*1024*1024*16
 
 class ThroughputTestHandler(SocketServer.BaseRequestHandler):
     def handle(self):
-        print "Connected!"
         self.request.setblocking(0)
         timeout = 10
 
@@ -19,7 +18,6 @@ class ThroughputTestHandler(SocketServer.BaseRequestHandler):
             except:
                 pass
             timeout -= time.time() - now
-            print timeout
 
         timeout = 15
 
@@ -30,7 +28,6 @@ class ThroughputTestHandler(SocketServer.BaseRequestHandler):
             except:
                 pass
             timeout -= time.time() - now
-            print timeout
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     pass
