@@ -81,7 +81,7 @@ public:
             /* Have to be _very_ careful with the Poller log as
              * the log system itself uses the poller and odd stuff
              * may break */
-            // m_log.redirect(&NullIO::instance(), true);
+            m_log.redirect(&NullIO::instance(), true);
 
             /* m_pipe[0] */
             int opts = fcntl(m_pipe[0], F_GETFL);

@@ -77,13 +77,27 @@ public:
      * @return The new thread created by the process
      */
     virtual os::Thread* start();
+
+    /**
+     * @brief return the thread fo the scheduler.
+     */
     virtual inline os::Thread* getSchedulingThread() {
         return m_sched;
     }
 
+    /**
+     * @brief Signal all jobs owned by this process to stop
+     */
     virtual void stop();
+
+    /**
+     * @brief Join all threads for this process
+     */
     virtual void join();
 
+    /**
+     * @brief Wait for this process to exit
+     */
     virtual void waitForExit();
 
 private:

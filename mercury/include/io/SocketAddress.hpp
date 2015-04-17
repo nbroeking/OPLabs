@@ -13,6 +13,11 @@
 
 namespace io {
 
+class SocketAddressParseException: public Exception {
+public:
+    SocketAddressParseException(const char* msg): Exception(msg) {};
+};
+
 /**
  * @brief thrown when an address cannot be deciphered
  */
@@ -61,7 +66,15 @@ public:
 
     virtual inline ~SocketAddress() {}
 
+
     virtual std::string toString() const = 0 ;
+
+    /**
+     * @brief Attempt to parse a string into a socket address
+     * @param str The string to parse
+     * @return The socket address the string represents
+     */
+    static SocketAddress* parse(const char* str);
 };
 
 }

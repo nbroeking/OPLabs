@@ -40,6 +40,7 @@ public:
      * @throw Inet6ParseException if the string is invalid
      */
     static Inet6Address fromString(const char* ipv6, u16_t port);
+    static Inet6Address fromString(const char* ipv6);
 
     /**
      * @brief Copy constructor

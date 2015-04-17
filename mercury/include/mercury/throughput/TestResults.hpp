@@ -56,9 +56,6 @@ struct JsonBasicConvert<throughput::TestResults> {
             up_latencies.push_back(Json::fromFloat(*itr / 1000.0));
         }
 
-
-
-
         Json ret;
         ret.setAttribute("download_throughputs", down_throughputs);
         ret.setAttribute("download_latencies", down_latencies);

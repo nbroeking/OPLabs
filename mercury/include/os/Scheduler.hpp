@@ -19,8 +19,8 @@
 namespace os {
 
 /**
- * Class that may schedule runnables at specific times
- * in the future.
+ * @brief A class that schedules things to run at a 
+ * time in the future
  */
 class Scheduler: public ManagedRunnable {
 public:

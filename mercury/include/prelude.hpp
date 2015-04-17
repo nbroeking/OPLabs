@@ -4,7 +4,9 @@
 /*
  * Author: jrahm
  * created: 2015/01/18
- * prelude.hpp: <description>
+ * prelude.hpp: 
+ *  This header contains basic classes, macros and routines
+ *  that should be included by default.
  */
 
 #include <types.h>
