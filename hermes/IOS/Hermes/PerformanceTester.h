@@ -19,6 +19,7 @@
 -(void) runTests: (Tester*)owner;
 
 -(void) completedDownload;
+-(void) completedUpload;
 
 -(void) sendResults;
 @end

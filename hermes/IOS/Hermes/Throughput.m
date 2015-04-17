@@ -21,6 +21,10 @@
 @property (strong, nonatomic) NSInputStream *inputStream;
 @property (strong, nonatomic) NSOutputStream *outputStream;
 @property (strong, nonatomic) NSTimer *timeoutTimer;
+@property (assign, nonatomic) NSInteger uploaded;
+@property (assign, nonatomic) Boolean uploadMode;
+@property (strong, nonatomic) NSData* uploadData;
+
 @end
 
 @implementation Throughput
@@ -32,7 +36,9 @@
 @synthesize start;
 @synthesize inputStream ,outputStream;
 @synthesize timeoutTimer;
-
+@synthesize uploadData;
+@synthesize uploadMode;
+@synthesize uploaded;
 
 -(instancetype)init :(PerformanceTester*)parent withSettings:(TestSettings*)config withResults:(TestResults*)answer{
     self = [super init];
@@ -41,10 +47,18 @@
         settings = config;
         delegate = parent;
         start = 0.0;
+        uploadMode = false;
+        uploaded = 0;
+        Byte* tmpBytes = malloc(1024*2024);
+        memset(tmpBytes, 90, 1024*1024);
+        
+        uploadData = [[NSData alloc] initWithBytes:tmpBytes length:1024*1024];
+        free(tmpBytes);
     }
     return self;
 }
 -(void) runDownloadTest{
+    NSLog(@"Starting a download test");
     NSString *urlStr = [settings throughputServer];
     if (![urlStr isEqualToString:@""]) {
         NSURL *website = [NSURL URLWithString:urlStr];
@@ -55,8 +69,8 @@
         
         CFReadStreamRef readStream;
         CFWriteStreamRef writeStream;
-        //CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)[website host], (unsigned int)[settings port] , &readStream, &writeStream);
-        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)@"10.0.1.2", 4321 , &readStream, &writeStream);
+        //CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)@"10.0.1.2", (unsigned int)5432 , &readStream, &writeStream);
+        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)[settings throughputServer], (short)[settings port] , &readStream, &writeStream);
         
         inputStream = (__bridge_transfer NSInputStream *)readStream;
         outputStream = (__bridge_transfer NSOutputStream*)writeStream;
@@ -71,9 +85,9 @@
         [inputStream open];
         [outputStream open];
         
-        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:5.0
+        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:12.0
                                          target:self
-                                       selector:@selector(timeout)
+                                       selector:@selector(timeoutDownload)
                                        userInfo:nil
                                         repeats:NO];
         
@@ -81,11 +95,49 @@
     }
 }
 
--(void) timeout {
-    NSLog(@"There was a timeout");
+-(void) runUploadTest{
+    NSLog(@"Starting Upload test");
     
-    [self handle:-1];
+    //If this is true then there hasn't been an issue with the socket so we can run upload test
+    if( inputStream != NULL &&outputStream != NULL){
+        //Write some bytes
+        
+        uploadMode = true;
+        NSLog(@"Preparing to write the first bit of data");
+        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:10.0
+                                                        target:self
+                                                      selector:@selector(uploadCompleteTimeout)
+                                                      userInfo:nil
+                                                       repeats:NO];
+        start = [[NSDate date] timeIntervalSince1970];
+        
+        [outputStream write:[uploadData bytes] maxLength:[uploadData length]];
+        self.uploaded += [uploadData length];
+    }
+    else{
+        [self handleUpload:-1];
+    }
 }
+
+-(void) timeoutDownload {
+    NSLog(@"There was a timeout connecting to the throughput server");
+    
+    [self handleDownload:-1];
+}
+-(void) downloadCompleteTimeout {
+    NSLog(@"Data stopped flowing");
+    start = 0.0;
+    [self handleDownload:1];
+}
+-(void) uploadCompleteTimeout {
+    NSLog(@"Finished uploading data");
+    
+    [self handleUpload:1];
+}
+-(void) timeoutUpload {
+    NSLog(@"There was a timeout uploading data");
+}
+
 -(void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
 {
     switch (eventCode)
@@ -95,35 +147,48 @@
             start = [[NSDate date] timeIntervalSince1970 ];
             downloaded = 0;
             [timeoutTimer invalidate];
+            
+            timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:12.0
+                                                            target:self
+                                                          selector:@selector(downloadCompleteTimeout)
+                                                          userInfo:nil
+                                                           repeats:NO];
             break;
             
         case NSStreamEventHasBytesAvailable:
-            if( aStream == inputStream)
-            {
-                uint8_t buffer[1024];
-                int len;
-                
-                while([inputStream hasBytesAvailable])
+            
+            if( uploadMode == false){
+                if( aStream == inputStream)
                 {
+                    uint8_t buffer[1024];
+                    int len;
+                
                     len = (int)[inputStream read:buffer maxLength:sizeof(buffer)];
                     downloaded += len;
-                }
                 
-                if( start != 0.0 && [[NSDate date] timeIntervalSince1970] - start >= 10){
-                    start = 0.0;
-                    [self handle:1];
+                    if( start != 0.0 && [[NSDate date] timeIntervalSince1970] - start >= 10.0){
+                        start = 0.0;
+                        [self handleDownload:1];
+                        [timeoutTimer invalidate];
+                    }
                 }
             }
             break;
             
         case NSStreamEventErrorOccurred:
             NSLog(@"Can not connect to the host");
-            [self handle:-1];
+            [self handleUpload:-1];
             break;
             
         case NSStreamEventEndEncountered:
             NSLog(@"End of stream encountered");
-            [self handle:-1];
+            [self handleUpload:-1];
+            break;
+            
+        case NSStreamEventHasSpaceAvailable:
+            NSLog(@"Has space Available");
+            [outputStream write:[uploadData bytes] maxLength:[uploadData length]];
+            self.uploaded += [uploadData length];
             break;
             
         default:
@@ -131,8 +196,8 @@
             break;
     }
 }
--(void) handle :(int)status{
-    NSLog(@"Completed with stuff");
+
+-(void) handleDownload :(int)status{
     
     if( status < 0)
     {
@@ -148,8 +213,24 @@
     [delegate completedDownload];
 }
 
+-(void) handleUpload :(int)status{
+    
+    if( status < 0)
+    {
+        [results setThroughputUpload:0.0];
+        [results setValid:false];
+    }
+    else{
+        double throughPut = (double)uploaded / ([[NSDate date] timeIntervalSince1970] - start);
+        [results setThroughputUpload:throughPut];
+    }
+    [self shutdown];
+    
+    [delegate completedUpload];
+}
 -(void) shutdown{
     
+    NSLog(@"We successfully shutdown the Throughput connection");
     if( inputStream){
         [inputStream close];
         [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];

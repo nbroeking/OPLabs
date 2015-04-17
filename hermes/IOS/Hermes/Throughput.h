@@ -17,6 +17,6 @@
 -(instancetype)init :(PerformanceTester*)parent withSettings:(TestSettings*)config withResults:(TestResults*)answer;
 
 -(void) runDownloadTest;
-
+-(void) runUploadTest;
 -(void) shutdown;
 @end

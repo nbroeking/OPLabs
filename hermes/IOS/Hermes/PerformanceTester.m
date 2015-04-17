@@ -113,22 +113,78 @@
     NSLog(@"Packet loss = %f percent", [results packetloss]);
 
     [state setState:TESTINGTHROUGHPUT];
-    //TODO: Run a throughput response
+    //Run a throughput response
     
-    
-    //Start another latency test
     throughputHandler = [[Throughput alloc] init:self withSettings:settings withResults:results];
     
     [throughputHandler runDownloadTest];
+    
+    throughputComplete = false;
+    [self performSelectorInBackground:@selector(runUnderLoad) withObject:NULL];
 }
 
+//Should run on other thread
+-(void) runUnderLoad{
+    //Run a test packet latency test
+    NSMutableArray *times = [[NSMutableArray alloc] init];
+    
+    NSTimeInterval startTime = [[NSDate date] timeIntervalSince1970];
+    
+    int tests = 0;
+    
+    while ( [[NSDate date] timeIntervalSince1970] - startTime < 10.0){
+        NSArray *resTimes = [self runDNSTest:[settings validDomains]];
+        
+        [times addObjectsFromArray:resTimes];
+        tests += 1;
+    }
+    
+    double latencyResult = 0;
+    for (NSNumber *x in times) {
+        latencyResult += [x doubleValue];
+    }
+    
+    if( [times count] ==0 ){
+        [results setLatencyUnderLoad:0.0];
+    }
+    else {
+        latencyResult /= [times count];
+        [results setLatencyUnderLoad:latencyResult];
+    }
+    
+    [results setPacketlossUnderLoad:1- ([times count] / tests*[[settings validDomains]count])];
+    
+    //TODO: Signal the other thread to continue
+    
+    NSLog(@"Latency Under Load Result = %f", latencyResult);
+    NSLog(@"Packet Loss under Load = %f", [results packetloss]);
+    
+    [lock lock];
+    throughputComplete = true;
+    [lock signal];
+    [lock unlock];
+
+}
+
+-(void)completedUpload{
+    NSLog(@"Performance test completed a upload");
+    [delegate testComplete:results :settings];
+
+}
 -(void)completedDownload{
     NSLog(@"Performance test completed a download");
     
+    [lock lock];
+    
+    while (throughputComplete != true) {
+        [lock wait];
+    }
+    [lock unlock];
+    
+    NSLog(@"Performance test completed a download");
     //TODO: RUn an upload test
     
-    NSLog(@"Setting testComplete");
-    [delegate testComplete:results :settings];
+    [throughputHandler runUploadTest];
 }
 -(void)sendResults{
     NSLog(@"Performance tester is done with the settings");

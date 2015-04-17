@@ -15,9 +15,9 @@
     if( self = [super init]){
         
         valid = false;
-        dns = 1.0;
-        latency = 1.0;
-        packetloss = 0.0;
+        dns = 0.0;
+        latency = 0.0;
+        packetloss = 1.0;
         throughputDownload = 0.0;
         throughputUpload = 0.0;
         
@@ -28,10 +28,10 @@
     if (self = [super init]) {
         
         valid = false;
-        dns = 1.0;
-        latency = 1.0;
+        dns = 0.0;
+        latency = 0.0;
         packetloss = 0.0;
-        throughputUpload = 1.0;
+        throughputUpload = 0.0;
     }
     return self;
 }

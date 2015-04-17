@@ -154,6 +154,8 @@
     [allInfo setValue:settings forKey:@"settings"];
     
     NSLog(@"Completed a Performance test");
+    
+    [[TestState getStateMachine] setState:COMPLETED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results userInfo:allInfo];
 }
 //This method is used to add something to the run loops queue.

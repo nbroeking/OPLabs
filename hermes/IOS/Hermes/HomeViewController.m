@@ -18,6 +18,7 @@
 
 @implementation HomeViewController
 @synthesize data, loading;
+@synthesize RunTestsButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -62,6 +63,16 @@
     if( [data shouldTransfer]){
         [data setShouldTransfer:false];
         [self performSegueWithIdentifier:@"Results" sender:self];
+    }
+    
+    TestState *stateMachine = [TestState getStateMachine];
+    
+    
+    if( [stateMachine getState] == IDLE ){
+        [RunTestsButton setTitle:@"Run Tests" forState:UIControlStateNormal];
+    }
+    else{
+        [RunTestsButton setTitle:@"Get Results" forState:UIControlStateNormal];
     }
 }
 - (void)viewWillDisappear:(BOOL)animated {
