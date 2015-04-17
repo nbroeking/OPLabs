@@ -117,14 +117,14 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     NSDictionary *dns_config = (NSDictionary*)[config objectForKey:@"dns_config"];
     
     //Parse the json to get the settings
-    NSArray *jArray = [dns_config objectForKey:@"invalid_name"];
+    NSArray *jArray = [dns_config objectForKey:@"invalid_names"];
     
     if (jArray != NULL) {
         [[settings invalidDomains] addObjectsFromArray:jArray];
     }
     
     //Get Valid Names
-    jArray = [dns_config objectForKey:@"valid_name"];
+    jArray = [dns_config objectForKey:@"valid_names"];
     if (jArray != NULL) {
         [[settings validDomains] addObjectsFromArray:jArray];
     }
@@ -146,7 +146,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
      
      [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
      
-     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
+     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d&address=127.0.0.1", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
     
     
      NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
@@ -166,6 +166,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
         [settings setRouterTesultID:-1];
     }
  
+    [settings logValues];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
 
 }

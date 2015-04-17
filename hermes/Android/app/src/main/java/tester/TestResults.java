@@ -80,6 +80,10 @@ public class TestResults implements Parcelable{
     }
     public String getPost(){
 
+
+        if( !valid){
+            return "state=error";
+        }
         String results = new String();
 
         try {

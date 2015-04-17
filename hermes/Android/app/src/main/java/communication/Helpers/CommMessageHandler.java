@@ -269,6 +269,7 @@ public class CommMessageHandler extends Handler {
             postString += "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8");
             postString += "&";
             postString += "set_id=" + URLEncoder.encode(Integer.toString(settings.getSetId()), "UTF-8");
+            postString += "&address=127.0.0.1"; //NOTE: THis is a hack so we always have a router
             post.setEntity(new StringEntity( postString));
 
             //Execute the post

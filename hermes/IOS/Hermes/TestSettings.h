@@ -20,4 +20,6 @@
 
 -(void) addInvalidDomain: (NSString*) string;
 -(void) addValidDomain: (NSString*)string;
+
+-(void) logValues;
 @end

@@ -13,8 +13,11 @@
 @property(assign, atomic) double dns;
 @property(assign, atomic) double packetloss;
 @property(assign, atomic) double latency;
-@property(assign, atomic) double load;
-@property(assign, atomic) double throughput;
+@property(assign, atomic) double throughputUpload;
+@property(assign, atomic) double throughputDownload;
+@property(assign, atomic) double packetlossUnderLoad;
+@property(assign, atomic) double latencyUnderLoad;
+
 @property(assign, atomic) NSInteger routerIdentifier;
 @property(assign, atomic) bool valid;
 
