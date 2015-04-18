@@ -64,6 +64,13 @@ def edit():
             col_type = columns[col]
             datum = col_type(data[col])
             setattr(rec, col, datum)
-            
+
+    # Calculate packet loss from the down/up latencies. (-1 = packet lost)
+    ploss_cnt = rec.download_latencies.count(-1)
+    ploss_cnt += rec.upload_latencies.count(-1)
+    ploss_len = len(rec.download_latencies)
+    ploss_len += len(rec.upload_latencies)
+    rec.packet_loss_under_load = float(ploss_cnt) / float(ploss_len)
     rec.save()
+
     return JSON_SUCCESS()
