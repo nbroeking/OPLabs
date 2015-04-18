@@ -21,6 +21,10 @@ def get_config():
 
     rec = TestResult.get_result_by_token_ip(token, ip)
 
+    if 'data' in request.form:
+        data = json.loads(request.form['data'])
+        rec.interface_stats = data 
+
     if not rec:
         return JSON_FAILURE()
 
