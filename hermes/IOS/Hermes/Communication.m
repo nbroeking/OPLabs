@@ -15,8 +15,8 @@
 
 NSString * const LoginURL = @"/api/auth/login";
 NSString * const StartTestURL = @"/api/test_set/create";
-NSString * const ReportResultURL = @"/api/test_result/%d/edit";
-NSString * const RouterResultsURL = @"/api/test_result/%d";
+NSString * const ReportResultURL = @"/api/test_result/%ld/edit";
+NSString * const RouterResultsURL = @"/api/test_result/%ld";
 
 @interface Communication ()
 
@@ -81,13 +81,68 @@ NSString * const RouterResultsURL = @"/api/test_result/%d";
 }
 -(void)reportTest:(NSNotification*)notification{
     TestResults *results = (TestResults*)[notification object];
+    TestSettings *settings = (TestSettings*)[(NSDictionary*)[notification userInfo] objectForKey:@"settings"];
+    [self performSelector:@selector(reportTestHelper:) onThread:thread withObject:results waitUntilDone:NO];
+    
+    if( [settings routerResultID] >= 0){
+        [self performSelector:@selector(requestTestResults:) onThread:thread withObject:settings waitUntilDone:NO];
+    }
+    else{
+        NSLog(@"There was no router to request test results for");
+    }
+    
     NSLog(@"Comm: Preparing to Report Test Complete");
 }
+
+
 /*********************************************
  *These are the helper methods that get run on the
  *comm thread;
  ********************************************/
+-(void) requestTestResults:(TestSettings*)settings
+{
+    NSLog(@"Requesting Test Results");
+    
+    
+    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname ], [NSString stringWithFormat: RouterResultsURL, (long)[settings routerResultID]]]]];
+    
+    request.HTTPMethod = @"POST";
+    
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    
+    NSString *postString = [NSString stringWithFormat:@"user_token=%@", [[SessionData getData] sessionIdEncoded]];
+    
+    NSLog(@"Sending Post = %@", postString);
+    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody:data];
+    
+    NSLog(@"Requesting a start Mobile test");
+                                     
+    [self sendRequest:request :@"RouterResults" needsResponse:false];
 
+}
+-(void) reportTestHelper:(TestResults*)results{
+    
+    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], [NSString stringWithFormat: ReportResultURL, (long)[results mobileIdentifier]]]]];
+    
+    NSLog(@"Posting to: %@",[request URL] );
+    request.HTTPMethod = @"POST";
+    
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    
+    NSString *postString = [NSString stringWithFormat:@"user_token=%@&%@", [[SessionData getData] sessionIdEncoded], [results getPost]];
+    
+    NSLog(@"Post String = %@", postString);
+    NSData *data = [postString dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody:data];
+    
+    [self sendRequest:request :@"ReportResults" needsResponse:NO];
+  
+}
 -(void) requestTestFromServer{
     
     NSLog(@"Request a test from the server");

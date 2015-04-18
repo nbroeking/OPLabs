@@ -30,9 +30,12 @@
     //Set the background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
     
+    stateMachine = [TestState getStateMachine];
+    
     //Start Testing Process if IDLE
     if([stateMachine getState] == IDLE)
     {
+        NSLog(@"Starting a Test");
         //We need to start the test
         [[((MainNavigationController*)self.navigationController) tester] startTest];
     }
@@ -43,7 +46,7 @@
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (int i = 0; i < imageNames.count; i++) {
-        [images addObject:[UIImage imageNamed:[imageNames objectAtIndex:i]]];
+        [images addObject:[UIImage imageNamed:[imageNames objectAtIndex:imageNames.count - 1 -i]]];
     }
     
     // Normal Animation
@@ -87,7 +90,7 @@
 }
 -(void) goToResultsHelper: (NSNotification*)notification{
     
-    if( [notification object] == NULL)
+    if( [notification object] == NULL || [(TestResults*)[notification object] valid] == false)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an error running a performance test. We are sorry for the inconvience. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
         [alert show];
@@ -106,6 +109,8 @@
 }
 #pragma mark - Alert View
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    //This is only called on error
+    [stateMachine setState:IDLE];
     [self.navigationController popViewControllerAnimated:YES];
 }
 @end

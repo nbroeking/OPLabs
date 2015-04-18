@@ -12,7 +12,8 @@
 
 @interface HomeViewController : UIViewController <CommunicationDelegate, UIAlertViewDelegate>
 
-@property (weak, nonatomic) SessionData* data;
+@property (strong, nonatomic) SessionData* data;
+@property (strong, nonatomic) IBOutlet UIButton *RunTestsButton;
 
 - (IBAction)goToSettings:(id)sender;
 -(BOOL) checkLogin;

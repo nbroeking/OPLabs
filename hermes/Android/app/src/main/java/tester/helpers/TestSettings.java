@@ -15,13 +15,16 @@ public class TestSettings {
     private int timeout;
     private int setId;
     private int routerResultsID;
-    private int resultID;
+    private int mobileResultsID;
+
+    //Throughput settings
+    private String throughputServer;
+    private int port;
 
     public TestSettings(){
         validDomains = new ArrayList<String>();
         invalidDomains = new ArrayList<String>();
     }
-
 
     public void addValidDomain(String string){
         validDomains.add(string);
@@ -58,11 +61,27 @@ public class TestSettings {
         this.routerResultsID = routerResultsID;
     }
 
-    public int getResultID() {
-        return resultID;
+    public int getMobileResultsID() {
+        return mobileResultsID;
     }
 
-    public void setResultID(int resultID) {
-        this.resultID = resultID;
+    public void setMobileResultsID(int mobileResultsID) {
+        this.mobileResultsID = mobileResultsID;
+    }
+
+    public String getThroughputServer() {
+        return throughputServer;
+    }
+
+    public void setThroughputServer(String throughputServer) {
+        this.throughputServer = throughputServer;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }
