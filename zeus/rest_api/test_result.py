@@ -64,13 +64,7 @@ def get_result(result_id=None):
     if not result:
         return invalid_res
 
-    columns = TestResult.get_public_columns()
-
-    return_vals = {}
-    for col in columns:
-        return_vals[col] = getattr(result, col)
-
     return JSON_SUCCESS(
-            **return_vals
+            **result.exportDict()
             )
 
