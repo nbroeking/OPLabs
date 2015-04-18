@@ -9,17 +9,38 @@
 #import "TestResults.h"
 
 @implementation TestResults
-@synthesize dns, latency, load, packetloss, throughput;
+@synthesize dns, latency, packetloss, throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad, mobileIdentifier, valid, routerIdentifier;
 
+-(instancetype)init :(NSDictionary*)json{
+    if( self = [super init]){
+        
+        valid = false;
+        dns = 0.0;
+        latency = 0.0;
+        packetloss = 1.0;
+        throughputDownload = 0.0;
+        throughputUpload = 0.0;
+        
+    }
+    return self;
+}
 -(instancetype)init{
     if (self = [super init]) {
         
+        valid = false;
         dns = 0.0;
         latency = 0.0;
-        load = 0.0;
         packetloss = 0.0;
-        throughput = 0.0;
+        throughputUpload = 0.0;
     }
     return self;
+}
+-(NSString *)getPost{
+    
+    if( !valid){
+        return @"state=error";
+    }
+    return [[NSString alloc] initWithFormat:@"state=finished&&dns_response_avg=%f&packet_loss=%f&latency_avg=%f",dns,packetloss,latency];
+    
 }
 @end

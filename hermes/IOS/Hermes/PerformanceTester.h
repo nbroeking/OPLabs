@@ -10,11 +10,16 @@
 #import "TestResults.h"
 #import "TestSettings.h"
 
+@class Tester;
+
 @interface PerformanceTester : NSObject
 
 -(instancetype)init :(TestSettings*) settingst;
  
--(TestResults*) runTests;
+-(void) runTests: (Tester*)owner;
 
--(NSMutableArray*) runDNSTest: (NSMutableArray*)domains;
+-(void) completedDownload;
+-(void) completedUpload;
+
+-(void) sendResults;
 @end

@@ -14,6 +14,7 @@
 
 @interface Tester()
 @property(strong, nonatomic) TestState *stateMachine;
+@property(strong, nonatomic) PerformanceTester* tester;
 
 -(void) tearDownRunLoop;
 @end
@@ -22,6 +23,7 @@
 @synthesize thread;
 @synthesize timer;
 @synthesize stateMachine;
+@synthesize tester;
 
 +(Tester*) getTester
 {
@@ -91,7 +93,7 @@
         
         if( started)
         {
-            NSLog(@"Tester already started: try again");
+            NSLog(@"Tester already started");
             return;
         }
         shouldRun = true;
@@ -111,6 +113,11 @@
             NSLog(@"Thread is already stopped");
             return;
         }
+        
+        if( [stateMachine getState] != IDLE){
+            NSLog(@"We cant shut down the tester because we are running a test");
+            return;
+        }
         shouldRun = false;
         [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
     }
@@ -118,31 +125,44 @@
 
 -(void) runTest :(NSNotification*) notification{
     [self performSelector:@selector(runTestHelper:) onThread:thread withObject:notification waitUntilDone:NO];
+    
 }
 -(void) runTestHelper :(NSNotification*) notification
 {
     NSLog(@"Received a start test notification");
-    TestSettings *settings = (TestSettings*)[notification object];
-    [self performSelector:@selector(runTestOnSubsystem:) onThread:thread withObject:settings waitUntilDone:NO];
     
+    TestSettings *settings = (TestSettings*)[notification object];
+    NSLog(@"Results ID = %d", (int)[settings mobileResultID]);
+    
+    [self performSelector:@selector(runTestOnSubsystem:) onThread:thread withObject:settings waitUntilDone:NO];
     
 }
 
 -(void) runTestOnSubsystem :(TestSettings*)settings{
     NSLog(@"Preparing to run a test");
     
-    PerformanceTester *tester = [[PerformanceTester alloc] init:settings];
+    tester = [[PerformanceTester alloc] init:settings];
     
-    TestResults* results = [tester runTests];
+    [tester runTests: self];
     
-    //Once we have the reslts we need to report them
-
-    [stateMachine setLatestResults:results];
-    
-    NSLog(@"Completed a Performance test");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results];
 }
 
+-(void)testComplete: (TestResults*)results :(TestSettings*)settings{
+    //Once we have the reslts we need to report them
+    
+    NSLog(@"testComplete in Tester");
+    [stateMachine setMobileResults:results];
+    
+    NSMutableDictionary *allInfo = [[NSMutableDictionary alloc] init];
+    
+    [allInfo setValue:results forKey:@"results"];
+    [allInfo setValue:settings forKey:@"settings"];
+    
+    NSLog(@"Completed a Performance test");
+    
+    [[TestState getStateMachine] setState:COMPLETED];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results userInfo:allInfo];
+}
 //This method is used to add something to the run loops queue.
 //This method purposly does nothing except wake up the run loop
 //To give it a chance to exit

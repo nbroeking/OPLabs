@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -10,33 +11,43 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="E7d-WZ-R5z">
+                    <rect key="frame" x="0.0" y="-836" width="600" height="2272"/>
+                </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Copyright (c) 2015 NicolasBroeking. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
                     <rect key="frame" x="20" y="559" width="561" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="133-mg-DXW">
-                    <rect key="frame" x="126" y="184" width="349" height="164"/>
-                </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="E7d-WZ-R5z">
-                    <rect key="frame" x="-511" y="-861" width="1536" height="2272"/>
-                </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Nec-nc-yTh">
-                    <rect key="frame" x="134" y="177" width="332" height="177"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Nec-nc-yTh">
+                    <rect key="frame" x="129" y="103" width="343" height="164"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="164" id="Edr-xJ-hSr"/>
+                        <constraint firstAttribute="width" constant="343" id="XVT-ua-818"/>
+                    </constraints>
                 </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="E7d-WZ-R5z" secondAttribute="centerY" constant="25" id="0F7-QZ-sif"/>
-                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="Nec-nc-yTh" secondAttribute="centerY" constant="9.5" id="6Cv-tC-CBB"/>
+                <constraint firstAttribute="centerY" secondItem="E7d-WZ-R5z" secondAttribute="centerY" id="0F7-QZ-sif"/>
+                <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="103" id="6xo-od-cr2"/>
                 <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="Kzo-t9-V3l"/>
                 <constraint firstItem="8ie-xW-0ye" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="MfP-vx-nX0"/>
-                <constraint firstAttribute="centerX" secondItem="E7d-WZ-R5z" secondAttribute="centerX" constant="43" id="VAz-G4-nsX"/>
+                <constraint firstAttribute="centerX" secondItem="E7d-WZ-R5z" secondAttribute="centerX" id="VAz-G4-nsX"/>
                 <constraint firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="ZEH-qu-HZ9"/>
-                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerX" secondItem="Nec-nc-yTh" secondAttribute="centerX" constant="-43" id="asW-3b-GL8"/>
+                <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="59" id="b0g-ar-pVN"/>
+                <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="topMargin" id="gdN-by-IhB"/>
+                <constraint firstItem="Nec-nc-yTh" firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="nS6-II-era"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="yoV-VF-QgW"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="b0g-ar-pVN"/>
+                    <exclude reference="gdN-by-IhB"/>
+                </mask>
+            </variation>
             <point key="canvasLocation" x="555" y="467"/>
         </view>
     </objects>
