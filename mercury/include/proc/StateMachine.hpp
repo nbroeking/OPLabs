@@ -165,7 +165,7 @@ private:
     void schedule_timeout( os::timeout_t timeout, Stim_T to_send) {
         std::string str = toString(to_send);
         m_log->printfln(DEBUG, "Setting timeout %lu for stim %s",
-            (u32_t) timeout,
+            (lu_t) timeout,
             str.c_str());
 
         m_scheduler.cancel(&m_timer);

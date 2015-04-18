@@ -6,7 +6,7 @@ using namespace logger;
 
 void fn_runner(void *& v) {
     (void)v;
-    printf("This is a thing %lu\n", Time::uptime());
+    printf("This is a thing %llu\n", (llu_t)Time::uptime());
 }
 
 int main() {

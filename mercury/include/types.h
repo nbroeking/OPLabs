@@ -55,6 +55,9 @@ typedef int8_t  s8_t;
 typedef float f32_t;
 typedef double f64_t;
 
+typedef long long unsigned llu_t;
+typedef long unsigned lu_t;
+
 #ifdef __cplusplus
 // inline u32_t floatToIntegerBytes( f32_t fl ) {
 //     return *(u32_t*)(&fl);
