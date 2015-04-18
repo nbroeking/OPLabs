@@ -26,6 +26,13 @@ public:
     inline FileDescriptor( int fd ):
         m_fd( fd ) {}
 
+    inline void setRawFd(int fd) {
+        m_fd = fd;
+    }
+
+    inline FileDescriptor():
+        m_fd(-1){};
+
     /**
      *  @see BaseIO::read(byte*,size_t)
      */

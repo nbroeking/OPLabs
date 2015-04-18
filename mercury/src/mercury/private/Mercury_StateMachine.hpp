@@ -191,7 +191,8 @@ State onStart() {
 
     Curl request;
 
-    m_post_fields = string("router_token=") + m_id_b64;
+    m_post_fields = string("data=") + m_config.monitor_data + string("&router_token=") + m_id_b64;
+    m_config.monitor_data.clear();
     m_current_url = m_config.controller_url + "/api/router/get_config";
     setup_curl(request, m_current_url.c_str(), m_post_fields.c_str());
 

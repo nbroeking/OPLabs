@@ -109,7 +109,7 @@ void LogContext::printfln(const LogLevel& lev, const char* fmt, ... ) {
 
 void LogContext::printHex(const LogLevel& lev, const byte* bytes, size_t len) {
     if(len > 1024) {
-        this->printfln(lev, "First 1024 bytes of array %lu long:", len);
+        this->printfln(lev, "First 1024 bytes of array %lu long:", (lu_t)len);
         len = 1024;
     }
     while( len > 16 ) {

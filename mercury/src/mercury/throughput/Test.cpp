@@ -137,7 +137,7 @@ public:
         u64_t delta = current - this->last_bytes_received;
 
         m_log->printfln(INFO, "[%p] [%f] Poll %d bytes read this second. Total=%lu",
-            this, Time::uptime() / 1000000.0, delta, current);
+            this, (lu_t)(Time::uptime() / 1000000.0), delta, (u32_t)current);
 
         download_rate.push_back(delta);
         this->last_bytes_received = current;

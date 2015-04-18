@@ -12,12 +12,16 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import os
+from util.throughput_test import start_server
 
 
 app = Flask(__name__, static_url_path='/noop/')
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 app.debug = config.DEBUG
 db = SQLAlchemy(app)
+
+THROUGHPUT_IP, THROUGHPUT_PORT = start_server()
+print "Starting throughput server on %s:%s" % (THROUGHPUT_IP, THROUGHPUT_PORT)
 
 if app.debug:
     # This makes debugging a lot easier. Otherwise the current session gets

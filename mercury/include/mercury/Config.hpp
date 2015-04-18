@@ -20,6 +20,7 @@ class Config {
 public:
     byte mercury_id[32];
     std::string controller_url;
+    std::string monitor_data;
 };
 
 }

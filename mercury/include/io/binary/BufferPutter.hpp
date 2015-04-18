@@ -30,8 +30,8 @@ public:
 		if( cur == len ) {
 			char buf[1024];
 			snprintf(buf, sizeof(buf), "Overflow at index %lu. %lu byte exceeded\n",
-				(unsigned long)this->cur,
-				(unsigned long)this->len);
+				(lu_t)this->cur,
+				(lu_t)this->len);
 			throw OutOfBufferSpaceException(buf);
 		}
 		bytes[cur ++] = b;

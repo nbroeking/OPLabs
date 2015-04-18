@@ -31,8 +31,12 @@ public:
             BaseIO* client;
             client = dynamic_cast<BaseIO*>(raw_fd);
             ssize_t l = client->read(cmdline, 4095);
-            cmdline[l] = 0;
-            m_outer.handleCmdLine(client, (char*)cmdline);
+            if(l == 0) {
+                m_outer.m_file_collection.unsubscribe(raw_fd);
+            } else {
+                cmdline[l] = 0;
+                m_outer.handleCmdLine(client, (char*)cmdline);
+            }
         }
     }
 

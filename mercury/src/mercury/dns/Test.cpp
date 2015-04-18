@@ -175,7 +175,7 @@ private:
             }
         }
 
-        m_log->printfln(TRACE, "SUM: %lu. N: %lu\n", sum, n);
+        m_log->printfln(TRACE, "SUM: %lu. N: %lu\n", (lu_t)sum, (lu_t)n);
         avg = ((f64_t)sum) / n;
         stdev = sqrt(1.0 / (n * (n-1)) * (n * sumsq - sum*sum));
     }
