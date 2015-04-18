@@ -8,6 +8,8 @@
 
 from flask.ext.sqlalchemy import SQLAlchemy
 from app import db
+from util.models.json_column import JSONBlob, make_json_list
+import json
 import base64
 
 NETWORK_TYPES = ('IPv4', 'IPv6')
@@ -16,24 +18,25 @@ CONNECTION_TYPES = ('wired', 'wireless')
 
 DEVICE_TYPES = ('mobile', 'router', 'desktop')
 
-STATES = ('wait', 'running', 'finished')
+STATES = ('wait', 'running', 'failed', 'finished')
 
 class TestResult(db.Model):
     __tablename__ = "TestResult"
     test_id = db.Column('test_id', db.Integer, primary_key=True)
     test_token = db.Column('test_token', db.String(44))
     parent_id = db.Column('parent_id', db.ForeignKey('TestSet.set_id'))
+
     latency_avg = db.Column('latency_avg', db.Float)
     latency_sdev = db.Column('latency_sdev', db.Float)
-
-    jitter_avg = db.Column('jitter_avg', db.Float)
-    jitter_sdev = db.Column('jitter_sdev', db.Float)
 
     dns_response_avg = db.Column('dns_response_avg', db.Float)
     dns_response_sdev = db.Column('dns_response_sdev', db.Float)
 
-    throughput_avg = db.Column('throughput_avg', db.Float)
-    throughput_sdev = db.Column('throughput_sdev', db.Float)
+    download_throughputs = db.Column('download_throughputs', JSONBlob)
+    download_latencies = db.Column('download_latencies', JSONBlob)
+    upload_throughputs = db.Column('upload_throughputs', JSONBlob)
+    upload_latencies = db.Column('upload_latencies', JSONBlob)
+    packet_loss_under_load = db.Column('packet_loss_under_load', db.Float)
 
     packet_loss = db.Column('packet_loss', db.Float)
 
@@ -41,27 +44,32 @@ class TestResult(db.Model):
     device_name = db.Column('device_name', db.String(64))
 
     state = db.Column('state', db.Enum(*STATES))
+    message = db.Column('message', db.String(64))
 
     network_type = db.Column('network_type', db.Enum(*NETWORK_TYPES))
 
     device_ip = db.Column('device_ip', db.String(64))
+    interface_stats = db.Column('interface_stats', JSONBlob)
     connection_type = db.Column('connection_type', db.Enum(*CONNECTION_TYPES))
 
     @staticmethod
     def get_public_columns():
         return {'latency_avg':float,
             'latency_sdev':float,
-            'jitter_avg':float,
-            'jitter_sdev':float,
             'dns_response_avg':float,
             'dns_response_sdev':float,
-            'throughput_avg':float,
-            'throughput_sdev':float,
+            'download_throughputs':make_json_list,
+            'download_latencies':make_json_list,
+            'upload_throughputs':make_json_list,
+            'upload_latencies':make_json_list,
+            'packet_loss_under_load':float,
             'packet_loss':float,
             'device_name':str,
             'network_type':str,
             'device_ip':str,
             'state':str,
+            'message':str,
+            'interface_stats':make_json_list,
             'connection_type':str, }
 
     @staticmethod
@@ -94,6 +102,20 @@ class TestResult(db.Model):
         if len(parent.tests) == 0:
             db.session.delete(parent)
             db.session.commit()
+
+    def exportDict(self):
+        return_vals = {}
+        for col in self.get_public_columns():
+            col_val = getattr(self, col)
+            return_vals[col] = col_val
+            if isinstance(col_val, list):
+                try:
+                    return_vals[col+"_avg"] = sum(col_val) / len(col_val)
+                except TypeError:
+                    # Ignore columns that failed to summarize
+                    pass
+
+        return return_vals
 
     def save(self):
         db.session.commit()
