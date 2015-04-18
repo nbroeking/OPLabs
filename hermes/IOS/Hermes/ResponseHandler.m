@@ -162,7 +162,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
      
      [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
      
-     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d&address=127.0.0.1", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
+     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
     
     
      NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
