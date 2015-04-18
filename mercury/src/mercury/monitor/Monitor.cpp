@@ -53,9 +53,11 @@ public:
         Json jsn;
 
         itr = atom->begin();
-        jsn = Json::from(*itr);
-        writer.printf("%s", jsn.toString().c_str());
-        ++ itr;
+        if(itr != atom->end()) {
+            jsn = Json::from(*itr);
+            writer.printf("%s", jsn.toString().c_str());
+            ++ itr;
+        }
 
         for(; itr != atom->end(); ++ itr) {
             jsn = Json::from(*itr);
@@ -127,10 +129,10 @@ private:
                 datum.intf_name = itr->c_str();
                 datum.timestamp = Time::currentTimeMicros();
 
-                m_log.printfln(DEBUG,
-                    "Interface: %s; RX: %llu; TX: %llu",
-                    itr->c_str(), datum.rx_bytes, datum.tx_bytes
-                );
+                // m_log.printfln(TRACE,
+                //     "Interface: %s; RX: %llu; TX: %llu",
+                //     itr->c_str(), datum.rx_bytes, datum.tx_bytes
+                // );
 
                 m_rq_atomic.get()->push_back(datum);
             } catch(Exception& e) {

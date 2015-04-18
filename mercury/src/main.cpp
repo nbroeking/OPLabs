@@ -1,5 +1,7 @@
 #include "MercuryConfig.hpp"
 
+#include <fcntl.h>
+
 byte mercury_magic_cookie[32] = {
     0xe2, 0x1a, 0x14, 0xc8, 0xa2, 0x35, 0x0a, 0x92,
     0xaf, 0x1a, 0xff, 0xd6, 0x35, 0x2b, 0xa4, 0xf3, 
@@ -179,6 +181,15 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
     return 0;
 }
 
+void sigusr_hdlr(int sig) {
+    (void)sig;
+
+    printf("Request to surpress stdout\n");
+    int devnull = open("/dev/null", O_WRONLY);
+    dup2(devnull, STDOUT_FILENO);
+    dup2(devnull, STDERR_FILENO);
+}
+
 int main( int argc, char** argv ) {
     (void) argc ; (void) argv ;
 
@@ -189,6 +200,7 @@ int main( int argc, char** argv ) {
     MercuryConfig conf;
     SocketAddress* old = conf.bind_ip;
     signal(SIGCHLD, sigchld_hdlr);
+    signal(SIGUSR1, sigusr_hdlr);
 
     try {
         Json* jsn;
