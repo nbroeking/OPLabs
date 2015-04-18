@@ -30,8 +30,16 @@ def ANSI_wrapper(prefix):
         return prefix + message + __COL_ENDC
     return inner
 
-def truncate_repr(val):
-    output = str(val)
+def truncate_repr(val, priority=None):
+    if priority and isinstance(val, dict):
+        val_copy = dict(val)
+        output = '{'
+        for k, v in priority.items():
+            output += "%s, %s" % (k, v)
+            val_copy.pop(k)
+        output += ", " + str(val_copy)[1:]
+    else:
+        output = str(val)
     if len(output) <= 64:
         return output
     output = output[:64]

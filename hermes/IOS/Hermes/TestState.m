@@ -15,7 +15,8 @@
 @end
 
 @implementation TestState
-@synthesize latestResults;
+@synthesize routerResults, mobileResults;
+
 +(TestState*) getStateMachine
 {
     @synchronized(self){
@@ -32,7 +33,8 @@
 {
     if (self = [super init]) {
         state = IDLE;
-        latestResults = NULL;
+        mobileResults = NULL;
+        routerResults = NULL;
     }
     return self;
 }

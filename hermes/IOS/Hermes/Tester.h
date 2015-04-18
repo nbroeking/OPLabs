@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class TestSettings;
+@class TestResults;
+
 @interface Tester : NSObject
 {
     bool started;
@@ -37,5 +40,7 @@
 //Checks if the subsystem is running
 -(BOOL) isRunning;
 
+//Called when the subsystem completes a test
+-(void)testComplete: (TestResults*)results :(TestSettings*)settings;
 
 @end

@@ -99,7 +99,7 @@
                 android:textColor="@android:color/white"/>
 
             <TextView
-                android:id="@+id/load"
+                android:id="@+id/latencyUnderload"
                 android:text=""
                 android:textSize="30px"
                 android:textColor="@android:color/white"/>
@@ -116,7 +116,7 @@
                 android:textColor="@android:color/white"/>
 
             <TextView
-                android:id="@+id/throughput"
+                android:id="@+id/throughputUpload"
                 android:text=""
                 android:textSize="30px"
                 android:textColor="@android:color/white"/>
