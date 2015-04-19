@@ -186,13 +186,15 @@
             break;
             
         case NSStreamEventHasSpaceAvailable:
-            NSLog(@"Has space Available");
-            [outputStream write:[uploadData bytes] maxLength:[uploadData length]];
-            self.uploaded += [uploadData length];
+            
+            if( uploadMode == true){
+                [outputStream write:[uploadData bytes] maxLength:[uploadData length]];
+                self.uploaded += [uploadData length];
+            }
             break;
             
         default:
-            NSLog(@"Unknown stream event");
+            NSLog(@"Unknown stream event occured");
             break;
     }
 }

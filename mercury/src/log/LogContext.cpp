@@ -57,7 +57,11 @@ os::Mutex LogContext::shared_lock;
 #else
 HollowLock LogContext::shared_lock;
 #endif
+
 void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
+    _vprintf(lev, fmt, false, ls);
+}
+void LogContext::_vprintf(const LogLevel& lev, const char* fmt, bool nl, va_list ls) {
     if( ! enabled ) return ;
     if( lev.level < min_lev ) return ;       
 
@@ -83,6 +87,7 @@ void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
     out.vprintf( fmt, ls );
 
     out.printf("\e[00m");
+    if(nl) out.printf("\n");
     shared_lock.unlock();
 }
 
@@ -102,9 +107,8 @@ void LogContext::printfln(const LogLevel& lev, const char* fmt, ... ) {
 
     va_list ls;    
     va_start( ls, fmt );
-    vprintf(lev, fmt, ls);
+    _vprintf(lev, fmt, true, ls);
     va_end(ls);
-    out.printf("\n");
 }
 
 void LogContext::printHex(const LogLevel& lev, const byte* bytes, size_t len) {

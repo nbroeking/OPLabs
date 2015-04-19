@@ -1,3 +1,5 @@
+from app import THROUGHPUT_PORT
+
 class TestConfiguration(object):
     def __init__(self):
         self.default_config = {

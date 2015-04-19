@@ -19,5 +19,6 @@
 -(void) reportData: (NSMutableDictionary*)json;
 
 -(instancetype) init;
+-(instancetype) initWithComm: (Communication*) comm;
 -(instancetype) init: (NSObject*)sender;
 @end
