@@ -113,7 +113,7 @@ struct JsonBasicConvert<MercuryConfig> {
         }
 
         if(jsn.hasAttribute("monitorNumberOfDatapoints")) {
-            ret.monitor_datapoints = jsn["monitorNumberOfDatapoints"].intValue() MILLIS;
+            ret.monitor_datapoints = jsn["monitorNumberOfDatapoints"].intValue();
         } else {
             ret.monitor_datapoints = 1024;
         }

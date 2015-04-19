@@ -199,12 +199,12 @@ State onStart() {
     m_log.printfln(INFO, "sending curl request with data %s", m_post_fields.c_str());
     m_async_curl.sendRequest(request, m_observer);
 
-    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
+    m_state_machine->setTimeoutStim(30 SECS, TIMEOUT_STIM);
     return REQUEST_MADE;
 }
 
 State onDnsComplete() {
-    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
+    m_state_machine->setTimeoutStim(30 SECS, TIMEOUT_STIM);
     return POSTING_DNS_RESULTS;
 }
 
@@ -264,7 +264,7 @@ State onThroughputTestFinished() {
     Json to_send = Json::from(m_throughput_test_results);
     curlSendJson(to_send);
 
-    m_state_machine->setTimeoutStim(5 SECS, TIMEOUT_STIM);
+    m_state_machine->setTimeoutStim(30 SECS, TIMEOUT_STIM);
     return POSTING_THROUGHPUT_RESULTS;
 }
 

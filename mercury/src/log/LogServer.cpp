@@ -97,6 +97,10 @@ void LogServer::handleCmdLine(io::BaseIO* init, const char* cmdline) {
 
     string word;
     stream >> word;
+
+    if(word == "") {
+        return;
+    }
      
     LogManager& manager = LogManager::instance();
     LogContext& log = manager.getLogContext("LS", "Sparky");

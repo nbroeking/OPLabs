@@ -30,7 +30,7 @@ struct JsonBasicConvert<DataPoint> {
         ret.setAttribute("intf", Json::fromString(dp.intf_name));
         ret.setAttribute("rx_bytes", Json::fromInt(dp.rx_bytes));
         ret.setAttribute("tx_bytes", Json::fromInt(dp.tx_bytes));
-        ret.setAttribute("timestamp", Json::fromInt(dp.timestamp/1000));
+        ret.setAttribute("timestamp", Json::fromInt(dp.timestamp/1000l));
         return ret;
     }
 };
@@ -101,7 +101,8 @@ private:
 
         if(dp != NULL) {
             while( (ep = readdir(dp)) ) {
-                if(ep->d_name[0] != '.') {
+                if(ep->d_name[0] != '.' && strcmp(ep->d_name, "lo")) {
+                    /* ignore the loopback interface */
                     m_log.printfln(INFO, "Found interface %s", ep->d_name);
                     interfaces.push_back(ep->d_name);
                 }

@@ -21,6 +21,10 @@ def get_config():
 
     rec = TestResult.get_result_by_token_ip(token, ip)
 
+    if 'data' in request.form:
+        data = json.loads(request.form['data'])
+        rec.interface_stats = data 
+
     if not rec:
         return JSON_FAILURE()
 
@@ -60,6 +64,21 @@ def edit():
             col_type = columns[col]
             datum = col_type(data[col])
             setattr(rec, col, datum)
-            
+
+    ploss_cnt, ploss_len = 0, 0
+
+    # Calculate packet loss from the down/up latencies. (-1 = packet lost)
+    if rec.download_latencies:
+        ploss_cnt += rec.download_latencies.count(-1)
+        ploss_len += len(rec.download_latencies)
+
+    if rec.upload_latencies:
+        ploss_cnt += rec.upload_latencies.count(-1)
+        ploss_len += len(rec.upload_latencies)
+
+    if ploss_len > 0:
+        rec.packet_loss_under_load = float(ploss_cnt) / float(ploss_len)
+
     rec.save()
+
     return JSON_SUCCESS()

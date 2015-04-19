@@ -34,6 +34,11 @@ def edit_result(result_id=None):
             col_type = columns[col]
             datum = col_type(request.form[col])
             setattr(result, col, datum)
+
+    # Request from Nic
+    if "throughput_latency" in request.form:
+        result.download_latencies = [float(request.form["throughput_latency"])]
+        result.upload_latencies = [float(request.form["throughput_latency"])]
             
     result.save()
 
@@ -64,13 +69,7 @@ def get_result(result_id=None):
     if not result:
         return invalid_res
 
-    columns = TestResult.get_public_columns()
-
-    return_vals = {}
-    for col in columns:
-        return_vals[col] = getattr(result, col)
-
     return JSON_SUCCESS(
-            **return_vals
+            **result.exportDict()
             )
 

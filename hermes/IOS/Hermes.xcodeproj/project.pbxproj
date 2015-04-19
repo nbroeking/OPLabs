@@ -26,6 +26,7 @@
 		56A717E81A6B6576006E1198 /* CommunicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A717E71A6B6576006E1198 /* CommunicationTests.m */; };
 		56ACB6211AA63F6700CCDB75 /* DataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 56ACB6201AA63F6700CCDB75 /* DataTest.m */; };
 		56B908571AE03A8B00DA218D /* UDPSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 56B908561AE03A8B00DA218D /* UDPSocket.m */; };
+		56B9085D1AE0D3E900DA218D /* Throughput.m in Sources */ = {isa = PBXBuildFile; fileRef = 56B9085C1AE0D3E900DA218D /* Throughput.m */; };
 		56C7AFB21A6F1A1C00AAA0EB /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */; };
 		56C7AFB71A6F1CBC00AAA0EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */; };
 		56C7E0FE1A721A9300965DE3 /* TesterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C7E0FD1A721A9300965DE3 /* TesterTests.m */; };
@@ -84,6 +85,8 @@
 		56ACB6201AA63F6700CCDB75 /* DataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataTest.m; sourceTree = "<group>"; };
 		56B908551AE03A8B00DA218D /* UDPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPSocket.h; sourceTree = "<group>"; };
 		56B908561AE03A8B00DA218D /* UDPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPSocket.m; sourceTree = "<group>"; };
+		56B9085B1AE0D3E900DA218D /* Throughput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Throughput.h; sourceTree = "<group>"; };
+		56B9085C1AE0D3E900DA218D /* Throughput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Throughput.m; sourceTree = "<group>"; };
 		56C7AFB01A6F1A1C00AAA0EB /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		56C7AFB11A6F1A1C00AAA0EB /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		56C7AFB61A6F1CBC00AAA0EB /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -175,6 +178,8 @@
 				5606D3EC1ADD764200C45E1E /* TestResults.m */,
 				56B908551AE03A8B00DA218D /* UDPSocket.h */,
 				56B908561AE03A8B00DA218D /* UDPSocket.m */,
+				56B9085B1AE0D3E900DA218D /* Throughput.h */,
+				56B9085C1AE0D3E900DA218D /* Throughput.m */,
 			);
 			name = Tester;
 			sourceTree = "<group>";
@@ -371,6 +376,7 @@
 				5606D3EA1ADD714C00C45E1E /* PerformanceTester.m in Sources */,
 				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
 				5606D3ED1ADD764200C45E1E /* TestResults.m in Sources */,
+				56B9085D1AE0D3E900DA218D /* Throughput.m in Sources */,
 				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
 				567408981AD9C688008FAE7E /* AnimationViewController.m in Sources */,
 				56A717CE1A6B6576006E1198 /* Hermes.xcdatamodeld in Sources */,

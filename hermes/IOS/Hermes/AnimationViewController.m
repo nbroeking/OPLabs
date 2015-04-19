@@ -30,9 +30,12 @@
     //Set the background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
     
+    stateMachine = [TestState getStateMachine];
+    
     //Start Testing Process if IDLE
     if([stateMachine getState] == IDLE)
     {
+        NSLog(@"Starting a Test");
         //We need to start the test
         [[((MainNavigationController*)self.navigationController) tester] startTest];
     }
@@ -106,6 +109,8 @@
 }
 #pragma mark - Alert View
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    //This is only called on error
+    [stateMachine setState:IDLE];
     [self.navigationController popViewControllerAnimated:YES];
 }
 @end

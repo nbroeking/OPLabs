@@ -1,11 +1,18 @@
 package tester;
 
-import android.nfc.Tag;
 import android.util.Log;
 
+import org.apache.http.util.ByteArrayBuffer;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +42,7 @@ public class PerformanceTester {
     public TestResults runTests()
     {
         TestState state = TestState.getInstance();
-        TestResults results = new TestResults(settings.getResultID());
+        TestResults results = new TestResults(settings.getMobileResultsID());
         try {
 
             state.setState(TestState.State.TESTINGDNS, false);
@@ -43,7 +50,7 @@ public class PerformanceTester {
             //Init the results object
 
             results.setRouter_id(settings.getRouterResultsID());
-            results.setValid();
+            results.setValid(true);
 
             //Run a dns response Test
             List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
@@ -54,11 +61,11 @@ public class PerformanceTester {
 
             if( times1.size() == 0)
             {
-                results.setAverageDNSResponseTime(0.0);
+                results.setDns(0.0);
             }
             else {
                 dnsResult /= times1.size();
-                results.setAverageDNSResponseTime(dnsResult);
+                results.setDns(dnsResult);
             }
             Log.d(TAG, "DNS Result = " + dnsResult);
 
@@ -86,18 +93,160 @@ public class PerformanceTester {
         }
         catch(Exception e){
             Log.e(TAG, "Error running test", e);
-            //TODO: We should should send an error code
-        }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            results.setValid(false);
         }
         state.setState(TestState.State.TESTINGTHROUGHPUT, false);
-        //TODO: Run a throughput response
 
+        Thread throughput = new Thread(new ThroughputHelper(results));
+        Thread load = new Thread(new LoadHelper(results));
+
+        throughput.start();
+        load.start();
+
+        try {
+            load.join();
+            throughput.join();
+            Log.d(TAG, "Successfully joined with the throughput test threads");
+        }
+        catch (Exception e){
+            Log.e(TAG, "Error joining threads",e);
+        }
         return results;
     }
+
+    private class ThroughputHelper implements Runnable {
+
+        private TestResults results;
+
+        public ThroughputHelper(TestResults tmpResults){
+            results = tmpResults;
+        }
+        @Override
+        public void run() {
+            Log.i(TAG, "Running Throughput Test");
+
+            ByteArrayBuffer buffer = new ByteArrayBuffer(1024);
+
+
+            Socket clientSocket = null;
+            BufferedReader inFromServer = null;
+            DataOutputStream outToServer = null;
+            try {
+                clientSocket = new Socket();
+                clientSocket.setSoTimeout(10000);
+
+                InetAddress throughputServer = InetAddress.getByName(settings.getThroughputServer());
+                //clientSocket.connect(new InetSocketAddress(throughputServer, settings.getPort()), 1000);
+
+                clientSocket.connect(new InetSocketAddress("10.0.1.2", 5432), 1000);
+
+                outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+                long startTime = System.currentTimeMillis();
+                char[] bytes = new char[1024*1024];
+                byte[] writeBytes = new byte[1024*1024];
+                for(int i = 0 ; i < writeBytes.length; i++) {
+                    writeBytes[i] = 'Z';
+                }
+                int totalBytesRead = 0;
+                try {
+
+                    while ((System.currentTimeMillis() - startTime) < 10000) {
+                        int bytesRead = inFromServer.read(bytes, 0, 1024 * 1024);
+                        totalBytesRead += bytesRead;
+                    }
+                }
+                catch (SocketTimeoutException e){
+                    Log.w(TAG, "Socket Read Timedout");
+                }
+                //Collect Results
+
+                //Need to report in bytes per second
+                results.setThroughputDownload((double)totalBytesRead/(double)((System.currentTimeMillis()*1000.0) - startTime*1000.0));
+                Log.i(TAG, "Throughput Download = " + results.getThroughputDownload());
+
+                long totalBytesWritten = 0;
+                startTime = System.currentTimeMillis();
+                while( (System.currentTimeMillis() - startTime) < 10000) {
+                    outToServer.write(writeBytes, 0, writeBytes.length);
+                    totalBytesWritten += writeBytes.length;
+                    outToServer.flush();
+                }
+
+                results.setThroughputUpload((double)totalBytesWritten/(double)(System.currentTimeMillis()*1000 - startTime*1000));
+                Log.i(TAG, "Throughput Upload= " + results.getThroughputDownload());
+
+
+            } catch (IOException e) {
+                Log.e(TAG, "Error with throughput Test");
+                results.setValid(false);
+            }
+            finally {
+                try {
+                    if (clientSocket != null) {
+                        clientSocket.close();
+                    }
+                    if (outToServer != null) {
+                        outToServer.close();
+                    }
+                    if (inFromServer != null) {
+                        inFromServer.close();
+                    }
+                    Log.i(TAG, "Closed Throughput sockets");
+                }
+                catch(Exception e) {
+                    Log.e(TAG, "Could not close socket");
+                }
+            }
+        }
+    };
+
+    private class LoadHelper implements Runnable {
+
+        private TestResults results;
+
+        public LoadHelper(TestResults tmpResults){
+            results = tmpResults;
+        }
+        @Override
+        public void run() {
+            Log.i(TAG, "Running Load Test");
+            long startTime = System.currentTimeMillis();
+            int tests = 0;
+
+            List<Integer> times = new ArrayList<Integer>();
+            while ( System.currentTimeMillis() - startTime < 10000){
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Error with Timing");
+                }
+                List<Integer> resTimes = runDNSTest(settings.getValidDomains());
+                times.addAll(resTimes);
+                tests += 1;
+            }
+
+            double latencyResult = 0;
+            for (int x : times) {
+                latencyResult += (double)x;
+            }
+
+            if(times.size() ==0 ){
+                results.setLatencyUnderLoad(0.0);
+            }
+            else {
+                latencyResult /= times.size();
+                results.setLatencyUnderLoad(latencyResult);
+            }
+
+            Log.d(TAG, "Times = " + times);
+            results.setPacketLossUnderLoad(1.0-((double)times.size() / (double)(tests*settings.getValidDomains().size())));
+
+            Log.i(TAG, "Latency Under Load Result = " +latencyResult);
+            Log.i(TAG, "Packet Loss under Load = " +results.getPacketLossUnderLoad());
+        }
+    };
 
     public List<Integer> runDNSTest(List<String> domains)
     {
@@ -117,12 +266,6 @@ public class PerformanceTester {
         }
 
         return resultTimes;
-    }
-    // Throughput
-    public TestResults runThroughputTest()
-    {
-        Log.i(TAG, "Run Throughput Test");
-        return null;
     }
 
     public boolean sendDNSRequest(String string, short id){
@@ -159,13 +302,6 @@ public class PerformanceTester {
                 byte[]data = receivePacket.getData();
 
                 id = ((short)(((int)data[0] << 8) | ((int)data[1])));
-
-                //Testing bytes
-               /* StringBuilder sb = new StringBuilder();
-                for (byte b : receivePacket.getData()) {
-                    sb.append(String.format("%02X ", b));
-                }
-                Log.i(TAG, "Server said: "+ sb.toString());*/
             }
             //Check if its valid
             short valid = (short)(receivePacket.getData()[3]);

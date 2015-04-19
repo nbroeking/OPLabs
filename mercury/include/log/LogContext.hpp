@@ -167,6 +167,7 @@ public:
 
     static void unlock();
 private:
+    void _vprintf(const LogLevel& lev, const char* fmt, bool nl, va_list ls) ;
     void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) ;
     friend class LogManager;
 

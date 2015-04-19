@@ -34,13 +34,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.List;
 
 import communication.Communication;
 import main.Application.SessionData;
 import tester.TestResults;
-import tester.TestService;
 import tester.TestState;
 import tester.helpers.TestMsg;
 import tester.helpers.TestSettings;
@@ -174,7 +171,6 @@ public class CommMessageHandler extends Handler {
                     case "finished":
                         Log.d(TAG, "We have router results");
                         TestResults routerResults = new TestResults(json);
-                        routerResults.setValid();
                         TestState.getInstance().setRouterResults(routerResults);
                         Intent intent = new Intent();
                         intent.setAction("ReportRouter");
@@ -195,7 +191,7 @@ public class CommMessageHandler extends Handler {
                         break;
                 }
             } else {
-                throw new Exception("Status failed reporting Results");
+                throw new Exception("Status failed requesting    Results");
             }
 
             Log.i(TAG, "Reported Results");
@@ -206,7 +202,7 @@ public class CommMessageHandler extends Handler {
 
     //This method reports our test to the controller
     private void reportTest(TestResults results){
-        HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getId()));
+        HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getMobileId()));
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -312,6 +308,8 @@ public class CommMessageHandler extends Handler {
 
                 JSONObject dns_config = json.getJSONObject("config").getJSONObject("dns_config");
 
+                JSONObject throughput_config = json.getJSONObject("config").getJSONObject("throughput_config");
+
                 JSONArray jArray = dns_config.getJSONArray("invalid_names");
                 if (jArray != null) {
                     for (int i=0;i<jArray.length();i++){
@@ -334,7 +332,13 @@ public class CommMessageHandler extends Handler {
                 settings.setTimeout(dns_config.getInt("timeout"));
 
                 //Set the result ID
-                settings.setResultID(json.getInt("result_id"));
+                settings.setMobileResultsID(json.getInt("result_id"));
+
+                String server = throughput_config.getString("server_ip");
+                String[] lists = server.split("\\:");
+
+                settings.setThroughputServer(lists[0]);
+                settings.setPort(Integer.parseInt(lists[1]));
 
                 return true;
             }
