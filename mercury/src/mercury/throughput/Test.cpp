@@ -37,11 +37,11 @@ public:
         if(upload) {
             ssize_t bytes_written = m_stream_sock.write(m_buffer, sizeof(m_buffer));
             this->bytes_received += bytes_written;
-            m_log->printfln(TRACE, "[%p] Wrote %d bytes: %d\n", this, (int)bytes_written, (int)this->bytes_received);
+            m_log->printfln(TRACE, "[%p] Wrote %llu bytes: %llu\n", this, (llu_t)bytes_written, (llu_t)this->bytes_received);
         } else {
             ssize_t bytes_read = m_stream_sock.read(m_buffer, sizeof(m_buffer));
             this->bytes_received = this->bytes_received + bytes_read;
-            m_log->printfln(TRACE, "[%p] Read %d bytes: %d\n", this, (int)bytes_read, (int)this->bytes_received);
+            m_log->printfln(TRACE, "[%p] Read %llu bytes: %llu\n", this, (llu_t)bytes_read, (llu_t)this->bytes_received);
         }
     }
 
