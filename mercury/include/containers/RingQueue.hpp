@@ -98,8 +98,10 @@ public:
         m_max_size(max_size+1),
         m_current_size(0),
         m_ptr(0),
-        m_back(0),
-        m_arr(new T[max_size+1]) {
+        m_back(0)
+         {
+            printf("nbytes %d %d\n", sizeof(T), sizeof(T)*m_max_size);
+            m_arr = (T*)malloc(sizeof(T) * m_max_size);
         };
 
     RingQueue(const RingQueue& oth): m_arr(NULL) {
