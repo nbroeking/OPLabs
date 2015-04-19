@@ -19,6 +19,9 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
 -(void)viewDidLoad{
     [super viewDidLoad];
     
+    //Set the background color
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    
     if( ([[TestState getStateMachine] mobileResults] == NULL) || ([[[TestState getStateMachine] mobileResults] valid] == false)){
         NSLog(@"Error with results from results view");
     }
