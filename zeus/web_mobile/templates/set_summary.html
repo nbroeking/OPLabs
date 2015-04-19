@@ -1,0 +1,45 @@
+{% extends "mobile_base.html" %}
+
+{% block body %}
+
+<script>
+
+CSRF_TOKEN = "{{csrf_token()}}"
+
+function reload() {
+    location.reload()
+}
+
+function delete_rec(row_id) {
+    $.ajax({
+        type: "POST",
+        url: "/dashboard/delete_result",
+        data: {"test_id" : row_id,
+        "_csrf_token": CSRF_TOKEN },
+        success: reload,
+        error: reload
+    });
+}
+
+</script>
+
+<h2> Your Tests run </h2>
+
+{% for test_result in test_set.tests %}
+Type: {{test_result.device_type}}
+<br>
+DNS: {{test_result.dns_response_avg}}
+<br>
+Latency: {{test_result.latency_avg}}
+<br>
+Packet Loss: {{test_result.packet_loss}}
+<br>
+Download Throughput: {{average(test_result.download_latencies)}}
+<br>
+Upload Throughput: {{average(test_result.upload_latencies)}}
+<br>
+Packet Loss Under Load: {{test_result.packet_loss_under_load}}
+<br>
+{% endfor %}
+
+{% endblock %}
