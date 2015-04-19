@@ -28,5 +28,8 @@ def average(*iterables):
         if lst:
             running_sum += sum(lst)
             running_len += len(lst)
+    if running_len == 0:
+        return "None"
     return running_sum / running_len
+
 app.jinja_env.globals['average'] = average
