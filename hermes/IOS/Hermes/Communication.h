@@ -15,6 +15,8 @@
     
 }
 
+@property(strong, atomic) NSThread *thread;
+
 //Singleton
 +(Communication*) getComm;
 
