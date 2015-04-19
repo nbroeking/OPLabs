@@ -22,8 +22,10 @@ import config
 
 from rest_api import rest_blueprint
 from web_frontend import web_blueprint
+from web_mobile import mobile_blueprint
 
 app.register_blueprint(rest_blueprint, url_prefix="/api")
+app.register_blueprint(mobile_blueprint, url_prefix="/mobile")
 app.register_blueprint(web_blueprint, url_prefix="/")
 
 if __name__ == "__main__":

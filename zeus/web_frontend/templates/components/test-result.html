@@ -33,10 +33,10 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average Download Throughput: {{ average(result.download_throughputs) }}
+                Average Download Throughput: {{ average(result.download_throughputs) if result.download_throughputs else "None" }}
                 </li>
                 <li class="list-group-item">
-                Average Upload Throughput: {{ average(result.upload_throughputs) }}
+                Average Upload Throughput: {{ average(result.upload_throughputs) if result.upload_throughputs else "None"}}
                 </li>
             </ul>
         </div> <!-- Panel -->

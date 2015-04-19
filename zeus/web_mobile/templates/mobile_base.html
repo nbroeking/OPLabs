@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% block head %}
+{% endblock %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+<title>{% block title %}{% endblock %}</title>
+
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{{url_for('WebMobile.static', filename='bootstrap/css/bootstrap.min.css')}}">
+<!-- <link rel="stylesheet" href="{{url_for('WebMobile.static', filename='bootstrap/css/bootstrap-theme.min.css')}}"> -->
+<link rel="stylesheet" href="{{url_for('WebMobile.static', filename='css/custom.css')}}">
+</head>
+
+<body>
+
+<div class="container">
+    <br>
+    {% with alerts = get_flashed_messages(with_categories=true) %}
+    {% if alerts %}
+    {% for cat, alert in alerts %}
+    {% if cat == "error" %}
+    <div class="alert alert-danger"> {{ alert }} </div>
+    {% elif cat == "success" %}
+    <div class="alert alert-success"> {{ alert }} </div>
+    {% else %}
+    <div class="alert alert-info"> {{ alert }} </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block body %}
+    {% endblock %}
+</div>
+
+<!-- Load both jQuery and Bootstrap's JS -->
+<script src="{{url_for('WebInterface.static', filename='jquery/jquery-1.11.0.js')}}">
+</script>
+<script src="{{url_for('WebInterface.static', filename='bootstrap/js/bootstrap.min.js')}}">
+</script>
+
+    <script>
+        $(function() {
+          // Setup drop down menu
+          $('.dropdown-toggle').dropdown();
+          // Fix input element click problem
+          $('.dropdown input, .dropdown label').click(function(e) {
+            e.stopPropagation();
+          });
+        });
+</script>
+
+</body>
+</html>
