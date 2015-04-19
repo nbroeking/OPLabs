@@ -20,7 +20,6 @@ NSString * const RouterResultsURL = @"/api/test_result/%ld";
 
 @interface Communication ()
 
-@property(strong, atomic) NSThread *thread;
 @property(strong, nonatomic) NSURLConnection* webConnection;
 @property(strong, nonatomic) HermesHttpPost *post;
 
@@ -94,7 +93,6 @@ NSString * const RouterResultsURL = @"/api/test_result/%ld";
     NSLog(@"Comm: Preparing to Report Test Complete");
 }
 
-
 /*********************************************
  *These are the helper methods that get run on the
  *comm thread;
@@ -120,7 +118,7 @@ NSString * const RouterResultsURL = @"/api/test_result/%ld";
     
     NSLog(@"Requesting a start Mobile test");
                                      
-    [self sendRequest:request :@"RouterResults" needsResponse:false];
+    [self sendRequest:request :@"RouterResults" needsResponse:YES];
 
 }
 -(void) reportTestHelper:(TestResults*)results{

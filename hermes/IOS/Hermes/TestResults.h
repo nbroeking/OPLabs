@@ -17,6 +17,8 @@
 @property(assign, atomic) double throughputDownload;
 @property(assign, atomic) double packetlossUnderLoad;
 @property(assign, atomic) double latencyUnderLoad;
+
+@property(assign, atomic) int setID;
 @property(assign, atomic) NSInteger routerIdentifier;
 @property(assign, atomic) bool valid;
 @property(assign, atomic) NSInteger mobileIdentifier;

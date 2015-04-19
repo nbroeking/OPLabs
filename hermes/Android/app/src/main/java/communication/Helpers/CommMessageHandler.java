@@ -171,7 +171,6 @@ public class CommMessageHandler extends Handler {
                     case "finished":
                         Log.d(TAG, "We have router results");
                         TestResults routerResults = new TestResults(json);
-                        routerResults.setValid(true);
                         TestState.getInstance().setRouterResults(routerResults);
                         Intent intent = new Intent();
                         intent.setAction("ReportRouter");
@@ -192,7 +191,7 @@ public class CommMessageHandler extends Handler {
                         break;
                 }
             } else {
-                throw new Exception("Status failed reporting Results");
+                throw new Exception("Status failed requesting    Results");
             }
 
             Log.i(TAG, "Reported Results");
