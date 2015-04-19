@@ -21,10 +21,12 @@ from .account_management import loginportal, register
 from .dashboard import dashboard
 
 from app import app
+
 def average(*iterables):
     running_sum, running_len = 0, 0
     for lst in iterables:
-        running_sum += sum(lst)
-        running_len += len(lst)
+        if lst:
+            running_sum += sum(lst)
+            running_len += len(lst)
     return running_sum / running_len
 app.jinja_env.globals['average'] = average
