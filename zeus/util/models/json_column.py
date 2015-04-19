@@ -13,7 +13,7 @@ import json
 
 def make_json_list(value):
     # Try to coerce a string into a list
-    if not isinstance(value, list) or not isinstance(value, dict):
+    if not (isinstance(value, list) or isinstance(value, dict)):
         value = json.loads(value)
 
     # If it is still not in a list, put it in a one item list
