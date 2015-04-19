@@ -11,7 +11,7 @@
 @interface HermesHttpPost()
 
 @property (strong, nonatomic) NSMutableData *responseData;
-@property (weak, nonatomic) NSObject *delegate;
+@property (weak, nonatomic) Communication *delegate;
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSMutableArray *requests;
 @property (strong, nonatomic) NSMutableDictionary *answer;
@@ -35,12 +35,21 @@
     }
     return self;
 }
+-(instancetype) initWithComm: (Communication*) comm{
+    if( self = [super init])
+    {
+        delegate = comm;
+        answer = [[NSMutableDictionary alloc] init];
+        handler = NULL;
+    }
+    return self;
+}
 -(instancetype) init: (NSObject*)sender
 {
     if( self = [super init])
     {
         handler = NULL;
-        delegate = sender;
+        delegate = (Communication*)sender;
         answer = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -144,6 +153,18 @@
 //Need to add a type to our dictionary
 -(void) reportData: (NSMutableDictionary*)json
 {
+    //We need to intercept that request Results tag so if we need to request again we can
+    if( [[json objectForKey:@"POST_TYPE"]  isEqual:@"RouterResults"]){
+        if( ([[json objectForKey:@"status"] isEqual:@"success"])&& !([[json objectForKey:@"state"] isEqual:@"finished"])){
+            //Request again in 15 seconds
+            NSLog(@"We need to request again in 15 seconds");
+
+            //TODO:
+            return;
+        }
+    }
+    
+    //For normal control flow
     if( self.handler == NULL){
         handler = [[ResponseHandler alloc]init];
     }

@@ -65,6 +65,11 @@ public class TestResults implements Parcelable{
                 dns = json.getDouble("dns_response_avg");
                 packetLoss = json.getDouble("packet_loss");
                 latency = json.getDouble("latency_avg");
+                throughputDownload = json.getDouble("download_throughputs_avg");
+                throughputUpload = json.getDouble("upload_throughputs_avh");
+                packetLossUnderLoad = json.getDouble("packet_loss_under_load");
+                latencyUnderLoad = json.getDouble("download_latencies_avg");
+                valid = true;
                 return;
             }
             else
@@ -76,9 +81,12 @@ public class TestResults implements Parcelable{
             packetLoss = -1;
             dns = -1;
             latency = -1;
+            throughputUpload = -1;
+            throughputDownload = -1;
+            packetLossUnderLoad = -1;
+            latencyUnderLoad = -1;
             Log.e("JSON ERROR", "Test Results constructor failed" ,e);
         }
-
     }
     public String getPost(){
 
@@ -91,13 +99,19 @@ public class TestResults implements Parcelable{
             results += "state=finished&";
             results += "dns_response_avg=" + URLEncoder.encode(Double.toString(dns), "UTF-8") + "&";
             results += "packet_loss="+ URLEncoder.encode(Double.toString(packetLoss), "UTF-8") + "&";
-            results += "latency_avg=" + URLEncoder.encode(Double.toString(latency), "UTF-8");
+            results += "latency_avg=" + URLEncoder.encode(Double.toString(latency), "UTF-8") + '&';
+            results += "upload_throughputs=" + URLEncoder.encode(Double.toString(throughputUpload), "UTF-8") + '&';
+            results += "download_throughputs=" + URLEncoder.encode(Double.toString(throughputDownload), "UTF-8") + '&';
+            results += "packet_loss_under_load=" + URLEncoder.encode(Double.toString(packetLossUnderLoad), "UTF-8") + '&';
+            results += "throughput_latency=" + URLEncoder.encode(Double.toString(latencyUnderLoad), "UTF-8");
+
         } catch (UnsupportedEncodingException e) {
             Log.e("Results", "Error creating post", e);
         }
 
         return results;
     }
+
 
     public double getPacketLoss() {
         return packetLoss;
