@@ -22,9 +22,10 @@ def edit_result(result_id=None):
         return invalid_res
 
     result = TestResult.get_result_by_id(result_id)
-    result.device_ip = str(request.remote_addr)
     if not result:
         return invalid_res
+
+    result.device_ip = str(request.remote_addr)
 
     # Columns allowed to be updated and their types
     columns = TestResult.get_public_columns()
