@@ -13,8 +13,9 @@ import json
 
 def make_json_list(value):
     # Try to coerce a string into a list
-    if not isinstance(value, list) or not isinstance(value, dict):
+    if not (isinstance(value, list) or isinstance(value, dict)):
         value = json.loads(value)
+    return value
 
     # If it is still not in a list, put it in a one item list
     if not isinstance(value, list):
@@ -30,4 +31,6 @@ class JSONBlob(db.TypeDecorator):
         return json.dumps(value)
 
     def process_result_value(self, value, _):
-        return json.loads(value)
+        if value:
+            return json.loads(value)
+        return None
