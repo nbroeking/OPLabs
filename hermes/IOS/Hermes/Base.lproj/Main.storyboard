@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="u5W-wt-aO6">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -246,23 +247,52 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wAZ-Eb-INx">
-                                <rect key="frame" x="58" y="64" width="484" height="484"/>
+                                <rect key="frame" x="133" y="64" width="335" height="335"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="484" id="DPa-Au-3Lo"/>
                                     <constraint firstAttribute="height" constant="484" id="EtW-kF-DFB"/>
+                                    <constraint firstAttribute="width" secondItem="wAZ-Eb-INx" secondAttribute="height" multiplier="241:241" id="liS-pA-mfS"/>
+                                    <constraint firstAttribute="width" secondItem="wAZ-Eb-INx" secondAttribute="height" multiplier="242:241" id="mYB-ES-e89"/>
                                     <constraint firstAttribute="width" constant="484" id="yLJ-ch-J9D"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="DPa-Au-3Lo"/>
+                                        <exclude reference="EtW-kF-DFB"/>
+                                        <exclude reference="mYB-ES-e89"/>
+                                        <exclude reference="yLJ-ch-J9D"/>
+                                    </mask>
+                                </variation>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="centerX" secondItem="SXY-nt-6gr" secondAttribute="centerX" id="6ru-CP-DJO"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leading" constant="58" id="Ccb-Uq-gIU"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="Cid-tq-5dd"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="centerX" secondItem="SXY-nt-6gr" secondAttribute="centerX" id="JzQ-gA-tM0"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="aqh-3H-fTa"/>
+                            <constraint firstItem="V7Q-vX-Ec9" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="157" id="csA-Sa-Rtm"/>
                             <constraint firstAttribute="trailing" secondItem="wAZ-Eb-INx" secondAttribute="trailing" constant="58" id="e9a-ke-lYS"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="kKe-MX-ShN"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leadingMargin" constant="42" id="qt0-r9-V4r"/>
                             <constraint firstAttribute="bottom" secondItem="wAZ-Eb-INx" secondAttribute="bottom" id="r93-dH-aqx"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="bottom" secondItem="V7Q-vX-Ec9" secondAttribute="top" id="wOS-v2-Oxc"/>
+                            <constraint firstItem="wAZ-Eb-INx" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leadingMargin" constant="42" id="x5a-Ag-qd0"/>
+                            <constraint firstItem="V7Q-vX-Ec9" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="10" id="yc9-ZO-hZw"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="6ru-CP-DJO"/>
+                                <exclude reference="Ccb-Uq-gIU"/>
+                                <exclude reference="aqh-3H-fTa"/>
+                                <exclude reference="e9a-ke-lYS"/>
+                                <exclude reference="kKe-MX-ShN"/>
+                                <exclude reference="qt0-r9-V4r"/>
                                 <exclude reference="r93-dH-aqx"/>
+                                <exclude reference="wOS-v2-Oxc"/>
+                                <exclude reference="x5a-Ag-qd0"/>
+                                <exclude reference="yc9-ZO-hZw"/>
                             </mask>
                         </variation>
                     </view>

@@ -70,10 +70,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
         else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"ReportResults"]) {
             [self handleStartReportResults:json];
         }
-        else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"RouterResults"]){
-            [self handleRouterResults:json];
-            
-        }
         else{
             NSLog(@"ERROR: Unknown request type");
         }
@@ -195,22 +191,5 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     else {
         NSLog(@"Phone failed to upload results");
     }    
-}
--(void) handleRouterResults: (NSMutableDictionary*)json {
-    NSLog(@"Handle Start Router Tests");
-    TestResults *routerResults = NULL;
-    
-    if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
-        NSLog(@"Received Router Results");
-        routerResults = [[TestResults alloc] init:json];
-    }
-    else {
-        routerResults = [[TestResults alloc] init];
-        NSLog(@"Could not get router results because of an error");
-    }
-    
-    [[TestState getStateMachine] setRouterResults:routerResults];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivedRouterResults" object:routerResults];
-    NSLog(@"Sent Router Results");
 }
 @end

@@ -103,7 +103,6 @@
         //Write some bytes
         
         uploadMode = true;
-        NSLog(@"Preparing to write the first bit of data");
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:10.0
                                                         target:self
                                                       selector:@selector(uploadCompleteTimeout)
@@ -143,7 +142,6 @@
     switch (eventCode)
     {
         case NSStreamEventOpenCompleted:
-            NSLog(@"Stream Opened");
             start = [[NSDate date] timeIntervalSince1970 ];
             downloaded = 0;
             [timeoutTimer invalidate];
@@ -156,7 +154,6 @@
             break;
             
         case NSStreamEventHasBytesAvailable:
-            
             if( uploadMode == false){
                 if( aStream == inputStream)
                 {
@@ -167,11 +164,17 @@
                     downloaded += len;
                 
                     if( start != 0.0 && [[NSDate date] timeIntervalSince1970] - start >= 10.0){
+                        [timeoutTimer invalidate];
+                        uploadMode = true;
                         start = 0.0;
                         [self handleDownload:1];
-                        [timeoutTimer invalidate];
                     }
                 }
+            }
+            else{
+                //Throw away excess data
+                uint8_t buffer[1024];
+                [inputStream read:buffer maxLength:sizeof(buffer)];
             }
             break;
             
@@ -211,7 +214,6 @@
         double downloadThroughPut = (double)downloaded / ([[NSDate date] timeIntervalSince1970] - start);
         [results setThroughputDownload:downloadThroughPut];
     }
-
     [delegate completedDownload];
 }
 
@@ -228,6 +230,7 @@
     }
     [self shutdown];
     
+
     [delegate completedUpload];
 }
 -(void) shutdown{

@@ -180,8 +180,6 @@
         [lock wait];
     }
     [lock unlock];
-    
-    NSLog(@"Performance test completed a download");
     //TODO: RUn an upload test
     
     [throughputHandler runUploadTest];
