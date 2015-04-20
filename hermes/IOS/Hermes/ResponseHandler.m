@@ -102,7 +102,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     
     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
     
-    NSLog(@"Sending Post = %@", postString);
     NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
     
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
@@ -177,8 +176,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     else {
         [settings setRouterResultID:-1];
     }
- 
-    [settings logValues];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
 
 }
