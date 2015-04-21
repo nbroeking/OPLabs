@@ -8,17 +8,30 @@
 
 #import "ResultsViewController.h"
 #import "TestState.h"
+#import "SessionData.h"
+#import "TestResults.h"
+
+NSString * const ViewResultsURL = @"/mobile/test_set/%d";
 
 @implementation ResultsViewController
+@synthesize WebView;
 
 -(void)viewDidLoad{
-    NSLog(@"Check the state in Results");
+    [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routerResults:) name:@"ReceivedRouterResults" object:nil];
+    //Set the background color
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
     
-    if( [[TestState getStateMachine] routerResults] != NULL )
-    {
-         NSLog(@"Received Router Results on the ResultsViewController");
+    if( ([[TestState getStateMachine] mobileResults] == NULL) || ([[[TestState getStateMachine] mobileResults] valid] == false)){
+        NSLog(@"Error with results from results view");
+    }
+    else{
+        NSString *fullURL = [[NSString alloc] initWithFormat:@"%@%@?user_token=%@", [[SessionData getData] hostname], [[NSString alloc] initWithFormat:ViewResultsURL, [[[TestState getStateMachine] mobileResults] setID]] ,[[SessionData getData] sessionIdEncoded]];
+        NSURL *url = [NSURL URLWithString:fullURL];
+        NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
+        [WebView loadRequest:requestObj];
+    
+        [WebView setDelegate:self];
     }
 }
 
@@ -37,4 +50,5 @@
     }
     [super viewWillDisappear:animated];
 }
+
 @end

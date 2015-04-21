@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ResultsViewController : UIViewController
+@interface ResultsViewController : UIViewController <UIWebViewDelegate>
+@property (strong, nonatomic) IBOutlet UIWebView *WebView;
 
 @end

@@ -196,30 +196,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="6fb-OQ-bra">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                            </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Jitter: Latency: DNS Response: Packet Loss: Delay:" translatesAutoresizingMaskIntoConstraints="NO" id="5rV-Qc-ITo">
-                                <rect key="frame" x="150" y="333" width="300" height="128"/>
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e5s-nc-voW">
+                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="300" id="p3s-kQ-24V"/>
-                                    <constraint firstAttribute="height" constant="128" id="weK-vh-Qiw"/>
+                                    <constraint firstAttribute="width" constant="600" id="Cwn-F7-02y"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Cwn-F7-02y"/>
+                                    </mask>
+                                </variation>
+                            </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="B2p-GJ-J2j" firstAttribute="top" secondItem="5rV-Qc-ITo" secondAttribute="bottom" constant="95" id="2TX-UJ-v2i"/>
-                            <constraint firstItem="5rV-Qc-ITo" firstAttribute="centerX" secondItem="6fb-OQ-bra" secondAttribute="centerX" id="OwN-Os-KpW"/>
-                            <constraint firstAttribute="height" secondItem="6fb-OQ-bra" secondAttribute="height" id="ZJp-qV-yo9"/>
-                            <constraint firstAttribute="width" secondItem="6fb-OQ-bra" secondAttribute="width" id="aPN-q0-jN5"/>
-                            <constraint firstItem="6fb-OQ-bra" firstAttribute="leading" secondItem="yaB-24-HT6" secondAttribute="leading" id="msm-oG-LKR"/>
-                            <constraint firstItem="6fb-OQ-bra" firstAttribute="top" secondItem="yaB-24-HT6" secondAttribute="top" id="rbe-sz-vct"/>
+                            <constraint firstAttribute="trailing" secondItem="e5s-nc-voW" secondAttribute="trailing" id="KjM-CY-Hqp"/>
+                            <constraint firstItem="e5s-nc-voW" firstAttribute="top" secondItem="8jp-G1-Kxu" secondAttribute="bottom" id="WYS-sA-vKl"/>
+                            <constraint firstItem="e5s-nc-voW" firstAttribute="bottom" secondItem="B2p-GJ-J2j" secondAttribute="top" id="iig-rP-fkf"/>
+                            <constraint firstItem="e5s-nc-voW" firstAttribute="bottom" secondItem="B2p-GJ-J2j" secondAttribute="top" id="nar-9G-fbg"/>
+                            <constraint firstItem="e5s-nc-voW" firstAttribute="leading" secondItem="yaB-24-HT6" secondAttribute="leading" id="sBG-DG-7yF"/>
+                            <constraint firstItem="e5s-nc-voW" firstAttribute="top" secondItem="8jp-G1-Kxu" secondAttribute="bottom" id="vcF-2a-Z6Z"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="WYS-sA-vKl"/>
+                                <exclude reference="iig-rP-fkf"/>
+                            </mask>
+                        </variation>
                     </view>
+                    <connections>
+                        <outlet property="WebView" destination="e5s-nc-voW" id="ecx-5P-J6j"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpX-Kb-KLh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -286,7 +294,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="background" width="1536" height="2272"/>
         <image name="hermes-logo" width="3168" height="1453"/>
     </resources>
 </document>

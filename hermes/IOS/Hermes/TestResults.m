@@ -10,6 +10,7 @@
 
 @implementation TestResults
 @synthesize dns, latency, packetloss, throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad, mobileIdentifier, valid, routerIdentifier;
+@synthesize setID;
 
 -(instancetype)init :(NSDictionary*)json{
     if( self = [super init]){
@@ -23,6 +24,7 @@
             packetlossUnderLoad = [[json objectForKey:@"packet_loss_under_load"] doubleValue];
             latencyUnderLoad = [[json objectForKey:@"download_latencies_avg"] doubleValue];
             valid = true;
+            setID = -1;
         }
         @catch (NSException *exception) {
             self = [self init];
@@ -44,6 +46,7 @@
         throughputDownload = 0.0;
         latencyUnderLoad = 0.0;
         packetlossUnderLoad = 0.0;
+        setID = -1;
     }
     return self;
 }

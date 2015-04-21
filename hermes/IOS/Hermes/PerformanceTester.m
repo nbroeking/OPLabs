@@ -56,7 +56,7 @@
     
     results = [[TestResults alloc] init];
     [results setMobileIdentifier:(int)[settings mobileResultID]];
-    
+    [results setSetID:(int)[settings setId]];
     [results setValid:YES];
     TestState *state = [TestState getStateMachine];
     

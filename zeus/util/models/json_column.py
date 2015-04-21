@@ -30,4 +30,6 @@ class JSONBlob(db.TypeDecorator):
         return json.dumps(value)
 
     def process_result_value(self, value, _):
-        return json.loads(value)
+        if value:
+            return json.loads(value)
+        return None
