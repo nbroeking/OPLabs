@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context="main.Views.LoginActivity" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Throughput"
+                android:id="@+id/throughput"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sustained throughput (or Bandwidth) is the rate at which you can download data from the internet onto your computer. The larger this number is, the less time it takes to download pictures, song and movies."
+                android:id="@+id/throughputAbout"
+                android:layout_below="@+id/throughput"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#ffffff"
+                android:textSize="17dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latency"
+                android:id="@+id/latency"
+                android:layout_below="@+id/throughputAbout"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latency is how long it takes a single bit of data to travel from the internet to your computer. High latency increases the initial delay to load a webpage, and is the phenomenon known in online gaming as 'Lag'."
+                android:id="@+id/latencyAbout"
+                android:layout_below="@+id/latency"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#ffffff"
+                android:textSize="17dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DNS Response Time"
+                android:id="@+id/dns"
+                android:layout_below="@+id/latencyAbout"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DNS is the service which translates domain names (i.e. example.com) into and internet addresses. High DNS response latency can translate into large delays when initially accessing a website."
+                android:id="@+id/dnsAbout"
+                android:layout_below="@+id/dns"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#ffffff"
+                android:textSize="17dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Packet Loss"
+                android:id="@+id/packetloss"
+                android:layout_below="@+id/dnsAbout"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Packet loss describes the percentage of packets loss in transit to their destination. This can seriously affect realtime applications, such as voice or video chats, or certain online games."
+                android:id="@+id/packetlossAbout"
+                android:layout_below="@+id/packetloss"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#ffffff"
+                android:textSize="17dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latency Under Load"
+                android:id="@+id/lul"
+                android:layout_below="@+id/packetlossAbout"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latency Under Load refers to variations in latency that can occur when your internet connection is heavily utilized. Sometimes this utilization can cause packets to be delayed or lost in transit."
+                android:id="@+id/lulAbout"
+                android:layout_below="@+id/lul"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#ffffff"
+                android:textSize="17dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>
