@@ -32,8 +32,6 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
         NSLog(@"%@", [url absoluteString]);
         [WebView loadRequest:requestObj];
-    
-        
     }
 }
 
