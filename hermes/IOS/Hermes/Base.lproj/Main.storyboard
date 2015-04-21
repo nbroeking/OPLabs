@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="u5W-wt-aO6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="u5W-wt-aO6">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -49,31 +49,43 @@
                                     <action selector="goToSettings:" destination="9Ls-CO-OvT" eventType="touchUpInside" id="osG-aw-PuP"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="hgh-Od-caJ">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="hgh-Od-caJ">
                                 <rect key="frame" x="129" y="103" width="343" height="164"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="164" id="Cos-Rp-hqp"/>
-                                    <constraint firstAttribute="width" constant="343" id="wUu-dq-nsO"/>
-                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="trailing" secondItem="ROh-FV-OGd" secondAttribute="trailing" id="23n-pv-N1q"/>
+                            <constraint firstAttribute="width" secondItem="hgh-Od-caJ" secondAttribute="height" multiplier="150:41" id="4Tu-qM-xN9"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="39" id="4W1-fv-S3S"/>
+                            <constraint firstAttribute="centerX" secondItem="hgh-Od-caJ" secondAttribute="centerX" constant="-0.5" id="7cc-8O-HD2"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="centerX" secondItem="biG-fT-ezx" secondAttribute="centerX" id="MrD-Dv-x74"/>
+                            <constraint firstAttribute="centerX" secondItem="hgh-Od-caJ" secondAttribute="centerX" constant="-0.5" id="N5E-0J-364"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="leading" secondItem="biG-fT-ezx" secondAttribute="leadingMargin" id="TUf-5n-t76"/>
+                            <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="39" id="VCL-ET-2rR"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="centerX" secondItem="hgh-Od-caJ" secondAttribute="centerX" id="adk-pX-R27"/>
                             <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" constant="111" id="dOb-rE-URv"/>
+                            <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="39" id="gLT-f1-v38"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="ROh-FV-OGd" secondAttribute="leading" id="ifG-dM-vaG"/>
+                            <constraint firstAttribute="centerX" secondItem="hgh-Od-caJ" secondAttribute="centerX" constant="-0.5" id="ksA-YO-i8w"/>
                             <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="281" id="mu0-jb-yY3"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="33" id="p75-ln-sPT"/>
+                            <constraint firstAttribute="centerX" secondItem="ROh-FV-OGd" secondAttribute="centerX" id="rzw-c3-Mel"/>
                             <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" constant="59" id="tZm-7r-FEy"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="8" symbolic="YES" id="u2W-el-tup"/>
+                            <constraint firstAttribute="centerX" secondItem="RfM-LV-hTN" secondAttribute="centerX" id="yCZ-7m-olJ"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="33" id="zK6-Dt-uzs"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="4Tu-qM-xN9"/>
+                                <exclude reference="4W1-fv-S3S"/>
+                                <exclude reference="7cc-8O-HD2"/>
+                                <exclude reference="MrD-Dv-x74"/>
+                                <exclude reference="VCL-ET-2rR"/>
+                                <exclude reference="ksA-YO-i8w"/>
+                                <exclude reference="adk-pX-R27"/>
+                                <exclude reference="p75-ln-sPT"/>
                                 <exclude reference="zK6-Dt-uzs"/>
                                 <exclude reference="dOb-rE-URv"/>
                                 <exclude reference="mu0-jb-yY3"/>
