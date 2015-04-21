@@ -12,9 +12,13 @@
 #import "TestSettings.h"
 #import "SessionData.h"
 #import "ResultsViewController.h"
+#import "TestState.h"
 
 @interface AnimationViewController()
 @property (strong, nonatomic) TestState *stateMachine;
+
+@property (strong, nonatomic) IBOutlet UILabel *StateLabel;
+@property (strong, nonatomic) NSTimer* updater;
 
 -(void) goToResults: (NSNotification*)notification;
 @end
@@ -22,6 +26,8 @@
 @implementation AnimationViewController
 @synthesize stateMachine;
 @synthesize AnimationImage;
+@synthesize updater;
+@synthesize StateLabel;
 
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -40,6 +46,7 @@
         [[((MainNavigationController*)self.navigationController) tester] startTest];
     }
     
+    [self updateLabel];
     //Animation stuff
     // Load images
     NSArray *imageNames = @[@"ani2_1.png", @"ani2_2.png", @"ani2_3.png", @"ani2_4.png",@"ani2_5.png", @"ani2_6.png",@"ani2_7.png", @"ani2_8.png",@"ani2_9.png", @"ani2_10.png",];
@@ -63,13 +70,27 @@
 {
     [super viewWillAppear:animated];
     [AnimationImage startAnimating];
+    
+    updater = [NSTimer timerWithTimeInterval:.25f target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:updater forMode:NSRunLoopCommonModes];
+    //Set Timer
+    
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [AnimationImage stopAnimating];
+    
+    [updater invalidate];
 }
 
+-(void) updateLabel{
+    TestState *state = [TestState getStateMachine];
+    
+    NSString *label = [[NSString alloc] initWithFormat:@"State: %@", [state getStateAsString]];
+    
+    [StateLabel setText:label];
+}
 -(void) startTestNotified:(NSNotification*) notification{
     [self performSelectorOnMainThread:@selector(startTestNotifiedHelper:) withObject:notification waitUntilDone:NO];
 }

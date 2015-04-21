@@ -53,7 +53,6 @@ public class CommMessageHandler extends Handler {
     private final String StartMobileURL = "/api/start_test/mobile";
     private final String StartRouterURL = "/api/start_test/router";
     private final String ReportResultURL = "/api/test_result/%d/edit";
-    private final String RouterResultsURL = "/api/test_result/%d";
 
     private SessionData data;
 
@@ -87,28 +86,6 @@ public class CommMessageHandler extends Handler {
             case CommMsg.REPORT_TEST:
                 Pair<Object, Object> obj = ((Pair <Object, Object> )msg.obj); //Tuple
                 reportTest((TestResults)obj.first);
-
-                TestResults results = (TestResults)obj.first;
-
-                //If we had a router
-                if( results.getRouter_id() >= 0) {
-                    //After we report we want to request results from router
-                    Message msgRequest = obtain();
-                    msgRequest.what = CommMsg.REQUEST_ROUTER_RESULTS;
-                    msgRequest.obj = msg.obj;
-
-                    //Set the check to true so we keep trying
-                    setShouldCheck(Boolean.TRUE);
-                    sendMessage(msgRequest);
-                }
-                else{
-                    Log.d(TAG, "No valid router to request results from");
-                }
-                break;
-
-            case CommMsg.REQUEST_ROUTER_RESULTS:
-                Log.i(TAG, "REQUESTING_ROUTER_RESULTS");
-                requestTestResults((Pair<Object, Object>)msg.obj);
                 break;
 
             case CommMsg.CLEAR:
@@ -145,58 +122,6 @@ public class CommMessageHandler extends Handler {
                 msg.obj = settings;
                 sender.sendMessage(msg);
             }
-        }
-    }
-
-    //This method gets a report from the server
-    private void requestTestResults(Pair<Object, Object> pairResults){
-
-        TestResults results = (TestResults) pairResults.first;
-        Log.i(TAG, "Get Router Results");
-
-        HttpPost post = new HttpPost(String.format(data.getHostname()+RouterResultsURL, results.getRouter_id()));
-        try {
-
-            post.setHeader("Content-type", "application/x-www-form-urlencoded");
-            post.setEntity(new StringEntity("user_token=" + URLEncoder.encode(data.getSessionId(), "UTF-8")));
-
-            //JSON Parser
-
-            JSONObject json = sendPost(post);
-
-            Log.d(TAG, "Response = " + json );
-            if (json.getString("status").equals("success")) {
-                Log.d(TAG, "Received Status success");
-                switch (json.getString("state")){
-                    case "finished":
-                        Log.d(TAG, "We have router results");
-                        TestResults routerResults = new TestResults(json);
-                        TestState.getInstance().setRouterResults(routerResults);
-                        Intent intent = new Intent();
-                        intent.setAction("ReportRouter");
-                        intent.putExtra(("Results"), routerResults);
-                        ((Communication) pairResults.second).sendBroadcast(intent);
-                        Log.d(TAG, "We sent the router results to whoever needs it");
-                        break;
-                    default:
-                        Log.d(TAG, "Will try again in 15 seconds");
-                        Message msg = Message.obtain();
-                        msg.what = CommMsg.REQUEST_ROUTER_RESULTS;
-                        msg.obj = pairResults;
-
-                        if (shouldCheck()) {
-                            sendMessageDelayed(msg, 5000);
-                        }
-
-                        break;
-                }
-            } else {
-                throw new Exception("Status failed requesting    Results");
-            }
-
-            Log.i(TAG, "Reported Results");
-        } catch (Exception e) {
-            Log.e(TAG, "Error getting router results", e);
         }
     }
 

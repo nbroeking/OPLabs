@@ -57,10 +57,10 @@
     password = [[standardUserDefaults objectForKey:@"password"] copy];
     
     
-    NSLog(@"Data Settings:");
+    /*NSLog(@"Data Settings:");
     NSLog(@"hostname: %@", hostname);
     NSLog(@"email: %@", email);
-    NSLog(@"password: %@", password);
+    NSLog(@"password: %@", password);*/
     
     //If they are null then we need to write the defaults and try again
     if( !hostname || !email || !password)
@@ -72,7 +72,7 @@
 
 -(void)save
 {
-    NSLog(@"Save Settings");
+    //NSLog(@"Save Settings");
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
     [standardUserDefaults setValue:email forKey:@"email"];
     [standardUserDefaults setValue:password forKey:@"password"];
@@ -81,7 +81,7 @@
 #pragma NSUserDefaults
 //This method will only be called once. On the very first time that the app is launched
 - (void)registerDefaultsFromSettingsBundle {
-    NSLog(@"Writting Defaults");
+    //NSLog(@"Writting Defaults");
     // this function writes default settings as settings
     NSDictionary *userDefaultsDefaults = [NSDictionary dictionaryWithObjectsAndKeys: @"https://128.138.202.143", @"hostname", @"", @"email", @"", @"password", nil];
     

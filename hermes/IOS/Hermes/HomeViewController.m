@@ -40,7 +40,7 @@
     // Dispose of any resources that can be recreated.
 }
 - (IBAction)MoveToTesting:(id)sender {
-    NSLog(@"Run Test was pressed");
+    //NSLog(@"Run Test was pressed");
     
     if (![self checkLogin]) {
         
@@ -85,7 +85,7 @@
 //Call back from the NSNotification center
 -(void)appBecameActive
 {
-    NSLog(@"Home View Controller knows the app became active");
+    //NSLog(@"Home View Controller knows the app became active");
     
     if([self checkLogin])
     {
@@ -103,7 +103,7 @@
         return false;
     }
     
-    NSLog(@"Check Login");
+    //NSLog(@"Check Login");
     if( ([[data email] isEqualToString:@""]&& [[data password] isEqualToString:@""]))
     {
         HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Welcome" message:@"Welcome to hermes. Please set up your login information." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];

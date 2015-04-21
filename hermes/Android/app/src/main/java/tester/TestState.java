@@ -15,7 +15,6 @@ public class TestState {
     private final static String TAG = "TESTSTATE";
     private Handler handler;
     private TestResults phoneResults;
-    private TestResults routerResults;
 
     //Singleton Members
     private static TestState ourInstance = new TestState();
@@ -27,7 +26,6 @@ public class TestState {
         state = State.IDLE;
         handler = null;
         phoneResults = null;
-        routerResults = null;
     }
     //Results
     public TestResults getPhoneResults() {
@@ -81,15 +79,28 @@ public class TestState {
         }
     }
 
-    public TestResults getRouterResults() {
-        synchronized (this) {
-            return routerResults;
-        }
-    }
+    public String getStateAsString(){
+        switch (state) {
+            case IDLE:
+                return "Idle";
 
-    public void setRouterResults(TestResults routerResults) {
-        synchronized (this) {
-            this.routerResults = routerResults;
+            case COMPLETED:
+                return "Completed";
+
+            case PREPARING:
+                return "Preparing";
+
+            case TESTINGDNS:
+                return "Testing DNS";
+
+            case TESTINGLATENCY:
+                return "Testing Latency";
+
+            case TESTINGTHROUGHPUT:
+                return "Testing Throughput";
+
+            default:
+                return "";
         }
     }
     //We need explicily tell the statemachine that the handler is the test subsystem
