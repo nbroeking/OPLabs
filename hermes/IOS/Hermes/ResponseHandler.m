@@ -70,10 +70,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
         else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"ReportResults"]) {
             [self handleStartReportResults:json];
         }
-        else if( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"RouterResults"]){
-            [self handleRouterResults:json];
-            
-        }
         else{
             NSLog(@"ERROR: Unknown request type");
         }
@@ -106,7 +102,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     
     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
     
-    NSLog(@"Sending Post = %@", postString);
     NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
     
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
@@ -181,8 +176,6 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     else {
         [settings setRouterResultID:-1];
     }
- 
-    [settings logValues];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
 
 }
@@ -195,22 +188,5 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     else {
         NSLog(@"Phone failed to upload results");
     }    
-}
--(void) handleRouterResults: (NSMutableDictionary*)json {
-    NSLog(@"Handle Start Router Tests");
-    TestResults *routerResults = NULL;
-    
-    if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
-        NSLog(@"Received Router Results");
-        routerResults = [[TestResults alloc] init:json];
-    }
-    else {
-        routerResults = [[TestResults alloc] init];
-        NSLog(@"Could not get router results because of an error");
-    }
-    
-    [[TestState getStateMachine] setRouterResults:routerResults];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivedRouterResults" object:routerResults];
-    NSLog(@"Sent Router Results");
 }
 @end

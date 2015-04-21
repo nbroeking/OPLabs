@@ -82,17 +82,13 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     // Append the new data to the instance variable you declared
-    NSLog(@"Did Receive Data");
-    
     [responseData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     // The request is complete and data has been received
     // You can parse the stuff in your instance variable now
-
-    NSLog(@"Comm: Connection did complete");
-    NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+    //NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
     
     NSMutableDictionary *json = NULL;
     //Parse JSON
@@ -153,18 +149,6 @@
 //Need to add a type to our dictionary
 -(void) reportData: (NSMutableDictionary*)json
 {
-    //We need to intercept that request Results tag so if we need to request again we can
-    if( [[json objectForKey:@"POST_TYPE"]  isEqual:@"RouterResults"]){
-        if( ([[json objectForKey:@"status"] isEqual:@"success"])&& !([[json objectForKey:@"state"] isEqual:@"finished"])){
-            //Request again in 15 seconds
-            NSLog(@"We need to request again in 15 seconds");
-
-            //TODO:
-            return;
-        }
-    }
-    
-    //For normal control flow
     if( self.handler == NULL){
         handler = [[ResponseHandler alloc]init];
     }

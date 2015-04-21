@@ -56,7 +56,7 @@
     
     results = [[TestResults alloc] init];
     [results setMobileIdentifier:(int)[settings mobileResultID]];
-    
+    [results setSetID:(int)[settings setId]];
     [results setValid:YES];
     TestState *state = [TestState getStateMachine];
     
@@ -180,8 +180,6 @@
         [lock wait];
     }
     [lock unlock];
-    
-    NSLog(@"Performance test completed a download");
     //TODO: RUn an upload test
     
     [throughputHandler runUploadTest];
