@@ -188,7 +188,6 @@ public class ResultsActivity extends HermesActivity {
             Log.i(TAG, "Received Intent");
 
             TestResults results = intent.getParcelableExtra("Results");
-
             if( !results.isValid())
             {
                 TestState.getInstance().setState(TestState.State.IDLE, false);
@@ -213,19 +212,11 @@ public class ResultsActivity extends HermesActivity {
                 {
                     checkStatus();
                 }
-                else if (intent.getAction().equals("ReportRouter"))
+                else
                 {
-                    ResultsFragment myFragment = (ResultsFragment)getFragmentManager().findFragmentByTag("ResultsFrag");
-                    if (myFragment.isVisible()) {
-                        Log.d(TAG, "Informing the frag that a router test completed");
-                        myFragment.onRouterResults(results);
-                    }
-                }
-                else{
-                    Log.e(TAG, "Unknown Broadcast type");
+                    Log.e(TAG, "Unknown Broadcast type: " + intent.getAction());
                 }
             }
-
         }
     };
 }

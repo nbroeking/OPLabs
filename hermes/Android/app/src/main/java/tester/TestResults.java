@@ -27,6 +27,7 @@ public class TestResults implements Parcelable{
 
     private int mobileId;
     private int router_id;
+    private int setId;
 
     public TestResults(int id){
         valid = false;
@@ -129,12 +130,6 @@ public class TestResults implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeDouble(dns);
-        dest.writeDouble(packetLoss);
-        dest.writeDouble(latency);
-        dest.writeInt(mobileId);
-        dest.writeInt(router_id);
 
         dest.writeDouble(dns);
         dest.writeDouble(packetLoss);
@@ -266,5 +261,13 @@ public class TestResults implements Parcelable{
         synchronized (this) {
             this.packetLossUnderLoad = packetLossUnderLoad;
         }
+    }
+
+    public int getSetId() {
+        return setId;
+    }
+
+    public void setSetId(int setId) {
+        this.setId = setId;
     }
 }

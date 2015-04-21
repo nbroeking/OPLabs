@@ -2,137 +2,46 @@ package main.Views;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.oplabs.hermes.R;
 
-import tester.TestResults;
+import main.Application.SessionData;
 import tester.TestState;
-
 
 public class ResultsFragment extends Fragment {
 
-    private static final String TAG = "Results Fragment";
+    private WebView browser;
+    private static final String ResultsURL = "/mobile/test_set/%d";
 
-    private TestState stateMachine = TestState.getInstance();
-
-    private static TextView mobileDNS;
-    private static TextView mobileLatency;
-    private static TextView mobilePackets;
-    private static TextView mobileLoad;
-    private static TextView mobileThrough;
-
-    private static TextView routerDNS;
-    private static TextView routerLatency;
-    private static TextView routerPackets;
-    private static TextView routerLoad;
-    private static TextView routerThrough;
-
-    private static TextView diffDNS;
-    private static TextView diffLatency;
-    private static TextView diffPackets;
-    private static TextView diffLoad;
-    private static TextView diffThrough;
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_results, container, false);
+        browser = (WebView)view.findViewById(R.id.webView);
 
-        // Set TextView IDs for mobile test results
-        mobileDNS = (TextView) view.findViewById(R.id.dnsResponse);
-        mobileLatency = (TextView) view.findViewById(R.id.latency);
-        mobilePackets = (TextView) view.findViewById(R.id.packetLoss);
-        mobileLoad = (TextView) view.findViewById(R.id.latencyUnderload);
-        mobileThrough = (TextView) view.findViewById(R.id.throughputUpload);
+        String url = String.format("%s%s?user_token=%s", SessionData.getInstance().getHostname(),
+                String.format(ResultsURL, TestState.getInstance().getPhoneResults().getSetId()),
+                SessionData.getInstance().getSessionId());
 
-        //Get the router textfields
-        routerDNS = (TextView) view.findViewById(R.id.dnsResponse2);
-        routerLatency = (TextView) view.findViewById(R.id.latency2);
-        routerPackets = (TextView) view.findViewById(R.id.packetLoss2);
-        routerLoad = (TextView) view.findViewById(R.id.latencyUnderload);
-        routerThrough = (TextView) view.findViewById(R.id.throughput2);
-
-        // Set TextView IDs for diff table
-        diffDNS = (TextView) view.findViewById(R.id.dnsResponse3);
-        diffLatency = (TextView) view.findViewById(R.id.latency3);
-        diffPackets = (TextView) view.findViewById(R.id.packetLoss3);
-        diffLoad = (TextView) view.findViewById(R.id.latencyUnderload);
-        diffThrough = (TextView) view.findViewById(R.id.throughput3);
-
-
-        // Get latest results for mobile from TestResults
-        TestResults results = stateMachine.getPhoneResults();
-        TestResults routerResults = stateMachine.getRouterResults();
-
-        if( results != null){
-            updateMobile(String.format("%s ms", results.getDns()),
-                    String.format("%s ms", results.getLatency()),
-                    String.format("%s", (results.getPacketLoss() * 100) + "%"), "0", "0");
-        }
-        if( routerResults !=null){
-
-            onRouterResults(routerResults);
-        }
-
-
-        // Change TextView for mobile results
-
-
-        // Hide Router and Difference tables
-        // Show spinning wheel animation
-
+        browser.getSettings().setLoadsImagesAutomatically(true);
+        browser.getSettings().setJavaScriptEnabled(true);
+        browser.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        browser.loadUrl(url);
         return view;
     }
 
-    public void onRouterResults(TestResults results) {
-
-        // Change TextView for router results
-        updateRouter(String.format("%s ms", results.getDns()),
-                String.format("%s ms", results.getLatency()),
-                String.format("%s", (results.getPacketLoss() * 100) + "%"),
-                String.format("%s", (results.getLatencyUnderLoad())),
-                String.format("%s", (results.getThroughputUpload())));
-
-       // updateDiffTable(String.format("%s ms", (subtractResults(routerDNS, mobileDNS))),
-         //       String.format("%s ms", (subtractResults(routerLatency, mobileLatency))),
-           //     String.format("%s", (subtractResults(routerPackets, mobilePackets)) + "%"),
-             //   String.format("%s", (subtractResults(routerLoad, mobileLoad))),
-               // String.format("%s", (subtractResults(routerThrough, mobileThrough))));
-
-        // Hide spinning wheel animation
-        // Show Router and Difference Tables
-
-    }
-
-    public void updateMobile(String dns, String lat, String pkl, String ld, String thp) {
-        mobileDNS.setText(dns);
-        mobileLatency.setText(lat);
-        mobilePackets.setText(pkl);
-        mobileLoad.setText(ld);
-        mobileThrough.setText(thp);
-    }
-
-    public void updateRouter(String dns, String lat, String pkl, String ld, String thp) {
-        routerDNS.setText(dns);
-        routerLatency.setText(lat);
-        routerPackets.setText(pkl);
-        routerLoad.setText(ld);
-        routerThrough.setText(thp);
-    }
-
-    public void updateDiffTable(String dns, String lat, String pkl, String ld, String thp) {
-        diffDNS.setText(dns);
-        diffLatency.setText(lat);
-        diffPackets.setText(pkl);
-        diffLoad.setText(ld);
-        diffThrough.setText(thp);
-    }
-
-    public int subtractResults(TextView view1, TextView view2) {
-        return (Integer.parseInt(view1.getText().toString()) - Integer.parseInt(view2.getText().toString()));
+    private class MyBrowser extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            Log.d("Results", "Should Load the url");
+            return true;
+        }
     }
 }
