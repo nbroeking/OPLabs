@@ -48,9 +48,9 @@ public class PerformanceTester {
             state.setState(TestState.State.TESTINGDNS, false);
 
             //Init the results object
-
             results.setRouter_id(settings.getRouterResultsID());
             results.setValid(true);
+            results.setSetId(settings.getSetId());
 
             //Run a dns response Test
             List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
@@ -136,9 +136,7 @@ public class PerformanceTester {
                 clientSocket.setSoTimeout(10000);
 
                 InetAddress throughputServer = InetAddress.getByName(settings.getThroughputServer());
-                //clientSocket.connect(new InetSocketAddress(throughputServer, settings.getPort()), 1000);
-
-                clientSocket.connect(new InetSocketAddress("10.0.1.2", 5432), 1000);
+                clientSocket.connect(new InetSocketAddress(throughputServer, settings.getPort()), 1000);
 
                 outToServer = new DataOutputStream(clientSocket.getOutputStream());
                 inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

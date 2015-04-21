@@ -46,6 +46,31 @@
         return state;
     }
 }
+-(NSString*)getStateAsString{
+    switch (state) {
+        case IDLE:
+            return @"Idle";
+            break;
+        case COMPLETED:
+            return @"Completed";
+            break;
+        case PREPARING:
+            return @"Preparing";
+            break;
+        case TESTINGDNS:
+            return @"Testing DNS";
+            break;
+        case TESTINGLATENCY:
+            return @"Testing Latency";
+            break;
+        case TESTINGTHROUGHPUT:
+            return @"Testing Throughput";
+            break;
+        default:
+            return @"";
+            break;
+    }
+}
 -(void)setState:(enum State)arg
 {
     @synchronized(self)

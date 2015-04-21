@@ -21,5 +21,5 @@ enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROU
 -(enum State)getState;
 -(void)setState:(enum State)arg;
 -(void)timeout:(enum State)arg;
-
+-(NSString*)getStateAsString;
 @end

@@ -36,7 +36,6 @@ public class MainActivity extends HermesActivity {
             Button button = (Button)findViewById(R.id.command);
             button.setText("Run Test");
 
-            TestState.getInstance().setRouterResults(null);
             TestState.getInstance().setPhoneResults(null);
         }
         else
