@@ -50,6 +50,8 @@
         NSLog(@"Starting a Test");
         //We need to start the test
         [[((MainNavigationController*)self.navigationController) tester] startTest];
+        
+        [[TestState getStateMachine] setStartTime:[[NSDate date] timeIntervalSince1970]];
     }
     
     [self updateLabel];
@@ -80,7 +82,7 @@
     updater = [NSTimer timerWithTimeInterval:.03f target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:updater forMode:NSRunLoopCommonModes];
     
-    start = [[NSDate date] timeIntervalSince1970];
+    start = [[TestState getStateMachine] startTime];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {

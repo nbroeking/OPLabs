@@ -15,6 +15,7 @@ enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROU
 
 @property(strong, atomic) TestResults *mobileResults;
 @property(strong, atomic) TestResults *routerResults;
+@property(assign, atomic) NSTimeInterval startTime;
 
 +(TestState*) getStateMachine;
 

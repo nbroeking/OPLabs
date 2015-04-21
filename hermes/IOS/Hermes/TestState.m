@@ -15,7 +15,7 @@
 @end
 
 @implementation TestState
-@synthesize routerResults, mobileResults;
+@synthesize routerResults, mobileResults, startTime;
 
 +(TestState*) getStateMachine
 {

@@ -18,7 +18,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/textView" />
+        android:layout_above="@+id/textView"
+        android:contentDescription="@string/AnimationRes" />
 
     <TextView
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="32sp"
         android:gravity="center"
-        android:text="Preparing"
+        android:text="@string/TextViewValue"
         android:textColor="#FFFFFF"
         android:id="@+id/textView"
         android:layout_alignParentLeft="true"
