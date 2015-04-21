@@ -68,10 +68,10 @@ public:
             timeout_t latency = recv_time - sent_time;
             m_latency[rid] = latency;
 
-            m_log.printfln(INFO, "Receieve DNS Respose for id=%hu. sent_time=%f, recv_time=%f, latency=%f", rid,
-                sent_time / 1000000.0,
-                recv_time / 1000000.0,
-                latency   / 1000000.0);
+            m_log.printfln(INFO, "Receieve DNS Respose for id=%hu. sent_time=%llu, recv_time=%llu, latency=%llu", rid,
+                (llu_t) sent_time,
+                (llu_t) recv_time,
+                (llu_t) latency  );
         }
 
         ~DnsSender() {
@@ -108,7 +108,7 @@ public:
                 if(itr != m_latency.end()) {
                     vec.push_back(itr->second);
                 } else {
-                    vec.push_back(-1);
+                    vec.push_back(-1000);
                 }
             }
         }
@@ -194,6 +194,8 @@ public:
         /* unsubscribe and do not notify the callback mechanism */
         getFileCollection().unsubscribe(&m_stream_sock, false);
         results.download_throughput_per_sec = download_rate;
+
+        Time::sleep(1 SECS);
         send_runner.getLatencyMicros(results.download_latency_micros);
 
         /* reset and get ready to do the upload */
@@ -221,7 +223,10 @@ public:
 
         Time::sleep(10 SECS);
 
+        getFileCollection().unsubscribe(&m_stream_sock, false);
         results.upload_throughput_per_sec = download_rate;
+
+        Time::sleep(1 SECS);
         send_runner.getLatencyMicros(results.upload_latency_micros);
 
         m_log->printfln(INFO, "Waiting for all jobs to finish");

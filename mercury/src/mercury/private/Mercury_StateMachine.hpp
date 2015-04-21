@@ -154,9 +154,9 @@ Mercury_StateMachine(MercuryObserver* observer):
     m_observer = observer;
 }
 
-void curlSendJson(Json to_send) {
+void curlSendJson(Json to_send, const char* state) {
     char post_chars[4096];
-    Json tmp = Json::fromString("finished");
+    Json tmp = Json::fromString(state);
     to_send.setAttribute("state", tmp);
     snprintf(post_chars, sizeof(post_chars), "data=%s&router_token=%s",
         to_send.toString().c_str(), m_id_b64.c_str());
@@ -173,7 +173,7 @@ void sendDnsResults(const dns::TestResults& res) {
     using namespace json;
 
     Json to_send = Json::from(res);
-    curlSendJson(to_send);
+    curlSendJson(to_send, "running");
 }
 
 State onStart() {
@@ -262,7 +262,7 @@ State exitHard() {
 State onThroughputTestFinished() {
     using namespace json;
     Json to_send = Json::from(m_throughput_test_results);
-    curlSendJson(to_send);
+    curlSendJson(to_send, "finished");
 
     m_state_machine->setTimeoutStim(30 SECS, TIMEOUT_STIM);
     return POSTING_THROUGHPUT_RESULTS;
