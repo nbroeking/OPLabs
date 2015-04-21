@@ -153,6 +153,12 @@ public class ResultsActivity extends HermesActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void goToAbout(View view) {
+        Intent intent = new Intent(this, AboutTestsActivity.class);
+        startActivity(intent);
+    }
+
     //Reports a bind and unbind from the service
     protected ServiceConnection testConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {

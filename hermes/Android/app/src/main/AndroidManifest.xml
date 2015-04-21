@@ -56,6 +56,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="main.Views.MainActivity" />
         </activity>
+        <activity
+            android:name="main.Views.AboutTestsActivity"
+            android:parentActivityName="main.Views.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="main.Views.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

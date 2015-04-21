@@ -18,7 +18,7 @@ import com.oplabs.hermes.R;
 import communication.Communication;
 import main.Application.SessionData;
 
-//All Activities inherit from this one. It allows us to have universal behavior accross all activities
+//All Activities inherit from this one. It allows us to have universal behavior across all activities
 public abstract class HermesActivity extends Activity {
     //Tag
     protected final String TAG = "Hermes Activity";
@@ -250,12 +250,17 @@ public abstract class HermesActivity extends Activity {
             goToSettings(null);
             return true;
         }
+        if (id == R.id.action_about) {
+            goToAbout(null);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     //Required Overloads All subclasses must have custom abilities to go to the login and settings pages
     public abstract void goToLogin(View view);
     public abstract void goToSettings(View view);
+    public abstract void goToAbout(View view);
 
     //Receives broadcasts from the service
     //The service respond to requests with broadcasted intents
