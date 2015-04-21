@@ -26,15 +26,19 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         NSLog(@"Error with results from results view");
     }
     else{
+        [WebView setDelegate:self];
         NSString *fullURL = [[NSString alloc] initWithFormat:@"%@%@?user_token=%@", [[SessionData getData] hostname], [[NSString alloc] initWithFormat:ViewResultsURL, [[[TestState getStateMachine] mobileResults] setID]] ,[[SessionData getData] sessionIdEncoded]];
         NSURL *url = [NSURL URLWithString:fullURL];
         NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
+        NSLog(@"%@", [url absoluteString]);
         [WebView loadRequest:requestObj];
-    
-        [WebView setDelegate:self];
     }
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [WebView setDelegate:self];
+}
 -(void) routerResults:(NSNotification*)notification{
     NSLog(@"Received Router Results on the ResultsViewController");
 }
@@ -48,7 +52,7 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         
         [[TestState getStateMachine] setState:IDLE];
     }
+    [WebView setDelegate:nil];
     [super viewWillDisappear:animated];
 }
-
 @end

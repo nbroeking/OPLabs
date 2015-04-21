@@ -67,6 +67,7 @@
                             <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" constant="111" id="dOb-rE-URv"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="ROh-FV-OGd" secondAttribute="leading" id="ifG-dM-vaG"/>
                             <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="281" id="mu0-jb-yY3"/>
+                            <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="33" id="p75-ln-sPT"/>
                             <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" constant="59" id="tZm-7r-FEy"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="8" symbolic="YES" id="u2W-el-tup"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="33" id="zK6-Dt-uzs"/>
@@ -203,6 +204,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="600" id="Cwn-F7-02y"/>
                                 </constraints>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="Cwn-F7-02y"/>
@@ -264,8 +266,11 @@
                                     </mask>
                                 </variation>
                             </imageView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="uX0-dC-Eyq">
+                                <rect key="frame" x="16" y="442" width="568" height="2"/>
+                            </progressView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JlR-H5-kMa">
-                                <rect key="frame" x="16" y="407" width="568" height="81"/>
+                                <rect key="frame" x="16" y="452" width="568" height="81"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="81" id="O2G-dg-IqE"/>
                                 </constraints>
@@ -276,12 +281,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="JlR-H5-kMa" firstAttribute="centerX" secondItem="wAZ-Eb-INx" secondAttribute="centerX" id="1Zn-cA-gsq"/>
+                            <constraint firstItem="JlR-H5-kMa" firstAttribute="centerX" secondItem="wAZ-Eb-INx" secondAttribute="centerX" constant="-0.5" id="1Zn-cA-gsq"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="centerX" secondItem="SXY-nt-6gr" secondAttribute="centerX" id="6ru-CP-DJO"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leading" constant="58" id="Ccb-Uq-gIU"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="Cid-tq-5dd"/>
+                            <constraint firstItem="uX0-dC-Eyq" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="43" id="HeE-Gt-hZP"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="centerX" secondItem="SXY-nt-6gr" secondAttribute="centerX" id="JzQ-gA-tM0"/>
-                            <constraint firstItem="JlR-H5-kMa" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="8" symbolic="YES" id="PcK-MC-U7a"/>
+                            <constraint firstItem="uX0-dC-Eyq" firstAttribute="trailing" secondItem="JlR-H5-kMa" secondAttribute="trailing" id="LQh-ug-5gQ"/>
+                            <constraint firstItem="JlR-H5-kMa" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="53" id="PcK-MC-U7a"/>
+                            <constraint firstItem="uX0-dC-Eyq" firstAttribute="leading" secondItem="JlR-H5-kMa" secondAttribute="leading" id="S7G-Xy-2Hk"/>
                             <constraint firstItem="JlR-H5-kMa" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leadingMargin" id="TlV-jT-mmU"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="aqh-3H-fTa"/>
                             <constraint firstItem="V7Q-vX-Ec9" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="157" id="csA-Sa-Rtm"/>
@@ -310,6 +318,7 @@
                     </view>
                     <connections>
                         <outlet property="AnimationImage" destination="wAZ-Eb-INx" id="GPf-E3-bO3"/>
+                        <outlet property="ProgressBar" destination="uX0-dC-Eyq" id="bbf-Iu-EOb"/>
                         <outlet property="StateLabel" destination="JlR-H5-kMa" id="RIj-9O-2Yf"/>
                     </connections>
                 </viewController>

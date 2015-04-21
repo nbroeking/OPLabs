@@ -10,4 +10,6 @@
     <string name="defaultemail">""</string>
     <string name="defaulthostname">https://128.138.202.143</string>
     <string name="defaultpassword">""</string>
+    <string name="TextViewValue">Preparing</string>
+    <string name="AnimationRes">Animaition View</string>
 </resources>

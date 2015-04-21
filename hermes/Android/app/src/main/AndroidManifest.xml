@@ -8,7 +8,7 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
     <application
         android:name="main.Application.HermesApplication"
@@ -51,6 +51,13 @@
         <activity
             android:name="main.Views.LoginActivity"
             android:label="@string/title_activity_login"
+            android:parentActivityName="main.Views.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="main.Views.MainActivity" />
+        </activity>
+        <activity
+            android:name="main.Views.AboutTestsActivity"
             android:parentActivityName="main.Views.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

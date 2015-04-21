@@ -1,3 +1,11 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,32 +14,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/background"
     tools:context="main.Views.MainActivity">
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:text="Run Test"
-        android:textColor="#ffffff"
-        android:textSize="45px"
-        android:id="@+id/command"
-        android:onClick="runTest"
-        android:layout_above="@+id/button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:text="Settings"
-        android:textColor="#ffffff"
-        android:textSize="45px"
-        android:id="@+id/button"
-        android:onClick="goToSettings"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -39,7 +22,34 @@
         android:id="@+id/imageView"
         android:src="@drawable/hermes_logo"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:text="Run Test"
+        android:textColor="#ffffff"
+        android:textSize="30px"
+        android:id="@+id/command"
+        android:onClick="runTest"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:text="Settings"
+        android:textColor="#ffffff"
+        android:textSize="30px"
+        android:id="@+id/button"
+        android:onClick="goToSettings"
+        android:layout_below="@+id/command"
+        android:layout_centerHorizontal="true" />
+
+
 
 </RelativeLayout>
+</ScrollView>
+</LinearLayout>

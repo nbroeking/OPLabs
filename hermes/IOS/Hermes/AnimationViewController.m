@@ -17,8 +17,11 @@
 @interface AnimationViewController()
 @property (strong, nonatomic) TestState *stateMachine;
 
+@property (strong, nonatomic) IBOutlet UIProgressView *ProgressBar;
 @property (strong, nonatomic) IBOutlet UILabel *StateLabel;
 @property (strong, nonatomic) NSTimer* updater;
+@property (assign, nonatomic) NSTimeInterval start;
+@property (assign, nonatomic) NSTimeInterval total;
 
 -(void) goToResults: (NSNotification*)notification;
 @end
@@ -28,10 +31,13 @@
 @synthesize AnimationImage;
 @synthesize updater;
 @synthesize StateLabel;
+@synthesize ProgressBar;
+@synthesize start, total;
 
 -(void)viewDidLoad{
     [super viewDidLoad];
     
+    total = 20;
     
     //Set the background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
@@ -44,6 +50,8 @@
         NSLog(@"Starting a Test");
         //We need to start the test
         [[((MainNavigationController*)self.navigationController) tester] startTest];
+        
+        [[TestState getStateMachine] setStartTime:[[NSDate date] timeIntervalSince1970]];
     }
     
     [self updateLabel];
@@ -71,10 +79,10 @@
     [super viewWillAppear:animated];
     [AnimationImage startAnimating];
     
-    updater = [NSTimer timerWithTimeInterval:.25f target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
+    updater = [NSTimer timerWithTimeInterval:.03f target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:updater forMode:NSRunLoopCommonModes];
-    //Set Timer
     
+    start = [[TestState getStateMachine] startTime];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
@@ -87,9 +95,15 @@
 -(void) updateLabel{
     TestState *state = [TestState getStateMachine];
     
-    NSString *label = [[NSString alloc] initWithFormat:@"State: %@", [state getStateAsString]];
+    NSString *label = [[NSString alloc] initWithFormat:@"%@", [state getStateAsString]];
     
     [StateLabel setText:label];
+    
+    float progress = ((float)([[NSDate date] timeIntervalSince1970] - start) / (float) total);
+    
+    ProgressBar.progress = progress;
+    //[ProgressBar setProgress:progress animated:YES];
+    
 }
 -(void) startTestNotified:(NSNotification*) notification{
     [self performSelectorOnMainThread:@selector(startTestNotifiedHelper:) withObject:notification waitUntilDone:NO];

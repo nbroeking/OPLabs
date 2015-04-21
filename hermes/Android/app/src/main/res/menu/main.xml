@@ -6,6 +6,15 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="About the Tests"
+        tools:ignore="AppCompatResource" />
+
 
 </menu>
