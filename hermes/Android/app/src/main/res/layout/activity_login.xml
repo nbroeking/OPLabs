@@ -1,3 +1,11 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,7 +14,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/background"
     tools:context="main.Views.LoginActivity" >
 
     <ImageView
@@ -15,20 +22,8 @@
         android:id="@+id/imageView"
         android:src="@drawable/hermes_logo"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:text="Login"
-        android:textColor="#ffffff"
-        android:textSize="45px"
-        android:id="@+id/button"
-        android:onClick="login"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -36,7 +31,7 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/email"
-        android:layout_above="@+id/button"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="134dp"/>
 
@@ -55,8 +50,22 @@
         android:layout_height="wrap_content"
         android:text="Not a User? Sign Up Here!"
         android:id="@+id/notauser"
-        android:layout_above="@+id/button"
+        android:layout_below="@+id/password"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="31dp" />
 
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:text="Login"
+        android:textColor="#ffffff"
+        android:textSize="25px"
+        android:id="@+id/button"
+        android:onClick="login"
+        android:layout_below="@id/notauser"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
+</ScrollView>
+</LinearLayout>
