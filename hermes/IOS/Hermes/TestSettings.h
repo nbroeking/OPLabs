@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+//This class provides a data holder for all values we need to run a performance test.
+//This object is constructed by the communication subsystem and passed to the tester to run a test
 #import <UIKit/UIKit.h>
 
 @interface TestSettings : UIViewController

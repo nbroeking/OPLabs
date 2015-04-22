@@ -25,6 +25,7 @@
     // Override point for customization after application launch.
     
     NSLog(@"Application did Launch");
+    [[SessionData getData] sync];
     comm = [Communication getComm];
     tester = [Tester getTester];
     
@@ -58,15 +59,12 @@
     [comm start];
     [tester start];
     
-    [[SessionData getData] sync];
     //Force app to always go back to home on relaunch
     //(MainNavigationController*)self.window.rootViewController popToRootViewControllerAnimated:NO];
 }
 // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, refresh the user interface.
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    
     NSLog(@"Application Did Become Active");
-    [[SessionData getData] sync];
 }
 
 //Called when the user is trying to terminate the app. We clean up all our memory references and subsystems here
@@ -74,7 +72,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
-    [comm stop];
+    [comm forceStop];
     [tester forceStop];
     comm = nil;
     tester = nil;

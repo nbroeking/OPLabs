@@ -41,6 +41,7 @@
 @synthesize uploadMode;
 @synthesize uploaded;
 
+//Once the object is initlize we are prepared to run a download test
 -(instancetype)init :(PerformanceTester*)parent withSettings:(TestSettings*)config withResults:(TestResults*)answer{
     self = [super init];
     if (self) {
@@ -59,6 +60,8 @@
     }
     return self;
 }
+//This should be called after the init method above
+//It prepares the object to run a download test
 -(void) runDownloadTest{
     NSLog(@"Starting a download test");
     
@@ -72,7 +75,6 @@
         
         CFReadStreamRef readStream;
         CFWriteStreamRef writeStream;
-        //CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)@"10.0.1.2", (unsigned int)5432 , &readStream, &writeStream);
         CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)[settings throughputServer], (short)[settings port] , &readStream, &writeStream);
         
         inputStream = (__bridge_transfer NSInputStream *)readStream;
@@ -98,6 +100,8 @@
     }
 }
 
+//Once the download test has been run we can run an upload test
+//NOTE: This method will not work properly if the download test has not been ran first
 -(void) runUploadTest{
     NSLog(@"Starting Upload test");
     
@@ -121,26 +125,34 @@
         [self handleUpload:-1];
     }
 }
-
+//If there was a timeout during the download test
+//This can happen if there is no throughput server or if there was a
+//socket error
 -(void) timeoutDownload {
     NSLog(@"There was a timeout connecting to the throughput server");
     
     [self handleDownload:-1];
 }
+//This happens once we have downloaded data for 10 seconds
 -(void) downloadCompleteTimeout {
     NSLog(@"Data stopped flowing");
     start = 0.0;
     [self handleDownload:1];
 }
+//Completed after we have uploaded data for 10 seconds
 -(void) uploadCompleteTimeout {
     NSLog(@"Finished uploading data");
     
     [self handleUpload:1];
 }
+//If there was an error with the upload this will get called
 -(void) timeoutUpload {
     NSLog(@"There was a timeout uploading data");
 }
 
+//THroughput is a delgate of the NSStream class. These are all events that a stream can have
+//We use this to know when it is ok to upload more data or to download more data
+//We are also reported stream errors
 -(void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
 {
     switch (eventCode)
@@ -211,6 +223,10 @@
     }
 }
 
+//Once the download has completed we handle it
+//If it is called with a negative status we need to
+//handle the download for an error
+//If status is positive then we report our results
 -(void) handleDownload :(int)status{
     
     if( status < 0)
@@ -227,6 +243,10 @@
     [delegate completedDownload];
 }
 
+//Once the upload has completed we handle it
+//If it is called with a negative status we need to
+//handle the download for an error
+//If status is positive then we report our results
 -(void) handleUpload :(int)status{
     
     if( status < 0)
@@ -244,9 +264,11 @@
 
     [delegate completedUpload];
 }
+
+//This shutsdown the stream because we need to clean up our resources
 -(void) shutdown{
     
-    NSLog(@"We successfully shutdown the Throughput connection");
+    
     if( inputStream){
         [inputStream close];
         [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -259,5 +281,6 @@
         [outputStream setDelegate:NULL];
         outputStream = nil;
     }
+    NSLog(@"We shutdown the Throughput connection");
 }
 @end

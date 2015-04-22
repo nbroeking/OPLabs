@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+//This class holds all relevant information to a test set result
 #import <Foundation/Foundation.h>
 
 @interface TestResults : NSObject

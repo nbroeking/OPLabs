@@ -37,7 +37,8 @@
 -(void)viewDidLoad{
     [super viewDidLoad];
     
-    total = 20;
+    
+    total = 25;
     
     //Set the background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
@@ -98,8 +99,9 @@
     NSString *label = [[NSString alloc] initWithFormat:@"%@", [state getStateAsString]];
     
     [StateLabel setText:label];
-    
-    float progress = ((float)([[NSDate date] timeIntervalSince1970] - start) / (float) total);
+    float progress = 0.0;
+     
+    progress = ((float)(([[NSDate date] timeIntervalSince1970] - start)) / ((float) total));
     
     ProgressBar.progress = progress;
     //[ProgressBar setProgress:progress animated:YES];

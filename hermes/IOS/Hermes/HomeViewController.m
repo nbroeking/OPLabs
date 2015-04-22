@@ -23,17 +23,13 @@
 //When the view is loaded we add ourselves to the notification center watch list
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
-    [[SessionData getData] sync];
     data = [SessionData getData];
     
     //Set the background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
-    
-    //Ask the notification center to message us when we the app becomes active
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:@"LOGIN" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyLogin:) name:@"NotifyLogin" object:nil];
+
 }
 
 //When we are done testing we need to move to the new testing view. Depending on the state we can either move to the animation or the results page
