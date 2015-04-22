@@ -5,7 +5,7 @@
 //  Created by Nicolas Charles Herbert Broeking on 2/12/15.
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
-
+// Singleton pattern to store all session data
 #import <Foundation/Foundation.h>
 
 @interface SessionData : NSObject 

@@ -11,6 +11,7 @@
 @implementation SessionData
 @synthesize email, password, hostname, sessionId, shouldTransfer;
 
+//Singleton factory creator
 +(SessionData*) getData
 {
     static SessionData *sharedInstance = nil;
@@ -20,6 +21,7 @@
     });
     return sharedInstance;
 }
+//Initilize all our values to nil
 - (instancetype)init
 {
     self = [super init];
@@ -32,7 +34,7 @@
     }
     return self;
 }
-
+//We need to encode the session id to be able to send it to the controller
 -(NSString*)sessionIdEncoded
 {
     @synchronized(self){
@@ -56,11 +58,6 @@
     email = [[standardUserDefaults objectForKey:@"email"] copy];
     password = [[standardUserDefaults objectForKey:@"password"] copy];
     
-    
-    /*NSLog(@"Data Settings:");
-    NSLog(@"hostname: %@", hostname);
-    NSLog(@"email: %@", email);
-    NSLog(@"password: %@", password);*/
     
     //If they are null then we need to write the defaults and try again
     if( !hostname || !email || !password)

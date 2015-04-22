@@ -33,8 +33,6 @@
 		56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EE05461A93CEE100ACCA49 /* HermesAlert.m */; };
 		56FF827F1AB5285300C2FC01 /* TestState.m in Sources */ = {isa = PBXBuildFile; fileRef = 56FF827E1AB5285300C2FC01 /* TestState.m */; };
 		DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7B71A78306800E169AA /* LoginViewController.m */; };
-		DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7BA1A78309500E169AA /* SignupViewController.m */; };
-		DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB34B7C91A783C5600E169AA /* MenuTableViewController.m */; };
 		DBE3C4F01A81609C00CB504A /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBE3C4EF1A81609C00CB504A /* HomeViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -97,10 +95,6 @@
 		56FF827E1AB5285300C2FC01 /* TestState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestState.m; sourceTree = "<group>"; };
 		DB34B7B61A78306800E169AA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		DB34B7B71A78306800E169AA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		DB34B7B91A78309500E169AA /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
-		DB34B7BA1A78309500E169AA /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
-		DB34B7C81A783C5600E169AA /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewController.h; sourceTree = "<group>"; };
-		DB34B7C91A783C5600E169AA /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = "<group>"; };
 		DBE3C4EE1A81609C00CB504A /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		DBE3C4EF1A81609C00CB504A /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HomeViewController.m; sourceTree = "<group>"; usesTabs = 0; };
 /* End PBXFileReference section */
@@ -134,12 +128,8 @@
 		565B11A71A8424C20033E442 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				DB34B7C81A783C5600E169AA /* MenuTableViewController.h */,
-				DB34B7C91A783C5600E169AA /* MenuTableViewController.m */,
 				DB34B7B61A78306800E169AA /* LoginViewController.h */,
 				DB34B7B71A78306800E169AA /* LoginViewController.m */,
-				DB34B7B91A78309500E169AA /* SignupViewController.h */,
-				DB34B7BA1A78309500E169AA /* SignupViewController.m */,
 				DBE3C4EE1A81609C00CB504A /* HomeViewController.h */,
 				DBE3C4EF1A81609C00CB504A /* HomeViewController.m */,
 				567408931AD9BBBF008FAE7E /* ResultsViewController.h */,
@@ -368,13 +358,11 @@
 				5674089B1AD9F1EE008FAE7E /* TestSettings.m in Sources */,
 				566ABD471A6B9D6100B114C1 /* Communication.m in Sources */,
 				562737031A71BB0D00F05935 /* Tester.m in Sources */,
-				DB34B7BB1A78309500E169AA /* SignupViewController.m in Sources */,
 				567408951AD9BBBF008FAE7E /* ResultsViewController.m in Sources */,
 				56FF827F1AB5285300C2FC01 /* TestState.m in Sources */,
 				56A717CB1A6B6576006E1198 /* AppDelegate.m in Sources */,
 				56EE05471A93CEE100ACCA49 /* HermesAlert.m in Sources */,
 				5606D3EA1ADD714C00C45E1E /* PerformanceTester.m in Sources */,
-				DB34B7CA1A783C5600E169AA /* MenuTableViewController.m in Sources */,
 				5606D3ED1ADD764200C45E1E /* TestResults.m in Sources */,
 				56B9085D1AE0D3E900DA218D /* Throughput.m in Sources */,
 				DB34B7B81A78306800E169AA /* LoginViewController.m in Sources */,
