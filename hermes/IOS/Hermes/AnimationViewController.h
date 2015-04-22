@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+//This class controls all of the animation that happens during the test
+
 #import <UIKit/UIKit.h>
 
 @interface AnimationViewController : UIViewController <UIAlertViewDelegate>
