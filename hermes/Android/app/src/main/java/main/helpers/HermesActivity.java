@@ -100,7 +100,7 @@ public abstract class HermesActivity extends Activity {
                         })
                         .setIcon(R.drawable.ic_launcher)
                         .show();
-                data.setSessionId(null);
+                data.setSessionId(null);    
             }
             else if(data.getSessionId().equals("DOMAIN"))
             {

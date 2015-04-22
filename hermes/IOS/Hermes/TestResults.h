@@ -26,4 +26,6 @@
 -(instancetype)init :(NSDictionary*)json;
 -(NSString*) getPost;
 
+-(void) print;
+
 @end

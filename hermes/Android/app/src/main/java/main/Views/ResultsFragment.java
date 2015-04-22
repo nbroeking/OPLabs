@@ -24,6 +24,8 @@ public class ResultsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+        Log.d("Results", "Reload");
         View view = inflater.inflate(R.layout.fragment_results, container, false);
         browser = (WebView)view.findViewById(R.id.webView);
 

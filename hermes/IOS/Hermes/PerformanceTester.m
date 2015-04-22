@@ -108,7 +108,7 @@
         NSLog(@"Error with packet loss");
         [results setValid:false];
     }
-    [results setPacketloss:(1-(([times2 count] + [times1 count]) / ([[settings validDomains] count] + [[settings invalidDomains] count])))];
+    [results setPacketloss:(1.0-(((double)[times2 count] + (double)[times1 count]) / ((double)[[settings validDomains] count] + (double)[[settings invalidDomains] count])))];
     
     NSLog(@"Packet loss = %f percent", [results packetloss]);
 
@@ -148,16 +148,15 @@
         [results setLatencyUnderLoad:0.0];
     }
     else {
-        latencyResult /= [times count];
+        latencyResult /= (double)[times count];
         [results setLatencyUnderLoad:latencyResult];
     }
     
-    [results setPacketlossUnderLoad:1- ([times count] / tests*[[settings validDomains]count])];
+    double top = [times count];
+    double bottom = tests*[[settings validDomains] count];
+    double packetLossUnderLoad = 1.0 -(top /bottom);
     
-    //TODO: Signal the other thread to continue
-    
-    NSLog(@"Latency Under Load Result = %f", latencyResult);
-    NSLog(@"Packet Loss under Load = %f", [results packetloss]);
+    [results setPacketlossUnderLoad:packetLossUnderLoad];
     
     [lock lock];
     throughputComplete = true;
@@ -180,12 +179,10 @@
         [lock wait];
     }
     [lock unlock];
-    //TODO: RUn an upload test
     
     [throughputHandler runUploadTest];
 }
 -(void)sendResults{
-    NSLog(@"Performance tester is done with the settings");
     [delegate testComplete:results :settings ];
 }
 

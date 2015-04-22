@@ -52,7 +52,7 @@
 }
 
 -(void) print {
-    NSLog( @"%@",[[NSString alloc] initWithFormat:@"state=finished&dns_response_avg=%f&packet_loss=%f&latency_avg=%f&upload_throughputs=%f&download_throughputs=%f&packet_loss_under_load=%f&throughput_latency=%f",dns,packetloss,latency,throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad]);
+    NSLog( @"%@",[[NSString alloc] initWithFormat:@"state=finished\ndns_response_avg=%f\npacket_loss=%f\nlatency_avg=%f\nupload_throughputs=%fMbps\ndownload_throughputs=%fMbps\npacket_loss_under_load=%f\nthroughput_latency=%f",dns,packetloss,latency,throughputUpload /1000/1000 *8, throughputDownload /1000/1000*8, packetlossUnderLoad, latencyUnderLoad]);
 }
 -(NSString *)getPost{
     

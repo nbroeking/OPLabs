@@ -157,6 +157,8 @@
     
     NSLog(@"Completed a Performance test");
     
+    [results print];
+    
     [[TestState getStateMachine] setState:COMPLETED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results userInfo:allInfo];
 }

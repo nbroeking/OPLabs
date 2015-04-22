@@ -76,7 +76,7 @@
     @synchronized(self)
     {
         state = arg;
-        NSLog(@"Setting state to %d", arg);
+        //NSLog(@"Setting state to %d", arg);
     }
 }
 -(void)timeout:(enum State)arg
