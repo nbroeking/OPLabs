@@ -134,10 +134,6 @@ footer {
   color: gray;
 }
 
-@media screen and (max-width: 768px) {
-    body {padding-top: 40px; }
-}
-
 .container {
     background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
