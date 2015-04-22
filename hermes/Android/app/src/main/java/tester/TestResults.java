@@ -57,7 +57,14 @@ public class TestResults implements Parcelable{
 
     public String printValues()
     {
-        return "VALID = " + valid + " dns = " + dns + " packetLoss " + packetLoss+  " latency " + latency;
+        return "VALID = " + valid +
+                "\ndns = " + dns +
+                "\npacketLoss " + packetLoss+
+                "\nlatency " + latency +
+                "\ndownload " + throughputDownload /1000/1000*8 + "Mbps" +
+                "\nupload " + throughputUpload /1000/1000*8 + "Mbps" +
+                "\nlatency under load " + latencyUnderLoad +
+                "\npacket loss under load " + packetLossUnderLoad;
     }
     public TestResults(JSONObject json){
         try {

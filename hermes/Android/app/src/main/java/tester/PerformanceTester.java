@@ -1,5 +1,6 @@
 package tester;
 
+import android.nfc.Tag;
 import android.util.Log;
 
 import org.apache.http.util.ByteArrayBuffer;
@@ -7,7 +8,9 @@ import org.apache.http.util.ByteArrayBuffer;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -67,7 +70,6 @@ public class PerformanceTester {
                 dnsResult /= times1.size();
                 results.setDns(dnsResult);
             }
-            Log.d(TAG, "DNS Result = " + dnsResult);
 
             state.setState(TestState.State.TESTINGLATENCY, false);
             //Run a test packet latency test
@@ -85,11 +87,10 @@ public class PerformanceTester {
                 latencyResult /= times2.size();
                 results.setLatency(latencyResult);
             }
-            Log.d(TAG, "Latency Result = " + latencyResult);
 
             //Packet Loss is just 1 - times we have / times we should have
-            results.setPacketLoss((1 - ((times2.size() + times1.size()) / (settings.getValidDomains().size() + settings.getInvalidDomains().size()))));
-            Log.d(TAG, "Packet Loss = " + results.getPacketLoss());
+            results.setPacketLoss((1 - ((double)(times2.size() + times1.size()) / (double)(settings.getValidDomains().size() + settings.getInvalidDomains().size()))));
+
         }
         catch(Exception e){
             Log.e(TAG, "Error running test", e);
@@ -111,6 +112,8 @@ public class PerformanceTester {
         catch (Exception e){
             Log.e(TAG, "Error joining threads",e);
         }
+
+        Log.i(TAG, "Results = " + results.printValues());
         return results;
     }
 
@@ -127,10 +130,9 @@ public class PerformanceTester {
 
             ByteArrayBuffer buffer = new ByteArrayBuffer(1024);
 
-
             Socket clientSocket = null;
-            BufferedReader inFromServer = null;
-            DataOutputStream outToServer = null;
+            InputStream inFromServer = null;
+            OutputStream outToServer = null;
             try {
                 clientSocket = new Socket();
                 clientSocket.setSoTimeout(10000);
@@ -138,42 +140,44 @@ public class PerformanceTester {
                 InetAddress throughputServer = InetAddress.getByName(settings.getThroughputServer());
                 clientSocket.connect(new InetSocketAddress(throughputServer, settings.getPort()), 1000);
 
-                outToServer = new DataOutputStream(clientSocket.getOutputStream());
-                inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                outToServer = clientSocket.getOutputStream();
+                inFromServer = clientSocket.getInputStream();
 
-                long startTime = System.currentTimeMillis();
-                char[] bytes = new char[1024*1024];
+
+                byte[] bytes = new byte[1024*1024];
                 byte[] writeBytes = new byte[1024*1024];
                 for(int i = 0 ; i < writeBytes.length; i++) {
                     writeBytes[i] = 'Z';
                 }
                 int totalBytesRead = 0;
+                long startTime = System.currentTimeMillis();
                 try {
 
                     while ((System.currentTimeMillis() - startTime) < 10000) {
-                        int bytesRead = inFromServer.read(bytes, 0, 1024 * 1024);
+                        //int bytesRead = inFromServer.read(bytes, 0, 1024 * 1024);
+                        int bytesRead = inFromServer.read(bytes, 0, 1024*1024);
                         totalBytesRead += bytesRead;
                     }
                 }
                 catch (SocketTimeoutException e){
-                    Log.w(TAG, "Socket Read Timedout");
+                    Log.w(TAG, "Socket Read Timeout");
                 }
                 //Collect Results
 
                 //Need to report in bytes per second
-                results.setThroughputDownload((double)totalBytesRead/(double)((System.currentTimeMillis()*1000.0) - startTime*1000.0));
-                Log.i(TAG, "Throughput Download = " + results.getThroughputDownload());
+                results.setThroughputDownload((double)totalBytesRead/(((System.currentTimeMillis()) - startTime)*1000.0));
 
+                Log.i(TAG, "Total Bytes Read = " + totalBytesRead);
                 long totalBytesWritten = 0;
+
                 startTime = System.currentTimeMillis();
                 while( (System.currentTimeMillis() - startTime) < 10000) {
-                    outToServer.write(writeBytes, 0, writeBytes.length);
+                    outToServer.write(writeBytes);
                     totalBytesWritten += writeBytes.length;
-                    outToServer.flush();
                 }
 
-                results.setThroughputUpload((double)totalBytesWritten/(double)(System.currentTimeMillis()*1000 - startTime*1000));
-                Log.i(TAG, "Throughput Upload= " + results.getThroughputDownload());
+                Log.i(TAG, "Total Bytes written = " + totalBytesWritten);
+                results.setThroughputUpload((double)totalBytesWritten/(double)((System.currentTimeMillis() - startTime)*1000.0));
 
 
             } catch (IOException e) {
@@ -237,12 +241,8 @@ public class PerformanceTester {
                 latencyResult /= times.size();
                 results.setLatencyUnderLoad(latencyResult);
             }
-
-            Log.d(TAG, "Times = " + times);
             results.setPacketLossUnderLoad(1.0-((double)times.size() / (double)(tests*settings.getValidDomains().size())));
 
-            Log.i(TAG, "Latency Under Load Result = " +latencyResult);
-            Log.i(TAG, "Packet Loss under Load = " +results.getPacketLossUnderLoad());
         }
     };
 
