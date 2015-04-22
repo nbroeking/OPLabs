@@ -138,3 +138,29 @@ footer {
     body {padding-top: 40px; }
 }
 
+.container {
+    background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#96c3f6, #5698f1 ); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#96c3f6, #5698f1 ); /* Standard syntax (must be last) */
+
+    color: white;
+}
+
+.legend-container {
+    text-align: center;
+    margin-top: 5pt;
+    margin-left: auto;
+    margin-right: auto;
+    width:150px;
+
+}
+
+.legend-color {
+    margin-top: 1pt;
+    margin-left: 15px;
+    margin-right: auto;
+    height:16pt;
+    width:16pt;
+    float:left;
+}

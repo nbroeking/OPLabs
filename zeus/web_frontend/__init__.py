@@ -29,7 +29,16 @@ def average(*iterables):
             running_sum += sum(lst)
             running_len += len(lst)
     if running_len == 0:
-        return "None"
+        return None 
     return running_sum / running_len
 
+def MEGABYTES(value, places=0):
+    if value == None:
+        return value
+    if places == 0:
+        return int(value) / (2**20)
+    else:
+        return round(float(value) / (2**20), places)
+
 app.jinja_env.globals['average'] = average
+app.jinja_env.globals['MEGABYTES'] = MEGABYTES

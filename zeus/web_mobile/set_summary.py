@@ -9,14 +9,20 @@ from util.router import Router
 from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
 from util.rest.rest_auth import requires_user_token
 import base64
+import logging
 import math
 
-@mobile_blueprint.route('/test_set/<set_id>', methods=['GET'])
+@mobile_blueprint.route('test_set/<set_id>', methods=['GET'])
 @requires_user_token()
 def set_summary(set_id):
-
     test_set = TestSet.get_set_by_id(set_id)
+    for aset in test_set.tests:
+        logging.info("Set: %s, %s,", aset.device_name, aset.download_latencies)
+
+    router = [aset for aset in test_set.tests if aset.device_type == 'router'][0]
+    mobile = [aset for aset in test_set.tests if aset.device_type == 'mobile'][0]
 
     return render_template('set_summary.html',
-            test_set=test_set,
+            router=router,
+            mobile=mobile,
             )

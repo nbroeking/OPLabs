@@ -2,44 +2,154 @@
 
 {% block body %}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+<h2> Test Results </h2>
+
+<h4> Compare Your Router and Mobile Test Results Below<h4>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Bandwidth Comparison</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="bandwidth_chart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Latency Comparison</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="latency_chart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5 col-sm-4"> </div>
+    <div class="col-md-2 col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Legend</h3>
+            </div>
+            <div id="legend" style=""></div>
+        </div>
+    </div>
+    <div class="col-sm-5 col-sm-4"> </div>
+</div>
+
+
 <script>
+var $canvas = $("#bandwidth_chart");
+var $parent = $canvas.parent();
+$canvas.width($parent.width())
+var $canvas = $("#latency_chart");
+var $parent = $canvas.parent();
+$canvas.width($parent.width());
+function makeChart(elem, labels, router_data, mobile_data) {
+    var ctx = document.getElementById(elem).getContext("2d");
+    var data = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Router",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: router_data
+            },
+            {
+                label: "Mobile",
+                fillColor: "rgba(151,187,205,0.60)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: mobile_data
+            }
+        ]
+    };
 
-CSRF_TOKEN = "{{csrf_token()}}"
-
-function reload() {
-    location.reload()
+    return new Chart(ctx).Bar(data, {
+                legendTemplate : '<ul class="list-unstyled">'
+                +'<% for (var i=0; i<datasets.length; i++) { %>'
+                +'<li class="">'
+                +'<div class="legend-container">'
+                +'<div class="legend-color" style=\" background-color:<%=datasets[i].fillColor%>\"></div>'
+                +'<div class="" style=\"\"> <% if (datasets[i].label) { %><%= datasets[i].label %><% } %></div>'
+                +'</div>'
+                +'</li>'
+                +'<% } %>'
+                +'</ul>'
+            });
 }
 
-function delete_rec(row_id) {
-    $.ajax({
-        type: "POST",
-        url: "/dashboard/delete_result",
-        data: {"test_id" : row_id,
-        "_csrf_token": CSRF_TOKEN },
-        success: reload,
-        error: reload
-    });
-}
+var chart1 = makeChart("bandwidth_chart",
+        ["Download", "Upload"], 
+        [ {{MEGABYTES(average(router.download_throughputs))}},
+        {{MEGABYTES(average(router.upload_throughputs))}} ],
+        [ {{MEGABYTES(average(mobile.download_throughputs))}},
+        {{MEGABYTES(average(mobile.upload_throughputs))}} ])
 
+var chart2 = makeChart("latency_chart",
+        ["Latency", "DNS Response"], 
+        [ {{router.latency_avg}},
+        {{router.dns_response_avg}} ],
+        [ {{mobile.latency_avg}},
+        {{mobile.dns_response_avg}} ])
+
+var legendHolder = document.createElement('div');
+
+legendHolder.innerHTML = chart1.generateLegend();
+document.getElementById('legend').appendChild(legendHolder.firstChild);
 </script>
 
-<h2> Your Tests run </h2>
-
-{% for test_result in test_set.tests %}
-Type: {{test_result.device_type}}
-<br>
-DNS: {{test_result.dns_response_avg}}
-<br>
-Latency: {{test_result.latency_avg}}
-<br>
-Packet Loss: {{test_result.packet_loss}}
-<br>
-Download Throughput: {{average(test_result.download_throughputs)}}
-<br>
-Upload Throughput: {{average(test_result.upload_throughputs)}}
-<br>
-Packet Loss Under Load: {{test_result.packet_loss_under_load}}
-<br>
-{% endfor %}
-
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title"> Raw Data </h3>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th> Metric Name </th>
+                <th> Router Data </th>
+                <th> Mobile App Data</th>
+                <tr>
+                    <th>DNS</th>
+                    <td>{{router.dns_response_avg}}</td>
+                    <td>{{mobile.dns_response_avg}}</td>
+                </tr>
+                <tr>
+                    <th>Latency</th>
+                    <td>{{router.latency_avg}}</td>
+                    <td>{{mobile.latency_avg}}</td>
+                </tr>
+                <tr>
+                    <th>Packet Loss</th>
+                    <td>{{router.packet_loss}}</td>
+                    <td>{{mobile.packet_loss}}</td>
+                </tr>
+                <tr>
+                    <th>Download Throughput</th>
+                    <td>{{average(router.download_latencies)}}</td>
+                    <td>{{average(mobile.download_throughputs)}}</td>
+                </tr>
+                <tr>
+                    <th>Upload Throughput</th>
+                    <td>{{average(router.upload_latencies)}}</td>
+                    <td>{{average(mobile.upload_throughputs)}}</td>
+                </tr>
+                <tr>
+            <th>Packet Loss Under Load</th>
+            <td>{{router.packet_loss_under_load}}</td>
+            <td>{{mobile.packet_loss_under_load}}</td>
+        </tr>
+        </table>
+    </div>
+</div>
 {% endblock %}
