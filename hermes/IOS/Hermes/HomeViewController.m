@@ -138,15 +138,17 @@
 //We can determine if there was an error and adjust accordingly
 -(void)notifyLoginHelper:(NSString*)result
 {
-    NSLog(@"Notify Login Helper");
     if([[data sessionId] isEqualToString:@"ERROR"])
     {
+        NSLog(@"Login Error: ERROR");
         HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"You have invalid credentials." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert setType:login];
         [alert show];
+        [data setSessionId:@""];
     }
     else if([[data sessionId] isEqualToString:@"DOMAIN"])
     {
+        NSLog(@"Login Error: Domain");
         HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Login Error" message:@"There was an error finding your server. Are you sure you have the right hostname? Please check the app settings for the correct domain!" delegate:self cancelButtonTitle:@"Ok Ill check!" otherButtonTitles:nil];
         [alert setType: settings];
         [alert show];

@@ -21,6 +21,7 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
     [super viewDidLoad];
     
     //Set the background color
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
     
     if( ([[TestState getStateMachine] mobileResults] == NULL) || ([[[TestState getStateMachine] mobileResults] valid] == false)){
@@ -34,6 +35,8 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         NSLog(@"%@", [url absoluteString]);
         [WebView loadRequest:requestObj];
     }
+    
+    [WebView setHidden:false];
 }
 //We need to tell the web view to use us as a delegate when we appear
 -(void)viewWillAppear:(BOOL)animated{
@@ -54,4 +57,5 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
     [WebView setDelegate:nil];
     [super viewWillDisappear:animated];
 }
+
 @end
