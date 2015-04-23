@@ -27,6 +27,10 @@ void sigchld_hdlr(int sig) {
     g_cond->signal();
 }
 
+/* This just spawns a child that redirects stderr of one
+ * of the other processes to the logger so that things
+ * like Segmentation Fault will show up in the logs rather
+ * than an inexplicable end of log */
 void start_logging_service(int fd) {
     /* start a logging service which will read on
      * fd and wait for input */
@@ -50,10 +54,21 @@ void start_logging_service(int fd) {
     }
 }
 
+/* Start the monitoring service. This is the class that will collect the data
+ * about the usage of the interfaces in the procgram */
 MonitorProxy* start_monitor(MercuryConfig& conf) {
     return MonitorProxy::startMonitor(conf.monitor_datapoints, conf.monitor_interval);
 }
 
+/**
+ * @brief Spawn the main testing child.
+ * 
+ * @param recieve The bytes received in the initaial handshake
+ * @param config The configuration for the start of the child
+ * @param monitor The monitor proxy to retrieve the data from
+ * 
+ * @return The id of the child starte
+ */
 pid_t start_child(byte* recieve, MercuryConfig& config, MonitorProxy* monitor) {
     pid_t ret;
 
