@@ -146,6 +146,10 @@
 -(void) runTestHelper :(NSNotification*) notification
 {
     TestSettings *settings = (TestSettings*)[notification object];
+    if( settings == NULL){
+        NSLog(@"Tester doesn't have settings");
+        return;
+    }
     NSLog(@"Results ID = %d", (int)[settings mobileResultID]);
     
     tester = [[PerformanceTester alloc] init:settings];
