@@ -118,7 +118,7 @@
     }
     else if ([[data hostname] isEqualToString:@""])
     {
-        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Errror" message:@"Invalid Hostname configured." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        HermesAlert *alert = [[HermesAlert alloc] initWithTitle:@"Error" message:@"Invalid Hostname configured." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert setType:settings];
         [alert show];
         return false;
@@ -186,10 +186,11 @@
 {
     NSLog(@"Start Login");
     loading = [[HermesAlert alloc] initWithTitle:@"Logging in" message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
-    
+   
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
     [indicator startAnimating];
+
     [loading setValue:indicator forKey:@"accessoryView"];
     [loading show];
 }

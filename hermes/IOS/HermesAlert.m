@@ -14,6 +14,7 @@
 {
     if( self = [super init])
     {
+        self.frame = CGRectMake(0, 0, 0, 0);
         type = -1;
     }
     return self;
