@@ -52,7 +52,6 @@
 -(void) post:(NSMutableURLRequest*)request :(NSString*)postType :(ResponseHandler*)handlert
 {
     if( handlert != NULL){
-        NSLog(@"Posted with a response");
         self.handler  = handlert;
     }
     [request setTimeoutInterval:6];

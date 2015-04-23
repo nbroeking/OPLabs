@@ -26,6 +26,7 @@
 {
     self = [super init];
     if (self) {
+        NSLog(@"Creating the Session Data Object");
         sessionId = nil;
         hostname = nil;
         email = nil;

@@ -170,10 +170,11 @@ NSString * const StartRouterURL = @"/api/start_test/router";
 -(void) handleStartRouterTest: (NSMutableDictionary*)json{
     NSLog(@"Handle Start Router Test");
     if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
-        
+        NSLog(@"There was a router");
         [settings setRouterResultID:[[json valueForKey:@"result_id"]intValue]];
     }
     else {
+        NSLog(@"There was no router found");
         [settings setRouterResultID:-1];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
