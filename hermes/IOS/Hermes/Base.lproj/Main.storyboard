@@ -22,7 +22,7 @@
                         </userGuides>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ROh-FV-OGd">
-                                <rect key="frame" x="16" y="323" width="568" height="95"/>
+                                <rect key="frame" x="67" y="286" width="467" height="95"/>
                                 <color key="backgroundColor" red="0.40254530178523468" green="0.54748505963137539" blue="0.74733664772727271" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="95" id="q4n-kZ-mAW"/>
@@ -43,7 +43,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RfM-LV-hTN">
-                                <rect key="frame" x="16" y="426" width="568" height="94"/>
+                                <rect key="frame" x="67" y="389" width="467" height="94"/>
                                 <color key="backgroundColor" red="0.40254530179999998" green="0.54748505960000005" blue="0.74733664769999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="94" id="C7l-ky-74w"/>
@@ -59,15 +59,29 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" constant="36" id="1jI-Tw-WRS"/>
+                            <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" constant="73" id="1jI-Tw-WRS"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="trailing" secondItem="ROh-FV-OGd" secondAttribute="trailing" id="5DG-xD-QSN"/>
+                            <constraint firstItem="ROh-FV-OGd" firstAttribute="leading" secondItem="biG-fT-ezx" secondAttribute="leadingMargin" constant="102" id="72l-Vk-vTd"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="RfM-LV-hTN" secondAttribute="trailing" constant="50" id="EhY-Ys-txT"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="8" symbolic="YES" id="RtV-oI-dFR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ROh-FV-OGd" secondAttribute="trailing" constant="50" id="Vbx-Lo-H97"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="8" symbolic="YES" id="XNm-xQ-Z8O"/>
+                            <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="50" id="eE5-qe-hhq"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="centerX" secondItem="hgh-Od-caJ" secondAttribute="centerX" id="gkC-2J-69i"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="biG-fT-ezx" secondAttribute="leadingMargin" id="gm9-XW-GiT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ROh-FV-OGd" secondAttribute="trailing" constant="50" id="hb6-tX-jN8"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="trailing" secondItem="biG-fT-ezx" secondAttribute="trailingMargin" id="nNv-HN-Jmd"/>
+                            <constraint firstItem="ROh-FV-OGd" firstAttribute="leading" secondItem="biG-fT-ezx" secondAttribute="leadingMargin" constant="51" id="rhb-Oa-Bto"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="ROh-FV-OGd" secondAttribute="leading" id="zCP-wg-i5I"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="72l-Vk-vTd"/>
+                                <exclude reference="XNm-xQ-Z8O"/>
+                                <exclude reference="gm9-XW-GiT"/>
+                                <exclude reference="nNv-HN-Jmd"/>
+                            </mask>
+                        </variation>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="CqN-3R-pU8"/>
