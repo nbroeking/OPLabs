@@ -25,8 +25,7 @@
 @synthesize stateMachine;
 @synthesize tester;
 
-+(Tester*) getTester
-{
++(Tester*) getTester{
     static Tester *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -54,9 +53,7 @@
 -(void)startTest
 {
     [stateMachine setState:PREPARING];
-    
     [[Communication getComm] startTest];
-    
 }
 
 

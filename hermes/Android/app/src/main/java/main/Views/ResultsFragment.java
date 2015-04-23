@@ -1,11 +1,13 @@
 package main.Views;
 
 import android.app.Fragment;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -29,19 +31,34 @@ public class ResultsFragment extends Fragment {
                 String.format(ResultsURL, TestState.getInstance().getPhoneResults().getSetId()),
                 SessionData.getInstance().getSessionId());
 
+        browser.setWebViewClient(new MyBrowser());
+
         browser.getSettings().setLoadsImagesAutomatically(true);
         browser.getSettings().setJavaScriptEnabled(true);
         browser.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         browser.loadUrl(url);
+
+
         return view;
     }
 
     private class MyBrowser extends WebViewClient {
         @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            Log.d("Results", "Error with browser");
+        }
+
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
             Log.d("Results", "Should Load the url");
             return true;
+        }
+
+        @Override
+        public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
+            handler.proceed();
         }
     }
 }

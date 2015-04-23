@@ -23,6 +23,7 @@ def assert_valid_config(config):
 
 
 def test_start_mobile(token, set_id):
+    print token
     params = {'user_token':token, 
             'set_id':set_id,
             }

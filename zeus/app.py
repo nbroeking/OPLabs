@@ -12,6 +12,7 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import os
+import logging
 from util.throughput_test import start_server
 
 
@@ -24,6 +25,11 @@ THROUGHPUT_IP, THROUGHPUT_PORT = start_server()
 print "Starting throughput server on %s:%s" % (THROUGHPUT_IP, THROUGHPUT_PORT)
 
 if app.debug:
+    # Global debug level
+    logging.getLogger().setLevel(0)
+
+    # Hide excessive werkzeug stuff
+    logging.getLogger('werkzeug').setLevel(20)
     # This makes debugging a lot easier. Otherwise the current session gets
     # invalidated every time flask reloads itself.
     app.secret_key = 'debug'

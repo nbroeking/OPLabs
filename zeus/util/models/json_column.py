@@ -9,9 +9,11 @@
 """
 
 from app import db
+import logging
 import json
 
 def make_json_list(value):
+    logging.debug("Coercing value into list {%s}", str(value))
     # Try to coerce a string into a list
     if not (isinstance(value, list) or isinstance(value, dict)):
         value = json.loads(value)

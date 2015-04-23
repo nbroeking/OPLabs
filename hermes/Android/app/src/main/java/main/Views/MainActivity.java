@@ -90,4 +90,10 @@ public class MainActivity extends HermesActivity {
         intent.putExtra(SettingsActivity.EXTRA_NO_HEADERS, true);
         startActivity(intent);
     }
+
+    @Override
+    public void goToAbout(View view) {
+        Intent intent = new Intent(this, AboutTestsActivity.class);
+        startActivity(intent);
+    }
 }

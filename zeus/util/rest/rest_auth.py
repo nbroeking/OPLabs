@@ -16,8 +16,6 @@ from functools import wraps
 from util.json_helpers import JSON_FAILURE
 from binascii import unhexlify
 
-INVALID_AUTH = (JSON_FAILURE(), 401)
-
 # This is the magic cookie the router is expecting
 MAGIC_PORT = 8639
 MAGIC_COOKIE_HEX = "e21a14c8a2350a92af1affd6352ba4f39779afb5c12343f0f7141762534aa97e"
@@ -36,7 +34,7 @@ class base_requirement(object):
         if invalid_handler:
             self.invalid_handler = invalid_handler
         else:
-            self.invalid_handler = lambda: INVALID_AUTH
+            self.invalid_handler = lambda: (JSON_FAILURE(), 401)
 
     def __call__(self, route_handler):
         @wraps(route_handler)

@@ -21,15 +21,13 @@ from .account_management import loginportal, register
 from .dashboard import dashboard
 
 from app import app
-
-def average(*iterables):
-    running_sum, running_len = 0, 0
-    for lst in iterables:
-        if lst:
-            running_sum += sum(lst)
-            running_len += len(lst)
-    if running_len == 0:
-        return "None"
-    return running_sum / running_len
+from util.jinja.units import KILOBYTES, MEGABYTES, GIGABYTES, BITS, PERCENT
+from util.jinja.aggregate import average, round_float
 
 app.jinja_env.globals['average'] = average
+app.jinja_env.globals['round'] = round_float
+app.jinja_env.globals['KILOBYTES'] = KILOBYTES
+app.jinja_env.globals['MEGABYTES'] = MEGABYTES
+app.jinja_env.globals['GIGABYTES'] = GIGABYTES
+app.jinja_env.globals['BITS'] = BITS
+app.jinja_env.globals['PERCENT'] = PERCENT

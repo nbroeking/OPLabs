@@ -12,9 +12,9 @@
 #import "PerformanceTester.h"
 
 @interface Throughput()
-@property (weak, nonatomic) TestResults *results;
-@property (weak, nonatomic) TestSettings *settings;
-@property (weak, nonatomic) PerformanceTester* delegate;
+@property (strong, nonatomic) TestResults *results;
+@property (strong, nonatomic) TestSettings *settings;
+@property (strong, nonatomic) PerformanceTester* delegate;
 @property (strong, nonatomic) NSMutableData *data;
 @property (assign, nonatomic) NSInteger downloaded;
 @property (assign, nonatomic) NSTimeInterval start;
@@ -59,6 +59,7 @@
 }
 -(void) runDownloadTest{
     NSLog(@"Starting a download test");
+    
     NSString *urlStr = [settings throughputServer];
     if (![urlStr isEqualToString:@""]) {
         NSURL *website = [NSURL URLWithString:urlStr];

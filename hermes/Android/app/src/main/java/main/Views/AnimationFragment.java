@@ -40,10 +40,10 @@ public class AnimationFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    stateView.setText("State: " +TestState.getInstance().getStateAsString());
+                    stateView.setText(TestState.getInstance().getStateAsString());
                 }
             });
-            Log.d(Tag, "Reseting Timer");
+            Log.d(Tag, "Resetting Timer");
         }
     };
 
@@ -79,7 +79,7 @@ public class AnimationFragment extends Fragment {
         animation.start();
 
         stateView = (TextView)aniView.findViewById(R.id.textView);
-        stateView.setText("State: Preparing");
+        stateView.setText("Preparing");
 
         return aniView;
     }
