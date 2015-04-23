@@ -13,7 +13,6 @@
 @property (strong, nonatomic) IBOutlet UITextField *passwordField;
 
 - (IBAction)Login:(id)sender;
-- (IBAction)SignUp:(id)sender;
 
 -(void)dismissKeyboard;
 @end

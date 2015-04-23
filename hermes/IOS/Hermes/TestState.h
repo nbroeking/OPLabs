@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+//THis is a state machine that keeps track of all information regarding a performance test
+
 #import <Foundation/Foundation.h>
 #import "TestResults.h"
 
@@ -16,6 +18,7 @@ enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROU
 @property(strong, atomic) TestResults *mobileResults;
 @property(strong, atomic) TestResults *routerResults;
 @property(assign, atomic) NSTimeInterval startTime;
+@property(assign, atomic) double totalEstimatedRunTime;
 
 +(TestState*) getStateMachine;
 

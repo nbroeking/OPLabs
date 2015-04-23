@@ -26,6 +26,7 @@
 @synthesize answer;
 @synthesize handler;
 
+//Prepare to collect data
 -(instancetype)init {
     if( self = [super init])
     {
@@ -35,6 +36,8 @@
     }
     return self;
 }
+//Initlizes the object with the communicatin delegate so
+//we know where to report to
 -(instancetype) initWithComm: (Communication*) comm{
     if( self = [super init])
     {
@@ -44,16 +47,8 @@
     }
     return self;
 }
--(instancetype) init: (NSObject*)sender
-{
-    if( self = [super init])
-    {
-        handler = NULL;
-        delegate = (Communication*)sender;
-        answer = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
+
+//Sends a post to the server and set our handler to handlert if there is one
 -(void) post:(NSMutableURLRequest*)request :(NSString*)postType :(ResponseHandler*)handlert
 {
     if( handlert != NULL){
@@ -64,7 +59,7 @@
     type = [[NSString alloc] initWithString:postType];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
-
+//Sends a post to the server and will create a new handler when the return
 -(void) posts:(NSMutableArray*)requestst : (NSString*)postType
 {
     self.requests = requestst;
@@ -75,21 +70,19 @@
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 #pragma mark NSURLConnection Delegate Methods
-
+//When the connection is first established we need to create a place for the data to go
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     responseData = [[NSMutableData alloc] init];
 }
-
+//When we receive data we append it to the buffer we created above
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     // Append the new data to the instance variable you declared
     [responseData appendData:data];
 }
 
+//The request is complete so we handle the json object in the response handler
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     // The request is complete and data has been received
-    // You can parse the stuff in your instance variable now
-    //NSLog(@"Data: %@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
-    
     NSMutableDictionary *json = NULL;
     //Parse JSON
     @try {
@@ -114,6 +107,7 @@
     [self reportData: json];
 }
 
+//If there was an error we report it
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // The request has failed for some reason!
     // Check the error var

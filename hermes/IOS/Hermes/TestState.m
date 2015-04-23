@@ -17,6 +17,7 @@
 @implementation TestState
 @synthesize routerResults, mobileResults, startTime;
 
+//This is a singleton so we need to keep track of only one instance
 +(TestState*) getStateMachine
 {
     @synchronized(self){
@@ -28,7 +29,7 @@
     return sharedInstance;
     }
 }
-
+//Initilize to null
 -(instancetype)init
 {
     if (self = [super init]) {
@@ -38,7 +39,7 @@
     }
     return self;
 }
-
+//Gets the state as a enum
 -(enum State)getState
 {
     @synchronized(self)
@@ -46,6 +47,7 @@
         return state;
     }
 }
+//Returns the state to be displayed
 -(NSString*)getStateAsString{
     switch (state) {
         case IDLE:
@@ -71,19 +73,19 @@
             break;
     }
 }
+//Sets the state
 -(void)setState:(enum State)arg
 {
     @synchronized(self)
     {
         state = arg;
-        NSLog(@"Setting state to %d", arg);
     }
 }
+//This is used if a state needs a timeout. The current implementation doesn't use this
 -(void)timeout:(enum State)arg
 {
     @synchronized(self)
     {
-        //TODO: We should be telling things that there was a timeout
         state = arg;
         NSLog(@"Timeout occured switich to IDLE");
     }

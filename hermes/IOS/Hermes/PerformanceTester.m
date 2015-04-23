@@ -51,6 +51,12 @@
     return self;
 }
 
+//This method will run the test suit in order
+// DNS TEST
+// Latency TEST
+// Packet Loss
+// Then will spawn a thread and run
+// Throughput and load tests at the same time
 -(void)runTests:(Tester *)owner{
     delegate = owner;
     
@@ -108,7 +114,7 @@
         NSLog(@"Error with packet loss");
         [results setValid:false];
     }
-    [results setPacketloss:(1-(([times2 count] + [times1 count]) / ([[settings validDomains] count] + [[settings invalidDomains] count])))];
+    [results setPacketloss:(1.0-(((double)[times2 count] + (double)[times1 count]) / ((double)[[settings validDomains] count] + (double)[[settings invalidDomains] count])))];
     
     NSLog(@"Packet loss = %f percent", [results packetloss]);
 
@@ -124,6 +130,8 @@
 }
 
 //Should run on other thread
+//This method will run a load test calculating latency and packet loss
+//While under load
 -(void) runUnderLoad{
     //Run a test packet latency test
     NSMutableArray *times = [[NSMutableArray alloc] init];
@@ -148,29 +156,30 @@
         [results setLatencyUnderLoad:0.0];
     }
     else {
-        latencyResult /= [times count];
+        latencyResult /= (double)[times count];
         [results setLatencyUnderLoad:latencyResult];
     }
     
-    [results setPacketlossUnderLoad:1- ([times count] / tests*[[settings validDomains]count])];
+    double top = [times count];
+    double bottom = tests*[[settings validDomains] count];
+    double packetLossUnderLoad = 1.0 -(top /bottom);
     
-    //TODO: Signal the other thread to continue
+    [results setPacketlossUnderLoad:packetLossUnderLoad];
     
-    NSLog(@"Latency Under Load Result = %f", latencyResult);
-    NSLog(@"Packet Loss under Load = %f", [results packetloss]);
-    
+    //Signal the Tester thread that we are done
     [lock lock];
     throughputComplete = true;
     [lock signal];
     [lock unlock];
 
 }
-
+//Called by the throughput object when we have completed a upload test
 -(void)completedUpload{
     NSLog(@"Performance test completed a upload");
     [delegate testComplete:results :settings];
 
 }
+//Called by the throughput object when we have completed a download test
 -(void)completedDownload{
     NSLog(@"Performance test completed a download");
     
@@ -180,15 +189,17 @@
         [lock wait];
     }
     [lock unlock];
-    //TODO: RUn an upload test
     
     [throughputHandler runUploadTest];
 }
+
+//Report the results to whover created us aka. the tester object
 -(void)sendResults{
-    NSLog(@"Performance tester is done with the settings");
     [delegate testComplete:results :settings ];
 }
 
+//This will run a dns test by sending x number dns requests and
+//Testing how long it takes for them to return
 -(NSArray *)runDNSTest:(NSMutableArray *)domains{
     
     NSMutableArray *resultTimes = [[NSMutableArray alloc] init];
@@ -210,6 +221,8 @@
     return resultTimes;
 }
 
+//Sends a UDP request
+// Will set the start time for calculating the rtt
 -(Boolean)sendDNSRequest:(NSString *)string withId:(NSInteger)identifier{
     Boolean returncode = true;
 
@@ -225,6 +238,8 @@
     
 }
 
+//Receives the dns response
+//This will set the return time for calculating the rtt
 -(Boolean)getDNSResponse:(NSInteger)identifier{
     
     short recvId = -1;
@@ -261,6 +276,8 @@
    
     return true;
 }
+//We hand craft dns requests using this method.
+//We conform to the DNS standard
 -(NSData *)getContent:(NSString *)name :(NSInteger)identifier{
     NSArray *strings = [name componentsSeparatedByString:@"."];
     

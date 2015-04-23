@@ -37,6 +37,9 @@
 //Stop the subsystem
 -(void) stop;
 
+//Stop the subsystem no matter what state it is in
+-(void) forceStop;
+
 //Checks if the subsystem is running
 -(BOOL) isRunning;
 

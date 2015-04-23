@@ -12,6 +12,7 @@
 #import "TestSettings.h"
 #import "ResponseHandler.h"
 #import "TestResults.h"
+#import "TestState.h"
 
 NSString * const LoginURL = @"/api/auth/login";
 NSString * const StartTestURL = @"/api/test_set/create";
@@ -198,11 +199,30 @@ NSString * const ReportResultURL = @"/api/test_result/%ld/edit";
     }
 }
 //Kill the communication thread cleanly
+-(void)forceStop{
+    @synchronized(self){
+        if(!started)
+        {
+            NSLog(@"Thread is already stopped");
+            return;
+        }
+        
+        shouldRun = false;
+        [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
+    }
+}
+
+//Kill the communication thread cleanly
 -(void)stop{
     @synchronized(self){
         if(!started)
         {
             NSLog(@"Thread is already stopped");
+            return;
+        }
+        TestState *stateMachine = [TestState getStateMachine];
+        if( [stateMachine getState] != IDLE){
+            NSLog(@"We cant shut down communication because we are running a test");
             return;
         }
         shouldRun = false;

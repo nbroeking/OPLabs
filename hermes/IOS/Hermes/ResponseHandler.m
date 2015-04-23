@@ -25,15 +25,9 @@ NSString * const StartRouterURL = @"/api/start_test/router";
 @implementation ResponseHandler
 @synthesize settings;
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        //Generic init
-    }
-    return self;
-}
-
+//Handle a return from the json
+//This decides what kind of post it is and sends it to the specific handler methods
+//below
 -(void)handle:(NSMutableDictionary *)json from:(HermesHttpPost*)owner{
     //Handle
     if( json)
@@ -79,6 +73,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     }
 }
 
+//If it is a login we check for an error and then broadcast our response
 -(void) handleLogin: (NSMutableDictionary*)json{
     if([(NSString*)[json objectForKey:@"status"] isEqualToString:@"success"]){
         [[SessionData getData] setSessionId: [[NSString alloc] initWithString:[json objectForKey:@"user_token"]]];
@@ -90,6 +85,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyLogin" object:(NSString*)[json objectForKey:@"status"]];
 }
 
+//If it was a set id post then we store the set id in a settings object ang give it to our owner
 -(void) handleSetId: (NSMutableDictionary*)json :(HermesHttpPost*)owner {
     
     [settings setSetId:((NSInteger)[[json valueForKey:@"set_id"] intValue])];
@@ -110,7 +106,9 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     NSLog(@"Requesting a start Mobile test");
     [ owner post:request :@"StartMobileTest" :self];
 }
-    
+
+//If it was a start mobile post then we get the test settings from the json and then request a start
+//Router test
 -(void) handleStartMobileTest: (NSMutableDictionary*)json :(HermesHttpPost*)owner {
     NSLog(@"Handle Start Mobile Test");
     
@@ -167,6 +165,8 @@ NSString * const StartRouterURL = @"/api/start_test/router";
      
      [ owner post:request :@"StartRouterTest" :self];
 }
+
+//We just check to make sure the start router test succeded or failed and then notify everyone that we are starting a test
 -(void) handleStartRouterTest: (NSMutableDictionary*)json{
     NSLog(@"Handle Start Router Test");
     if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
@@ -179,6 +179,9 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
 
 }
+//check to make sure that we correctly reported our results
+//NOTE: If we dont we just forget about them. Ideally we would try again
+//But for now we just try once
 -(void) handleStartReportResults: (NSMutableDictionary*)json{
     NSLog(@"Handle Start Report Tests");
     if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {

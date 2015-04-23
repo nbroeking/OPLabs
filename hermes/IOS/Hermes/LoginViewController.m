@@ -45,7 +45,7 @@
     [passwordField setText:[data password]];
 }
 
-
+//Calls to close the keyboard no matter what text field has it open
 -(void)dismissKeyboard
 {
     NSLog(@"Kill the keyboard");
@@ -56,16 +56,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+//Sets all of the fields in the Session data object and then posts a notification to start the login process
 - (IBAction)Login:(id)sender {
     NSLog(@"Login");
     [data setPassword:[passwordField text]];
@@ -75,8 +67,4 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-- (IBAction)SignUp:(id)sender {
-    NSLog(@"SignUp");
-    [[UIApplication sharedApplication] openURL:regURL];
-}
 @end

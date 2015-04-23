@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+//This class provides a wrapper around a c style UDP socket
+
 #import <Foundation/Foundation.h>
 #import "TestSettings.h"
 #import "TestResults.h"

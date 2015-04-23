@@ -37,6 +37,7 @@ public class SettingsActivity extends PreferenceActivity {
         data.setEmail(email);
         data.setPassword(password);
         data.setHostname(hostname);
+        data.setSessionId("");
     }
 
     @Override

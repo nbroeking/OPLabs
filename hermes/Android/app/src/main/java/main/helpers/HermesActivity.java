@@ -17,6 +17,7 @@ import android.view.View;
 import com.oplabs.hermes.R;
 import communication.Communication;
 import main.Application.SessionData;
+import tester.TestState;
 
 //All Activities inherit from this one. It allows us to have universal behavior across all activities
 public abstract class HermesActivity extends Activity {
@@ -73,10 +74,13 @@ public abstract class HermesActivity extends Activity {
 
         if( ActivitesThatNeedService == 0)
         {
-            Log.i("Hermes Activity", "Trying to stop the service");
-            stopService(new Intent(this, Communication.class));
+            if (TestState.getInstance().getState() == TestState.State.IDLE  ||
+                    TestState.getInstance().getState() == TestState.State.COMPLETED) {
+
+                stopService(new Intent(this, Communication.class));
+            }
             //logout
-            data.setSessionId(null);
+
         }
 
         //Unregister the broadcast handler
