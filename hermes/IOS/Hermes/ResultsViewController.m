@@ -19,7 +19,7 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
 //Initilize the view by loading the results page when we are created
 -(void)viewDidLoad{
     [super viewDidLoad];
-    
+  
     //Set the background color
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
@@ -35,6 +35,8 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         NSLog(@"%@", [url absoluteString]);
         [WebView loadRequest:requestObj];
     }
+    
+    [WebView setBackgroundColor:[[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"background"]]];
     
     [WebView setHidden:false];
 }

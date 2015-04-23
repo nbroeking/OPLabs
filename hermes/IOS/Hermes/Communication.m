@@ -25,7 +25,6 @@ NSString * const ReportResultURL = @"/api/test_result/%ld/edit";
 
 -(void) loginToServer: (id) sender;
 -(void) sendRequest:(NSMutableURLRequest*) request :(NSString*)type needsResponse:(BOOL)needsResponse;
-
 @end
 
 @implementation Communication

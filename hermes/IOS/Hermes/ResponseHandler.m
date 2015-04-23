@@ -88,23 +88,29 @@ NSString * const StartRouterURL = @"/api/start_test/router";
 //If it was a set id post then we store the set id in a settings object ang give it to our owner
 -(void) handleSetId: (NSMutableDictionary*)json :(HermesHttpPost*)owner {
     
-    [settings setSetId:((NSInteger)[[json valueForKey:@"set_id"] intValue])];
-    
-    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartMobileURL]]];
-    
-    request.HTTPMethod = @"POST";
-    
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-    
-    NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
-    
-    NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
-    [request setHTTPBody:data];
-    
-    NSLog(@"Requesting a start Mobile test");
-    [ owner post:request :@"StartMobileTest" :self];
+    @try {
+        [settings setSetId:((NSInteger)[[json valueForKey:@"set_id"] intValue])];
+        
+        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartMobileURL]]];
+        
+        request.HTTPMethod = @"POST";
+        
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+        
+        NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
+        
+        NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+        
+        [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+        [request setHTTPBody:data];
+        
+        NSLog(@"Requesting a start Mobile test");
+        [ owner post:request :@"StartMobileTest" :self];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Error Starting getting setId test");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:NULL];
+    }
 }
 
 //If it was a start mobile post then we get the test settings from the json and then request a start
@@ -112,68 +118,75 @@ NSString * const StartRouterURL = @"/api/start_test/router";
 -(void) handleStartMobileTest: (NSMutableDictionary*)json :(HermesHttpPost*)owner {
     NSLog(@"Handle Start Mobile Test");
     
-    NSDictionary *config = (NSDictionary*)[json objectForKey:@"config"];
-    NSDictionary *dns_config = (NSDictionary*)[config objectForKey:@"dns_config"];
-    NSDictionary *throughput_config = (NSDictionary*)[config objectForKey:@"throughput_config"];
-    
-    //Parse the json to get the settings
-    NSArray *jArray = [dns_config objectForKey:@"invalid_names"];
-    
-    if (jArray != NULL) {
-        [[settings invalidDomains] addObjectsFromArray:jArray];
+    @try {
+        NSDictionary *config = (NSDictionary*)[json objectForKey:@"config"];
+        NSDictionary *dns_config = (NSDictionary*)[config objectForKey:@"dns_config"];
+        NSDictionary *throughput_config = (NSDictionary*)[config objectForKey:@"throughput_config"];
+        
+        //Parse the json to get the settings
+        NSArray *jArray = [dns_config objectForKey:@"invalid_names"];
+        
+        if (jArray != NULL) {
+            [[settings invalidDomains] addObjectsFromArray:jArray];
+        }
+        
+        //Get Valid Names
+        jArray = [dns_config objectForKey:@"valid_names"];
+        if (jArray != NULL) {
+            [[settings validDomains] addObjectsFromArray:jArray];
+        }
+        
+        //Set Resolver
+        [settings setDNSServer:[dns_config valueForKey:@"dns_server"]];
+        
+        //Set the timeout
+        [settings setTimeout: [[dns_config valueForKey:@"timeout"] intValue]];
+        
+        //Set the result ID
+        [settings setMobileResultID:[[json valueForKey:@"result_id"] intValue]];
+        
+        
+        //Get the throughput config
+        
+        NSString* server = [throughput_config valueForKey:@"server_ip"] ;
+        NSArray *serverParts = [server componentsSeparatedByString:@":"];
+        
+        [settings setThroughputServer:[serverParts objectAtIndex:0]];
+        [settings setPort:[(NSString*)[serverParts objectAtIndex:1] intValue]];
+        
+        //Request a router start test
+        
+        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartRouterURL]]];
+        
+        request.HTTPMethod = @"POST";
+        
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+        
+        NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
+        
+        
+        NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
+        
+        [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+        [request setHTTPBody:data];
+        
+        [ owner post:request :@"StartRouterTest" :self];
     }
-    
-    //Get Valid Names
-    jArray = [dns_config objectForKey:@"valid_names"];
-    if (jArray != NULL) {
-        [[settings validDomains] addObjectsFromArray:jArray];
+    @catch (NSException *exception) {
+        NSLog(@"Error Starting a mobile test");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:NULL];
     }
-    
-    //Set Resolver
-    [settings setDNSServer:[dns_config valueForKey:@"dns_server"]];
-    
-    //Set the timeout
-    [settings setTimeout: [[dns_config valueForKey:@"timeout"] intValue]];
-    
-    //Set the result ID
-    [settings setMobileResultID:[[json valueForKey:@"result_id"] intValue]];
-    
-    
-    //Get the throughput config
-    
-    NSString* server = [throughput_config valueForKey:@"server_ip"] ;
-    NSArray *serverParts = [server componentsSeparatedByString:@":"];
-    
-    [settings setThroughputServer:[serverParts objectAtIndex:0]];
-    [settings setPort:[(NSString*)[serverParts objectAtIndex:1] intValue]];
-    
-    //Request a router start test
-     
-     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[SessionData getData]hostname], StartRouterURL]]];
-     
-     request.HTTPMethod = @"POST";
-     
-     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-     
-     NSString *postString = [NSString stringWithFormat:@"user_token=%@&set_id=%d", [[SessionData getData] sessionIdEncoded], (int)[settings setId]];
-    
-    
-     NSData *data = [postString dataUsingEncoding:NSUTF8StringEncoding];
-     
-     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
-     [request setHTTPBody:data];
-     
-     [ owner post:request :@"StartRouterTest" :self];
 }
 
 //We just check to make sure the start router test succeded or failed and then notify everyone that we are starting a test
 -(void) handleStartRouterTest: (NSMutableDictionary*)json{
     NSLog(@"Handle Start Router Test");
     if ([[json valueForKey:@"status"] isEqualToString:@"success"]) {
-        
+        NSLog(@"There was a router");
         [settings setRouterResultID:[[json valueForKey:@"result_id"]intValue]];
     }
     else {
+        NSLog(@"There was no router found");
         [settings setRouterResultID:-1];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NotifyStartTest" object:settings];
