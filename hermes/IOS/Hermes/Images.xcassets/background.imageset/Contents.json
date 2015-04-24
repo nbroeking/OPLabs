@@ -1,19 +1,43 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
+      "idiom" : "iphone",
       "scale" : "1x",
-      "filename" : "iphone4.png"
+      "filename" : "iphone.png"
     },
     {
-      "idiom" : "universal",
+      "idiom" : "iphone",
       "scale" : "2x",
-      "filename" : "iphone5-1.png"
+      "filename" : "iphone5.png"
     },
     {
-      "idiom" : "universal",
+      "idiom" : "iphone",
       "scale" : "3x",
-      "filename" : "ipad-1.png"
+      "filename" : "iphone6.png"
+    },
+    {
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "filename" : "ipad.png"
+    },
+    {
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "filename" : "ipadAir.png"
+    },
+    {
+      "idiom" : "watch",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "watch",
+      "screenWidth" : "{130,145}",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "watch",
+      "screenWidth" : "{146,165}",
+      "scale" : "2x"
     }
   ],
   "info" : {

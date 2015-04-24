@@ -23,6 +23,9 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
     //Set the background color
     self.automaticallyAdjustsScrollViewInsets = NO;
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
+    
+    [self.view addSubview:backgroundImage];
     
     if( ([[TestState getStateMachine] mobileResults] == NULL) || ([[[TestState getStateMachine] mobileResults] valid] == false)){
         NSLog(@"Error with results from results view");
@@ -36,7 +39,7 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         [WebView loadRequest:requestObj];
     }
     
-    //[WebView setBackgroundColor:[[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"background"]]];
+    [WebView setBackgroundColor:[[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"background"]]];
     
     [WebView setHidden:false];
 }
