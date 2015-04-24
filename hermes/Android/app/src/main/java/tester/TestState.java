@@ -7,6 +7,7 @@ import tester.helpers.TestMsg;
 
 //Singleton class that allows everyone to know the state of the performance tests
 public class TestState {
+
     //These are the current states that the testing subsystem can be in
     public enum State {IDLE, COMPLETED, PREPARING, TESTINGDNS, TESTINGLATENCY, TESTINGTHROUGHPUT, TESTING }
 
@@ -15,6 +16,7 @@ public class TestState {
     private final static String TAG = "TESTSTATE";
     private Handler handler;
     private TestResults phoneResults;
+    private long startTime;
 
     //Singleton Members
     private static TestState ourInstance = new TestState();
@@ -26,6 +28,7 @@ public class TestState {
         state = State.IDLE;
         handler = null;
         phoneResults = null;
+        startTime = -1;
     }
     //Results
     public TestResults getPhoneResults() {
@@ -39,9 +42,8 @@ public class TestState {
     }
 
     //Returns the state of the tests
-    //Threadsafe
-    public State getState()
-    {
+    //Thread safe
+    public State getState(){
         synchronized (this) {
             return state;
         }
@@ -61,11 +63,15 @@ public class TestState {
 
                 handler.sendMessageDelayed(msg, 20000);
             }
+
+            if( state == State.COMPLETED){
+                startTime = -1;
+            }
             Log.i(TAG, "State changed to " + state.toString());
         }
     }
 
-    //This method specifys how we handle a timout
+    //This method specifys how we handle a timeout
     public void timeout( State type)
     {
         synchronized (this){
@@ -74,7 +80,6 @@ public class TestState {
                 Log.i(TAG, "State Timeout");
                 setState(State.IDLE, false);
                 //Notify lots of people that there was a timeout
-
             }
         }
     }
@@ -103,10 +108,26 @@ public class TestState {
                 return "";
         }
     }
-    //We need explicily tell the statemachine that the handler is the test subsystem
+    //We need explicily tell the state machine that the handler is the test subsystem
     public void setHandler(Handler handler1)
     {
         this.handler = handler1;
     }
+
+    public long getStartTime() {
+        synchronized (this) {
+            if (startTime < 0) {
+                startTime = System.currentTimeMillis();
+            }
+            return startTime;
+        }
+    }
+
+    public void setStartTime(long startTime) {
+        synchronized (this) {
+            this.startTime = startTime;
+        }
+    }
+
 }
 

@@ -36,6 +36,7 @@ public class AnimationFragment extends Fragment {
     private boolean shouldUpdate;
     private AnimationDrawable animation;
     private ProgressBar bar;
+    private static Boolean started = false;
 
     final Runnable updater;
 
@@ -46,7 +47,7 @@ public class AnimationFragment extends Fragment {
             public void run() {
                 stateView.setText(TestState.getInstance().getStateAsString());
 
-                long timediff = System.currentTimeMillis() - start;
+                long timediff = System.currentTimeMillis() - TestState.getInstance().getStartTime();
                 double progress = (double)((((double)timediff)/(double)totalTime));
                 bar.setProgress((int)(100*progress));
 
@@ -84,17 +85,12 @@ public class AnimationFragment extends Fragment {
         View aniView = inflater.inflate(R.layout.fragment_animation, container, false);
 
         ImageView aniImg = (ImageView) aniView.findViewById(R.id.theAnimation);
-        //aniImg.setBackgroundResource(R.drawable.loading_animation);
-
-        //AnimationDrawable animation = (AnimationDrawable) aniImg.getBackground();
 
         aniImg.setAdjustViewBounds(true);
         aniImg.setScaleType(ImageView.ScaleType.FIT_CENTER);
         aniImg.setImageDrawable(getResources().getDrawable(R.drawable.loading_animation));
 
         animation = (AnimationDrawable) aniImg.getDrawable();
-
-
 
         stateView = (TextView)aniView.findViewById(R.id.textView);
         stateView.setText("Preparing");
@@ -103,8 +99,6 @@ public class AnimationFragment extends Fragment {
         bar = (ProgressBar)aniView.findViewById(R.id.progressBar);
         bar.setIndeterminate(false);
         bar.setMax(100);
-
-
         return aniView;
     }
 
@@ -113,11 +107,9 @@ public class AnimationFragment extends Fragment {
         super.onStart();
         animation.start();
 
-        start = System.currentTimeMillis();
         shouldUpdate = true;
         handler.postDelayed(updater, 34);
     }
-
 
     @Override
     public void onStop() {
@@ -125,5 +117,9 @@ public class AnimationFragment extends Fragment {
         //timer.cancel();
         animation.stop();
         shouldUpdate = false;
+
+        if( TestState.getInstance().getState() == TestState.State.COMPLETED){
+            started = false;
+        }
     }
 }

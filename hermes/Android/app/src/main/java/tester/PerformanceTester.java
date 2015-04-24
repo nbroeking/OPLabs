@@ -34,11 +34,14 @@ public class PerformanceTester {
     private long timeStart;
     private long timeEnd;
 
+    private boolean finished;
+
     public PerformanceTester(TestSettings settings1)
     {
         socket = null;
         settings = settings1;
         timeStart = timeEnd = 0;
+
     }
 
     //Return dns, packet latency, packet jitter, packet loss
@@ -121,6 +124,9 @@ public class PerformanceTester {
 
         private TestResults results;
 
+        InputStream inFromServer;
+        OutputStream outToServer;
+
         public ThroughputHelper(TestResults tmpResults){
             results = tmpResults;
         }
@@ -131,8 +137,8 @@ public class PerformanceTester {
             ByteArrayBuffer buffer = new ByteArrayBuffer(1024);
 
             Socket clientSocket = null;
-            InputStream inFromServer = null;
-            OutputStream outToServer = null;
+            inFromServer = null;
+            outToServer = null;
             try {
                 clientSocket = new Socket();
                 clientSocket.setSoTimeout(10000);
@@ -149,6 +155,38 @@ public class PerformanceTester {
                 for(int i = 0 ; i < writeBytes.length; i++) {
                     writeBytes[i] = 'Z';
                 }
+
+                //Set a timeout in case the sockets block
+                finished = false;
+
+                Thread timeout = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (PerformanceTester.this) {
+
+                            try {
+                                Thread.sleep(23000);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error with socket timeout");
+                            }
+                            finally {
+                                //This will timeout the socket
+                                if( !finished) {
+                                    try{
+                                    socket.close();
+                                    outToServer.close();
+                                    inFromServer.close();
+                                    }
+                                    catch (Exception e){
+                                        Log.e(TAG, "Error closing streams in timeout");
+                                    }
+                                    Log.i(TAG, "We timed out our socket");
+                                }
+                            }
+                        }
+                    }
+                });
+                timeout.start();
                 int totalBytesRead = 0;
                 long startTime = System.currentTimeMillis();
                 try {
@@ -162,7 +200,6 @@ public class PerformanceTester {
                 catch (SocketTimeoutException e){
                     Log.w(TAG, "Socket Read Timeout");
                 }
-                //Collect Results
 
                 //Need to report in bytes per second
                 results.setThroughputDownload((double)totalBytesRead/(((System.currentTimeMillis()) - startTime)*1000.0));
@@ -176,8 +213,20 @@ public class PerformanceTester {
                     totalBytesWritten += writeBytes.length;
                 }
 
+                //prevent the timeout from screwing us up
+                synchronized (this){
+                    finished = true;
+                }
                 Log.i(TAG, "Total Bytes written = " + totalBytesWritten);
                 results.setThroughputUpload((double)totalBytesWritten/(double)((System.currentTimeMillis() - startTime)*1000.0));
+
+                try {
+                    Log.i(TAG, "Joining timeout thread");
+                    timeout.join();
+                    Log.i(TAG, "Joined timeout thread");
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Could not join timeout thread");
+                }
 
 
             } catch (IOException e) {
@@ -242,7 +291,7 @@ public class PerformanceTester {
                 results.setLatencyUnderLoad(latencyResult);
             }
             results.setPacketLossUnderLoad(1.0-((double)times.size() / (double)(tests*settings.getValidDomains().size())));
-
+            Log.d(TAG, "Load Completed");
         }
     };
 
@@ -262,7 +311,6 @@ public class PerformanceTester {
                 }
             }
         }
-
         return resultTimes;
     }
 
