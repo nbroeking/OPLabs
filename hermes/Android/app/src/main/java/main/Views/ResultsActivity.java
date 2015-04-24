@@ -24,13 +24,18 @@ import tester.TestResults;
 import tester.TestService;
 import tester.TestState;
 
+//This class controls the activity that has two fragments
+//The animation fragment and the results fragment.
+//It will switch between the two depending on what state we are in
+//It also controls starting and stoping the testing subsystem and service
 public class ResultsActivity extends HermesActivity {
 
     private final String TAG = "HermesResultsActivity";
     private boolean testBound;
     private TestService testService;
 
-    // When created we init everything to a empty state
+    // When created we init everything to a empty state and set the fragment to be
+    //the animation fragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "OnCreate");
@@ -51,7 +56,6 @@ public class ResultsActivity extends HermesActivity {
     {
         TestState stateMachine = TestState.getInstance();
         TestResults latestResults = stateMachine.getPhoneResults();
-
 
         //Start Testing Process if IDLE
         if(stateMachine.getState() == TestState.State.IDLE)
@@ -120,7 +124,6 @@ public class ResultsActivity extends HermesActivity {
         }
 
         //Tell the communication system to stop all loops
-
         if(commService != null) {
             commService.clear();
         }
@@ -128,6 +131,7 @@ public class ResultsActivity extends HermesActivity {
         unregisterReceiver(receiver);
     }
 
+    //When the back button is pressed we report the results page as being viewed
     @Override
     public void onBackPressed() {
         Log.d(TAG, "On back pressed");
@@ -153,6 +157,7 @@ public class ResultsActivity extends HermesActivity {
         startActivity(intent);
     }
 
+    //Show the about page
     @Override
     public void goToAbout(View view) {
         Intent intent = new Intent(this, AboutTestsActivity.class);

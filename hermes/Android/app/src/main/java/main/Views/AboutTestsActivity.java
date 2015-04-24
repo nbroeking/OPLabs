@@ -13,12 +13,15 @@ import main.helpers.HermesActivity;
 /**
  * Created by sfeller on 4/21/15.
  */
+
+//This activity displays information about how tests work
 public class AboutTestsActivity extends HermesActivity {
 
     private final String TAG = "HermesMainActivity";
 
     ProgressDialog dialog;
 
+    //When we create the activity we load the view
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,17 +29,13 @@ public class AboutTestsActivity extends HermesActivity {
         Log.i(TAG, "OnCreate");
     }
 
-    //@Override
-    //protected void onStart() {
-    //    Log.i(TAG, "On Start");
-    //    super.onStart();
-    //}
-
+    //If we need to go to the login page we call go to settings
     @Override
     public void goToLogin(View view) {
         goToSettings(view);
     }
 
+    //Called when the user tries to go to the settings page from the about page
     @Override
     public void goToSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
@@ -45,6 +44,7 @@ public class AboutTestsActivity extends HermesActivity {
         startActivity(intent);
     }
 
+    //Go to the about activity
     @Override
     public void goToAbout(View view) {
         Intent intent = new Intent(this, AboutTestsActivity.class);

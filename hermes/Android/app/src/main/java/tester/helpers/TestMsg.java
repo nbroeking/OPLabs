@@ -1,6 +1,6 @@
 package tester.helpers;
 
-//This class specifiys the messages it expects to receive from the services
+//This class specifics the messages it expects to receive from the services
 public final class TestMsg {
 
     public static final int QUIT = 0;

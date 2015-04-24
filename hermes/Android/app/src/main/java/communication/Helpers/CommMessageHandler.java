@@ -45,6 +45,7 @@ import tester.helpers.TestSettings;
 import static android.os.Message.obtain;
 
 //This handler is running on the Comm Thread and will handle all communication related events
+//In hindsite I would have separated this handler into multiple classes
 public class CommMessageHandler extends Handler {
 
     private final String TAG = "CommMessageHandler";
@@ -55,7 +56,6 @@ public class CommMessageHandler extends Handler {
     private final String ReportResultURL = "/api/test_result/%d/edit";
 
     private SessionData data;
-
     private Boolean ShouldCheck;
 
     public CommMessageHandler()
@@ -191,7 +191,6 @@ public class CommMessageHandler extends Handler {
             postString += "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8");
             postString += "&";
             postString += "set_id=" + URLEncoder.encode(Integer.toString(settings.getSetId()), "UTF-8");
-            postString += "&address=127.0.0.1"; //NOTE: THis is a hack so we always have a router
             post.setEntity(new StringEntity( postString));
 
             //Execute the post

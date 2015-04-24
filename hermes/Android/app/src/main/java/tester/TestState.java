@@ -6,6 +6,7 @@ import android.util.Log;
 import tester.helpers.TestMsg;
 
 //Singleton class that allows everyone to know the state of the performance tests
+//We store all information related to a test here
 public class TestState {
 
     //These are the current states that the testing subsystem can be in
@@ -84,6 +85,7 @@ public class TestState {
         }
     }
 
+    //Returns the state as a string so we can display it on the gui
     public String getStateAsString(){
         switch (state) {
             case IDLE:
@@ -108,7 +110,7 @@ public class TestState {
                 return "";
         }
     }
-    //We need explicily tell the state machine that the handler is the test subsystem
+    //We need explicitly tell the state machine that the handler is the test subsystem
     public void setHandler(Handler handler1)
     {
         this.handler = handler1;
@@ -123,6 +125,7 @@ public class TestState {
         }
     }
 
+    //We keep track of the start time of a throughput test for animation purposes
     public void setStartTime(long startTime) {
         synchronized (this) {
             this.startTime = startTime;

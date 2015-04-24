@@ -40,6 +40,9 @@ public class AnimationFragment extends Fragment {
 
     final Runnable updater;
 
+    //When we create ourselves we need to create the updater that updates the progress bar
+    //I know this is polling and I am embarrassed by this but we need a way to seamlessly update
+    //these values so this is a quick and dirty way to do this.
     public AnimationFragment() {
         shouldUpdate = true;
         updater = new Runnable() {
@@ -64,6 +67,7 @@ public class AnimationFragment extends Fragment {
         };
     }
 
+    //Create the timer and set the updater
     private Timer timer = new Timer();
     private TimerTask timerTask = new TimerTask() {
         @Override
@@ -79,6 +83,7 @@ public class AnimationFragment extends Fragment {
         }
     };
 
+    //When we create the view we have to load the animation and the progress bar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,6 +107,7 @@ public class AnimationFragment extends Fragment {
         return aniView;
     }
 
+    //On start we start updating the animation and the updater
     @Override
     public void onStart() {
         super.onStart();
@@ -111,6 +117,7 @@ public class AnimationFragment extends Fragment {
         handler.postDelayed(updater, 34);
     }
 
+    //When the activity stops we stop all animation so we don't waist cpu
     @Override
     public void onStop() {
         super.onStop();
