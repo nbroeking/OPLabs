@@ -62,9 +62,14 @@
                             <constraint firstAttribute="centerY" secondItem="ROh-FV-OGd" secondAttribute="centerY" constant="-47.5" id="RfK-JR-5JK"/>
                             <constraint firstAttribute="centerX" secondItem="ROh-FV-OGd" secondAttribute="centerX" id="VOP-tN-kFz"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="28" id="fw2-Ne-ii3"/>
+                            <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="top" constant="-208" id="vzr-3d-iWV"/>
+                            <constraint firstAttribute="centerY" secondItem="ROh-FV-OGd" secondAttribute="centerY" constant="-37.5" id="yEy-Vs-81Q"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="G71-IZ-Xwn"/>
+                                <exclude reference="NUD-kz-EoT"/>
+                                <exclude reference="fw2-Ne-ii3"/>
                                 <exclude reference="72l-Vk-vTd"/>
                                 <exclude reference="RfK-JR-5JK"/>
                             </mask>
