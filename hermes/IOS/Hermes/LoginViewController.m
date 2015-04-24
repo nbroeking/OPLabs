@@ -24,7 +24,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     //Set the background color
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
+    
+    [self.view addSubview:backgroundImage];
     
     //Get Data Singleton
     data = [SessionData getData];

@@ -41,7 +41,10 @@
     total = 25;
     
     //Set the background color
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
+    
+    [self.view addSubview:backgroundImage];
     
     stateMachine = [TestState getStateMachine];
     
@@ -58,7 +61,7 @@
     [self updateLabel];
     //Animation stuff
     // Load images
-    NSArray *imageNames = @[@"ani2_1.png", @"ani2_2.png", @"ani2_3.png", @"ani2_4.png",@"ani2_5.png", @"ani2_6.png",@"ani2_7.png", @"ani2_8.png",@"ani2_9.png", @"ani2_10.png",];
+    NSArray *imageNames = @[@"ani_1.png", @"ani_2.png", @"ani_3.png", @"ani_4.png",@"ani_5.png", @"ani_6.png",@"ani_7.png", @"ani_8.png"];
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (int i = 0; i < imageNames.count; i++) {
