@@ -43,10 +43,30 @@ def set_summary(set_id):
     else:
         tput_units = lambda x: KILOBYTES(BITS(x))
         tput_units_name = "Kilobits"
+    
+    intf_stats = {} # interface_name :: String -> list of downloads
+    for i in router.interface_stats:
+        intf_name = i["intf"]
+        if intf_name not in intf_stats:
+            intf_stats[intf_name] = []
+        intf_stats[intf_name].append([i["tx_bytes"], i["timestamp"] / 1000.0])
 
+    print "intf_stats:", intf_stats["eth1"]
+    def derivative(lst): # takes [(bytes, timestamp)] -> ([bytes], [timestamp])
+        ret_bytes = []
+        ret_ts = []
+        ts_most = lst[-1][1]
+        for i in range(len(lst)-1):
+            ret_bytes.append((lst[i+1][0] - lst[i][0]) / 1000000.0)
+            ret_ts.append(ts_most - lst[i][1])
+        return (ret_bytes, ret_ts)
+
+    (bytes_d, ts_d) = derivative(intf_stats["eth1"])
     return render_template('set_summary.html',
             router=router,
             mobile=mobile,
             tput_units=tput_units,
             tput_units_name=tput_units_name,
+            eth1_ts=ts_d,
+            eth1_bytes=bytes_d
             )

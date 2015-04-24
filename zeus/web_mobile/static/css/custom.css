@@ -48,11 +48,11 @@ p.modalDescText {
 #myBanner {
     padding-top: 50px;
     width: 100%;
-    background-color: blue;
-    background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(#96c3f6, #5698f1 ); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(#96c3f6, #5698f1 ); /* Standard syntax (must be last) */
+    /* background-color: blue;
+    /* background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
+    /* background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
+    /* background: -moz-linear-gradient(#96c3f6, #5698f1 ); /* For Firefox 3.6 to 15 */
+    /* background: linear-gradient(#96c3f6, #5698f1 ); /* Standard syntax (must be last) */
 }
 
 #myBanner img {
@@ -110,6 +110,23 @@ p {
 }
 
 body {
+  background-image: url('../images/background-full_720.png');
+  background-position: center top;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+html {
+    height: 100%;
+}
+
+.background_image {
+  background-image: url('../images/background-full_720.png');
+  background-position: center top;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 footer {
@@ -135,21 +152,21 @@ footer {
 }
 
 .container {
-    background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(#96c3f6, #5698f1 ); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(#96c3f6, #5698f1 ); /* Standard syntax (must be last) */
+  background: -webkit-linear-gradient(#96c3f6, #5698f1 ); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#96c3f6, #5698f1 ); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#96c3f6, #5698f1 ); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#96c3f6, #5698f1 ); /* Standard syntax (must be last) */
 
     color: white;
 }
 
 .legend-container {
     text-align: center;
-    margin-top: 5pt;
-    margin-left: auto;
-    margin-right: auto;
-    width:150px;
-
+    margin-top: 5pt;b
+    margin-left: autbo;
+    margin-right: aubto;
+    width:150px;    b
+                    b
 }
 
 .legend-color {
