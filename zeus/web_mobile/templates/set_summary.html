@@ -225,4 +225,48 @@ var legendHolder = document.createElement('div');
 legendHolder.innerHTML = chart1.generateLegend();
 document.getElementById('legend').appendChild(legendHolder.firstChild);
 </script>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title"> Raw Data </h3>
+    </div>
+    <div class="panel-body">
+        <table class="table raw-data-table small">
+            <tr>
+                <th> Metric Name </th>
+                <th> Router Data </th>
+                <th> Mobile App Data</th>
+                <tr>
+                    <th>DNS</th>
+                    <td>{{round(router.dns_response_avg, 2)}}ms</td>
+                    <td>{{round(mobile.dns_response_avg, 2)}}ms</td>
+                </tr>
+                <tr>
+                    <th>Latency</th>
+                    <td>{{round(router.latency_avg, 2)}}ms</td>
+                    <td>{{round(mobile.latency_avg, 2)}}ms</td>
+                </tr>
+                <tr>
+                    <th>Packet Loss</th>
+                    <td>{{PERCENT(router.packet_loss)}}</td>
+                    <td>{{PERCENT(mobile.packet_loss)}}</td>
+                </tr>
+                <tr>
+                    <th>Download Throughput</th>
+                    <td>{{round(average(router.download_throughputs), 2)}} {{tput_units_name}}</td>
+                    <td>{{round(average(mobile.download_throughputs), 2)}} {{tput_units_name}}</td>
+                </tr>
+                <tr>
+                    <th>Upload Throughput</th>
+                    <td>{{round(average(router.upload_throughputs), 2)}} {{tput_units_name}}</td>
+                    <td>{{round(average(mobile.upload_throughputs), 2)}} {{tput_units_name}}</td>
+                </tr>
+                <tr>
+            <th>Packet Loss Under Load</th>
+            <td>{{PERCENT(router.packet_loss_under_load)}}</td>
+            <td>{{PERCENT(mobile.packet_loss_under_load)}}</td>
+        </tr>
+        </table>
+    </div>
+</div>
 {% endblock %}

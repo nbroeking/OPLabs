@@ -23,7 +23,7 @@ def set_summary(set_id):
     router = [aset for aset in test_set.tests if aset.device_type == 'router'][0]
     mobile = [aset for aset in test_set.tests if aset.device_type == 'mobile'][0]
 
-    tputs = []
+    tputs = [0]
     if router.download_throughputs:
        tputs += router.download_throughputs
     if router.upload_throughputs:
