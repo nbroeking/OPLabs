@@ -52,7 +52,7 @@ public class MainActivity extends HermesActivity {
         Log.e(TAG, "Start Login: Showing spinner");
         dialog = new ProgressDialog(this);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setMessage("Logging On .......");
+        dialog.setMessage("Logging On ...");
         dialog.setIndeterminate(true);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
