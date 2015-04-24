@@ -33,6 +33,9 @@ import tester.helpers.TestSettings;
  * at the same time then we run a throughput test
  * and a load test
  */
+
+//NOTE: There is a bug with the upload throughput test
+//Java does not let us know how many bytes we wrote so we estimate
 public class PerformanceTester {
     private final static String TAG = "Performance Tests";
     private TestSettings settings;
