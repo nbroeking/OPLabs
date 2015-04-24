@@ -128,6 +128,7 @@ public class CommMessageHandler extends Handler {
     //This method reports our test to the controller
     private void reportTest(TestResults results){
         HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getMobileId()));
+
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -411,6 +412,7 @@ public class CommMessageHandler extends Handler {
             HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
             HttpProtocolParams.setUseExpectContinue(params, true);
             HttpConnectionParams.setConnectionTimeout(params, 8000);
+            HttpConnectionParams.setSoTimeout(params, 8000);
 
             SchemeRegistry schReg = new SchemeRegistry();
             schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
