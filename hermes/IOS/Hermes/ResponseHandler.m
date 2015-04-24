@@ -32,6 +32,7 @@ NSString * const StartRouterURL = @"/api/start_test/router";
     //Handle
     if( json)
     {
+        //NSLog(@"Json: %@", json);
         if ( [(NSString*)[json objectForKey:@"POST_TYPE"] isEqualToString:@"Login"]) {
             
             [self handleLogin:json];

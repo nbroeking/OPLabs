@@ -4,6 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Home-->
@@ -22,7 +23,7 @@
                         </userGuides>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ROh-FV-OGd">
-                                <rect key="frame" x="126" y="303" width="350" height="95"/>
+                                <rect key="frame" x="125" y="300" width="350" height="95"/>
                                 <color key="backgroundColor" red="0.40254530178523468" green="0.54748505963137539" blue="0.74733664772727271" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="350" id="4Vb-jD-eCQ"/>
@@ -36,24 +37,8 @@
                                     <action selector="MoveToTesting:" destination="9Ls-CO-OvT" eventType="touchUpInside" id="RCd-0H-ZGT"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="hgh-Od-caJ">
-                                <rect key="frame" x="129" y="89" width="343" height="164"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="343" id="Add-Fp-dcr"/>
-                                    <constraint firstAttribute="width" secondItem="hgh-Od-caJ" secondAttribute="height" multiplier="343:164" id="DUg-QM-GqU"/>
-                                    <constraint firstAttribute="width" constant="343" id="HVr-gD-qv0"/>
-                                    <constraint firstAttribute="height" constant="164" id="klV-3y-TCc"/>
-                                    <constraint firstAttribute="height" constant="164" id="svr-S7-IXM"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="Add-Fp-dcr"/>
-                                        <exclude reference="klV-3y-TCc"/>
-                                    </mask>
-                                </variation>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RfM-LV-hTN">
-                                <rect key="frame" x="126" y="406" width="350" height="95"/>
+                                <rect key="frame" x="125" y="403" width="350" height="95"/>
                                 <color key="backgroundColor" red="0.40254530179999998" green="0.54748505960000005" blue="0.74733664769999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="95" id="U8H-N0-fqT"/>
@@ -72,18 +57,34 @@
                                     <action selector="goToSettings:" destination="9Ls-CO-OvT" eventType="touchUpInside" id="osG-aw-PuP"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="hgh-Od-caJ">
+                                <rect key="frame" x="129" y="92" width="343" height="164"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="343" id="Add-Fp-dcr"/>
+                                    <constraint firstAttribute="width" secondItem="hgh-Od-caJ" secondAttribute="height" multiplier="343:164" id="DUg-QM-GqU"/>
+                                    <constraint firstAttribute="width" constant="343" id="HVr-gD-qv0"/>
+                                    <constraint firstAttribute="height" constant="164" id="klV-3y-TCc"/>
+                                    <constraint firstAttribute="height" constant="164" id="svr-S7-IXM"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Add-Fp-dcr"/>
+                                        <exclude reference="klV-3y-TCc"/>
+                                    </mask>
+                                </variation>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="ROh-FV-OGd" secondAttribute="leading" id="1zL-BC-eIE"/>
+                            <constraint firstItem="bWt-4N-fY2" firstAttribute="top" secondItem="RfM-LV-hTN" secondAttribute="bottom" multiplier="4:3" constant="-108" id="5x5-yw-VlE"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="leading" secondItem="biG-fT-ezx" secondAttribute="leadingMargin" constant="102" id="72l-Vk-vTd"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="ROh-FV-OGd" secondAttribute="leading" id="HI2-pI-1hz"/>
-                            <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="50" id="K4a-LQ-ErV"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="centerX" secondItem="ROh-FV-OGd" secondAttribute="centerX" id="NUD-kz-EoT"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="centerX" secondItem="biG-fT-ezx" secondAttribute="centerX" id="OZL-JT-ruQ"/>
                             <constraint firstItem="ROh-FV-OGd" firstAttribute="trailing" secondItem="RfM-LV-hTN" secondAttribute="trailing" id="RGH-4Z-Ot4"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="8" symbolic="YES" id="XNm-xQ-Z8O"/>
-                            <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="25" id="fw2-Ne-ii3"/>
+                            <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="28" id="fw2-Ne-ii3"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="leading" secondItem="biG-fT-ezx" secondAttribute="leadingMargin" id="gm9-XW-GiT"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="trailing" secondItem="biG-fT-ezx" secondAttribute="trailingMargin" id="nNv-HN-Jmd"/>
                             <constraint firstItem="RfM-LV-hTN" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="8" symbolic="YES" id="whO-vW-biU"/>

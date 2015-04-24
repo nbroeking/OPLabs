@@ -30,8 +30,19 @@
     //Set the background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
 
+    //If the settings changed
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(defaultsChanged:)
+                                                 name:NSUserDefaultsDidChangeNotification
+                                               object:nil];
 }
 
+-(void) defaultsChanged :(NSNotification*) notification{
+    NSLog(@"Values Changed");
+    
+    [[SessionData getData] setSessionId:@""];
+    
+}
 //When we are done testing we need to move to the new testing view. Depending on the state we can either move to the animation or the results page
 - (IBAction)MoveToTesting:(id)sender {
     //NSLog(@"Run Test was pressed");
