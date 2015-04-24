@@ -6,11 +6,13 @@ import android.util.Log;
 import org.apache.http.util.ByteArrayBuffer;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -137,8 +139,7 @@ public class PerformanceTester {
             ByteArrayBuffer buffer = new ByteArrayBuffer(1024);
 
             Socket clientSocket = null;
-            inFromServer = null;
-            outToServer = null;
+
             try {
                 clientSocket = new Socket();
                 clientSocket.setSoTimeout(10000);
@@ -187,6 +188,8 @@ public class PerformanceTester {
                     }
                 });
                 timeout.start();
+
+                //Running a download test
                 int totalBytesRead = 0;
                 long startTime = System.currentTimeMillis();
                 try {
@@ -200,11 +203,12 @@ public class PerformanceTester {
                 catch (SocketTimeoutException e){
                     Log.w(TAG, "Socket Read Timeout");
                 }
-
                 //Need to report in bytes per second
-                results.setThroughputDownload((double)totalBytesRead/(((System.currentTimeMillis()) - startTime)*1000.0));
+                results.setThroughputDownload((double)totalBytesRead/(((System.currentTimeMillis()) - startTime)/1000.0));
 
                 Log.i(TAG, "Total Bytes Read = " + totalBytesRead);
+
+                //Running an upload test
                 long totalBytesWritten = 0;
 
                 startTime = System.currentTimeMillis();
@@ -212,13 +216,15 @@ public class PerformanceTester {
                     outToServer.write(writeBytes);
                     totalBytesWritten += writeBytes.length;
                 }
+                long endTime = System.currentTimeMillis();
 
                 //prevent the timeout from screwing us up
                 synchronized (this){
                     finished = true;
                 }
+
                 Log.i(TAG, "Total Bytes written = " + totalBytesWritten);
-                results.setThroughputUpload((double)totalBytesWritten/(double)((System.currentTimeMillis() - startTime)*1000.0));
+                results.setThroughputUpload((double)totalBytesWritten/(double)((endTime - startTime)/1000.0));
 
                 try {
                     Log.i(TAG, "Joining timeout thread");
