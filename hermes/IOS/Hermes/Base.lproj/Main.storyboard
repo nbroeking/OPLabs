@@ -6,6 +6,52 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
+        <!--About-->
+        <scene sceneID="3fc-d8-swg">
+            <objects>
+                <viewController title="About" id="YsK-O3-5sZ" customClass="AboutViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="a2a-hp-xPi"/>
+                        <viewControllerLayoutGuide type="bottom" id="7W7-fB-ped"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="H6m-Xw-z3X">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zqh-5d-wLs">
+                                <rect key="frame" x="36" y="20" width="528" height="600"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <mutableString key="text">Throughput Sustained throughput (or Bandwidth) is the rate at which you can download data from the internet onto your computer. The larger this number is, the less time it takes to download pictures, song and movies.  Latency Latency is how long it takes a single bit of data to travel from the internet to your computer. High latency increases the initial delay to load a webpage, and is the phenomenon known in online gaming as 'Lag'.  DNS Response Time DNS is the service which translates domain names (i.e. example.com) into and internet addresses. High DNS response latency can translate into large delays when initially accessing a website.  Packet Loss Packet loss describes the percentage of packets loss in transit to their destination. This can seriously affect realtime applications, such as voice or video chats, or certain online games.  Latency Under Load Latency Under Load refers to variations in latency that can occur when your internet connection is heavily utilized. Sometimes this utilization can cause packets to be delayed or lost in transit.</mutableString>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="zqh-5d-wLs" firstAttribute="leading" secondItem="H6m-Xw-z3X" secondAttribute="leading" id="2W2-QF-UmW"/>
+                            <constraint firstItem="zqh-5d-wLs" firstAttribute="top" secondItem="H6m-Xw-z3X" secondAttribute="topMargin" constant="20" id="CzQ-hz-zeF"/>
+                            <constraint firstAttribute="bottom" secondItem="zqh-5d-wLs" secondAttribute="bottom" id="Gxq-QQ-hZg"/>
+                            <constraint firstAttribute="trailing" secondItem="zqh-5d-wLs" secondAttribute="trailing" id="N1O-Gg-XGf"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zqh-5d-wLs" secondAttribute="trailing" constant="20" id="gDu-57-mEn"/>
+                            <constraint firstItem="zqh-5d-wLs" firstAttribute="top" secondItem="H6m-Xw-z3X" secondAttribute="top" id="kKq-Ox-26v"/>
+                            <constraint firstItem="zqh-5d-wLs" firstAttribute="bottom" secondItem="H6m-Xw-z3X" secondAttribute="bottomMargin" constant="20" id="mpg-Z7-Puo"/>
+                            <constraint firstItem="zqh-5d-wLs" firstAttribute="leading" secondItem="H6m-Xw-z3X" secondAttribute="leadingMargin" constant="20" id="oIp-ei-7cV"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="2W2-QF-UmW"/>
+                                <exclude reference="Gxq-QQ-hZg"/>
+                                <exclude reference="N1O-Gg-XGf"/>
+                                <exclude reference="kKq-Ox-26v"/>
+                            </mask>
+                        </variation>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="35b-0a-lkg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1241" y="-405"/>
+        </scene>
         <!--Home-->
         <scene sceneID="BFA-9N-ouI">
             <objects>
@@ -36,14 +82,29 @@
                                     <action selector="MoveToTesting:" destination="9Ls-CO-OvT" eventType="touchUpInside" id="RCd-0H-ZGT"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5HF-fT-BWW">
+                                <rect key="frame" x="200" y="388" width="200" height="75"/>
+                                <color key="backgroundColor" red="0.1176470588" green="0.78039215689999997" blue="0.55294117649999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="DPG-wN-CFC"/>
+                                    <constraint firstAttribute="height" constant="75" id="yx8-L1-ei4"/>
+                                </constraints>
+                                <state key="normal" title="About the Tests">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="MoveToAbout:" destination="9Ls-CO-OvT" eventType="touchUpInside" id="TJy-wc-J8i"/>
+                                </connections>
+                            </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="hgh-Od-caJ">
-                                <rect key="frame" x="129" y="92" width="343" height="164"/>
+                                <rect key="frame" x="-43" y="-36" width="686" height="328"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="343" id="Add-Fp-dcr"/>
                                     <constraint firstAttribute="width" secondItem="hgh-Od-caJ" secondAttribute="height" multiplier="343:164" id="DUg-QM-GqU"/>
-                                    <constraint firstAttribute="width" constant="343" id="HVr-gD-qv0"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="686" id="HVr-gD-qv0"/>
                                     <constraint firstAttribute="height" constant="164" id="klV-3y-TCc"/>
-                                    <constraint firstAttribute="height" constant="164" id="svr-S7-IXM"/>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="328" id="svr-S7-IXM"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -60,7 +121,10 @@
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="centerX" secondItem="ROh-FV-OGd" secondAttribute="centerX" id="NUD-kz-EoT"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="centerX" secondItem="biG-fT-ezx" secondAttribute="centerX" id="OZL-JT-ruQ"/>
                             <constraint firstAttribute="centerY" secondItem="ROh-FV-OGd" secondAttribute="centerY" constant="-47.5" id="RfK-JR-5JK"/>
+                            <constraint firstItem="5HF-fT-BWW" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="bottom" constant="13" id="Rrg-qL-LWi"/>
                             <constraint firstAttribute="centerX" secondItem="ROh-FV-OGd" secondAttribute="centerX" id="VOP-tN-kFz"/>
+                            <constraint firstItem="ROh-FV-OGd" firstAttribute="top" secondItem="hgh-Od-caJ" secondAttribute="bottom" constant="8" id="bhL-4X-HhL"/>
+                            <constraint firstAttribute="centerX" secondItem="5HF-fT-BWW" secondAttribute="centerX" id="cMW-Ws-tZX"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="m0N-cb-dPf" secondAttribute="bottom" constant="28" id="fw2-Ne-ii3"/>
                             <constraint firstItem="hgh-Od-caJ" firstAttribute="top" secondItem="ROh-FV-OGd" secondAttribute="top" constant="-208" id="vzr-3d-iWV"/>
                             <constraint firstAttribute="centerY" secondItem="ROh-FV-OGd" secondAttribute="centerY" constant="-37.5" id="yEy-Vs-81Q"/>
@@ -70,6 +134,7 @@
                                 <exclude reference="G71-IZ-Xwn"/>
                                 <exclude reference="NUD-kz-EoT"/>
                                 <exclude reference="fw2-Ne-ii3"/>
+                                <exclude reference="vzr-3d-iWV"/>
                                 <exclude reference="72l-Vk-vTd"/>
                                 <exclude reference="RfK-JR-5JK"/>
                             </mask>
@@ -83,6 +148,7 @@
                         <segue destination="bey-In-emy" kind="show" identifier="LoginSegue" id="iID-D1-ShE"/>
                         <segue destination="CN9-Dd-hfT" kind="show" identifier="Testing" id="5j9-yE-F0s"/>
                         <segue destination="whj-mR-dGq" kind="show" identifier="Results" id="irD-Ya-hgH"/>
+                        <segue destination="YsK-O3-5sZ" kind="show" identifier="About" id="Aup-1a-QLT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yJ6-xv-WrE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -102,19 +168,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="fft-me-w21">
-                                <rect key="frame" x="129" y="89" width="343" height="164"/>
+                                <rect key="frame" x="-43" y="89" width="687" height="328"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="164" id="gLR-DJ-vtG"/>
-                                    <constraint firstAttribute="width" constant="343" id="yxV-mm-vmt"/>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="328" id="gLR-DJ-vtG"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="686" id="yxV-mm-vmt"/>
                                 </constraints>
                             </imageView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fe4-0L-gex">
-                                <rect key="frame" x="187" y="261" width="226" height="30"/>
+                                <rect key="frame" x="187" y="425" width="226" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0UH-kj-7xr">
-                                <rect key="frame" x="187" y="299" width="226" height="30"/>
+                                <rect key="frame" x="187" y="463" width="226" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="226" id="iXL-eW-KjI"/>
                                 </constraints>
@@ -122,7 +188,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-rq-a15">
-                                <rect key="frame" x="200" y="379" width="200" height="75"/>
+                                <rect key="frame" x="200" y="543" width="200" height="75"/>
                                 <color key="backgroundColor" red="0.1176470588" green="0.78039215689999997" blue="0.55294117649999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="PYN-Lb-BEi"/>

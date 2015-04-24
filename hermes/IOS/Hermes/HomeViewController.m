@@ -19,6 +19,7 @@
 @implementation HomeViewController
 @synthesize data, loading;
 @synthesize RunTestsButton;
+@synthesize AboutTestsButton;
 
 //When the view is loaded we add ourselves to the notification center watch list
 - (void)viewDidLoad {
@@ -59,6 +60,12 @@
             [self performSegueWithIdentifier:@"Results" sender:self];
         }
     }
+}
+
+//Move to the page that has descriptions of the tests
+- (IBAction)MoveToAbout:(id)sender {
+    //NSLog(@"Run Test was pressed");
+    [self performSegueWithIdentifier:@"About" sender:self];
 }
 
 //When the view is about to be shown we have to adjust for our states

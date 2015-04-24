@@ -14,6 +14,7 @@
 
 @property (strong, nonatomic) SessionData* data;
 @property (strong, nonatomic) IBOutlet UIButton *RunTestsButton;
+@property (strong, nonatomic) IBOutlet UIButton *AboutTestsButton;
 
 - (IBAction)goToSettings:(id)sender;
 -(BOOL) checkLogin;

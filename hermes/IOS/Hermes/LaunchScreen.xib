@@ -12,7 +12,7 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="E7d-WZ-R5z">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="E7d-WZ-R5z">
                     <rect key="frame" x="0.0" y="-836" width="600" height="2272"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="2272" id="usj-aR-ycd"/>
@@ -24,14 +24,14 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Nec-nc-yTh">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Nec-nc-yTh">
                     <rect key="frame" x="129" y="103" width="343" height="164"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="164" id="Dam-hK-1DE"/>
+                        <constraint firstAttribute="height" relation="lessThanOrEqual" constant="328" id="Dam-hK-1DE"/>
                         <constraint firstAttribute="height" constant="164" id="Edr-xJ-hSr"/>
                         <constraint firstAttribute="width" secondItem="Nec-nc-yTh" secondAttribute="height" multiplier="343:164" id="JFA-mT-oSz"/>
                         <constraint firstAttribute="width" constant="343" id="XVT-ua-818"/>
-                        <constraint firstAttribute="width" constant="343" id="x9q-18-lOs"/>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="686" id="x9q-18-lOs"/>
                     </constraints>
                     <variation key="default">
                         <mask key="constraints">
@@ -45,21 +45,29 @@
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="103" id="6xo-od-cr2"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="Nec-nc-yTh" secondAttribute="centerY" constant="115" id="CMZ-zs-izN"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="Nec-nc-yTh" secondAttribute="centerY" constant="115" id="GmC-G3-696"/>
                 <constraint firstItem="E7d-WZ-R5z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="KmP-9f-qCj"/>
                 <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="Kzo-t9-V3l"/>
                 <constraint firstItem="8ie-xW-0ye" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="MfP-vx-nX0"/>
                 <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Vd9-Yo-4b3"/>
                 <constraint firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="ZEH-qu-HZ9"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="59" id="b0g-ar-pVN"/>
+                <constraint firstItem="Nec-nc-yTh" firstAttribute="leading" secondItem="E7d-WZ-R5z" secondAttribute="trailing" constant="-471" id="bS6-7O-WNJ"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="topMargin" id="gdN-by-IhB"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="nS6-II-era"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerX" secondItem="Nec-nc-yTh" secondAttribute="centerX" constant="-0.5" id="pMq-TS-osZ"/>
                 <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerX" secondItem="Nec-nc-yTh" secondAttribute="centerX" id="uia-Ua-8Kc"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <variation key="default">
                 <mask key="constraints">
+                    <exclude reference="6xo-od-cr2"/>
                     <exclude reference="b0g-ar-pVN"/>
+                    <exclude reference="bS6-7O-WNJ"/>
                     <exclude reference="gdN-by-IhB"/>
+                    <exclude reference="nS6-II-era"/>
+                    <exclude reference="CMZ-zs-izN"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="555" y="467"/>
