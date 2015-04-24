@@ -45,6 +45,7 @@ import tester.helpers.TestSettings;
 import static android.os.Message.obtain;
 
 //This handler is running on the Comm Thread and will handle all communication related events
+//In hindsite I would have separated this handler into multiple classes
 public class CommMessageHandler extends Handler {
 
     private final String TAG = "CommMessageHandler";
@@ -55,7 +56,6 @@ public class CommMessageHandler extends Handler {
     private final String ReportResultURL = "/api/test_result/%d/edit";
 
     private SessionData data;
-
     private Boolean ShouldCheck;
 
     public CommMessageHandler()
