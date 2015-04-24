@@ -36,7 +36,7 @@
                                                  name:NSUserDefaultsDidChangeNotification
                                                object:nil];
 }
-
+//This method is called when settings
 -(void) defaultsChanged :(NSNotification*) notification{
     NSLog(@"Values Changed");
     
