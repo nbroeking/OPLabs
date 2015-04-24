@@ -13,10 +13,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import os
 import logging
+from util.debug import before_request
 from util.throughput_test import start_server
 
 
 app = Flask(__name__, static_url_path='/noop/')
+app.before_request(before_request)
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 app.debug = config.DEBUG
 db = SQLAlchemy(app)
