@@ -4,9 +4,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 
-<h2> Test Results </h2>
+<h2 style="color:white"> Test Results </h2>
 
-<h4> Compare Your Router and Mobile Test Results Below<h4>
+<h4 style="color:white"> Compare Your Router and Mobile Test Results Below<h4>
 <div class="row">
     <div class="col-sm-6">
         <div class="panel panel-primary">
@@ -55,13 +55,13 @@
                 <th> Mobile App Data</th>
                 <tr>
                     <th>DNS</th>
-                    <td>{{round(router.dns_response_avg, 2)}}ms</td>
-                    <td>{{round(mobile.dns_response_avg, 2)}}ms</td>
+                    <td>{{round(router.dns_response_avg, 2)}} ms</td>
+                    <td>{{round(mobile.dns_response_avg, 2)}} ms</td>
                 </tr>
                 <tr>
                     <th>Latency</th>
-                    <td>{{round(router.latency_avg, 2)}}ms</td>
-                    <td>{{round(mobile.latency_avg, 2)}}ms</td>
+                    <td>{{round(router.latency_avg, 2)}} ms</td>
+                    <td>{{round(mobile.latency_avg, 2)}} ms</td>
                 </tr>
                 <tr>
                     <th>Packet Loss</th>
@@ -70,13 +70,13 @@
                 </tr>
                 <tr>
                     <th>Download Throughput</th>
-                    <td>{{round(average(router.download_latencies), 2)}}</td>
-                    <td>{{round(average(mobile.download_throughputs), 2)}}</td>
+                    <td>{{tput_units(round(average(router.download_throughputs), 2))}} {{tput_units_name}}</td>
+                    <td>{{tput_units(round(average(mobile.download_throughputs), 2))}} {{tput_units_name}}</td>
                 </tr>
                 <tr>
                     <th>Upload Throughput</th>
-                    <td>{{round(average(router.upload_latencies), 2)}}</td>
-                    <td>{{round(average(mobile.upload_throughputs), 2)}}</td>
+                    <td>{{tput_units(round(average(router.upload_throughputs), 2))}} {{tput_units_name}}</td>
+                    <td>{{tput_units(round(average(mobile.upload_throughputs), 2))}} {{tput_units_name}}</td>
                 </tr>
                 <tr>
             <th>Packet Loss Under Load</th>
@@ -100,6 +100,10 @@
     </div>
 </div>
 <script>
+setTimeout(function() {
+        location.reload()
+}, 15000)
+
 //Any undefineds should just be 0
 var None = 0;
 function fitCanvas(cname) {
@@ -202,7 +206,7 @@ var chart2 = makeChart("latency_chart",
         [ {{mobile.latency_avg}},
         {{mobile.dns_response_avg}} ])
 
-
+{% if has_router %}
 var ts={{eth1_ts}}
 for(var i = 0; i < ts.length; i ++) {
     if(i % 10 == 0) {
@@ -219,54 +223,11 @@ for(var i = 0; i < bytes.length; i ++) {
 var chart3 = makeLineChart("usage_chart",
                 ts,
                 bytes)
+{% endif %}
 
 var legendHolder = document.createElement('div');
 
 legendHolder.innerHTML = chart1.generateLegend();
 document.getElementById('legend').appendChild(legendHolder.firstChild);
 </script>
-
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <h3 class="panel-title"> Raw Data </h3>
-    </div>
-    <div class="panel-body">
-        <table class="table raw-data-table small">
-            <tr>
-                <th> Metric Name </th>
-                <th> Router Data </th>
-                <th> Mobile App Data</th>
-                <tr>
-                    <th>DNS</th>
-                    <td>{{round(router.dns_response_avg, 2)}}ms</td>
-                    <td>{{round(mobile.dns_response_avg, 2)}}ms</td>
-                </tr>
-                <tr>
-                    <th>Latency</th>
-                    <td>{{round(router.latency_avg, 2)}}ms</td>
-                    <td>{{round(mobile.latency_avg, 2)}}ms</td>
-                </tr>
-                <tr>
-                    <th>Packet Loss</th>
-                    <td>{{PERCENT(router.packet_loss)}}</td>
-                    <td>{{PERCENT(mobile.packet_loss)}}</td>
-                </tr>
-                <tr>
-                    <th>Download Throughput</th>
-                    <td>{{round(average(router.download_throughputs), 2)}} {{tput_units_name}}</td>
-                    <td>{{round(average(mobile.download_throughputs), 2)}} {{tput_units_name}}</td>
-                </tr>
-                <tr>
-                    <th>Upload Throughput</th>
-                    <td>{{round(average(router.upload_throughputs), 2)}} {{tput_units_name}}</td>
-                    <td>{{round(average(mobile.upload_throughputs), 2)}} {{tput_units_name}}</td>
-                </tr>
-                <tr>
-            <th>Packet Loss Under Load</th>
-            <td>{{PERCENT(router.packet_loss_under_load)}}</td>
-            <td>{{PERCENT(mobile.packet_loss_under_load)}}</td>
-        </tr>
-        </table>
-    </div>
-</div>
 {% endblock %}
