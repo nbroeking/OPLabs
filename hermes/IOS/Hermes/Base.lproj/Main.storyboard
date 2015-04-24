@@ -100,13 +100,13 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="hgh-Od-caJ">
-                                <rect key="frame" x="-43" y="-36" width="686" height="328"/>
+                                <rect key="frame" x="129" y="128" width="343" height="164"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="343" id="Add-Fp-dcr"/>
                                     <constraint firstAttribute="width" secondItem="hgh-Od-caJ" secondAttribute="height" multiplier="343:164" id="DUg-QM-GqU"/>
-                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="686" id="HVr-gD-qv0"/>
+                                    <constraint firstAttribute="width" constant="343" id="HVr-gD-qv0"/>
                                     <constraint firstAttribute="height" constant="164" id="klV-3y-TCc"/>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="328" id="svr-S7-IXM"/>
+                                    <constraint firstAttribute="height" constant="164" id="svr-S7-IXM"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -170,14 +170,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="fft-me-w21">
-                                <rect key="frame" x="-43" y="89" width="687" height="328"/>
+                                <rect key="frame" x="129" y="89" width="343" height="164"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="328" id="gLR-DJ-vtG"/>
-                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="686" id="yxV-mm-vmt"/>
+                                    <constraint firstAttribute="height" constant="164" id="ZOP-XU-Y42"/>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="164" id="gLR-DJ-vtG"/>
+                                    <constraint firstAttribute="width" constant="343" id="yxV-mm-vmt"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="gLR-DJ-vtG"/>
+                                    </mask>
+                                </variation>
                             </imageView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fe4-0L-gex">
-                                <rect key="frame" x="187" y="425" width="226" height="40"/>
+                                <rect key="frame" x="187" y="261" width="226" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="1Tt-3e-mYk"/>
                                 </constraints>
@@ -185,7 +191,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0UH-kj-7xr">
-                                <rect key="frame" x="187" y="473" width="226" height="40"/>
+                                <rect key="frame" x="187" y="309" width="226" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="1qS-EC-naU"/>
                                     <constraint firstAttribute="width" constant="226" id="iXL-eW-KjI"/>
@@ -194,7 +200,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-rq-a15">
-                                <rect key="frame" x="200" y="563" width="200" height="75"/>
+                                <rect key="frame" x="200" y="399" width="200" height="75"/>
                                 <color key="backgroundColor" red="0.1176470588" green="0.78039215689999997" blue="0.55294117649999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="PYN-Lb-BEi"/>

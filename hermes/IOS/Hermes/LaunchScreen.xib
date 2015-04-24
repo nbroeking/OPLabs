@@ -25,13 +25,13 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Nec-nc-yTh">
-                    <rect key="frame" x="-43" y="21" width="687" height="328"/>
+                    <rect key="frame" x="129" y="103" width="343" height="164"/>
                     <constraints>
-                        <constraint firstAttribute="height" relation="lessThanOrEqual" constant="328" id="Dam-hK-1DE"/>
+                        <constraint firstAttribute="height" constant="164" id="Dam-hK-1DE"/>
                         <constraint firstAttribute="height" constant="164" id="Edr-xJ-hSr"/>
                         <constraint firstAttribute="width" secondItem="Nec-nc-yTh" secondAttribute="height" multiplier="343:164" id="JFA-mT-oSz"/>
                         <constraint firstAttribute="width" constant="343" id="XVT-ua-818"/>
-                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="686" id="x9q-18-lOs"/>
+                        <constraint firstAttribute="width" constant="343" id="x9q-18-lOs"/>
                     </constraints>
                     <variation key="default">
                         <mask key="constraints">
