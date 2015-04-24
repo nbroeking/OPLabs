@@ -17,7 +17,7 @@
 
 namespace os {
 
-typedef int64_t timeout_t ;
+typedef llu_t timeout_t ;
 typedef timeout_t micros_t ;
 
 #define HOURS   * (60 MINUTES)

@@ -128,6 +128,8 @@ private:
                         itr->c_str());
                 datum.rx_bytes = simple_read(path);
                 datum.intf_name = itr->c_str();
+
+                timeout_t to = Time::currentTimeMicros();
                 datum.timestamp = Time::currentTimeMicros();
 
                 // m_log.printfln(TRACE,
@@ -151,7 +153,7 @@ private:
 
         char buf[128];
         fgets(buf, 128, fp);
-        u64_t ret = strtoull(buf, NULL, 10);
+        s64_t ret = strtoll(buf, NULL, 10);
         fclose(fp);
         return ret;
     }

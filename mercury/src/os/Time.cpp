@@ -66,7 +66,7 @@ timeout_t Time::currentTimeMicros() {
 		clock_gettime(CLOCK_REALTIME, &mts);
 	#endif
 
-    return mts.tv_nsec/ 1000 + mts.tv_sec * 1000000;
+    return (u64_t)mts.tv_nsec / 1000ll + (u64_t)mts.tv_sec * 1000000ll;
 }
 
 timeout_t Time::uptime() {
