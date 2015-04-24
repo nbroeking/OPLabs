@@ -65,7 +65,9 @@ public class MainActivity extends HermesActivity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                dialog.dismiss();
+                if( dialog != null) {
+                    dialog.dismiss();
+                }
             }}, 1000);
 
         Log.e(TAG, "Trying to dismiss");
