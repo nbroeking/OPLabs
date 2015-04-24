@@ -40,7 +40,6 @@ public class ResultsFragment extends Fragment {
         browser.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         browser.loadUrl(url);
 
-
         return view;
     }
 
