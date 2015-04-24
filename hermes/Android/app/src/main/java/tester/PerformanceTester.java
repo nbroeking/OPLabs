@@ -44,7 +44,7 @@ public class PerformanceTester {
     private long timeEnd;
     private boolean finished;
 
-    //Initilize the performance test
+    //Initialize the performance test
     public PerformanceTester(TestSettings settings1)
     {
         socket = null;
