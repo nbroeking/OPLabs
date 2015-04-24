@@ -107,12 +107,13 @@ public:
     }
 
     virtual void onException(Exception& ex) {
+        m_log.printfln(FATAL, "Unhandled Exception: %s", ex.getMessage());
+
         Json toSend;
         char buf[4096];
         snprintf(buf, sizeof(buf), "Uncaught Exception: %s", ex.getMessage());
         toSend.setAttribute("state", Json::fromString("failure"));
         toSend.setAttribute("reason", Json::fromString(buf));
-        m_log.printfln(FATAL, "Unhandled Exception: %s", ex.getMessage());
 
         snprintf(buf, sizeof(buf), "data=%s&router_token=%s",
             toSend.toString().c_str(), m_router_token.c_str());

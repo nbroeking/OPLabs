@@ -134,11 +134,12 @@ int startMercury(LogContext& m_log, MercuryConfig& config) {
         /* simply get 64 bytes from the client and
          * then close the connection */
         byte recieve[64];
-        client->read(recieve, sizeof(recieve));
+        size_t bytes_read;
+        bytes_read = client->read(recieve, sizeof(recieve));
         delete client;
 
         /* make sure the cookie is equal to what we expect */
-        if(std::equal(recieve, recieve + 32, mercury_magic_cookie)) {
+        if(bytes_read == 64 && std::equal(recieve, recieve + 32, mercury_magic_cookie)) {
             ScopedLock __sl(*g_mutex);
             /* the cookie is equal to what we expect
              * so continue with the fork() */
