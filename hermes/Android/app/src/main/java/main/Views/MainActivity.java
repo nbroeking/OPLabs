@@ -26,6 +26,7 @@ public class MainActivity extends HermesActivity {
         Log.i(TAG, "OnCreate");
     }
 
+    //When we start we check the state and move to the appropriate activity
     @Override
     protected void onStart()
     {
@@ -45,7 +46,7 @@ public class MainActivity extends HermesActivity {
         }
     }
 
-    //Used to do animations
+    //Used to do animations for the login screen
     @Override
     public void startLogin()
     {
@@ -58,7 +59,7 @@ public class MainActivity extends HermesActivity {
         dialog.show();
     }
 
-    //Used to do animations
+    //Used to stop the login animation
     @Override
     public void endLogin()
     {
@@ -93,6 +94,7 @@ public class MainActivity extends HermesActivity {
         startActivity(intent);
     }
 
+    //Goes to the about view activity to display information
     @Override
     public void goToAbout(View view) {
         Intent intent = new Intent(this, AboutTestsActivity.class);

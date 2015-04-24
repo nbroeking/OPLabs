@@ -7,6 +7,9 @@ import java.util.List;
  * Created by nbroeking on 4/1/15.
  * The settings that we use to run a performance test
  */
+
+//This class is a bean that wraps all relevant information about a test set
+//NOTE: There is no default values
 public class TestSettings {
 
     private List<String> validDomains;
@@ -21,11 +24,13 @@ public class TestSettings {
     private String throughputServer;
     private int port;
 
+    //We only initialize the arrays because we require everything to update this
     public TestSettings(){
         validDomains = new ArrayList<String>();
         invalidDomains = new ArrayList<String>();
     }
 
+    //These are the getters and setters for the settings
     public void addValidDomain(String string){
         validDomains.add(string);
     }
@@ -60,27 +65,19 @@ public class TestSettings {
     public void setRouterResultsID(int routerResultsID) {
         this.routerResultsID = routerResultsID;
     }
-
     public int getMobileResultsID() {
         return mobileResultsID;
     }
-
     public void setMobileResultsID(int mobileResultsID) {
         this.mobileResultsID = mobileResultsID;
     }
-
     public String getThroughputServer() {
         return throughputServer;
     }
-
-    public void setThroughputServer(String throughputServer) {
-        this.throughputServer = throughputServer;
-    }
-
+    public void setThroughputServer(String throughputServer) { this.throughputServer = throughputServer;}
     public int getPort() {
         return port;
     }
-
     public void setPort(int port) {
         this.port = port;
     }

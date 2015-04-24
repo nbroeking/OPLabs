@@ -27,17 +27,21 @@ import tester.helpers.TestSettings;
 /**
  * Created by nbroeking on 4/1/15.
  * This handles all the performance tests
+ * First we run a DNS Response test
+ * then latency test
+ * calculate packet loss
+ * at the same time then we run a throughput test
+ * and a load test
  */
 public class PerformanceTester {
     private final static String TAG = "Performance Tests";
     private TestSettings settings;
     private DatagramSocket socket;
-
     private long timeStart;
     private long timeEnd;
-
     private boolean finished;
 
+    //Initilize the performance test
     public PerformanceTester(TestSettings settings1)
     {
         socket = null;
@@ -46,13 +50,12 @@ public class PerformanceTester {
 
     }
 
-    //Return dns, packet latency, packet jitter, packet loss
+    //Runs all the tests
     public TestResults runTests()
     {
         TestState state = TestState.getInstance();
         TestResults results = new TestResults(settings.getMobileResultsID());
         try {
-
             state.setState(TestState.State.TESTINGDNS, false);
 
             //Init the results object
@@ -66,7 +69,6 @@ public class PerformanceTester {
             for (Integer x : times1) {
                 dnsResult += x;
             }
-
             if( times1.size() == 0)
             {
                 results.setDns(0.0);
@@ -76,6 +78,7 @@ public class PerformanceTester {
                 results.setDns(dnsResult);
             }
 
+            //Start Testing Latency
             state.setState(TestState.State.TESTINGLATENCY, false);
             //Run a test packet latency test
             List<Integer> times2 = runDNSTest(settings.getValidDomains());
@@ -83,7 +86,6 @@ public class PerformanceTester {
             for (Integer x : times2) {
                 latencyResult += x;
             }
-
             if( times2.size() == 0)
             {
                 results.setLatency(0.0);
@@ -101,14 +103,19 @@ public class PerformanceTester {
             Log.e(TAG, "Error running test", e);
             results.setValid(false);
         }
+
+        //Start testing throughput
         state.setState(TestState.State.TESTINGTHROUGHPUT, false);
 
+        //Create two threads one for throughput and one for load
         Thread throughput = new Thread(new ThroughputHelper(results));
         Thread load = new Thread(new LoadHelper(results));
 
+        //Start them
         throughput.start();
         load.start();
 
+        //Attempt to join with he two threads
         try {
             load.join();
             throughput.join();
@@ -122,6 +129,7 @@ public class PerformanceTester {
         return results;
     }
 
+    //This class implements runnable that runs the throughput test
     private class ThroughputHelper implements Runnable {
 
         private TestResults results;
@@ -132,15 +140,17 @@ public class PerformanceTester {
         public ThroughputHelper(TestResults tmpResults){
             results = tmpResults;
         }
+
+        //Run in a new thread
         @Override
         public void run() {
             Log.i(TAG, "Running Throughput Test");
 
             ByteArrayBuffer buffer = new ByteArrayBuffer(1024);
-
             Socket clientSocket = null;
 
             try {
+                //Initialize the socket
                 clientSocket = new Socket();
                 clientSocket.setSoTimeout(10000);
 
@@ -151,6 +161,7 @@ public class PerformanceTester {
                 inFromServer = clientSocket.getInputStream();
 
 
+                //Create the buffers to read and write too
                 byte[] bytes = new byte[1024*1024];
                 byte[] writeBytes = new byte[1024*1024];
                 for(int i = 0 ; i < writeBytes.length; i++) {
@@ -160,6 +171,10 @@ public class PerformanceTester {
                 //Set a timeout in case the sockets block
                 finished = false;
 
+                //We spawn a new thread that handles the timeout
+                //This is not the cleanest way to do things
+                //I am sorry for the sleep but Java sockets
+                //don't support write timeouts
                 Thread timeout = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -193,7 +208,7 @@ public class PerformanceTester {
                 int totalBytesRead = 0;
                 long startTime = System.currentTimeMillis();
                 try {
-
+                    //Read as many bytes as we can in 10 seconds
                     while ((System.currentTimeMillis() - startTime) < 10000) {
                         //int bytesRead = inFromServer.read(bytes, 0, 1024 * 1024);
                         int bytesRead = inFromServer.read(bytes, 0, 1024*1024);
@@ -203,9 +218,9 @@ public class PerformanceTester {
                 catch (SocketTimeoutException e){
                     Log.w(TAG, "Socket Read Timeout");
                 }
+
                 //Need to report in bytes per second
                 results.setThroughputDownload((double)totalBytesRead/(((System.currentTimeMillis()) - startTime)/1000.0));
-
                 Log.i(TAG, "Total Bytes Read = " + totalBytesRead);
 
                 //Running an upload test
@@ -213,6 +228,7 @@ public class PerformanceTester {
 
                 startTime = System.currentTimeMillis();
                 while( (System.currentTimeMillis() - startTime) < 10000) {
+                    //Write as many bytes as we can in 10 seconds
                     outToServer.write(writeBytes);
                     totalBytesWritten += writeBytes.length;
                 }
@@ -239,6 +255,7 @@ public class PerformanceTester {
                 Log.e(TAG, "Error with throughput Test");
                 results.setValid(false);
             }
+            //Close down the sockets
             finally {
                 try {
                     if (clientSocket != null) {
@@ -259,6 +276,7 @@ public class PerformanceTester {
         }
     };
 
+    //This class runs the load test at the same time as the throughput test
     private class LoadHelper implements Runnable {
 
         private TestResults results;
@@ -272,6 +290,7 @@ public class PerformanceTester {
             long startTime = System.currentTimeMillis();
             int tests = 0;
 
+            //For the download test we want to run a latency test the same way as above
             List<Integer> times = new ArrayList<Integer>();
             while ( System.currentTimeMillis() - startTime < 10000){
                 try {
@@ -301,6 +320,8 @@ public class PerformanceTester {
         }
     };
 
+    //TO run a dns test we hand craft a dns packet and send it via UDP
+    //We then time the time it takes to respond
     public List<Integer> runDNSTest(List<String> domains)
     {
         List<Integer> resultTimes = new ArrayList<Integer>();
@@ -320,6 +341,7 @@ public class PerformanceTester {
         return resultTimes;
     }
 
+    //Sends the string to to the dns server specified in the settings object
     public boolean sendDNSRequest(String string, short id){
         boolean returncode = true;
         socket = null;
@@ -341,6 +363,7 @@ public class PerformanceTester {
         return returncode;
     }
 
+    //Gets the dns response for the correct id
     public boolean getDNSResponse(short x){
         try {
             short id = -1;
@@ -381,6 +404,7 @@ public class PerformanceTester {
         return true;
     }
 
+    //Returns a dns byte stream for the specified id
     private byte[] getContent(String name, short id)
     {
         String[] lists = name.split("\\.");

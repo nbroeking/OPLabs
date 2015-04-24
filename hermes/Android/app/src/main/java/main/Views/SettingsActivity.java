@@ -58,12 +58,15 @@ public class SettingsActivity extends PreferenceActivity {
     //Fragment in charge of managing the settings
     public static class GeneralPrefs extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+        //Load the layout from the resource file
         @Override
         public void onCreate(Bundle savedInstanceState) {
             Log.i("General Prefs", "On Create");
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
         }
+
+        //On Resume we check the Preference and then update the PreferenceGroup
         @Override
         public void onResume() {
             super.onResume();

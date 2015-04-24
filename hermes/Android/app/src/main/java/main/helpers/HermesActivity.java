@@ -247,7 +247,7 @@ public abstract class HermesActivity extends Activity {
         return true;
     }
 
-    //Called when 
+    //Called when the user preses button on the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
