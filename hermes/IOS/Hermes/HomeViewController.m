@@ -27,14 +27,8 @@
     // Do any additional setup after loading the view.
     data = [SessionData getData];
     
-    //Set the background color
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
-    UIGraphicsBeginImageContext(self.view.frame.size);
-    [[UIImage imageNamed:@"background.png"] drawInRect:self.view.bounds];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    self.view.backgroundColor = [UIColor colorWithPatternImage:image];
+
+    self.view.layer.contents = (id)[UIImage imageNamed:@"background.png"].CGImage;
 
     //If the settings changed
     [[NSNotificationCenter defaultCenter] addObserver:self

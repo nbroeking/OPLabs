@@ -22,13 +22,8 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
   
     //Set the background color
     self.automaticallyAdjustsScrollViewInsets = NO;
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
-    UIGraphicsBeginImageContext(self.view.frame.size);
-    [[UIImage imageNamed:@"background.png"] drawInRect:self.view.bounds];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
     
-    self.view.backgroundColor = [UIColor colorWithPatternImage:image];
+    self.view.layer.contents = (id)[UIImage imageNamed:@"background.png"].CGImage;
     
     if( ([[TestState getStateMachine] mobileResults] == NULL) || ([[[TestState getStateMachine] mobileResults] valid] == false)){
         NSLog(@"Error with results from results view");

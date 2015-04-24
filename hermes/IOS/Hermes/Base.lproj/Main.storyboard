@@ -208,7 +208,7 @@
                                 </variation>
                             </webView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="e5s-nc-voW" secondAttribute="trailing" id="KjM-CY-Hqp"/>
                             <constraint firstItem="e5s-nc-voW" firstAttribute="top" secondItem="8jp-G1-Kxu" secondAttribute="bottom" id="WYS-sA-vKl"/>
@@ -275,7 +275,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="JlR-H5-kMa" firstAttribute="centerX" secondItem="wAZ-Eb-INx" secondAttribute="centerX" constant="-0.5" id="1Zn-cA-gsq"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="centerX" secondItem="SXY-nt-6gr" secondAttribute="centerX" id="6ru-CP-DJO"/>

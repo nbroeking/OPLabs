@@ -37,17 +37,9 @@
 -(void)viewDidLoad{
     [super viewDidLoad];
     
-    
     total = 25;
     
-    //Set the background color
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
-    UIGraphicsBeginImageContext(self.view.frame.size);
-    [[UIImage imageNamed:@"background.png"] drawInRect:self.view.bounds];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    self.view.backgroundColor = [UIColor colorWithPatternImage:image];
+    self.view.layer.contents = (id)[UIImage imageNamed:@"background.png"].CGImage;
     
     stateMachine = [TestState getStateMachine];
     
@@ -72,7 +64,6 @@
     }
     
     // Normal Animation
- 
     AnimationImage.animationImages = images;
     AnimationImage.animationDuration = 2;
     
