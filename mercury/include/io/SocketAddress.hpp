@@ -13,6 +13,11 @@
 
 namespace io {
 
+class SocketAddressParseException: public Exception {
+public:
+    SocketAddressParseException(const char* msg): Exception(msg) {};
+};
+
 /**
  * @brief thrown when an address cannot be deciphered
  */
@@ -21,8 +26,15 @@ public:
     UnknownSocketFamilyException(const char* msg): Exception(msg) {};
 };
 
+class HasPort {
+public:
+    virtual void setPort( u16_t port ) = 0;
+    virtual u16_t getPort() = 0;
+};
+
 class SocketAddress {
 public:
+
     /**
      * @brief Create a socket address from a plain old C socket address
      * 
@@ -54,7 +66,15 @@ public:
 
     virtual inline ~SocketAddress() {}
 
+
     virtual std::string toString() const = 0 ;
+
+    /**
+     * @brief Attempt to parse a string into a socket address
+     * @param str The string to parse
+     * @return The socket address the string represents
+     */
+    static SocketAddress* parse(const char* str);
 };
 
 }

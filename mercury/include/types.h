@@ -47,7 +47,7 @@ typedef uint32_t u32_t;
 typedef uint16_t u16_t;
 typedef uint8_t  u8_t;
 
-typedef int64_t s64_t;
+typedef long long int s64_t;
 typedef int32_t s32_t;
 typedef int16_t s16_t;
 typedef int8_t  s8_t;
@@ -55,22 +55,25 @@ typedef int8_t  s8_t;
 typedef float f32_t;
 typedef double f64_t;
 
+typedef long long unsigned llu_t;
+typedef long unsigned lu_t;
+
 #ifdef __cplusplus
-inline u32_t floatToIntegerBytes( f32_t fl ) {
-    return *(u32_t*)(&fl);
-}
-
-inline f32_t integerBytesToFloat( u32_t i ) {
-    return *(f32_t*)(&i);
-}
-
-inline u64_t doubleToIntegerBytes( f64_t fl ) {
-    return *(u64_t*)(&fl);
-}
-
-inline f64_t integerBytesToDouble( u64_t i ) {
-    return *(f64_t*)(&i);
-}
+// inline u32_t floatToIntegerBytes( f32_t fl ) {
+//     return *(u32_t*)(&fl);
+// }
+// 
+// inline f32_t integerBytesToFloat( u32_t i ) {
+//     return *(f32_t*)(&i);
+// }
+// 
+// inline u64_t doubleToIntegerBytes( f64_t fl ) {
+//     return *(u64_t*)(&fl);
+// }
+// 
+// inline f64_t integerBytesToDouble( u64_t i ) {
+//     return *(f64_t*)(&i);
+// }
 #endif
 
 #endif /* TYPES_H_ */

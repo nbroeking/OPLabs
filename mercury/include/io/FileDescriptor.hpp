@@ -8,6 +8,7 @@
  */
 
 #include <io/BaseIO.hpp>
+#include <io/HasRawFd.hpp>
 
 #include <unistd.h>
 
@@ -16,7 +17,7 @@ namespace io {
 /**
  * @brief A very simple class that wraps a C style file descriptor
  */
-class FileDescriptor : public BaseIO {
+class FileDescriptor : public BaseIO, public HasRawFd {
 public:
     /** 
      * @brief Wrap a C style file descriptor
@@ -24,6 +25,13 @@ public:
      */
     inline FileDescriptor( int fd ):
         m_fd( fd ) {}
+
+    inline void setRawFd(int fd) {
+        m_fd = fd;
+    }
+
+    inline FileDescriptor():
+        m_fd(-1){};
 
     /**
      *  @see BaseIO::read(byte*,size_t)
@@ -39,6 +47,8 @@ public:
      *  @see BaseIO::close()
      */
     int close() OVERRIDE ;
+
+    inline int getRawFd() { return m_fd; }
 
 private:
     int m_fd;

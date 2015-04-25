@@ -1,0 +1,228 @@
+{% extends "mobile_base.html" %}
+
+{% block body %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+<h2> Test Results </h2>
+
+<h4> Compare Your Router and Mobile Test Results Below<h4>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Bandwidth Comparison ({{tput_units_name}}/Second)</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="bandwidth_chart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Latency Comparison (Time in Milliseconds)</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="latency_chart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-2 col-sm-4 col-md-offset-5 col-sm-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Legend</h3>
+            </div>
+            <div id="legend" style=""></div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title"> Raw Data </h3>
+    </div>
+    <div class="panel-body">
+        <table class="table raw-data-table small">
+            <tr>
+                <th> Metric Name </th>
+                <th> Router Data </th>
+                <th> Mobile App Data</th>
+                <tr>
+                    <th>DNS</th>
+                    <td>{{round(router.dns_response_avg, 2)}}ms</td>
+                    <td>{{round(mobile.dns_response_avg, 2)}}ms</td>
+                </tr>
+                <tr>
+                    <th>Latency</th>
+                    <td>{{round(router.latency_avg, 2)}}ms</td>
+                    <td>{{round(mobile.latency_avg, 2)}}ms</td>
+                </tr>
+                <tr>
+                    <th>Packet Loss</th>
+                    <td>{{PERCENT(router.packet_loss)}}</td>
+                    <td>{{PERCENT(mobile.packet_loss)}}</td>
+                </tr>
+                <tr>
+                    <th>Download Throughput</th>
+                    <td>{{round(average(router.download_latencies), 2)}}</td>
+                    <td>{{round(average(mobile.download_throughputs), 2)}}</td>
+                </tr>
+                <tr>
+                    <th>Upload Throughput</th>
+                    <td>{{round(average(router.upload_latencies), 2)}}</td>
+                    <td>{{round(average(mobile.upload_throughputs), 2)}}</td>
+                </tr>
+                <tr>
+            <th>Packet Loss Under Load</th>
+            <td>{{PERCENT(router.packet_loss_under_load)}}</td>
+            <td>{{PERCENT(mobile.packet_loss_under_load)}}</td>
+        </tr>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Ambient Network Usage</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="usage_chart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+//Any undefineds should just be 0
+var None = 0;
+function fitCanvas(cname) {
+    var $canvas = $("#" + cname);
+    var $parent = $canvas.parent();
+    $canvas.width($parent.width())
+}
+function fitCanvasH(cname, height) {
+    var $canvas = $("#" + cname);
+    var $parent = $canvas.parent();
+    $canvas.width($parent.width());
+    $canvas.height(height);
+}
+
+fitCanvas("bandwidth_chart")
+fitCanvas("latency_chart")
+fitCanvasH("usage_chart", "250px")
+
+
+function makeLineChart(elem, labels, a_data) {
+    /* label :: [[Int]]*/
+    var ctx = document.getElementById(elem).getContext("2d");
+    var data = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Eth1",
+                strokeColor: "rgba(220,220,220,1)",
+                data: a_data,
+                showXLabels: 5,
+                pointDot: false
+            }
+        ]
+    };
+
+    return new Chart(ctx).Line(data, {
+                legendTemplate : '<ul class="list-unstyled">'
+                +'<% for (var i=0; i<datasets.length; i++) { %>'
+                +'<li class="">'
+                +'<div class="legend-container">'
+                +'<div class="legend-color" style=\" background-color:<%=datasets[i].fillColor%>\"></div>'
+                +'<div class="" style=\"\"> <% if (datasets[i].label) { %><%= datasets[i].label %><% } %></div>'
+                +'</div>'
+                +'</li>'
+                +'<% } %>'
+                +'</ul>',
+                pointDot: false,
+            });
+}
+
+function makeChart(elem, labels, router_data, mobile_data) {
+    var ctx = document.getElementById(elem).getContext("2d");
+    var data = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Router",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: router_data
+            },
+            {
+                label: "Mobile",
+                fillColor: "rgba(151,187,205,0.60)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: mobile_data
+            }
+        ]
+    };
+
+    return new Chart(ctx).Bar(data, {
+                legendTemplate : '<ul class="list-unstyled">'
+                +'<% for (var i=0; i<datasets.length; i++) { %>'
+                +'<li class="">'
+                +'<div class="legend-container">'
+                +'<div class="legend-color" style=\" background-color:<%=datasets[i].fillColor%>\"></div>'
+                +'<div class="" style=\"\"> <% if (datasets[i].label) { %><%= datasets[i].label %><% } %></div>'
+                +'</div>'
+                +'</li>'
+                +'<% } %>'
+                +'</ul>'
+            });
+}
+
+var chart1 = makeChart("bandwidth_chart",
+        ["Download", "Upload"], 
+        [ {{tput_units(average(router.download_throughputs))}},
+        {{tput_units(average(router.upload_throughputs))}} ],
+        [ {{tput_units(average(mobile.download_throughputs))}},
+        {{tput_units(average(mobile.upload_throughputs))}} ])
+
+var chart2 = makeChart("latency_chart",
+        ["Latency", "DNS Response"], 
+        [ {{router.latency_avg}},
+        {{router.dns_response_avg}} ],
+        [ {{mobile.latency_avg}},
+        {{mobile.dns_response_avg}} ])
+
+
+var ts={{eth1_ts}}
+for(var i = 0; i < ts.length; i ++) {
+    if(i % 10 == 0) {
+        ts[i] = parseFloat(Math.round(ts[i] * 100) / 100).toFixed(2);
+    } else {
+        ts[i] = "";
+    }
+}
+
+var bytes={{eth1_bytes}}
+for(var i = 0; i < bytes.length; i ++) {
+    bytes[i] = bytes[i]
+}
+var chart3 = makeLineChart("usage_chart",
+                ts,
+                bytes)
+
+var legendHolder = document.createElement('div');
+
+legendHolder.innerHTML = chart1.generateLegend();
+document.getElementById('legend').appendChild(legendHolder.firstChild);
+</script>
+{% endblock %}

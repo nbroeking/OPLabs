@@ -72,6 +72,21 @@ public:
         return m_queue.front() ;
     }
 
+    /**
+     * Like the above, but puts the value into a reference
+     * under the protection of the mutex. USE THIS WITH MULTIPLE
+     * CONSUMERS!
+     */
+    void front_ref(T& out) {
+        os::ScopedLock _sl_( this->m_mutex ) ;
+
+        if( m_queue.empty() ) {
+            m_condition.wait( this->m_mutex ) ;
+        }
+
+        out = m_queue.front() ;
+    }
+
     /** 
      * @brief Timed version of front()
      *
@@ -85,19 +100,19 @@ public:
      * The value will be placed in the variable referenced by
      * `into`
      *
-     * @return If the timeout was reached, then 0 else 1
+     * @return If the timeout was reached, return false otherwise return true
      */
-    int front_timed( T& into, os::timeout_t timeout ) {
+    bool front_timed( T& into, os::timeout_t timeout ) {
         os::ScopedLock _sl_( this->m_mutex ) ;
 
         if( m_queue.empty() ) {
             if( ! m_condition.timedwait( this->m_mutex, timeout ) ) {
-                return 1 ;
+                return false ;
             }
         }
 
         into = m_queue.front();
-        return 0 ;
+        return true ;
     }
 
     /**
@@ -132,6 +147,38 @@ public:
     void pop() {
         os::ScopedLock( this->m_mutex ) ;
         m_queue.pop() ;
+    }
+
+    /**
+     * @brief test to see if there are no elements in the queue
+     */
+    inline bool empty() {
+        os::ScopedLock( this->m_mutex ) ;
+        return m_queue.empty();
+    }
+
+    /**
+     * @brief if the queue is empty then wait for the next element.
+     * otherwise do not. This is semantiacally equal to
+     * @code
+     * if(m_queue.empty()){
+     *     into = m_queue.front();
+     * }
+     * @endcode
+     * Except it does this action atomically, avoiding the race condition
+     * in the code above.
+     *
+     * @return true if the queue was empty, false otherwise
+     */
+    bool emptyFront(T& out) {
+        os::ScopedLock _sl_( this->m_mutex ) ;
+        if(!m_queue.empty()) {
+            return false;
+        }
+
+        m_condition.wait( this->m_mutex ) ;
+        out = m_queue.front() ;
+        return true;
     }
 
     virtual ~BlockingQueue() {}

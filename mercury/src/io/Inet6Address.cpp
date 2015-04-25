@@ -15,14 +15,49 @@ Inet6Address Inet6Address::fromString( const char* ipv6, u16_t port ) {
     if (inet_pton(AF_INET6, ipv6, &ret.m_addr.sin6_addr) == 1)
         return ret;
 
-    throw Inet6ParseException("Failed to parse ipv6 address");  
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "Failed to pares ipv6 address: %s", ipv6);
+    throw Inet6ParseException(buf);  
 }
 
 Inet6Address::Inet6Address(u8_t addr[16], u16_t port) {
     fill( (byte*)&m_addr, (byte*)&m_addr + sizeof(m_addr), 0 );
     m_addr.sin6_family = AF_INET6;
-    m_addr.sin6_port = port;
+    m_addr.sin6_port = htons(port);
     copy( addr, addr + 16, m_addr.sin6_addr.s6_addr );
+}
+
+Inet6Address Inet6Address::fromString(const char* ipv6) {
+    std::string str = ipv6;
+    io::Inet6Address ret;
+    
+    if(str.size() == 0) { throw SocketAddressParseException("Expected string of length at least 1"); }
+
+    if(str[0] == '[') { // [x:y:z::x]:port
+        size_t idx = str.find(']');
+        if(idx == std::string::npos) {
+            throw SocketAddressParseException("Bad format of ipv6 string. No ']' after [");
+        }
+
+        std::string sub = str.substr(1, idx-1);
+        idx += 1;
+
+        u16_t port = 0;
+
+        if(idx != str.length()) {
+            if(str[idx] != ':') {
+                throw SocketAddressParseException("Bad format of ipv6 string. No ':' after []");
+            }
+
+            std::string portstr = str.substr(idx+1, -1);
+            port = atoi(portstr.c_str());
+        }
+
+        ret = io::Inet6Address::fromString(sub.c_str(), port);
+    } else {
+        ret = io::Inet6Address::fromString(str.c_str(), 0);
+    }
+    return ret;
 }
 
 #if defined(__OpenBSD__)
@@ -42,6 +77,14 @@ std::string Inet6Address::toString() const {
         m_addr16[7],
         ntohs(m_addr.sin6_port));
     return buf;
+}
+
+void Inet6Address::setPort(u16_t port) {
+    m_addr.sin6_port = htons(port);
+}
+
+u16_t Inet6Address::getPort() {
+    return ntohs(m_addr.sin6_port);
 }
 
 }

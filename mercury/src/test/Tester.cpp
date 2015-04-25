@@ -55,4 +55,19 @@ int Tester::testBool( const char* name, bool b, const char* function, const char
     return 0;
 }
 
+int Tester::testStr( const char* name, const string& a, const string& b, const char* function, const char* file, size_t line ) {
+    if( a == b ) {
+        m_log.printfln(PASSED, "%-20s - "PURPLE"@(%s %s:%d)", name, function, file, line);
+        m_tests_passed ++;
+    } else {
+        m_log.printfln(FAILED, "%-20s (Expected \"%s\", got \"%s\")- "PURPLE"@(%s %d:%d)", name, 
+        b.c_str(), a.c_str(),
+        function, file, line);
+        m_tests_failed ++;
+        failed.push_back(name);
+    }
+    return 0;
+}
+
+
 }

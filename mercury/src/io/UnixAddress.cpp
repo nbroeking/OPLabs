@@ -11,6 +11,10 @@ void UnixAddress::unlink() {
     ::unlink(m_addr.sun_path);
 }
 
+UnixAddress::~UnixAddress() {
+    this->unlink();
+}
+
 UnixAddress::UnixAddress(const char* address) {
     strncpy(m_addr.sun_path, address, sizeof(m_addr.sun_path));
     m_addr.sun_path[sizeof(m_addr.sun_path)-1] = 0;

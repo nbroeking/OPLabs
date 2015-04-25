@@ -10,7 +10,8 @@ Date: 02/21/2015
 
 """
 
-from flask import request, render_template, flash, session, abort, flash
+from flask import request, flash, session, abort, flash
+from flask import redirect, url_for
 from models.auth_model import User
 from functools import wraps
 import base64
@@ -25,7 +26,7 @@ def requires_session(some_route):
             return some_route(*args, **kwargs)
         else:
             flash("Please login before continuing.", 'error')
-            return render_template("login.html")
+            return redirect(url_for('WebInterface.loginportal'))
     return protected
 
 def csrf_protect(some_route):

@@ -17,7 +17,7 @@
 
 namespace os {
 
-typedef int64_t timeout_t ;
+typedef llu_t timeout_t ;
 typedef timeout_t micros_t ;
 
 #define HOURS   * (60 MINUTES)
@@ -86,6 +86,12 @@ public:
      * @return The system time in micro seconds
      */
     static timeout_t currentTimeMicros();
+
+    /**
+     * @brief Returns the the number of micros the system has been up
+     * @return the number of micros the system has been up.
+     */
+    static timeout_t uptime();
 
     static inline struct timeval toTimeval( micros_t mics ) {
         struct timeval tv;

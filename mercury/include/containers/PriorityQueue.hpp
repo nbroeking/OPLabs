@@ -22,7 +22,7 @@ namespace containers {
 template <class Elem_T, class Comparator_T=std::less<Elem_T> >
 class PriorityQueue {
 public:
-    PriorityQueue() {}
+    PriorityQueue(): m_heap_size(0) {}
 
     /**
      * @brief push an element onto the priority queue
@@ -31,6 +31,7 @@ public:
     void push(const Elem_T& value) {
         heap.push_back(value);
         sift_up(heap.size() - 1);
+        m_heap_size ++;
     }
 
     /**
@@ -48,6 +49,7 @@ public:
         heap[0] = heap.back();
         heap.pop_back();
         sift_down(0);
+        m_heap_size --;
     }
 
     /**
@@ -63,6 +65,7 @@ public:
             size_t index = itr - heap.begin();
             heap[index] = heap.back();
             heap.pop_back();
+            m_heap_size --;
             reheap(index);
             return true;
         }
@@ -74,7 +77,7 @@ public:
      * @brief returns true if the heap is empty, false otherwise
      */
     bool empty() {
-        return heap.empty();
+        return m_heap_size == 0;
     }
 
     /**
@@ -170,6 +173,8 @@ private:
 
     Comparator_T comp;
     std::vector<Elem_T> heap;
+
+    size_t m_heap_size;
 };
 
 }

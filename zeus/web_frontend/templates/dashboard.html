@@ -25,7 +25,25 @@ function delete_rec(row_id) {
 
 <h2> Your tests run </h2>
 
-<br>
+<nav class="pull-right">
+    <ul class="pagination">
+        <li>
+        <a href="?p={{prev_page}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+        {% for page in pages %}
+        <li class="{{"active" if page == current_page}}">
+            <a href="?p={{page+1}}">{{page+1}}</a>
+        </li>
+        {% endfor %}
+        <li>
+        <a href="?p={{next_page}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+    </ul>
+</nav>
 
 <table class="table table-striped">
     <tr>
@@ -78,8 +96,10 @@ function delete_rec(row_id) {
                             <td> Message Pending </td>
                             {% elif result.state == "ack" %}
                             <td> Message Acknowledged </td>
+                            {% elif result.state == "finished" %}
+                            <td> Finished </td>
                             {% else %}
-                            <td> Unknown </td>
+                            <td> {{result.state}}</td>
                             {% endif %}
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="delete_rec({{result.test_id}})"> Delete </button>

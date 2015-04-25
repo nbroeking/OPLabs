@@ -21,7 +21,7 @@ public:
 /**
  * @brief socket address that describes an IPv6 address
  */
-class Inet6Address : public SocketAddressTempl<sockaddr_in6, AF_INET6> {
+class Inet6Address : public SocketAddressTempl<sockaddr_in6, AF_INET6>, public HasPort {
 public:
     /**
      * @brief Create a new ip6 address using the 16 bytes for the address
@@ -29,6 +29,8 @@ public:
      * @param port The port to of the service
      */
     Inet6Address(u8_t addr[16], u16_t port);
+
+    inline Inet6Address() {};
 
     /**
      * @brief Create an ip6 address from a string and a port
@@ -38,6 +40,7 @@ public:
      * @throw Inet6ParseException if the string is invalid
      */
     static Inet6Address fromString(const char* ipv6, u16_t port);
+    static Inet6Address fromString(const char* ipv6);
 
     /**
      * @brief Copy constructor
@@ -51,6 +54,9 @@ public:
      * @return string representation of this address
      */
     std::string toString() const;
+
+    void setPort(u16_t port);
+    u16_t getPort();
 };
 
 }

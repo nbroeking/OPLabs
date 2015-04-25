@@ -16,8 +16,6 @@ from functools import wraps
 from util.json_helpers import JSON_FAILURE
 from binascii import unhexlify
 
-INVALID_AUTH = (JSON_FAILURE(), 401)
-
 # This is the magic cookie the router is expecting
 MAGIC_PORT = 8639
 MAGIC_COOKIE_HEX = "e21a14c8a2350a92af1affd6352ba4f39779afb5c12343f0f7141762534aa97e"
@@ -36,26 +34,37 @@ class base_requirement(object):
         if invalid_handler:
             self.invalid_handler = invalid_handler
         else:
-            self.invalid_handler = lambda: INVALID_AUTH
+            self.invalid_handler = lambda: (JSON_FAILURE(), 401)
 
     def __call__(self, route_handler):
         @wraps(route_handler)
         def on_request(*args, **kwargs):
-            if self.validator():
+            try:
+                is_request_valid = self.validator()
+            except:
+                return self.invalid_handler()
+
+            if is_request_valid:
                 return route_handler(*args, **kwargs)
             return self.invalid_handler()
         return on_request
 
 class requires_user_token(base_requirement):
     def validator(self):
-        if 'token' in request.form:
-            token = request.form['token']
-            this_user = User.get_user(auth_token=token)
+        token = None
+        if 'user_token' in request.form:
+            token = request.form['user_token']
+        elif 'user_token' in request.args:
+            token = request.args.get('user_token')
+
+        if token:
+            this_user = User.get_user(user_token=token)
             if this_user and this_user.token_matches(token):
                 return True
         return False
 
 class requires_router_token(base_requirement):
     def validator(self):
-        pass
-
+        if User.from_router_token():
+            return True
+        return False

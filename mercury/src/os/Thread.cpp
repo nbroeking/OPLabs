@@ -1,7 +1,12 @@
 #include <os/Thread.hpp>
 #include <map>
 
+#include <Prelude>
+#include <log/LogManager.hpp>
+
+using namespace logger;
 namespace os {
+
 
 std::map<pthread_t, Thread*> s_thread_db;
 
@@ -10,8 +15,13 @@ Thread* Thread::getCurrentThread() {
 }
 
 static void* run_thread( void* _thread ) {
-	Thread* thread = (Thread*) _thread;
-	thread->getRunnable().run();
+    try {
+    	Thread* thread = (Thread*) _thread;
+    	thread->getRunnable().run();
+    } catch(Exception& ex) {
+        ExceptionHandler::getGlobalUncaughtExceptionHandler()
+            ->onException(ex);
+    }
 
 	pthread_exit(NULL);
 }

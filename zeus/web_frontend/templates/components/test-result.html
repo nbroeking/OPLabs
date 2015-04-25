@@ -33,10 +33,10 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average Sustained Throughput: {{ result.throughput_avg }}
+                Average Download Throughput: {{ average(result.download_throughputs) if result.download_throughputs else "None" }}
                 </li>
                 <li class="list-group-item">
-                Standard Deviation: {{ result.throughput_sdev }}
+                Average Upload Throughput: {{ average(result.upload_throughputs) if result.upload_throughputs else "None"}}
                 </li>
             </ul>
         </div> <!-- Panel -->
@@ -113,7 +113,7 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Percentage of Packets Lost: {{ result.packet_lost }}
+                Percentage of Packets Lost: {{'%0.2f' % result.packet_loss|float}}%
                 </li>
             </ul>
         </div> <!-- Panel -->
@@ -122,24 +122,24 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    Packet Jitter
+                    Latency Under Load
                 </h1>
             </div>
             <div class="panel-body">
                 <p class="modalDescText">
-                    "Packet jitter" refers to variations in latency. Excessive "jitter" can
-                    manifest itself as a connection that is sometimes very responsive but also
-                    sometimes very latent. (I.E. The same page loads fast sometimes, and slow other timers)
+                    "Latency Under Load" refers to variations in latency that can occur when
+                    your internet connection is heavily utilized. Sometimes this utilization
+                    can cause packets to be delayed or lost in transit.
                 </p>
             </div>
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average Packet Jitter: {{ result.jitter_avg }}
+                Average Latency Under Load: {{ average(result.upload_latencies, result.download_latencies) }}
                 </li>
-                <li class="list-group-item">
+                <!--<li class="list-group-item">
                 Standard Deviation: {{ result.jitter_sdev }}
-                </li>
+                </li> -->
             </ul>
         </div> <!-- Panel -->
     </div>

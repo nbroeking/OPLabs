@@ -32,7 +32,8 @@ public:
      *          otherwise, on error, NULL is returned and out_len remains the same
      */
     virtual byte* serialize( ssize_t& out_len ); 
-
+        
+    inline void clear() { vec.clear(); }
 private:
     /* use a vector since we don't really need insertion
      * or deletion */

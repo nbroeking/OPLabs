@@ -8,17 +8,35 @@ from util.web.web_auth import requires_session, csrf_protect
 from util.router import Router
 from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
 import base64
+import math
 
 @web_blueprint.route('dashboard', methods=['GET'])
 @requires_session
 def dashboard():
+    current_page, page_size = 0, 10
+    if 'p' in request.args:
+        current_page = int(request.args['p'])-1
+        
     user = User.from_session()
     user_sets = TestSet.get_all_user_sets(user)
-    print user_sets
+    num_pages = math.ceil(len(user_sets)/float(page_size))
+    pages = range(0, int(num_pages))
+
+    start = current_page*page_size
+    end = (current_page+1)*page_size
+    user_sets = user_sets[start:end]
+
+    prev_page = max(0, current_page - 1) + 1
+    next_page = min(num_pages-1, current_page + 1) + 1
+    print current_page, ":", prev_page, next_page
 
     return render_template('dashboard.html',
             user=user,
-            user_sets=user_sets)
+            user_sets=user_sets,
+            pages=pages,
+            current_page=current_page,
+            prev_page=int(prev_page), next_page=int(next_page),
+            )
 
 @web_blueprint.route("dashboard/delete_result", methods=['POST'])
 @requires_session
@@ -69,13 +87,17 @@ def start_router_test():
 
     new_set = TestSet(user)
 
-    # This manages the actual work
-    router = Router(ip)
+    try:
+        # This manages the actual work
+        router = Router(ip)
 
-    router_record = new_set.new_result(device_type="router")
-    router_record.test_token = base64.b64encode(router.req_id)
-    router_record.device_ip = ip
-    router_record.save()
+        router_record = new_set.new_result(device_type="router")
+        router_record.test_token = base64.b64encode(router.req_id)
+        router_record.device_ip = ip
+        router_record.save()
+    except:
+        flash('Invalid router address!', 'error')
+        return redirect(url_for("WebInterface.showtests"))
     
     new_set.save()
 

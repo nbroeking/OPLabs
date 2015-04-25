@@ -14,6 +14,7 @@
 
 #include <io/BaseIO.hpp>
 #include <io/StringWriter.hpp>
+#include <os/Mutex.hpp>
 
 namespace logger {
 
@@ -39,6 +40,8 @@ public:
             bold?1:0, color);
         this->esc = txt;
         this->text = name;
+
+        register_self();
     }
 
     /**
@@ -52,6 +55,8 @@ public:
         this->esc = std::string(esc);
         text = name;
         level = lev;
+
+        register_self();
     }
 
     std::string esc;
@@ -71,6 +76,18 @@ public:
             out.printf("%s",  text.c_str());
         }
     }
+
+    static LogLevel* getLogLevelByName(const char* name);
+
+private:
+    void register_self();
+};
+
+class HollowLock {
+public:
+    inline void lock() {};
+    inline void unlock() {};
+    inline int try_lock() {return 1;}
 };
 
 /**
@@ -79,6 +96,11 @@ public:
  */
 class LogContext {
 public:
+#ifdef ENVIRONMENT_devel
+    static os::Mutex shared_lock;
+#else
+    static HollowLock shared_lock;
+#endif
 
     /**
      * @brief Set the minimum allowable log level. Default for
@@ -140,13 +162,18 @@ public:
      */
     inline void redirect(io::BaseIO* next, bool color) {
         out.setBaseIO(next);
-        color = color;
+        this->color = color;
     }
 
+    static void unlock();
 private:
+    void _vprintf(const LogLevel& lev, const char* fmt, bool nl, va_list ls) ;
     void log16hex( const LogLevel& lev, const byte* bytes, size_t len ) ;
     friend class LogManager;
+
     LogContext(const std::string& maj, const std::string& minor) ;
+    LogContext(const LogContext&) ;
+    void operator=(const LogContext&) ;
 
     int min_lev;
     io::StringWriter out;

@@ -1,4 +1,16 @@
 import json
+import logging
+from flask import request
+
+def __dump_state__():
+    try:
+        from flask import request
+        logging.debug("JSON_FAILURE invoked, current state:")
+        logging.debug("POST request arguments: '%s'", str(request.form))
+        logging.debug("GET arguments: '%s'", str(request.args))
+        logging.debug("Returned JSON: '%s'", str(kwargs))
+    except RuntimeError:
+        pass
 
 def JSON(**kwargs):
     res = {}

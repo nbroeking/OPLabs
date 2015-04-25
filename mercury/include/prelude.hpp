@@ -4,7 +4,9 @@
 /*
  * Author: jrahm
  * created: 2015/01/18
- * prelude.hpp: <description>
+ * prelude.hpp: 
+ *  This header contains basic classes, macros and routines
+ *  that should be included by default.
  */
 
 #include <types.h>
@@ -13,8 +15,14 @@
 #include <string>
 #include <cstring>
 
+#define ENUM_TO_STRING(EnumType, Num, ...) \
+    inline std::string toString(EnumType en) { \
+        const char* names[] = { __VA_ARGS__ }; \
+        return en >= Num ? "(Unknown)" : names[en]; \
+    }
+
 #define FOR_EACH(itr, vec)\
-    for( itr = vec.begin() ; itr != vec.end() ; ++ itr )
+    for( itr = (vec).begin() ; itr != (vec).end() ; ++ itr )
 
 /**
  * @brief A simple class that acts like a pointer, but deletes itself after going out of scope
@@ -25,26 +33,29 @@
 template <class T>
 class uptr { /* unique pointer definition from C++ 11 */
 public:
-    uptr(T*& val) {
+    template <class U>
+    uptr(U* val) {
         mine = val;
-        val = NULL;
         nref = new int(1);
     }
 
+
     uptr() {
         mine = NULL;
-        nref = new int(0);
+        nref = NULL;
     }
 
     uptr(const uptr<T>& oth) {
         mine = oth.mine;
         nref = oth.nref;
-        (*nref) ++;
+        if(nref) (*nref) ++;
     }
 
     void operator=( const uptr<T>& oth ) {
+        unref();
         mine = oth.mine;
-        (*nref) ++;
+        nref = oth.nref;
+        if(nref) (*nref) ++;
     }
 
     bool operator==(T* oth) {
@@ -52,16 +63,19 @@ public:
     }
 
     void unref() {
-        (*nref) --;
-        if( *nref == 0 ) {
-            delete mine;
-            delete nref;
+        if(nref) {
+            (*nref) --;
+            if( *nref == 0 ) {
+                delete mine;
+                delete nref;
+            }
         }
     }
 
     void operator=( T* oth ) {
         unref();
         nref = new int(1);
+        mine = oth;
     }
 
     T& operator *() {
@@ -72,7 +86,15 @@ public:
         return get();
     }
 
+    const T* operator ->() const {
+        return mine;
+    }
+
     T*& get() {
+        return mine;
+    }
+
+    const T*& get() const {
         return mine;
     }
 
@@ -123,9 +145,10 @@ class CException : public Exception {
 public:
     inline CException(const char* message, int rc) :
         Exception(message) {
-        this->rc = rc;
-        this->message += ": ";
-        this->message += strerror(rc);
+        char buf[4096];
+        snprintf(buf, sizeof(buf), "%s (%d): %s",
+            message, rc, strerror(rc));
+        this->message = buf;
     }
 
     inline CException( int rc ) {
@@ -138,6 +161,15 @@ public:
     }
 private:
     int rc;
+};
+
+class ExceptionHandler {
+public:
+    virtual void onException(Exception& exp) = 0;
+
+    static void setGlobalUncaughtExceptionHandler(ExceptionHandler* handler);
+    static ExceptionHandler* getGlobalUncaughtExceptionHandler();
+    static ExceptionHandler* getDefaultGlobalUncaughtExceptionHandler();
 };
 
     

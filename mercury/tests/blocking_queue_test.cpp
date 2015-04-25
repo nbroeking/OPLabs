@@ -63,48 +63,52 @@ int test_blocking_queue_stress( BlockingQueue<int>* bq ) {
 
 int test_blocking_queue_timeout( BlockingQueue<int>* bq ) {
     int test;
-    TEST_EQ( "ShouldTimeout", bq->front_timed( test, 100 ), 1 );
+    TEST_EQ( "ShouldTimeout", bq->front_timed( test, 100 ), false );
 
     test = (int)0xdeadbeef;
     bq->push( test );
     test = 0;
-    TEST_EQ( "ShouldNotTimeout", bq->front_timed( test, 100 ), 0 );
+    TEST_EQ( "ShouldNotTimeout", bq->front_timed( test, 100 ), true );
     TEST_EQ( "ShouldEqualBeef", test, ((int)0xdeadbeef) );
 
     return 0;
 }
 
 int main( int argc, char** argv ) {
-    (void) argc;
-    (void) argv;
-    BlockingQueue<int> bq;
-    FunctionRunner< BlockingQueue<int>* > 
-        runner( blocking_queue_writer, &bq );
-
-    Thread th( runner );
-    TEST_EQ( "ThreadStart", th.start(), 0 );
-    TEST_FN( test_blocking_queue( &bq ) );
-    TEST_EQ( "ThreadJoin", th.join(), 0 );
-
-    Thread* all_threads[5];
-
-    int rc = 0;
-    for( int i = 0 ; i < 5; ++ i ) {
-        all_threads[i] = new Thread(runner);
-        rc |= all_threads[i]->start();
+    try {
+        (void) argc;
+        (void) argv;
+        BlockingQueue<int> bq;
+        FunctionRunner< BlockingQueue<int>* > 
+            runner( blocking_queue_writer, &bq );
+    
+        Thread th( runner );
+        TEST_EQ( "ThreadStart", th.start(), 0 );
+        TEST_FN( test_blocking_queue( &bq ) );
+        TEST_EQ( "ThreadJoin", th.join(), 0 );
+    
+        Thread* all_threads[5];
+    
+        int rc = 0;
+        for( int i = 0 ; i < 5; ++ i ) {
+            all_threads[i] = new Thread(runner);
+            rc |= all_threads[i]->start();
+        }
+    
+        TEST_EQ( "ThreadsStart", rc, 0 );
+        TEST_FN( test_blocking_queue_stress(&bq) );
+    
+        for( int i = 0; i < 5; ++ i ) {
+            rc |= all_threads[i]->join();
+        }
+    
+        TEST_EQ( "ThreadsJoin", rc, 0 );
+    
+        TEST_FN( test_blocking_queue_timeout(&bq) );
+    
+        return 0;
+    } catch(Exception& e) {
+        fprintf(stderr, "Unhandled Exception %s", e.getMessage());
     }
-
-    TEST_EQ( "ThreadsStart", rc, 0 );
-    TEST_FN( test_blocking_queue_stress(&bq) );
-
-    for( int i = 0; i < 5; ++ i ) {
-        rc |= all_threads[i]->join();
-    }
-
-    TEST_EQ( "ThreadsJoin", rc, 0 );
-
-    TEST_FN( test_blocking_queue_timeout(&bq) );
-
-    return 0;
 }
 

@@ -14,6 +14,8 @@
 #include <map>
 #include <set>
 
+#include <io/MuxIO.hpp>
+
 #ifdef environment_RELEASE
 #define DEFAULT_LEVEL INFO
 #else
@@ -56,9 +58,9 @@ public:
      * @brief Enable all the logs for the major identifier
      * @param maj The major identifier to enable for
      */
-    inline void enableAllForMajor(const std::string& maj) {
+    inline void enableAllForMajor(const std::string& maj, bool yes=true) {
         os::ScopedLock __sl(m_mutex);
-        return _enableAllForMajor(maj);
+        return _enableAllForMajor(maj, yes);
     }
 
     /**
@@ -85,16 +87,26 @@ public:
         _logEverything();
     }
 
+    void addLogOutput(io::BaseIO* next, bool color);
+    void removeLogOutput(io::BaseIO* next);
+
     void setDefaultLevel( const LogLevel& lev ) {
         this->defaultLevel = lev;
     }
+
+    void setLogLevelForAll(const LogLevel& level) {
+        os::ScopedLock __sl(m_mutex);
+        _setLogLevelForAll(level);
+    }
+
 private:
+    void _setLogLevelForAll(const LogLevel& level);
 
     LogContext& _getLogContext(const std::string& maj, const std::string& min) ;
 
     void _getLogsForMajor(const std::string& maj, iterator& begin, iterator& end) ;
 
-    void _enableAllForMajor(const std::string& maj) ;
+    void _enableAllForMajor(const std::string& maj, bool yes) ;
 
     void _logEverything();
 
@@ -104,9 +116,13 @@ private:
 
     bool enable_default;
     std::set< std::string > enabled_majors;
+    std::set< std::string > disabled_majors;
     LogLevel defaultLevel;
     map_type m_db;
     os::Mutex m_mutex;
+
+    io::MuxIO m_out;
+    bool m_color;
 };
 
 }

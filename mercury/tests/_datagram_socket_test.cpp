@@ -23,7 +23,7 @@ int server( int port ) {
         byte bytes[1024];
     
         uptr<SocketAddress> from;
-        ssize_t l = sock.receive(bytes, sizeof(bytes), from.cleanref() );
+        ssize_t l = sock.receive(bytes, sizeof(bytes), &from.cleanref() );
 
         log.printfln(DEBUG, "%d bytes received from %s", l, from->toString().c_str());
         log.printHex(DEBUG, bytes, l);
@@ -65,7 +65,7 @@ int main( int argc, char** argv ) {
     try {
         sock.bind(addr);
         sock.sendTo( bytes, strlen("Hello, World"), server_addr );
-        ssize_t nread = sock.receive(bytes, sizeof(bytes), from.cleanref());
+        ssize_t nread = sock.receive(bytes, sizeof(bytes), &from.cleanref());
         log.printfln(DEBUG, "Received bytes");
         log.printHex(DEBUG, bytes, nread);
     } catch(DatagramSocketException& e) {

@@ -56,14 +56,14 @@ public:
     }
     
     inline void setPostFields( const char* data ) {
-        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, strdup(data));
+        curl_easy_setopt(raw, CURLOPT_POSTFIELDS, data);
     }
 
 private:
     CURL* raw;
 };
 
-class AsyncCurl: public os::Runnable {
+class AsyncCurl: public os::ManagedRunnable {
 public:
     AsyncCurl();
 
@@ -72,6 +72,8 @@ public:
         lang::Deallocator<CurlObserver>* dalloc=NULL );
 
     void run();
+
+    void stop();
 
 private:
     static size_t __curl_consume_subroutine( void*, size_t, size_t, void* );

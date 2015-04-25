@@ -81,6 +81,10 @@ inline void putObject( io::Putter& putter, const byte& b ) {
     putter.putByte(b);
 }
 
+inline void putObject(io::Putter& putter, const char& b) {
+    putter.putByte((const byte&)b);
+}
+
 inline void putObject( io::Putter& putter, const std::string& s ) {
     putter.putInt32le( s.size() );
     putter.putBytes( (const byte*) s.c_str(), s.size() );

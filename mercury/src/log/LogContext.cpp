@@ -1,6 +1,9 @@
 #include <log/LogContext.hpp>
 #include <io/FilePointer.hpp>
 
+#include <os/Atomic.hpp>
+#include <stdio.h>
+
 const logger::LogLevel TRACE(34, "TRACE", 1, true);
 const logger::LogLevel DEBUG(35, "DEBUG", 5, true);
 
@@ -12,9 +15,26 @@ const logger::LogLevel ERROR(31, "ERROR", 20, true);
 const logger::LogLevel FATAL(31, "FATAL", 15, false);
 
 using namespace std;
+using namespace os;
 
+#include <map>
 
 namespace logger {
+
+AtomicHolder<map<std::string, LogLevel*> >& get_g_log_level_db() {
+    static AtomicHolder<map<std::string, LogLevel*> > ret;
+    return ret;
+}
+
+void LogLevel::register_self() {
+    Atomic<map<string, LogLevel*> > m_atomic = get_g_log_level_db().get();
+    (*m_atomic)[this->text] = this;
+}
+
+LogLevel* LogLevel::getLogLevelByName(const char* name) {
+    Atomic<map<string, LogLevel*> > m_atomic = get_g_log_level_db().get();
+    return (*m_atomic)[name];
+}
 
 io::FilePointer p_stdout(stdout);
 
@@ -32,10 +52,20 @@ void LogContext::setMinimumLevel( const LogLevel& lev ) {
     min_lev = lev.level;
 }
 
+#ifdef ENVIRONMENT_devel
+os::Mutex LogContext::shared_lock;
+#else
+HollowLock LogContext::shared_lock;
+#endif
+
 void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
+    _vprintf(lev, fmt, false, ls);
+}
+void LogContext::_vprintf(const LogLevel& lev, const char* fmt, bool nl, va_list ls) {
     if( ! enabled ) return ;
     if( lev.level < min_lev ) return ;       
 
+    shared_lock.lock();
     if( color ) {
         out.printf( "[%s%s\e[00m|%s%s\e[00m][",
             lev.esc.c_str(),
@@ -57,6 +87,8 @@ void LogContext::vprintf(const LogLevel& lev, const char* fmt, va_list ls) {
     out.vprintf( fmt, ls );
 
     out.printf("\e[00m");
+    if(nl) out.printf("\n");
+    shared_lock.unlock();
 }
 
 void LogContext::printf(const LogLevel& lev, const char* fmt, ... ) {
@@ -75,12 +107,15 @@ void LogContext::printfln(const LogLevel& lev, const char* fmt, ... ) {
 
     va_list ls;    
     va_start( ls, fmt );
-    vprintf(lev, fmt, ls);
+    _vprintf(lev, fmt, true, ls);
     va_end(ls);
-    out.printf("\n");
 }
 
 void LogContext::printHex(const LogLevel& lev, const byte* bytes, size_t len) {
+    if(len > 1024) {
+        this->printfln(lev, "First 1024 bytes of array %lu long:", (lu_t)len);
+        len = 1024;
+    }
     while( len > 16 ) {
         log16hex( lev, bytes, 16 );
         len -= 16;
@@ -118,6 +153,12 @@ void LogContext::log16hex( const LogLevel& lev, const byte* bytes, size_t len ) 
     }
 
     printfln(lev, "%-52s    %-22s", buf1, buf2);
+}
+
+
+void LogContext::unlock() {
+    shared_lock.try_lock();
+    shared_lock.unlock();
 }
 
 

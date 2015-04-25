@@ -23,7 +23,7 @@ import base64
 @requires_user_token()
 def test_func():
     """ Test function for logged in users. """
-    auth_user = User.get_user(auth_token=request.form['token'])
+    auth_user = User.get_user(user_token=request.form['user_token'])
 
     return JSON_SUCCESS(
             your_email=auth_user.email
@@ -40,9 +40,11 @@ def start_test(test_type=None):
     test_set = TestSet.get_set_by_id(set_id)
 
     if not test_set:
-        return JSON_FAILURE(reason='Invalid set_id')
+        return JSON_FAILURE(reason='Invalid set_id',
+                            bad_id=str(set_id))
     if not test_type:
-        return JSON_FAILURE(reason='Invalid test type')
+        return JSON_FAILURE(reason='Invalid test type',
+                            test_type=str(test_type))
 
     config = TestConfiguration()
     conf_json = config.get_config()
@@ -64,8 +66,13 @@ def start_test(test_type=None):
         # Create a new Router TestResult
         result = test_set.new_result(device_type="router")
 
-        # Get IP of connected client. This should be the address for the router
-        ip = request.remote_addr
+        if 'address' in request.form:
+            # If the client specified a router address, use that
+            ip = request.form['address']
+        else:
+            # Get IP of connected client. This should be the address for the router
+            ip = request.remote_addr
+
         router = Router(ip)
         result.test_token = base64.b64encode(router.req_id)
         result.device_ip = ip
@@ -73,8 +80,11 @@ def start_test(test_type=None):
         result.save()
         test_set.save()
 
-        # Send a magic packet to the router
-        router.wakeup()
+        try:
+            # Send a magic packet to the router
+            router.wakeup()
+        except:
+            return JSON_FAILURE()
 
         # Return config + new result_id
         return JSON_SUCCESS(
@@ -84,24 +94,3 @@ def start_test(test_type=None):
     return JSON_FAILURE(
             reason="Invalid test type!"
             )
-
-@rest_blueprint.route("/router/get_config", methods=['POST'])
-@requires_router_token()
-def get_config():
-    ip = request.remote_addr
-    token = request.form['id'].strip()
-
-    rec = TestResult.get_result_by_token_ip(token, ip)
-
-    if not rec:
-        return JSON_FAILURE()
-
-    rec.state = 'running'
-    db.session.commit()
-    rec.save()
-
-    config = TestConfiguration()
-
-    return JSON_SUCCESS(
-            config=config.get_config()
-        )

@@ -20,6 +20,10 @@ void AsyncCurl::sendRequest( Curl& c, CurlObserver* obs, Deallocator<CurlObserve
     c.raw = NULL;
 }
 
+void AsyncCurl::stop() {
+    requests.push(NULL);
+}
+
 void AsyncCurl::enqueue_raw( CURL* c, CurlObserver* obs, Deallocator<CurlObserver>* dalloc ){
     Triad* post = new Triad();
 
@@ -48,6 +52,12 @@ void AsyncCurl::run() {
         log.printfln( DEBUG, "Waiting for requests to send" );
         Triad* tr = requests.front();
         requests.pop();
+
+        if(tr == NULL) {
+            /* time to quit */
+            log.printfln(DEBUG, "Got exit signal");
+            return;
+        }
         
         curl_easy_setopt(tr->request, CURLOPT_WRITEFUNCTION, AsyncCurl::__curl_consume_subroutine);
         curl_easy_setopt(tr->request, CURLOPT_WRITEDATA, tr);
@@ -68,7 +78,10 @@ void AsyncCurl::run() {
         }
 
         curl_easy_cleanup(tr->request);
-        tr->dalloc->deallocate( tr->observer );
+
+        if(tr->dalloc) {
+            tr->dalloc->deallocate( tr->observer );
+        }
         delete tr;
     }
 }

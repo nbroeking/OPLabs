@@ -47,14 +47,14 @@ void StreamServerSocket::bind( const SocketAddress& sockaddr ) {
 void StreamServerSocket::listen( int backlog ) {
     int rc = ::listen( m_fd, backlog );
     if ( rc ) {
-        throw new ListenException("Error on listen", rc);
+        throw ListenException("Error on listen", rc);
     }
 }
 
 StreamSocket* StreamServerSocket::accept() {
     int connfd = ::accept(m_fd, NULL, NULL);
     if ( connfd <= 0 ) return NULL;
-    return new StreamSocket( connfd, true );
+    return new StreamSocket( connfd, false );
 }
 
 void StreamServerSocket::close() {

@@ -1,125 +1,125 @@
 #include <proc/Process.hpp>
-#include <proc/ProcessManager.hpp>
 #include <map>
 #include <unistd.h>
 
 using namespace std;
+using namespace logger;
 using namespace os;
 using namespace io;
 
 namespace proc {
 
-ssize_t Terminal::read(byte* buf, size_t len) {
-    return ::read(read_fd, buf, len);
-}
-
-ssize_t Terminal::write(const byte* buf, size_t len) {
-    return ::write(write_fd, buf, len);
-}
-
-int Terminal::close() {
-    return ::close(write_fd) | ::close(read_fd);
-}
-
-pair<Terminal, Terminal> Terminal::createTerminal() {
-    int fd1[2];
-    int fd2[2];
-
-    pipe(fd1);
-    pipe(fd2);
-
-    Terminal t1(fd1[0], fd2[1]);
-    Terminal t2(fd2[0], fd1[1]);
-
-    return make_pair(t1, t2);
-}
-
 map<Thread*,Process*> m_threads_db;
+Process* main;
 
-class SubProcessThread : public Thread {
+class MainProcess : public Process {
 public:
-    SubProcessThread(Runnable& r) :
+    MainProcess(const char* name): Process(name) {}
+
+    void run() OVERRIDE{
+     /* Empty */   
+    }
+};
+
+class _InternalThread : public Thread {
+public:
+    _InternalThread(ManagedRunnable& r) :
         Thread(r) {}
 
-    ~SubProcessThread(){
+    ~_InternalThread(){
         m_threads_db[this] = NULL;
+    }
+
+    ManagedRunnable& getManagedRunnable() {
+        return (ManagedRunnable&) getRunnable();
     }
 };
 
 Process::Process(const char* name) : name(name) {
-    m_id = ProcessManager::instance().registerProcess(this);
+    m_log = &LogManager::instance().getLogContext("Process", name);
+    stopping = false;
+    m_wait_mutex.lock();
 }
 
 FileCollection& Process::getFileCollection() {
     return m_file_collection;
 }
 
-Thread* Process::newThread(Runnable& runner) {
-    Thread* ret = new SubProcessThread(runner);
+Thread* Process::newThread(ManagedRunnable& runner) {
+    _InternalThread* ret = new _InternalThread(runner);
     m_threads_db[ret] = this;
+    m_threads.push_back(ret);
+
     return ret;
 }
 
-Process* Process::getProcess() {
+void Process::join() {
+    if(stopping) return;
+
+    stopping = true;
+    vector<_InternalThread*>::iterator itr;
+
+    m_log->printfln(INFO, "Stopping process %s", getName());
+
+    /* Tell all the threads to stop */
+    FOR_EACH(itr, m_threads) {
+        if(*itr) {
+            ManagedRunnable* mr = &(*itr)->getManagedRunnable();
+            m_log->printfln(DEBUG, "Stopping runnable %p", mr);
+            if(mr != this) mr->stop();
+        }
+    }
+
+    FOR_EACH(itr, m_threads) {
+        if(*itr) {
+            m_log->printfln(DEBUG, "Join thread %p", *itr);
+            ManagedRunnable* mr = &(*itr)->getManagedRunnable();
+            if(mr != this) {
+                delete (*itr);
+                *itr = NULL;
+            }
+        }
+    }
+
+    m_threads.clear();
+    m_log->printfln(DEBUG, "Process stopped");
+}
+
+void Process::stop() {
+    join();
+    m_wait_mutex.unlock();
+}
+
+Process& Process::getProcess() {
     Thread* me = Thread::getCurrentThread();
-    return m_threads_db[me];
+    map<Thread*, Process*>::iterator itr;
+    itr = m_threads_db.find(me);
+
+    if(itr == m_threads_db.end()) {
+        if(main == NULL) {
+            main = new MainProcess("Main");
+        }
+        return* main;
+    }
+    return* itr->second;
+}
+
+void Process::waitForExit() {
+    ScopedLock __sl(m_wait_mutex);
 }
 
 Thread* Process::start() {
-    m_mesg_digest.super = this;
-    Thread* dig = new Thread(m_mesg_digest);
-    Thread* thr = new Thread(*this);
-
-    dig->start();
+    Thread* thr = this->newThread(*this);
     thr->start();
+    Thread* fc = this->newThread(getFileCollection());
+    fc->start();
+    m_sched = this->newThread(getScheduler());
+    m_sched->start();
 
+    m_thread = thr;
     return thr;
 }
 
-void Process::MessageDigester::run() {
-    while ( true ) {
-        Message msg = super->inbound_messages.front();
-        super->inbound_messages.pop();
-    
-        ProcessAddressProxy proxy(msg.from_address);
-    
-        if ( ! proxy.isValid() ) {
-            logger::LogManager::instance()
-                .getLogContext("Process", "MessageDigester")
-                    .printfln(ERROR, "Message from unknown sender @%u\n",
-                        msg.from_address.thread);
-            return ;
-        }
-        
-        super->messageReceivedCallback(proxy,
-                msg.message.rawPointer(), msg.message.length());
-    }
-}
 
-bool ProcessAddressProxy::isValid() {
-   ProcessProxy* proxy =
-       ProcessManager::instance().
-            getProcessByAddress(m_addr);
-    return proxy != NULL;
-}
-
-void ProcessAddressProxy::sendMessage( const ProcessAddress& from, const byte* bytes, size_t len ) {
-   ProcessProxy* proxy =
-       ProcessManager::instance().
-            getProcessByAddress(m_addr);
-
-    if( ! proxy ) {
-        logger::LogManager::instance()
-            .getLogContext("Process", "ProcessAddressProxy")
-                .printfln(ERROR, "Invalid message address @%u\n", m_addr);
-    } else {
-        proxy->sendMessage(from, bytes, len);
-    }
-
-}
-
-ProcessAddressProxy::ProcessAddressProxy(const ProcessAddress& addr) {
-    m_addr = addr;
-}
 
 }

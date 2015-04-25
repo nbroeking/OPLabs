@@ -101,22 +101,21 @@ inline int putObject( io::Putter& putter, io::ICMPHeader& hdr ) {
 	putter.putByte( hdr.getType() );
 	putter.putByte( hdr.getCode() );
 	putter.putInt16be( hdr.getChecksum() );
-    printf("Gateway: %04x\n", hdr.getGateway());
-	putter.putInt16be( hdr.getEchoId() );
 	putter.putInt16be( hdr.getEchoSequence() );
+	putter.putInt16be( hdr.getEchoId() );
 	return 0;
 }
 
 inline int getObject( io::Getter& getter, io::ICMPHeader& hdr ) {
-	byte b; u32_t gw;
+	byte b;
 
 	b = getter.getByte();
 	hdr.setType((io::icmp::Type)b);
 	b = getter.getByte();
 	hdr.setCode((io::icmp::Code)b);
 	getter.getInt16be();
-	gw = getter.getInt32be();
-	hdr.setGateway(gw);
+    hdr.setEchoSequence( getter.getInt16be() );
+    hdr.setEchoId( getter.getInt16be() );
 
 	return 0;
 }

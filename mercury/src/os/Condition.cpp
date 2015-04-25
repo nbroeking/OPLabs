@@ -1,5 +1,7 @@
 #include <os/Condition.hpp>
 
+#include <cerrno>
+
 namespace os {
 
 Condition::Condition() {
@@ -11,14 +13,23 @@ void Condition::signal() {
 } ;
 
 bool Condition::wait( Mutex& mutex )  {
-    return !pthread_cond_wait( & this->m_condition, mutex.raw() ) ;
+    int ret = pthread_cond_wait( & this->m_condition, mutex.raw() ) ;
+    if(ret) {
+        throw ConditionException("Error in wait", ret);
+    }
+    return true;
 } ;
 
 bool Condition::timedwait( Mutex& mutex, timeout_t timeout )  {
     timespec ts ;
     Time::microsInFuture( &ts, timeout ) ;
     int ret = pthread_cond_timedwait( & this->m_condition, mutex.raw(), &ts );
-    return !ret;
+    if(ret == ETIMEDOUT) {
+        return false;
+    } else if(ret) {
+        throw ConditionException("Error in timedwait", ret);
+    }
+    return true;
 } ;
 
 Condition::~Condition() {

@@ -19,7 +19,14 @@ class Router(object):
         case where the Router is idle but we wish to notify it of something.
     """
     def __init__(self, ip_addr, req_id=None):
-        self.addr = IP(ip_addr)
+        self.addr = None
+        try:
+            self.addr = IP(ip_addr)
+        except ValueError:
+            self.addr = socket.gethostbyname(ip_addr)
+            self.addr = IP(self.addr)
+
+
         if req_id == None:
             self.req_id = os.urandom(32)
         else:
@@ -43,6 +50,7 @@ class Router(object):
 
         host = self.addr.strNormal()
         sock = socket.socket(sock_type, socket.SOCK_STREAM)
+        sock.settimeout(5.0)
         sock.connect((host, MAGIC_PORT))
 
         sock.sendall(MAGIC_COOKIE + self.req_id)
