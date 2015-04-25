@@ -16,11 +16,14 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
 @implementation ResultsViewController
 @synthesize WebView;
 
+//Initilize the view by loading the results page when we are created
 -(void)viewDidLoad{
     [super viewDidLoad];
-    
+  
     //Set the background color
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    self.view.layer.contents = (id)[UIImage imageNamed:@"background.png"].CGImage;
     
     if( ([[TestState getStateMachine] mobileResults] == NULL) || ([[[TestState getStateMachine] mobileResults] valid] == false)){
         NSLog(@"Error with results from results view");
@@ -33,16 +36,18 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         NSLog(@"%@", [url absoluteString]);
         [WebView loadRequest:requestObj];
     }
+    
+    [WebView setBackgroundColor:[[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"background"]]];
+    
+    [WebView setHidden:false];
 }
-
+//We need to tell the web view to use us as a delegate when we appear
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [WebView setDelegate:self];
 }
--(void) routerResults:(NSNotification*)notification{
-    NSLog(@"Received Router Results on the ResultsViewController");
-}
 
+//Before we disapear we need to clean up our state
 -(void) viewWillDisappear:(BOOL)animated {
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         // back button was pressed.  We know this is true because self is no longer
@@ -55,4 +60,5 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
     [WebView setDelegate:nil];
     [super viewWillDisappear:animated];
 }
+
 @end

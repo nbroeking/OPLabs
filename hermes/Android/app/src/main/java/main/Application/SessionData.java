@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import com.oplabs.hermes.R;
 
 //Singleton that represents all data that the application needs.
+//This class gets updated by the settings activity
 public class SessionData {
     //Singleton Members
     private static SessionData ourInstance = new SessionData();

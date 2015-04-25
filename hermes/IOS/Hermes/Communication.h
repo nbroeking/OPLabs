@@ -32,11 +32,16 @@
 //stop the subsystem
 -(void) stop;
 
+//Force stop the subsystem
+-(void) forceStop;
+
 //Checks to see if the sub system is running
 -(BOOL) isRunning;
 
 //Methods for Communicating with the server
 -(void) login:(id) sender;
+
+//Starts a test for the mobile
 -(void) startTest;
 
 

@@ -109,6 +109,7 @@ public class Communication extends Service {
         commThread.mHandler.sendMessage(msg);
     }
 
+    //Reports results to the controller
     public void reportResults(TestResults results){
         Message msg = obtain();
         msg.what = CommMsg.REPORT_TEST;
@@ -122,6 +123,7 @@ public class Communication extends Service {
         }
     }
 
+    //We register a broadcast receive in order to receive messages from the other subsystems
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override

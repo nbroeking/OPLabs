@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+//This class handles all web requests to the controller
+
 #import <Foundation/Foundation.h>
 #import "Communication.h"
 
@@ -20,5 +22,4 @@
 
 -(instancetype) init;
 -(instancetype) initWithComm: (Communication*) comm;
--(instancetype) init: (NSObject*)sender;
 @end

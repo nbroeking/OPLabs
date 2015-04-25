@@ -17,8 +17,11 @@ import android.view.View;
 import com.oplabs.hermes.R;
 import communication.Communication;
 import main.Application.SessionData;
+import tester.TestState;
 
 //All Activities inherit from this one. It allows us to have universal behavior across all activities
+//We use this class to keep track of how many activitys we have on the stack and then we clean up
+
 public abstract class HermesActivity extends Activity {
     //Tag
     protected final String TAG = "Hermes Activity";
@@ -33,7 +36,7 @@ public abstract class HermesActivity extends Activity {
     //Data
     protected SessionData data;
 
-    //Starts the subsystems if they havnt been started already
+    //Starts the subsystems if they haven't been started already
     @Override
     protected void onStart()
     {
@@ -51,7 +54,7 @@ public abstract class HermesActivity extends Activity {
         }
         ActivitesThatNeedService+=1;
 
-        //Bind
+        //Bind to the comm class
         Intent intent = new Intent(this, Communication.class);
         Log.i(TAG, "Binding an activiy");
         bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
@@ -73,10 +76,12 @@ public abstract class HermesActivity extends Activity {
 
         if( ActivitesThatNeedService == 0)
         {
-            Log.i("Hermes Activity", "Trying to stop the service");
-            stopService(new Intent(this, Communication.class));
+            if (TestState.getInstance().getState() == TestState.State.IDLE  ||
+                    TestState.getInstance().getState() == TestState.State.COMPLETED) {
+
+                stopService(new Intent(this, Communication.class));
+            }
             //logout
-            data.setSessionId(null);
         }
 
         //Unregister the broadcast handler
@@ -84,6 +89,8 @@ public abstract class HermesActivity extends Activity {
     }
 
     //Notifies the current open activity that a login completed
+    //If there was an error we tell the user what it was and then go to the activity
+    //that can fix
     public void notifyLogin()
     {
         if (data.getSessionId() != null)
@@ -138,7 +145,7 @@ public abstract class HermesActivity extends Activity {
         endLogin();
     }
 
-    //Checkes the login at startup to make sure that we are already logged in. If we are not we
+    //Checks the login at startup to make sure that we are already logged in. If we are not we
     //put a request into the Communication service
     public boolean checkLogin()
     {
@@ -213,13 +220,13 @@ public abstract class HermesActivity extends Activity {
                 Log.e(TAG, "Comm Service is NULL");
             }
             //Check the login when the service is bound
-
             if( checkLogin())
             {
                 commService.login();
                 startLogin();
             }
         }
+        //Called if there was an error
         public void onServiceDisconnected(ComponentName arg0) {
             isBound = false;
             commService = null;
@@ -240,6 +247,7 @@ public abstract class HermesActivity extends Activity {
         return true;
     }
 
+    //Called when the user preses button on the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

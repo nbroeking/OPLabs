@@ -45,7 +45,7 @@ public class LoginActivity extends Activity {
         EditText password = (EditText)findViewById(R.id.password);
         data.setEmail(email.getText().toString());
         data.setPassword(password.getText().toString());
-
+        data.setSessionId("");
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("email", data.getEmail() );

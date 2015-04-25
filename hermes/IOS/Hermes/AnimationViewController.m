@@ -37,10 +37,9 @@
 -(void)viewDidLoad{
     [super viewDidLoad];
     
-    total = 20;
+    total = 25;
     
-    //Set the background color
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+    self.view.layer.contents = (id)[UIImage imageNamed:@"background.png"].CGImage;
     
     stateMachine = [TestState getStateMachine];
     
@@ -57,7 +56,7 @@
     [self updateLabel];
     //Animation stuff
     // Load images
-    NSArray *imageNames = @[@"ani2_1.png", @"ani2_2.png", @"ani2_3.png", @"ani2_4.png",@"ani2_5.png", @"ani2_6.png",@"ani2_7.png", @"ani2_8.png",@"ani2_9.png", @"ani2_10.png",];
+    NSArray *imageNames = @[@"ani_1.png", @"ani_2.png", @"ani_3.png", @"ani_4.png",@"ani_5.png", @"ani_6.png",@"ani_7.png", @"ani_8.png"];
     
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for (int i = 0; i < imageNames.count; i++) {
@@ -65,7 +64,6 @@
     }
     
     // Normal Animation
- 
     AnimationImage.animationImages = images;
     AnimationImage.animationDuration = 2;
     
@@ -79,7 +77,8 @@
     [super viewWillAppear:animated];
     [AnimationImage startAnimating];
     
-    updater = [NSTimer timerWithTimeInterval:.03f target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
+    //We are going to update the progress bar at about 30 fps 
+    updater = [NSTimer timerWithTimeInterval:.04f target:self selector:@selector(updateLabel) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:updater forMode:NSRunLoopCommonModes];
     
     start = [[TestState getStateMachine] startTime];
@@ -92,14 +91,17 @@
     [updater invalidate];
 }
 
+//I am not proud of the fact that this method is polled to update the view but this view is already an amimation loop so
+//It is an easy solution
 -(void) updateLabel{
     TestState *state = [TestState getStateMachine];
     
     NSString *label = [[NSString alloc] initWithFormat:@"%@", [state getStateAsString]];
     
     [StateLabel setText:label];
-    
-    float progress = ((float)([[NSDate date] timeIntervalSince1970] - start) / (float) total);
+    float progress = 0.0;
+     
+    progress = ((float)(([[NSDate date] timeIntervalSince1970] - start)) / ((float) total));
     
     ProgressBar.progress = progress;
     //[ProgressBar setProgress:progress animated:YES];
