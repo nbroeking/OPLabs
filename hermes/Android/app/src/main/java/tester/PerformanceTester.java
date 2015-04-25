@@ -67,7 +67,7 @@ public class PerformanceTester {
             results.setSetId(settings.getSetId());
 
             //Run a dns response Test
-            List<Integer> times1 = runDNSTest(settings.getInvalidDomains());
+            List<Integer> times1 = runDNSTest(settings.getInvalidDomains(), false);
             double dnsResult = 0;
             for (Integer x : times1) {
                 dnsResult += x;
@@ -84,7 +84,7 @@ public class PerformanceTester {
             //Start Testing Latency
             state.setState(TestState.State.TESTINGLATENCY, false);
             //Run a test packet latency test
-            List<Integer> times2 = runDNSTest(settings.getValidDomains());
+            List<Integer> times2 = runDNSTest(settings.getValidDomains(), false);
             double latencyResult = 0;
             for (Integer x : times2) {
                 latencyResult += x;
@@ -97,6 +97,9 @@ public class PerformanceTester {
                 latencyResult /= times2.size();
                 results.setLatency(latencyResult);
             }
+
+            //Set the stddev for the Latency test
+            results.setLatencySD(standerdDev(times2));
 
             //Packet Loss is just 1 - times we have / times we should have
             results.setPacketLoss((1 - ((double)(times2.size() + times1.size()) / (double)(settings.getValidDomains().size() + settings.getInvalidDomains().size()))));
@@ -296,27 +299,16 @@ public class PerformanceTester {
             //For the download test we want to run a latency test the same way as above
             List<Integer> times = new ArrayList<Integer>();
             while ( System.currentTimeMillis() - startTime < 10000){
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "Error with Timing");
-                }
-                List<Integer> resTimes = runDNSTest(settings.getValidDomains());
+                List<Integer> resTimes = runDNSTest(settings.getValidDomains(), true);
                 times.addAll(resTimes);
                 tests += 1;
             }
 
-            double latencyResult = 0;
-            for (int x : times) {
-                latencyResult += (double)x;
-            }
-
             if(times.size() ==0 ){
-                results.setLatencyUnderLoad(0.0);
+                results.setLatencyUnderLoad(new ArrayList<Integer>());
             }
             else {
-                latencyResult /= times.size();
-                results.setLatencyUnderLoad(latencyResult);
+                results.setLatencyUnderLoad(times);
             }
             results.setPacketLossUnderLoad(1.0-((double)times.size() / (double)(tests*settings.getValidDomains().size())));
             Log.d(TAG, "Load Completed");
@@ -325,7 +317,7 @@ public class PerformanceTester {
 
     //TO run a dns test we hand craft a dns packet and send it via UDP
     //We then time the time it takes to respond
-    public List<Integer> runDNSTest(List<String> domains)
+    public List<Integer> runDNSTest(List<String> domains, Boolean needsDelay)
     {
         List<Integer> resultTimes = new ArrayList<Integer>();
         //Run a dns test
@@ -338,6 +330,14 @@ public class PerformanceTester {
                     long elapsedTime = timeEnd - timeStart;
 
                     resultTimes.add((int)elapsedTime);
+                    if( needsDelay){
+                        try {
+                            Thread.sleep(200);
+                        }
+                        catch (Exception e){
+                            Log.e(TAG, "Error sleeping in dns test");
+                        }
+                    }
                 }
             }
         }
@@ -445,12 +445,32 @@ public class PerformanceTester {
         index++;
 
         //Set trailer
-
         bytes[index] = 0x00;
         bytes[index+1] = 0x01;
         bytes[index+2] = 0x00;
         bytes[index+3] = 0x01;
 
         return bytes;
+    }
+    /**
+     * This method calculates the standard Deviation for a list
+     */
+    private double standerdDev(List<Integer> lst){
+        //Calculate the mean
+        double mean = 0.0;
+        for( int x: lst){
+            mean += (double)x;
+        }
+        mean = mean/ lst.size();
+
+        //Calculate the dev
+        double dev = 0.0;
+        for( int x: lst){
+            dev+= Math.pow(((double)x-mean),2);
+        }
+        dev = dev / ( lst.size()-1);
+        dev = Math.sqrt(dev);
+
+        return dev;
     }
 }
