@@ -26,7 +26,7 @@
 @property (strong, nonatomic) Throughput *throughputHandler;
 
 -(Boolean) sendDNSRequest :(NSString*)string withId:(NSInteger)identifier;
--(NSArray*) runDNSTest: (NSMutableArray*)domains;
+-(NSArray *)runDNSTest:(NSMutableArray *)domains needsDelay:(Boolean)delay;
 -(Boolean) getDNSResponse:(NSInteger)identifier;
 
 -(NSData*) getContent:(NSString*) name :(NSInteger) identifier;
@@ -67,11 +67,10 @@
     TestState *state = [TestState getStateMachine];
     
     [state setState:TESTINGDNS];
-    
     [results setRouterIdentifier:[settings routerResultID]];
     
     //Run a DNS Response Test
-    NSArray *times1 = [self runDNSTest:[settings invalidDomains]];
+    NSArray *times1 = [self runDNSTest:[settings invalidDomains] needsDelay:false];
     double dnsResult = 0;
     for (NSNumber *x in times1) {
         dnsResult += [x doubleValue];
@@ -91,7 +90,7 @@
     
 
     //Run a test packet latency test
-    NSArray *times2 = [self runDNSTest:[settings validDomains]];
+    NSArray *times2 = [self runDNSTest:[settings validDomains] needsDelay:false];
     double latencyResult = 0;
     for (NSNumber *x in times2) {
         latencyResult += [x doubleValue];
@@ -105,6 +104,7 @@
         [results setLatency:latencyResult];
     }
     
+    [results setLatencySD:[self standardDev:times2]];
     NSLog(@"Latency Result = %f", latencyResult);
 
         
@@ -141,23 +141,17 @@
     int tests = 0;
     
     while ( [[NSDate date] timeIntervalSince1970] - startTime < 10.0){
-        NSArray *resTimes = [self runDNSTest:[settings validDomains]];
+        NSArray *resTimes = [self runDNSTest:[settings validDomains] needsDelay:true];
         
         [times addObjectsFromArray:resTimes];
         tests += 1;
     }
     
-    double latencyResult = 0;
-    for (NSNumber *x in times) {
-        latencyResult += [x doubleValue];
-    }
-    
     if( [times count] ==0 ){
-        [results setLatencyUnderLoad:0.0];
+        [results setLatencyUnderLoad:[[NSArray alloc] init]];
     }
     else {
-        latencyResult /= (double)[times count];
-        [results setLatencyUnderLoad:latencyResult];
+        [results setLatencyUnderLoad:times.copy];
     }
     
     double top = [times count];
@@ -200,7 +194,7 @@
 
 //This will run a dns test by sending x number dns requests and
 //Testing how long it takes for them to return
--(NSArray *)runDNSTest:(NSMutableArray *)domains{
+-(NSArray *)runDNSTest:(NSMutableArray *)domains needsDelay:(Boolean)delay{
     
     NSMutableArray *resultTimes = [[NSMutableArray alloc] init];
     
@@ -212,8 +206,10 @@
             if( [self getDNSResponse:id])
             {
                 long elapsedTime = timeEnd*1000 - timeStart*1000;
-                
                 [resultTimes addObject:[[NSNumber alloc] initWithInteger: elapsedTime]];
+                if( delay){
+                    [NSThread sleepForTimeInterval:.2f];
+                }
             }
         }
     }
@@ -330,6 +326,32 @@
     
     free(bytes);
     return data;
+}
+// This calculates the standard deviation for a NSArray
+-(double) standardDev:(NSArray*) array{
+    if( array == NULL){
+        return 0.0;
+    }
+    
+    //Calculate the mean
+    double mean = 0.0;
+    
+    for( NSNumber *x in array){
+        mean += [x doubleValue];
+    }
+    mean = mean / [array count];
+    
+    //Calculate the dev
+    
+    double dev = 0.0;
+    
+    for (NSNumber *x in array){
+        dev += pow(([x doubleValue] -mean), 2);
+    }
+    dev = dev / ([array count] -1);
+    
+    dev = sqrt(dev);
+    return dev;
 }
 
 @end

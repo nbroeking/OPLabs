@@ -14,17 +14,17 @@
 @property(assign, atomic) double dns;
 @property(assign, atomic) double packetloss;
 @property(assign, atomic) double latency;
+@property(assign, atomic) double latencySD; //Standard Deviation
 @property(assign, atomic) double throughputUpload;
 @property(assign, atomic) double throughputDownload;
 @property(assign, atomic) double packetlossUnderLoad;
-@property(assign, atomic) double latencyUnderLoad;
+@property(strong, atomic) NSArray *latencyUnderLoad;
 
 @property(assign, atomic) int setID;
 @property(assign, atomic) NSInteger routerIdentifier;
 @property(assign, atomic) bool valid;
 @property(assign, atomic) NSInteger mobileIdentifier;
 
--(instancetype)init :(NSDictionary*)json;
 -(NSString*) getPost;
 
 -(void) print;
