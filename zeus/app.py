@@ -16,7 +16,7 @@ import logging
 from util.debug import before_request
 from util.throughput_test import start_server
 
-
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, static_url_path='/noop/')
 app.before_request(before_request)
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI

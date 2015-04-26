@@ -100,10 +100,6 @@
     </div>
 </div>
 <script>
-setTimeout(function() {
-        location.reload()
-}, 15000)
-
 //Any undefineds should just be 0
 var None = 0;
 function fitCanvas(cname) {
@@ -229,5 +225,16 @@ var legendHolder = document.createElement('div');
 
 legendHolder.innerHTML = chart1.generateLegend();
 document.getElementById('legend').appendChild(legendHolder.firstChild);
+
+{% if router.state == "running" %}
+setInterval(function() {
+    $.getJSON( "/mobile/test_result/{{router.test_id}}/state?user_token={{user_token}}", function( data ) {
+        if (data["state"] == "finished") {
+            location.reload(true)
+        }
+   });
+}, 1000)
+{% endif %}
+
 </script>
 {% endblock %}

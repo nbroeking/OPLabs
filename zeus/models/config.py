@@ -1,10 +1,11 @@
-from app import THROUGHPUT_PORT
+from app import THROUGHPUT_PORT, APP_ROOT
+from os.path import join
 import random
 
-with open("data/opendns-random-domains.txt", 'r') as rdoms:
+with open(join(APP_ROOT, "data/opendns-random-domains.txt"), 'r') as rdoms:
     random_domains = [line.strip() for line in rdoms.readlines()]
 
-with open("data/opendns-top-domains.txt", 'r') as tdoms:
+with open(join(APP_ROOT, "data/opendns-top-domains.txt"), 'r') as tdoms:
     top_domains = [line.strip() for line in tdoms.readlines()]
 
 class TestConfiguration(object):

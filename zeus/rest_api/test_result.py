@@ -11,6 +11,7 @@ Date: 04/06/15
 from flask import request
 from models.test_result import TestResult
 from util.json_helpers import JSON_SUCCESS, JSON_FAILURE
+from util.models.json_column import make_json_list
 from util.rest.rest_auth import requires_user_token
 import logging
 from . import rest_blueprint
@@ -45,8 +46,8 @@ def edit_result(result_id=None):
 
     # Request from Nic
     if "throughput_latency" in request.form:
-        result.download_latencies = [float(request.form["throughput_latency"])]
-        result.upload_latencies = [float(request.form["throughput_latency"])]
+        result.download_latencies = make_json_list(request.form["throughput_latency"])
+        result.upload_latencies = make_json_list(request.form["throughput_latency"])
             
     result.save()
 
