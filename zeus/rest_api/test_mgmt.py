@@ -9,6 +9,7 @@ Date: 02/21/2015
 """
 from flask import request
 from app import db
+import logging
 from models.auth_model import User
 from models.test_result import TestResult
 from models.test_set import TestSet
@@ -33,11 +34,13 @@ def test_func():
 @rest_blueprint.route("/start_test/<test_type>", methods=['POST'])
 @requires_user_token()
 def start_test(test_type=None):
+    logging.info("Starting test for device type {%s}", str(test_type))
     if 'set_id' not in request.form:
         return JSON_FAILURE(reason='Missing set_id')
 
     set_id = request.form['set_id'].strip()
     test_set = TestSet.get_set_by_id(set_id)
+    logging.debug("Found test_set: {%s}", str(test_set))
 
     if not test_set:
         return JSON_FAILURE(reason='Invalid set_id',
@@ -83,7 +86,7 @@ def start_test(test_type=None):
         try:
             # Send a magic packet to the router
             router.wakeup()
-        except:
+        except NameError:
             return JSON_FAILURE()
 
         # Return config + new result_id

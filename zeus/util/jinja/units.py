@@ -22,6 +22,8 @@ GIGABYTES = __mkunit__(2**30)
 def BITS(value):
     if value == None:
         return None
+    if isinstance(value, str):
+        value = float(value)
     return value * 8
 
 def PERCENT(value):

@@ -17,7 +17,7 @@ class TestConfiguration(object):
                     "timeout": 2000
                     },
                 "throughput_config": {
-                    "server_ip": "128.138.202.143:" + THROUGHPUT_PORT,
+                    "server_ip": "10.201.21.216:" + THROUGHPUT_PORT,
                     },
                 }
     def get_config(self):
