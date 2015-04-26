@@ -31,7 +31,7 @@ public class AnimationFragment extends Fragment {
 
     //Call backs to update the progress bar and the text field
     private final Handler handler = new Handler();
-    private final long totalTime = 25000; //Milliseconds
+    private final long totalTime = 35000; //Milliseconds its hardcoded right now im sorry
     private long start = 0;
     private boolean shouldUpdate;
     private AnimationDrawable animation;

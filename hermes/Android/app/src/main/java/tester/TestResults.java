@@ -24,7 +24,7 @@ public class TestResults implements Parcelable{
     private double throughputUpload;
     private double throughputDownload;
     private double packetLossUnderLoad;
-
+    private double dnsSD;
     private double latencySD;
 
     private boolean valid;
@@ -60,6 +60,7 @@ public class TestResults implements Parcelable{
         throughputDownload = in.readDouble();
         packetLossUnderLoad = in.readDouble();
         latencySD = in.readDouble();
+        dnsSD = in.readDouble();
         valid = in.readByte() != 0; //Resets the bool
 
         mobileId = in.readInt();
@@ -76,7 +77,8 @@ public class TestResults implements Parcelable{
                 "\nupload " + throughputUpload /1000/1000*8 + "Mbps" +
                 "\nlatency under load " + latencyUnderLoad +
                 "\npacket loss under load " + packetLossUnderLoad +
-                "\nlatency std " + latencySD;
+                "\nlatency std " + latencySD +
+                "\n dns std " + dnsSD;
     }
     public String getPost(){
 
@@ -94,7 +96,8 @@ public class TestResults implements Parcelable{
             results += "download_throughputs=" + URLEncoder.encode(Double.toString(throughputDownload), "UTF-8") + '&';
             results += "packet_loss_under_load=" + URLEncoder.encode(Double.toString(packetLossUnderLoad), "UTF-8") + '&';
             results += "throughput_latency=" + URLEncoder.encode(latencyUnderLoad.toString(), "UTF-8") + '&';
-            results += "latency_sdev=" + URLEncoder.encode(Double.toString(latencySD), "UTF-8");
+            results += "latency_sdev=" + URLEncoder.encode(Double.toString(latencySD), "UTF-8") + '&';
+            results += "dns_response_sdev=" + URLEncoder.encode(Double.toString(dnsSD), "UTF-8");
 
         } catch (UnsupportedEncodingException e) {
             Log.e("Results", "Error creating post", e);
@@ -134,6 +137,7 @@ public class TestResults implements Parcelable{
         dest.writeDouble(throughputDownload);
         dest.writeDouble(packetLossUnderLoad);
         dest.writeDouble(latencySD);
+        dest.writeDouble(dnsSD);
         dest.writeByte((byte) (valid ? 1 : 0));
 
         dest.writeInt(mobileId);
@@ -281,6 +285,18 @@ public class TestResults implements Parcelable{
 
         synchronized (this){
             this.setId = setId;
+        }
+    }
+
+    public double getDnsSD() {
+        synchronized (this) {
+            return dnsSD;
+        }
+    }
+
+    public void setDnsSD(double dnsSD) {
+        synchronized (this) {
+            this.dnsSD = dnsSD;
         }
     }
 }

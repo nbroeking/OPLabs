@@ -79,12 +79,14 @@
     if( [times1 count] ==0 ){
         
         [results setDns:0.0];
+        [results setDnsSD:0.0];
     }
     else{
         dnsResult /= [times1 count];
         [results setDns:dnsResult];
+        [results setDnsSD:[self standardDev:times1]];
     }
-    [results setDnsSD:[self standardDev:times1]];
+
     NSLog(@"DNS Result = %f", dnsResult);
     
     [state setState:TESTINGLATENCY];
