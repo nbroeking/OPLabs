@@ -113,7 +113,7 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Percentage of Packets Lost: {{'%0.2f' % result.packet_loss|float}}%
+                Percentage of Packets Lost: {{'%0.2f%%' % (result.packet_loss*100) if result.packet_loss != None else "None" }}
                 </li>
             </ul>
         </div> <!-- Panel -->
