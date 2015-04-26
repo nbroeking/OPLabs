@@ -33,10 +33,10 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average Download Throughput: {{ MEGABYTES(BITS(average(result.download_throughputs)), 2) if result.download_throughputs else "None" }} Megabits
+                Average Download Throughput: {{ MEGABYTES(BITS(average(result.download_throughputs)), 2) if result.download_throughputs else "None" }} Megabits/second
                 </li>
                 <li class="list-group-item">
-                Average Upload Throughput: {{ MEGABYTES(BITS(average(result.upload_throughputs)), 2) if result.upload_throughputs else "None"}} Megabits
+                Average Upload Throughput: {{ MEGABYTES(BITS(average(result.upload_throughputs)), 2) if result.upload_throughputs else "None"}} Megabits/second
                 </li>
             </ul>
         </div> <!-- Panel -->
@@ -59,10 +59,10 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average Packet Latency: {{ result.latency_avg }} ms
+                Average Packet Latency: {{ round(result.latency_avg, 2) }} ms
                 </li>
                 <li class="list-group-item">
-                Standard Deviation: {{ result.latency_sdev }} ms
+                Standard Deviation: {{ round(result.latency_sdev, 2) }} ms
                 </li>
             </ul>
         </div> <!-- Panel -->
@@ -88,10 +88,10 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average DNS Response: {{ result.dns_response_avg }} ms
+                Average DNS Response: {{ round(result.dns_response_avg, 2) }} ms
                 </li>
                 <li class="list-group-item">
-                Standard Deviation: {{ result.dns_response_sdev }} ms
+                Standard Deviation: {{ round(result.dns_response_sdev, 2) }} ms
                 </li>
             </ul>
         </div> <!-- Panel -->
@@ -135,7 +135,7 @@
             <ul class="list-group">
                 <li class="list-group-item"> </li>
                 <li class="list-group-item">
-                Average Latency Under Load: {{ average(result.upload_latencies, result.download_latencies) }} ms
+                Average Latency Under Load: {{ round(average(result.upload_latencies, result.download_latencies), 2) }} ms
                 </li>
                 <!--<li class="list-group-item">
                 Standard Deviation: {{ result.jitter_sdev }}
