@@ -48,23 +48,22 @@ Our sponsor, CableLabs, gave us the challenge of creating a mobile and web appli
 
 ### Authors ###
 *Zacharia Anders*: 
-Web Portal, Database, Tests
+Web Portal, Database
 
 *Nicolas Broeking*:
-Mobile Development and Tests
-
-*John Jones*:
-Team Lead, Documentation
+Mobile Development 
 
 *Sarah Feller*:
 GUI Development and Documentation
 
 *Joshua Rahm*:
-Router Development and Tests
+Router Development
 
 *Michael Williams*:
-Web Portal and Documentation
+Documentation
 
+*John Jones*
+Documentation
 
 ### Target Audience ###
 CableLabs CLIPPER Team
