@@ -15,6 +15,7 @@
 @property(assign, atomic) double packetloss;
 @property(assign, atomic) double latency;
 @property(assign, atomic) double latencySD; //Standard Deviation
+@property(assign, atomic) double dnsSD;
 @property(assign, atomic) double throughputUpload;
 @property(assign, atomic) double throughputDownload;
 @property(assign, atomic) double packetlossUnderLoad;

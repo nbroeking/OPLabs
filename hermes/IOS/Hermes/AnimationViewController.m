@@ -36,12 +36,10 @@
 
 -(void)viewDidLoad{
     [super viewDidLoad];
-    
-    total = 25;
-    
     self.view.layer.contents = (id)[UIImage imageNamed:@"background.png"].CGImage;
     
     stateMachine = [TestState getStateMachine];
+    total = 2000000; //We will adjust this when we get our settings
     
     //Start Testing Process if IDLE
     if([stateMachine getState] == IDLE)
@@ -54,6 +52,7 @@
     }
     
     [self updateLabel];
+    
     //Animation stuff
     // Load images
     NSArray *imageNames = @[@"ani_1.png", @"ani_2.png", @"ani_3.png", @"ani_4.png",@"ani_5.png", @"ani_6.png",@"ani_7.png", @"ani_8.png"];
@@ -119,6 +118,13 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Error" message:@"There was an starting a performance test. Please try again." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:NULL, nil];
         
         [alert show];
+        
+        
+    }
+    else{
+        [[TestState getStateMachine] setStartTime:[[NSDate date] timeIntervalSince1970]];
+        start = [[TestState getStateMachine] startTime];
+        total = [[settings invalidDomains] count]/3 + [[settings validDomains] count]/3 + 15;
     }
 }
 -(void) goToResults:(NSNotification *)notification

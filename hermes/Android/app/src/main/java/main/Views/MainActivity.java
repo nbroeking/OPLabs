@@ -46,6 +46,24 @@ public class MainActivity extends HermesActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "On Resume");
+        super.onStart();
+        if(TestState.getInstance().getState() == TestState.State.IDLE)
+        {
+            Button button = (Button)findViewById(R.id.command);
+            button.setText("Run Test");
+
+            TestState.getInstance().setPhoneResults(null);
+        }
+        else
+        {
+            Button button = (Button)findViewById(R.id.command);
+            button.setText("Get Results");
+        }
+    }
+
     //Used to do animations for the login screen
     @Override
     public void startLogin()

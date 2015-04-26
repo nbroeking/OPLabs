@@ -15,6 +15,7 @@ import com.oplabs.hermes.R;
 import java.util.List;
 
 import main.Application.SessionData;
+import tester.TestState;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -38,6 +39,7 @@ public class SettingsActivity extends PreferenceActivity {
         data.setPassword(password);
         data.setHostname(hostname);
         data.setSessionId("");
+        TestState.getInstance().setState(TestState.State.IDLE, false);
     }
 
     @Override

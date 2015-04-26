@@ -75,12 +75,13 @@ public class PerformanceTester {
             if( times1.size() == 0)
             {
                 results.setDns(0.0);
+                results.setDnsSD(0.0);
             }
             else {
                 dnsResult /= times1.size();
                 results.setDns(dnsResult);
+                results.setDnsSD(this.standerdDev(times1));
             }
-
             //Start Testing Latency
             state.setState(TestState.State.TESTINGLATENCY, false);
             //Run a test packet latency test

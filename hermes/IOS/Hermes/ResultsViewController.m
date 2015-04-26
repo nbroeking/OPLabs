@@ -37,8 +37,6 @@ NSString * const ViewResultsURL = @"/mobile/test_set/%d";
         [WebView loadRequest:requestObj];
     }
     
-    [WebView setBackgroundColor:[[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"background"]]];
-    
     [WebView setHidden:false];
 }
 //We need to tell the web view to use us as a delegate when we appear
