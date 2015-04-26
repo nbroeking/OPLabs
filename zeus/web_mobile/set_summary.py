@@ -13,6 +13,15 @@ import logging
 import math
 from util.jinja.units import KILOBYTES, MEGABYTES, GIGABYTES, BITS
 
+@mobile_blueprint.route('test_result/<result_id>/state', methods=['GET'])
+@requires_user_token()
+def test_finished(result_id):
+    test_result = TestResult.get_result_by_id(result_id)
+    if not test_result:
+        return JSON_FAILURE(reason="Invalid test result id")
+
+    return JSON_SUCCESS(state=test_result.state)
+
 @mobile_blueprint.route('test_set/<set_id>', methods=['GET'])
 @requires_user_token()
 def set_summary(set_id):
@@ -35,13 +44,13 @@ def set_summary(set_id):
 
     tput_max = max(tputs)
     if tput_max > 2**30:
-        tput_units = lambda x: GIGABYTES(BITS(x))
+        tput_units = lambda x: GIGABYTES(BITS(x), 2)
         tput_units_name = "Gigabits"
     elif tput_max > 2**20:
-        tput_units = lambda x: MEGABYTES(BITS(x))
+        tput_units = lambda x: MEGABYTES(BITS(x), 2)
         tput_units_name = "Megabits"
     else:
-        tput_units = lambda x: KILOBYTES(BITS(x))
+        tput_units = lambda x: KILOBYTES(BITS(x), 2)
         tput_units_name = "Kilobits"
     
     intf_stats = {} # interface_name :: String -> list of downloads
@@ -71,6 +80,7 @@ def set_summary(set_id):
         has_router = False
 
     return render_template('set_summary.html',
+            user_token=request.args['user_token'],
             router=router,
             mobile=mobile,
             tput_units=tput_units,
