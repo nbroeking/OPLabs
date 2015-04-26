@@ -15,6 +15,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+//We included objects to be able to store data for future versions currently not used at this time
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;

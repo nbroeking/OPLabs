@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 NicolasBroeking. All rights reserved.
 //
 
+
+//This class manages all of the performance tests
+// 
 #import <Foundation/Foundation.h>
 #import "TestResults.h"
 #import "TestSettings.h"

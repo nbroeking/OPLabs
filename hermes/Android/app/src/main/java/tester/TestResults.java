@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nbroeking on 4/1/15.
@@ -18,10 +20,12 @@ public class TestResults implements Parcelable{
     private double dns;
     private double packetLoss;
     private double latency;
-    private double latencyUnderLoad;
+    private List<Integer> latencyUnderLoad;
     private double throughputUpload;
     private double throughputDownload;
     private double packetLossUnderLoad;
+
+    private double latencySD;
 
     private boolean valid;
 
@@ -34,7 +38,7 @@ public class TestResults implements Parcelable{
         packetLoss = -1;
         dns = -1;
         latency = -1;
-        latencyUnderLoad = 0;
+        latencyUnderLoad = null;
         latency = 0;
 
         this.mobileId = id;
@@ -45,10 +49,17 @@ public class TestResults implements Parcelable{
         dns = in.readDouble();
         packetLoss = in.readDouble();
         latency = in.readDouble();
-        latencyUnderLoad = in.readDouble();
+
+        latencyUnderLoad = new ArrayList<>();
+        int sizeOfList = in.readInt();
+        for( int i = 0; i < sizeOfList; i++){
+            latencyUnderLoad.add(in.readInt());
+        }
+
         throughputUpload = in.readDouble();
         throughputDownload = in.readDouble();
         packetLossUnderLoad = in.readDouble();
+        latencySD = in.readDouble();
         valid = in.readByte() != 0; //Resets the bool
 
         mobileId = in.readInt();
@@ -57,37 +68,15 @@ public class TestResults implements Parcelable{
 
     public String printValues()
     {
-        return "VALID = " + valid + " dns = " + dns + " packetLoss " + packetLoss+  " latency " + latency;
-    }
-    public TestResults(JSONObject json){
-        try {
-            if (json.getString("status").equals("success")) {
-
-                dns = json.getDouble("dns_response_avg");
-                packetLoss = json.getDouble("packet_loss");
-                latency = json.getDouble("latency_avg");
-                throughputDownload = json.getDouble("download_throughputs_avg");
-                throughputUpload = json.getDouble("upload_throughputs_avh");
-                packetLossUnderLoad = json.getDouble("packet_loss_under_load");
-                latencyUnderLoad = json.getDouble("download_latencies_avg");
-                valid = true;
-                return;
-            }
-            else
-            {
-                throw new JSONException("Failure");
-            }
-        } catch (JSONException e) {
-            valid = false;
-            packetLoss = -1;
-            dns = -1;
-            latency = -1;
-            throughputUpload = -1;
-            throughputDownload = -1;
-            packetLossUnderLoad = -1;
-            latencyUnderLoad = -1;
-            Log.e("JSON ERROR", "Test Results constructor failed" ,e);
-        }
+        return "VALID = " + valid +
+                "\ndns = " + dns +
+                "\npacketLoss " + packetLoss+
+                "\nlatency " + latency +
+                "\ndownload " + throughputDownload /1000/1000*8 + "Mbps" +
+                "\nupload " + throughputUpload /1000/1000*8 + "Mbps" +
+                "\nlatency under load " + latencyUnderLoad +
+                "\npacket loss under load " + packetLossUnderLoad +
+                "\nlatency std " + latencySD;
     }
     public String getPost(){
 
@@ -104,7 +93,8 @@ public class TestResults implements Parcelable{
             results += "upload_throughputs=" + URLEncoder.encode(Double.toString(throughputUpload), "UTF-8") + '&';
             results += "download_throughputs=" + URLEncoder.encode(Double.toString(throughputDownload), "UTF-8") + '&';
             results += "packet_loss_under_load=" + URLEncoder.encode(Double.toString(packetLossUnderLoad), "UTF-8") + '&';
-            results += "throughput_latency=" + URLEncoder.encode(Double.toString(latencyUnderLoad), "UTF-8");
+            results += "throughput_latency=" + URLEncoder.encode(latencyUnderLoad.toString(), "UTF-8") + '&';
+            results += "latency_sdev=" + URLEncoder.encode(Double.toString(latencySD), "UTF-8");
 
         } catch (UnsupportedEncodingException e) {
             Log.e("Results", "Error creating post", e);
@@ -112,7 +102,6 @@ public class TestResults implements Parcelable{
 
         return results;
     }
-
 
     public double getPacketLoss() {
         return packetLoss;
@@ -134,10 +123,17 @@ public class TestResults implements Parcelable{
         dest.writeDouble(dns);
         dest.writeDouble(packetLoss);
         dest.writeDouble(latency);
-        dest.writeDouble(latencyUnderLoad);
+
+        dest.writeInt(latencyUnderLoad.size());
+
+        for( int x : latencyUnderLoad){
+            dest.writeInt(x);
+        }
+
         dest.writeDouble(throughputUpload);
         dest.writeDouble(throughputDownload);
         dest.writeDouble(packetLossUnderLoad);
+        dest.writeDouble(latencySD);
         dest.writeByte((byte) (valid ? 1 : 0));
 
         dest.writeInt(mobileId);
@@ -215,13 +211,13 @@ public class TestResults implements Parcelable{
         }
     }
 
-    public double getLatencyUnderLoad() {
+    public List<Integer> getLatencyUnderLoad() {
         synchronized (this) {
             return latencyUnderLoad;
         }
     }
 
-    public void setLatencyUnderLoad(double latencyUnderLoad) {
+    public void setLatencyUnderLoad(List<Integer> latencyUnderLoad) {
         synchronized (this) {
             this.latencyUnderLoad = latencyUnderLoad;
         }
@@ -263,11 +259,28 @@ public class TestResults implements Parcelable{
         }
     }
 
+    public double getLatencySD() {
+        synchronized (this) {
+            return latencySD;
+        }
+    }
+
+    public void setLatencySD(double latencySD) {
+        synchronized (this) {
+            this.latencySD = latencySD;
+        }
+    }
     public int getSetId() {
-        return setId;
+
+        synchronized (this){
+            return setId;
+        }
     }
 
     public void setSetId(int setId) {
-        this.setId = setId;
+
+        synchronized (this){
+            this.setId = setId;
+        }
     }
 }

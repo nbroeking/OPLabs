@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+//This class provides a thread subsystem that runs all of our performance tests
 public class TestThread extends HandlerThread {
 
     private static final String TAG = "Hermes Test Thread";

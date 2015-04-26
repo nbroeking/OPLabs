@@ -14,6 +14,7 @@ import tester.helpers.TestThread;
 
 import static android.os.Message.obtain;
 
+//This class is the service that provides an interface to run messages on the testing thread
 public class TestService extends Service {
     //Tag for logs
     private final String TAG = "Test Service";

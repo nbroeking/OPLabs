@@ -9,32 +9,10 @@
 #import "TestResults.h"
 
 @implementation TestResults
-@synthesize dns, latency, packetloss, throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad, mobileIdentifier, valid, routerIdentifier;
+@synthesize dns, latency, packetloss, throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad, mobileIdentifier, valid, routerIdentifier,latencySD;
 @synthesize setID;
 
--(instancetype)init :(NSDictionary*)json{
-    if( self = [super init]){
-        
-        @try {
-            dns = [[json objectForKey:@"dns_respons_avg"] doubleValue];
-            latency = [[json objectForKey:@"latency_avg"] doubleValue];
-            throughputDownload = [[json objectForKey:@"download_throughputs_avg"] doubleValue];
-            throughputUpload = [[json objectForKey:@"upload_throughputs_avg"] doubleValue];
-            packetloss = [[json objectForKey:@"packet_loss"] doubleValue];
-            packetlossUnderLoad = [[json objectForKey:@"packet_loss_under_load"] doubleValue];
-            latencyUnderLoad = [[json objectForKey:@"download_latencies_avg"] doubleValue];
-            valid = true;
-            setID = -1;
-        }
-        @catch (NSException *exception) {
-            self = [self init];
-        }
-    
-        NSLog(@"Results are: ");
-        [self print];
-    }
-    return self;
-}
+//Initlize everythng to 0 when it is a normal init
 -(instancetype)init{
     if (self = [super init]) {
         
@@ -44,23 +22,25 @@
         packetloss = 0.0;
         throughputUpload = 0.0;
         throughputDownload = 0.0;
-        latencyUnderLoad = 0.0;
+        latencyUnderLoad = NULL;
         packetlossUnderLoad = 0.0;
         setID = -1;
     }
     return self;
 }
 
+//Print all the values for debug purposes
 -(void) print {
-    NSLog( @"%@",[[NSString alloc] initWithFormat:@"state=finished&dns_response_avg=%f&packet_loss=%f&latency_avg=%f&upload_throughputs=%f&download_throughputs=%f&packet_loss_under_load=%f&throughput_latency=%f",dns,packetloss,latency,throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad]);
+    NSLog( @"%@",[[NSString alloc] initWithFormat:@"state=finished\ndns_response_avg=%f\npacket_loss=%f\nlatency_avg=%f\nlatencyStd=%f\nupload_throughputs=%fMbps\ndownload_throughputs=%fMbps\npacket_loss_under_load=%f\nthroughput_latency=%@",dns,packetloss,latency,latencySD,throughputUpload /1000/1000 *8, throughputDownload /1000/1000*8, packetlossUnderLoad, latencyUnderLoad]);
 }
+//Return all the values as a body of a html post so we can send the results to the controller
 -(NSString *)getPost{
     
     if( !valid){
         return @"state=error";
     }
     
-    return [[NSString alloc] initWithFormat:@"state=finished&dns_response_avg=%f&packet_loss=%f&latency_avg=%f&upload_throughputs=%f&download_throughputs=%f&packet_loss_under_load=%f&throughput_latency=%f",dns,packetloss,latency,throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad];
+    return [[NSString alloc] initWithFormat:@"state=finished&dns_response_avg=%f&packet_loss=%f&latency_avg=%f&upload_throughputs=%f&download_throughputs=%f&packet_loss_under_load=%f&throughput_latency=%@&latency_sdev=%f",dns,packetloss,latency,throughputUpload, throughputDownload, packetlossUnderLoad, latencyUnderLoad, latencySD];
     
 }
 @end

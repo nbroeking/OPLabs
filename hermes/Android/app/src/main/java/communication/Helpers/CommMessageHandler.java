@@ -45,6 +45,7 @@ import tester.helpers.TestSettings;
 import static android.os.Message.obtain;
 
 //This handler is running on the Comm Thread and will handle all communication related events
+//In hindsite I would have separated this handler into multiple classes
 public class CommMessageHandler extends Handler {
 
     private final String TAG = "CommMessageHandler";
@@ -55,7 +56,6 @@ public class CommMessageHandler extends Handler {
     private final String ReportResultURL = "/api/test_result/%d/edit";
 
     private SessionData data;
-
     private Boolean ShouldCheck;
 
     public CommMessageHandler()
@@ -128,6 +128,7 @@ public class CommMessageHandler extends Handler {
     //This method reports our test to the controller
     private void reportTest(TestResults results){
         HttpPost post = new HttpPost(String.format(data.getHostname()+ReportResultURL, results.getMobileId()));
+
         try {
 
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -190,7 +191,6 @@ public class CommMessageHandler extends Handler {
             postString += "user_token=" + URLEncoder.encode(data.getSessionId() , "UTF-8");
             postString += "&";
             postString += "set_id=" + URLEncoder.encode(Integer.toString(settings.getSetId()), "UTF-8");
-            postString += "&address=127.0.0.1"; //NOTE: THis is a hack so we always have a router
             post.setEntity(new StringEntity( postString));
 
             //Execute the post
@@ -411,6 +411,7 @@ public class CommMessageHandler extends Handler {
             HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
             HttpProtocolParams.setUseExpectContinue(params, true);
             HttpConnectionParams.setConnectionTimeout(params, 8000);
+            HttpConnectionParams.setSoTimeout(params, 8000);
 
             SchemeRegistry schReg = new SchemeRegistry();
             schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));

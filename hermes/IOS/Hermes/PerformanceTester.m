@@ -26,7 +26,7 @@
 @property (strong, nonatomic) Throughput *throughputHandler;
 
 -(Boolean) sendDNSRequest :(NSString*)string withId:(NSInteger)identifier;
--(NSArray*) runDNSTest: (NSMutableArray*)domains;
+-(NSArray *)runDNSTest:(NSMutableArray *)domains needsDelay:(Boolean)delay;
 -(Boolean) getDNSResponse:(NSInteger)identifier;
 
 -(NSData*) getContent:(NSString*) name :(NSInteger) identifier;
@@ -51,6 +51,12 @@
     return self;
 }
 
+//This method will run the test suit in order
+// DNS TEST
+// Latency TEST
+// Packet Loss
+// Then will spawn a thread and run
+// Throughput and load tests at the same time
 -(void)runTests:(Tester *)owner{
     delegate = owner;
     
@@ -61,11 +67,10 @@
     TestState *state = [TestState getStateMachine];
     
     [state setState:TESTINGDNS];
-    
     [results setRouterIdentifier:[settings routerResultID]];
     
     //Run a DNS Response Test
-    NSArray *times1 = [self runDNSTest:[settings invalidDomains]];
+    NSArray *times1 = [self runDNSTest:[settings invalidDomains] needsDelay:false];
     double dnsResult = 0;
     for (NSNumber *x in times1) {
         dnsResult += [x doubleValue];
@@ -85,7 +90,7 @@
     
 
     //Run a test packet latency test
-    NSArray *times2 = [self runDNSTest:[settings validDomains]];
+    NSArray *times2 = [self runDNSTest:[settings validDomains] needsDelay:false];
     double latencyResult = 0;
     for (NSNumber *x in times2) {
         latencyResult += [x doubleValue];
@@ -99,6 +104,7 @@
         [results setLatency:latencyResult];
     }
     
+    [results setLatencySD:[self standardDev:times2]];
     NSLog(@"Latency Result = %f", latencyResult);
 
         
@@ -108,7 +114,7 @@
         NSLog(@"Error with packet loss");
         [results setValid:false];
     }
-    [results setPacketloss:(1-(([times2 count] + [times1 count]) / ([[settings validDomains] count] + [[settings invalidDomains] count])))];
+    [results setPacketloss:(1.0-(((double)[times2 count] + (double)[times1 count]) / ((double)[[settings validDomains] count] + (double)[[settings invalidDomains] count])))];
     
     NSLog(@"Packet loss = %f percent", [results packetloss]);
 
@@ -124,6 +130,8 @@
 }
 
 //Should run on other thread
+//This method will run a load test calculating latency and packet loss
+//While under load
 -(void) runUnderLoad{
     //Run a test packet latency test
     NSMutableArray *times = [[NSMutableArray alloc] init];
@@ -133,44 +141,39 @@
     int tests = 0;
     
     while ( [[NSDate date] timeIntervalSince1970] - startTime < 10.0){
-        NSArray *resTimes = [self runDNSTest:[settings validDomains]];
+        NSArray *resTimes = [self runDNSTest:[settings validDomains] needsDelay:true];
         
         [times addObjectsFromArray:resTimes];
         tests += 1;
     }
     
-    double latencyResult = 0;
-    for (NSNumber *x in times) {
-        latencyResult += [x doubleValue];
-    }
-    
     if( [times count] ==0 ){
-        [results setLatencyUnderLoad:0.0];
+        [results setLatencyUnderLoad:[[NSArray alloc] init]];
     }
     else {
-        latencyResult /= [times count];
-        [results setLatencyUnderLoad:latencyResult];
+        [results setLatencyUnderLoad:times.copy];
     }
     
-    [results setPacketlossUnderLoad:1- ([times count] / tests*[[settings validDomains]count])];
+    double top = [times count];
+    double bottom = tests*[[settings validDomains] count];
+    double packetLossUnderLoad = 1.0 -(top /bottom);
     
-    //TODO: Signal the other thread to continue
+    [results setPacketlossUnderLoad:packetLossUnderLoad];
     
-    NSLog(@"Latency Under Load Result = %f", latencyResult);
-    NSLog(@"Packet Loss under Load = %f", [results packetloss]);
-    
+    //Signal the Tester thread that we are done
     [lock lock];
     throughputComplete = true;
     [lock signal];
     [lock unlock];
 
 }
-
+//Called by the throughput object when we have completed a upload test
 -(void)completedUpload{
     NSLog(@"Performance test completed a upload");
     [delegate testComplete:results :settings];
 
 }
+//Called by the throughput object when we have completed a download test
 -(void)completedDownload{
     NSLog(@"Performance test completed a download");
     
@@ -180,16 +183,18 @@
         [lock wait];
     }
     [lock unlock];
-    //TODO: RUn an upload test
     
     [throughputHandler runUploadTest];
 }
+
+//Report the results to whover created us aka. the tester object
 -(void)sendResults{
-    NSLog(@"Performance tester is done with the settings");
     [delegate testComplete:results :settings ];
 }
 
--(NSArray *)runDNSTest:(NSMutableArray *)domains{
+//This will run a dns test by sending x number dns requests and
+//Testing how long it takes for them to return
+-(NSArray *)runDNSTest:(NSMutableArray *)domains needsDelay:(Boolean)delay{
     
     NSMutableArray *resultTimes = [[NSMutableArray alloc] init];
     
@@ -201,8 +206,10 @@
             if( [self getDNSResponse:id])
             {
                 long elapsedTime = timeEnd*1000 - timeStart*1000;
-                
                 [resultTimes addObject:[[NSNumber alloc] initWithInteger: elapsedTime]];
+                if( delay){
+                    [NSThread sleepForTimeInterval:.2f];
+                }
             }
         }
     }
@@ -210,6 +217,8 @@
     return resultTimes;
 }
 
+//Sends a UDP request
+// Will set the start time for calculating the rtt
 -(Boolean)sendDNSRequest:(NSString *)string withId:(NSInteger)identifier{
     Boolean returncode = true;
 
@@ -225,6 +234,8 @@
     
 }
 
+//Receives the dns response
+//This will set the return time for calculating the rtt
 -(Boolean)getDNSResponse:(NSInteger)identifier{
     
     short recvId = -1;
@@ -261,6 +272,8 @@
    
     return true;
 }
+//We hand craft dns requests using this method.
+//We conform to the DNS standard
 -(NSData *)getContent:(NSString *)name :(NSInteger)identifier{
     NSArray *strings = [name componentsSeparatedByString:@"."];
     
@@ -313,6 +326,32 @@
     
     free(bytes);
     return data;
+}
+// This calculates the standard deviation for a NSArray
+-(double) standardDev:(NSArray*) array{
+    if( array == NULL){
+        return 0.0;
+    }
+    
+    //Calculate the mean
+    double mean = 0.0;
+    
+    for( NSNumber *x in array){
+        mean += [x doubleValue];
+    }
+    mean = mean / [array count];
+    
+    //Calculate the dev
+    
+    double dev = 0.0;
+    
+    for (NSNumber *x in array){
+        dev += pow(([x doubleValue] -mean), 2);
+    }
+    dev = dev / ([array count] -1);
+    
+    dev = sqrt(dev);
+    return dev;
 }
 
 @end

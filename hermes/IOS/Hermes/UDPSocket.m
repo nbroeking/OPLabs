@@ -27,6 +27,8 @@
 }
 @synthesize testSettings;
 @synthesize valid;
+
+//Open up and bind a c udp socket
 -(instancetype)init :(TestSettings*)settings{
     
     self = [super init];
@@ -67,6 +69,7 @@
     return self;
 }
 
+//Send data to the address provided in the to
 -(BOOL)sendData:(NSData *)data to:(NSString *)to{
     
     ssize_t bytesWritten;
@@ -96,6 +99,7 @@
     return true;
 }
 
+//Recv data with a timeout
 -(NSData *)recvData:(NSInteger)timeout
 {
     struct sockaddr_storage addr;
@@ -119,6 +123,7 @@
     return data;
 }
 
+//Shutdown the socket to clean up resources
 -(void)shutdown{
     
     close(sock);

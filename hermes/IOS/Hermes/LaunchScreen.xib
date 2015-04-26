@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -13,6 +14,9 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="E7d-WZ-R5z">
                     <rect key="frame" x="0.0" y="-836" width="600" height="2272"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="2272" id="ekk-sj-7GS"/>
+                    </constraints>
                 </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Copyright (c) 2015 NicolasBroeking. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
                     <rect key="frame" x="20" y="559" width="561" height="21"/>
@@ -23,36 +27,54 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hermes-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Nec-nc-yTh">
                     <rect key="frame" x="129" y="103" width="343" height="164"/>
                     <constraints>
+                        <constraint firstAttribute="height" constant="164" id="Dam-hK-1DE"/>
                         <constraint firstAttribute="height" constant="164" id="Edr-xJ-hSr"/>
+                        <constraint firstAttribute="width" secondItem="Nec-nc-yTh" secondAttribute="height" multiplier="343:164" id="JFA-mT-oSz"/>
                         <constraint firstAttribute="width" constant="343" id="XVT-ua-818"/>
+                        <constraint firstAttribute="width" constant="343" id="x9q-18-lOs"/>
                     </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="Edr-xJ-hSr"/>
+                            <exclude reference="JFA-mT-oSz"/>
+                            <exclude reference="XVT-ua-818"/>
+                        </mask>
+                    </variation>
                 </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="E7d-WZ-R5z" secondAttribute="centerY" id="0F7-QZ-sif"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="103" id="6xo-od-cr2"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="Nec-nc-yTh" secondAttribute="centerY" constant="115" id="CMZ-zs-izN"/>
                 <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="Kzo-t9-V3l"/>
                 <constraint firstItem="8ie-xW-0ye" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="MfP-vx-nX0"/>
-                <constraint firstAttribute="centerX" secondItem="E7d-WZ-R5z" secondAttribute="centerX" id="VAz-G4-nsX"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Q45-wW-0kt"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerX" secondItem="Nec-nc-yTh" secondAttribute="centerX" id="TLp-hV-prZ"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="XZC-CT-s2I"/>
                 <constraint firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="ZEH-qu-HZ9"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="59" id="b0g-ar-pVN"/>
+                <constraint firstItem="Nec-nc-yTh" firstAttribute="leading" secondItem="E7d-WZ-R5z" secondAttribute="trailing" constant="-471" id="bS6-7O-WNJ"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="dQr-Th-qhm"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="topMargin" id="gdN-by-IhB"/>
                 <constraint firstItem="Nec-nc-yTh" firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="nS6-II-era"/>
-                <constraint firstItem="E7d-WZ-R5z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="yoV-VF-QgW"/>
+                <constraint firstItem="E7d-WZ-R5z" firstAttribute="centerY" secondItem="Nec-nc-yTh" secondAttribute="centerY" constant="115" id="srJ-ff-nOh"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <variation key="default">
                 <mask key="constraints">
+                    <exclude reference="6xo-od-cr2"/>
                     <exclude reference="b0g-ar-pVN"/>
+                    <exclude reference="bS6-7O-WNJ"/>
                     <exclude reference="gdN-by-IhB"/>
+                    <exclude reference="nS6-II-era"/>
+                    <exclude reference="CMZ-zs-izN"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="555" y="467"/>
         </view>
     </objects>
     <resources>
-        <image name="background" width="1536" height="2272"/>
+        <image name="background" width="320" height="569"/>
         <image name="hermes-logo" width="3168" height="1453"/>
     </resources>
 </document>

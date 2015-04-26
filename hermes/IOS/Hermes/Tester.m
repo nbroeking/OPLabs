@@ -33,7 +33,7 @@
     });
     return sharedInstance;
 }
-
+//Set all our values to false or nil on creation
 -(instancetype)init
 {
     if( self = [super init])
@@ -83,6 +83,7 @@
     }
     NSLog(@"Tester Thread Closed");
 }
+
 //Start the Communication thread
 -(void)start{
     
@@ -102,6 +103,21 @@
         [thread start];
     }
 }
+
+//Request the subsystem to be stopped no matter what
+-(void) forceStop{
+    @synchronized(self){
+        if(!started)
+        {
+            NSLog(@"Thread is already stopped");
+            return;
+        }
+        
+        shouldRun = false;
+        [self performSelector:@selector(tearDownRunLoop) onThread:thread withObject:nil waitUntilDone:false];
+    }
+
+}
 //Kill the communication thread cleanly
 -(void)stop{
     @synchronized(self){
@@ -120,30 +136,28 @@
     }
 }
 
+//We want to run a test on our own threads so
 -(void) runTest :(NSNotification*) notification{
+    NSLog(@"Starting a test");
     [self performSelector:@selector(runTestHelper:) onThread:thread withObject:notification waitUntilDone:NO];
     
 }
+//Called on the tester thread to run a test
 -(void) runTestHelper :(NSNotification*) notification
 {
-    NSLog(@"Received a start test notification");
-    
     TestSettings *settings = (TestSettings*)[notification object];
+    if( settings == NULL){
+        NSLog(@"Tester doesn't have settings");
+        return;
+    }
     NSLog(@"Results ID = %d", (int)[settings mobileResultID]);
-    
-    [self performSelector:@selector(runTestOnSubsystem:) onThread:thread withObject:settings waitUntilDone:NO];
-    
-}
-
--(void) runTestOnSubsystem :(TestSettings*)settings{
-    NSLog(@"Preparing to run a test");
     
     tester = [[PerformanceTester alloc] init:settings];
     
     [tester runTests: self];
-    
 }
 
+//Called by the subsystem when a test is complete
 -(void)testComplete: (TestResults*)results :(TestSettings*)settings{
     //Once we have the reslts we need to report them
     
@@ -157,9 +171,12 @@
     
     NSLog(@"Completed a Performance test");
     
+    [results print];
+    
     [[TestState getStateMachine] setState:COMPLETED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TestComplete" object:results userInfo:allInfo];
 }
+
 //This method is used to add something to the run loops queue.
 //This method purposly does nothing except wake up the run loop
 //To give it a chance to exit
