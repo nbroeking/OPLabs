@@ -21,7 +21,7 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zqh-5d-wLs">
                                 <rect key="frame" x="36" y="20" width="528" height="600"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <mutableString key="text">THROUGHPUT  Sustained throughput (or Bandwidth) is the rate at which you can download data from the internet onto your computer. The larger this number is, the less time it takes to download pictures, song and movies.   LATENCY  Latency is how long it takes a single bit of data to travel from the internet to your computer. High latency increases the initial delay to load a webpage, and is the phenomenon known in online gaming as 'Lag'.   DNS RESPONSE TIME  DNS is the service which translates domain names (i.e. example.com) into and internet addresses. High DNS response latency can translate into large delays when initially accessing a website.   PACKET LOSS  Packet loss describes the percentage of packets loss in transit to their destination. This can seriously affect realtime applications, such as voice or video chats, or certain online games.   LATENCY UNDER LOAD  Latency Under Load refers to variations in latency that can occur when your internet connection is heavily utilized. Sometimes this utilization can cause packets to be delayed or lost in transit.</mutableString>
+                                <string key="text">THROUGHPUT  Sustained throughput (or Bandwidth) is the rate at which you can download data from the internet onto your computer. The larger this number is, the less time it takes to download pictures, song and movies.   LATENCY  Latency is how long it takes a single bit of data to travel from the internet to your computer. High latency increases the initial delay to load a webpage, and is the phenomenon known in online gaming as 'Lag'.   DNS RESPONSE TIME  DNS is the service which translates domain names (i.e. example.com) into and internet addresses. High DNS response latency can translate into large delays when initially accessing a website.   PACKET LOSS  Packet loss describes the percentage of packets loss in transit to their destination. This can seriously affect realtime applications, such as voice or video chats, or certain online games.   LATENCY UNDER LOAD  Latency Under Load refers to variations in latency that can occur when your internet connection is heavily utilized. Sometimes this utilization can cause packets to be delayed or lost in transit.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -310,8 +310,17 @@
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="uX0-dC-Eyq">
                                 <rect key="frame" x="16" y="112" width="568" height="2"/>
                             </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JlR-H5-kMa">
+                                <rect key="frame" x="16" y="157" width="568" height="81"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="81" id="O2G-dg-IqE"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wAZ-Eb-INx">
-                                <rect key="frame" x="176" y="260" width="248" height="248"/>
+                                <rect key="frame" x="200" y="260" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="484" id="DPa-Au-3Lo"/>
                                     <constraint firstAttribute="height" constant="484" id="EtW-kF-DFB"/>
@@ -328,15 +337,6 @@
                                     </mask>
                                 </variation>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JlR-H5-kMa">
-                                <rect key="frame" x="16" y="157" width="568" height="81"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="81" id="O2G-dg-IqE"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -349,7 +349,7 @@
                             <constraint firstItem="JlR-H5-kMa" firstAttribute="leading" secondItem="SXY-nt-6gr" secondAttribute="leadingMargin" id="TlV-jT-mmU"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="aqh-3H-fTa"/>
                             <constraint firstItem="JlR-H5-kMa" firstAttribute="top" secondItem="uX0-dC-Eyq" secondAttribute="bottom" constant="43" id="blv-ZE-bYY"/>
-                            <constraint firstItem="V7Q-vX-Ec9" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="48" id="csA-Sa-Rtm"/>
+                            <constraint firstItem="V7Q-vX-Ec9" firstAttribute="top" secondItem="wAZ-Eb-INx" secondAttribute="bottom" constant="96" id="csA-Sa-Rtm"/>
                             <constraint firstAttribute="trailing" secondItem="wAZ-Eb-INx" secondAttribute="trailing" constant="58" id="e9a-ke-lYS"/>
                             <constraint firstItem="wAZ-Eb-INx" firstAttribute="top" secondItem="Qkp-Yq-vyE" secondAttribute="bottom" id="kKe-MX-ShN"/>
                             <constraint firstAttribute="centerX" secondItem="JlR-H5-kMa" secondAttribute="centerX" id="nGO-aA-NnZ"/>
