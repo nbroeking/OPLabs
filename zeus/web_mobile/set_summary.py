@@ -54,7 +54,7 @@ def set_summary(set_id):
             intf_name = i["intf"]
             if intf_name not in intf_stats:
                 intf_stats[intf_name] = []
-            intf_stats[intf_name].append([i["tx_bytes"], i["timestamp"] / 1000.0])
+            intf_stats[intf_name].append([i["rx_bytes"], i["timestamp"] / 1000.0])
 
         def derivative(lst): # takes [(bytes, timestamp)] -> ([bytes], [timestamp])
             ret_bytes = []
