@@ -118,7 +118,7 @@ public class TestState {
 
     public long getStartTime() {
         synchronized (this) {
-            if (startTime < 0) {
+            if (startTime <= 0) {
                 startTime = System.currentTimeMillis();
             }
             return startTime;

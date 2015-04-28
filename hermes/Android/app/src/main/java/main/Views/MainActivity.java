@@ -94,6 +94,12 @@ public class MainActivity extends HermesActivity {
     //Called by button press to initiate a test
     public void runTest(View view) {
         Log.i(TAG, "RunTest");
+        if(TestState.getInstance().getState() == TestState.State.IDLE)
+        {
+            //Reset the start time if we are about to start testing
+            TestState.getInstance().setStartTime(0);
+        }
+
         Intent myIntent = new Intent(MainActivity.this, ResultsActivity.class);
         MainActivity.this.startActivity(myIntent);
     }
